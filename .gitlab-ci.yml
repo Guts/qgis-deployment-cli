@@ -38,7 +38,7 @@ linter:
 
 # -- TEST JOBS -------------------------------------------------------------------------
 basic-test:
-  image: python:3.7-slim-buster
+  image: python:3.8-slim-buster
   stage: 🤞 test
   only:
     changes:
@@ -54,7 +54,7 @@ basic-test:
 
 # -- BUILD JOBS ------------------------------------------------------------------------
 packaging:
-  image: python:3.7-slim-buster
+  image: python:3.8-slim-buster
   stage: 📦 build
   only:
     - main
