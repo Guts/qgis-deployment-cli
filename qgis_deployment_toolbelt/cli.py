@@ -10,11 +10,13 @@
 
 # Standard library
 import logging
+from os import getenv
 from pathlib import Path
 from timeit import default_timer
 
 # 3rd party library
 import click
+from dotenv import load_dotenv
 
 # submodules
 from qgis_deployment_toolbelt import LogManager
@@ -64,15 +66,14 @@ CONTEXT_SETTINGS = dict(obj={})
 @click.option(
     "-l",
     "--label",
-    help="Personnaliser le nom de la tâche, utilisé notamment pour nommer le fichier "
-    "journal (log).",
-    default="tactis_qgis_deployment_toolbelt",
+    help="Customize the task name (used as log file name).",
+    default="qgis_deployment_toolbelt",
     show_default=True,
 )
 @click.option(
     "-s",
     "--settings",
-    default="default.conf",
+    default=".env",
     show_default=True,
     prompt="Configuration file",
     help="Environment file containing settings",
@@ -93,7 +94,7 @@ def qgis_deployment_toolbelt(
     clear: bool,
     verbose: bool,
 ):
-    """Commande parente de SQLite to Airtable.
+    """Main command.
 
     \f
     Args:
@@ -116,14 +117,13 @@ def qgis_deployment_toolbelt(
 
     # -- LOAD CONFIGURATION FILE -------------------------------------------------------
     try:
-        conf_dict = {}
-        # conf_dict = ConfigurationReader(settings).as_dict_converted
-        debug_level = int(conf_dict.get("global").get("debug_level", 0))
-        logs_folder = conf_dict.get("global").get("logs_folder", "_logs/")
+        load_dotenv(settings, override=True)
+        debug_level = int(getenv("DEBUG", 0))
+        logs_folder = getenv("LOGS_FOLDER", "_logs")
     except Exception as err:
         exit_cli_error(
-            "Problème lors du chargement du fichier de configuration {}"
-            " Merci d'exécuter check avant tout autre commande. "
+            "Error occurred during configuration reading: {}"
+            " Please run the check command and fix the problem. "
             "Trace: {}".format(settings, err),
             0,
         )
