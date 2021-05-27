@@ -43,7 +43,6 @@ basic-test:
   only:
     changes:
       - "**/*.py"
-      - ".gitlab-ci.yml"
   before_script:
     - python -m pip install -U -r requirements/base.txt
     - python -m pip install -U -r requirements/development.txt
