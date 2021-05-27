@@ -78,17 +78,17 @@ packaging:
       - "**/*.rst"
 
 # -- DEPLOYMENT JOBS -------------------------------------------------------------------
-# gitlab-pypi-package:
-#   stage: 🚀 deploy
-#   image: python:latest
-#   dependencies:
-#     - packaging
-#   only:
-#     - tags
-#   script:
-#     - python -m pip install twine
-#     - python setup.py sdist bdist_wheel
-#     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+gitlab-pypi-package:
+  stage: 🚀 deploy
+  image: python:latest
+  dependencies:
+    - packaging
+  only:
+    - tags
+  script:
+    - python -m pip install -U twine
+    - python setup.py sdist bdist_wheel
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 
 pages:
   image: python:3.8-slim-buster
