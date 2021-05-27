@@ -82,6 +82,8 @@ build-win-exe:
   image: python:windowsservercore-1809
   tags:
     - win10-vs2017
+    - win10
+    - osgeo4w
   only:
     - main
     - tags
