@@ -1,0 +1,14 @@
+# Common requirements
+# -----------------------
+
+setuptools
+wheel
+
+# Project requirements
+# -----------------------
+click>=7.1,<8
+click-keyring>=0.2,<0.3
+click-log>=0.3,<0.4
+click-spinner>=0.1,<0.2
+semver>=2,<3
+send2trash==1.6.0b1

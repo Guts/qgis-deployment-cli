@@ -1,0 +1,9 @@
+-i https://pypi.org/simple
+
+# Documentation (for devs)
+# -----------------------
+sphinx>=3.5,<4
+sphinx-autodoc-typehints>=1.10,<1.13
+sphinx-click>=2.5,<2.6
+sphinx-copybutton>=0.3,<0.4
+sphinx-rtd-theme>=0.5,<0.7

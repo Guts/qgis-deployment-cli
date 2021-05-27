@@ -1,0 +1,29 @@
+{
+    // Editor
+    "editor.rulers": [
+        88
+    ],
+    "editor.wordWrapColumn": 88,
+    "files.associations": {
+        "./requirements/*.txt": "pip-requirements"
+    },
+    // Python environment
+    "python.pythonPath": ".venv/bin/python",
+    // Formatter
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--target-version=py38"
+    ],
+    // Linter
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--config=setup.cfg",
+        "--verbose"
+    ],
+    "python.linting.pylintEnabled": false,
+    // extensions
+    "autoDocstring.guessTypes": true,
+    "autoDocstring.docstringFormat": "google",
+    "autoDocstring.generateDocstringOnEnter": false
+}
