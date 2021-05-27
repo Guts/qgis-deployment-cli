@@ -3,7 +3,6 @@
 """
     Sub-command in charge of cleaning up temporary files.
 
-    Author: In Geo Veritas
 """
 
 # #############################################################################

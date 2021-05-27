@@ -4,7 +4,6 @@
 """
     Sub-command in charge of checking settings and environment.
 
-    Author: In Geo Veritas
 """
 
 # #############################################################################
