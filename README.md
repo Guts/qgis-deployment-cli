@@ -5,3 +5,9 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 Cross-platform (but Windows focused) CLI to perform deployment operations: profiles, plugins, etc.
+
+**Interested**? For further details, [read the documentation](https://oslandia.gitlab.io/qgis/qgis-deployment-cli/) :books:.
+
+## Contribute
+
+Read the [contribution guidelines](CONTRIBUTING.md) and the documentation.
