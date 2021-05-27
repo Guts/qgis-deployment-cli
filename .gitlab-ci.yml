@@ -82,7 +82,6 @@ build-win-exe:
   image: python:windowsservercore-1809
   tags:
     - win10-vs2017
-    - win10
     - osgeo4w
   only:
     - main
@@ -103,29 +102,29 @@ build-win-exe:
       - "**/*.md"
       - "**/*.rst"
 
-build-bin-debian:
-  stage: 📦 build
-  image: python:3.8-slim-buster
-  only:
-    - main
-    - tags
+# build-bin-debian:
+#   stage: 📦 build
+#   image: python:3.8-slim-buster
+#   only:
+#     - main
+#     - tags
 
-  before_script:
-    - python -m venv .venv
-    - source .venv/bin/activate
-    - python -m pip install -U -r requirements/base.txt
-    - python -m pip install -U -r requirements/packaging.txt
-  script:
-    - python -O builder/pyinstaller_build_ubuntu.py
+#   before_script:
+#     - python -m venv .venv
+#     - source .venv/bin/activate
+#     - python -m pip install -U -r requirements/base.txt
+#     - python -m pip install -U -r requirements/packaging.txt
+#   script:
+#     - python builder/pyinstaller_build_ubuntu.py
 
-  artifacts:
-    paths:
-      - dist/*
+#   artifacts:
+#     paths:
+#       - dist/*
 
-  except:
-    changes:
-      - "**/*.md"
-      - "**/*.rst"
+#   except:
+#     changes:
+#       - "**/*.md"
+#       - "**/*.rst"
 
 # -- DEPLOYMENT JOBS -------------------------------------------------------------------
 gitlab-pypi-package:
