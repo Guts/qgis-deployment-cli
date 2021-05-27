@@ -52,30 +52,30 @@ linter:
 #     - $CLI_NAME --version
 #     - $CLI_NAME --help
 
-# # -- BUILD JOBS ------------------------------------------------------------------------
-# packaging:
-#   image: python:3.7-slim-buster
-#   stage: build
-#   only:
-#     - main
-#     - tags
+# -- BUILD JOBS ------------------------------------------------------------------------
+packaging:
+  image: python:3.7-slim-buster
+  stage: build
+  only:
+    - main
+    - tags
 
-#   before_script:
-#     - python -m pip install -U -r requirements/base.txt
-#     - python -m pip install -U -r requirements/development.txt
-#   script:
-#     - python setup.py egg_info
-#     - python setup.py sdist
-#     - python setup.py bdist_wheel
+  before_script:
+    - python -m pip install -U -r requirements/base.txt
+    - python -m pip install -U -r requirements/packaging.txt
+  script:
+    - python setup.py egg_info
+    - python setup.py sdist
+    - python setup.py bdist_wheel
 
-#   artifacts:
-#     paths:
-#       - dist/*.whl
+  artifacts:
+    paths:
+      - dist/*.whl
 
-#   except:
-#     changes:
-#       - "**/*.md"
-#       - "**/*.rst"
+  except:
+    changes:
+      - "**/*.md"
+      - "**/*.rst"
 
 # -- DEPLOYMENT JOBS -------------------------------------------------------------------
 # gitlab-pypi-package:
