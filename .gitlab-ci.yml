@@ -109,10 +109,12 @@ build-bin-debian:
     - tags
 
   before_script:
+    - python -m venv .venv
+    - source .venv/bin/activate
     - python -m pip install -U -r requirements/base.txt
     - python -m pip install -U -r requirements/packaging.txt
   script:
-    - python -OO builder/pyinstaller_build_ubuntu.py
+    - python -O builder/pyinstaller_build_ubuntu.py
 
   artifacts:
     paths:
