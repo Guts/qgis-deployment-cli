@@ -116,6 +116,7 @@ def qgis_deployment_toolbelt(
 
     # -- LOAD CONFIGURATION FILE -------------------------------------------------------
     try:
+        conf_dict = {}
         # conf_dict = ConfigurationReader(settings).as_dict_converted
         debug_level = int(conf_dict.get("global").get("debug_level", 0))
         logs_folder = conf_dict.get("global").get("logs_folder", "_logs/")

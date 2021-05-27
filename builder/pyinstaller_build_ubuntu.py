@@ -8,10 +8,9 @@
 # ########## Libraries #############
 # ##################################
 
+# Standard library
 import platform
 import sys
-
-# Standard library
 from os import getenv
 from pathlib import Path
 
