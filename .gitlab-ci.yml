@@ -7,7 +7,7 @@ stages:
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
-  CLI_NAME: "qgis_deployment_toolbelt"
+  CLI_NAME: "qgis-deployment-toolbelt"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PROJECT_DIR: "qgis_deployment_toolbelt/"
 
@@ -36,26 +36,26 @@ linter:
     - flake8 $PROJECT_DIR --count --select=E9,F63,F7,F82 --show-source --statistics
     - flake8 $PROJECT_DIR --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-# # -- TEST JOBS -------------------------------------------------------------------------
-# basic-test:
-#   image: python:3.7-slim-buster
-#   stage: test
-#   only:
-#     changes:
-#       - "**/*.py"
-#       - ".gitlab-ci.yml"
-#   before_script:
-#     - python -m pip install -U -r requirements/base.txt
-#     - python -m pip install -U -r requirements/development.txt
-#   script:
-#     - python -m pip install -e .
-#     - $CLI_NAME --version
-#     - $CLI_NAME --help
+# -- TEST JOBS -------------------------------------------------------------------------
+basic-test:
+  image: python:3.7-slim-buster
+  stage: 🤞 test
+  only:
+    changes:
+      - "**/*.py"
+      - ".gitlab-ci.yml"
+  before_script:
+    - python -m pip install -U -r requirements/base.txt
+    - python -m pip install -U -r requirements/development.txt
+  script:
+    - python -m pip install -e .
+    - $CLI_NAME --version
+    - $CLI_NAME --help
 
 # -- BUILD JOBS ------------------------------------------------------------------------
 packaging:
   image: python:3.7-slim-buster
-  stage: build
+  stage: 📦 build
   only:
     - main
     - tags
