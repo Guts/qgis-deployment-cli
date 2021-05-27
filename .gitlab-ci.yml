@@ -128,7 +128,7 @@ gitlab-pypi-package:
   stage: 🚀 deploy
   image: python:latest
   dependencies:
-    - packaging
+    - build-wheel
   only:
     - tags
   script:
