@@ -76,30 +76,30 @@ build-wheel:
       - "**/*.md"
       - "**/*.rst"
 
-build-win-exe:
-  stage: 📦 build
-  image: python:windowsservercore-1809
-  tags:
-    - win10-vs2017
-    - osgeo4w
-  only:
-    - main
-    - tags
+# build-win-exe:
+#   stage: 📦 build
+#   image: python:windowsservercore-1809
+#   tags:
+#     - win10-vs2017
+#     - osgeo4w
+#   only:
+#     - main
+#     - tags
 
-  before_script:
-    - python -m pip install -U -r requirements/base.txt
-    - python -m pip install -U -r requirements/packaging.txt
-  script:
-    - python .\builder\version_info_templater.py
+#   before_script:
+#     - python -m pip install -U -r requirements/base.txt
+#     - python -m pip install -U -r requirements/packaging.txt
+#   script:
+#     - python .\builder\version_info_templater.py
 
-  artifacts:
-    paths:
-      - dist/*.exe
+#   artifacts:
+#     paths:
+#       - dist/*.exe
 
-  except:
-    changes:
-      - "**/*.md"
-      - "**/*.rst"
+#   except:
+#     changes:
+#       - "**/*.md"
+#       - "**/*.rst"
 
 # build-bin-debian:
 #   stage: 📦 build
