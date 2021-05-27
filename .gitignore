@@ -39,6 +39,7 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+junit/
 .tox/
 .nox/
 .coverage
@@ -129,6 +130,6 @@ dmypy.json
 # CUSTOM ##########
 # #################
 
-# logs
+version_info.txt
 _logs/
-junit/test-results.xml
+

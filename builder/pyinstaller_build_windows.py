@@ -29,16 +29,9 @@ package_folder = Path("qgis_deployment_toolbelt")
 
 PyInstaller.__main__.run(
     [
-        "--add-binary={};bin/img/".format((package_folder / "bin/img/").resolve()),
-        "--add-data={};locale/".format((package_folder / "locale/").resolve()),
-        "--add-data=options_TPL.ini;.",
         "--add-data=LICENSE;.",
         "--add-data=README.md;.",
         "--clean",
-        # "--debug=all",
-        "--icon={}".format(
-            (package_folder / "bin/img/qgis_deployment_toolbelt.ico").resolve()
-        ),
         "--log-level={}".format(getenv("PYINSTALLER_LOG_LEVEL", "WARN")),
         "--manifest={}".format((package_folder / "../builder/manifest.xml").resolve()),
         "--name={}_{}_{}{}_Python{}-{}".format(
@@ -51,10 +44,9 @@ PyInstaller.__main__.run(
         ),
         "--noconfirm",
         "--noupx",
-        "--onedir",
-        # "--onefile",
+        "--onefile",
         "--version-file={}".format("version_info.txt"),
-        "--windowed",
-        str(package_folder / "qgis_deployment_toolbelt.py"),
+        "--console",
+        str(package_folder / "cli.py"),
     ]
 )
