@@ -27,5 +27,6 @@ setup(
     entry_points="""
         [console_scripts]
         qdeploy-toolbelt=qgis_deployment_toolbelt.cli:qgis_deployment_toolbelt
+        qgis-deployment-toolbelt=qgis_deployment_toolbelt.cli:qgis_deployment_toolbelt
     """,
 )

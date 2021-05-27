@@ -36,7 +36,9 @@ PyInstaller.__main__.run(
         "--add-data=README.md;.",
         "--clean",
         # "--debug=all",
-        "--icon={}".format((package_folder / "bin/img/qgis_deployment_toolbelt.ico").resolve()),
+        "--icon={}".format(
+            (package_folder / "bin/img/qgis_deployment_toolbelt.ico").resolve()
+        ),
         "--log-level={}".format(getenv("PYINSTALLER_LOG_LEVEL", "WARN")),
         "--manifest={}".format((package_folder / "../builder/manifest.xml").resolve()),
         "--name={}_{}_{}{}_Python{}-{}".format(
