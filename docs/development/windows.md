@@ -21,7 +21,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ### Requirements
 
-- Python 3.7+ installed with the Windows MSI installer (version from the Windows store is not working)
+- Python 3.8+ installed with the Windows MSI installer (version from the Windows store is not working)
 
 ### Download GDAL wheel
 
@@ -33,7 +33,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ```powershell
 # create a virtual env
-py -3.7 -m venv .venv
+py -3.8 -m venv .venv
 
 # enable virtual env
 .\.venv\Scripts\activate
