@@ -16,7 +16,7 @@ pr:
 
 # -- GLOBAL VARIABLES ------------------------------------------------------------------
 variables:
-  packageFolderName: "scan_offline"
+  packageFolderName: "qgis_deployment_toolbelt"
   packageName: "isogeo-scan-offline"
   pythonVersion: "3.8"
   vmImageName: "windows-2019"
