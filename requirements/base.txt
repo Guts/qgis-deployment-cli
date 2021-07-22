@@ -11,6 +11,6 @@ click-keyring>=0.2,<0.3
 click-log>=0.3,<0.4
 click-spinner>=0.1,<0.2
 lxml>=4.6,<4.7
-python-dotenv>=0.17,<0.18
+python-dotenv>=0.17,<0.19
 semver>=2,<3
 send2trash==1.6.0b1
