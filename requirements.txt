@@ -1,5 +1,5 @@
 -i https://pypi.org/simple
 
 # Base requirements
-# -----------------------
--r requirements/base.txt
+# -----------------
+setuptools wheel
