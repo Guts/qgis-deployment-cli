@@ -18,7 +18,7 @@ setup(
     ),
     include_package_data=True,
     install_requires=[
-        "click>=7.1,<7.2",
+        "click>=7.1,<8",
         "click-keyring>=0.1,<0.3",
         "click-log>=0.3,<0.4",
         "click-spinner>=0.1,<0.2",
