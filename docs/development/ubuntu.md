@@ -31,6 +31,7 @@ source ~/pyvenvs/qgis_deployment_toolbelt/bin/activate
 
 ```bash
 python -m pip install -U pip setuptools wheel
+python -m pip install -U -r requirements/base.txt
 python -m pip install -U -r requirements/development.txt
 ```
 
