@@ -1,16 +1,7 @@
-# Common requirements
-# -----------------------
-
-setuptools
-wheel
-
 # Project requirements
-# -----------------------
-click>=7.1,<9
-click-keyring>=0.2,<0.3
+# --------------------
+click>=8,<9
 click-log>=0.3,<0.4
-click-spinner>=0.1,<0.2
-lxml>=4.6,<4.7
 python-dotenv>=0.17,<0.19
 semver>=2,<3
-send2trash==1.7.1
+send2trash>=1.7,<1.18
