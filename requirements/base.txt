@@ -1,6 +1,6 @@
 # Project requirements
-# -----------------------
-click>=7.1,<9
+# --------------------
+click>=8,<9
 python-dotenv>=0.17,<0.19
 semver>=2,<3
-send2trash==1.7.1
+send2trash>=1.7,<1.18
