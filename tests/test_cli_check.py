@@ -29,7 +29,7 @@ def test_check_help():
     """Test help command"""
     runner = CliRunner()
     result = runner.invoke(
-        qgis_deployment_toolbelt, ["--settings=./.env.example", "check", "--help"]
+        qgis_deployment_toolbelt, ["--settings=.env.example", "check", "--help"]
     )
     assert result.exit_code == 0
 
