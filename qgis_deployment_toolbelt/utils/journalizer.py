@@ -136,7 +136,7 @@ class LogManager:
         logger.info("Operating System: {}".format(opersys()))
         logger.info("Architecture: {}".format(architecture()[0]))
         logger.info("Computer: {}".format(gethostname()))
-        logger.info("Launched by: {}".format(getlogin()))
+        logger.info("Launched by: {}".format(getuser()))
         logger.info("OS Domain: {}".format(environ.get("userdomain")))
 
 
