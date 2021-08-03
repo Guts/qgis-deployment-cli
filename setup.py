@@ -21,7 +21,7 @@ setup(
         "click>=7.1,<9",
         "click-log>=0.3,<0.4",
         "python-dotenv>=0.17,<0.20",
-        "send2trash==1.6.0b1",
+        "send2trash==1.7.1",
     ],
     entry_points="""
         [console_scripts]
