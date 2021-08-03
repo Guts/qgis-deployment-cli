@@ -2,5 +2,5 @@
 # ---------
 
 distro==1.5.* ; sys_platform == 'linux'
-pyinstaller>=4.3,<4.5
+pyinstaller>=4.3,<4.6
 pypiwin32==223 ; sys_platform == 'win32'
