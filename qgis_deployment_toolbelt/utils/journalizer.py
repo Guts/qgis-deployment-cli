@@ -14,8 +14,9 @@
 
 # Standard library
 import logging
+from getpass import getuser
 from logging.handlers import RotatingFileHandler
-from os import environ, getlogin
+from os import environ
 from pathlib import Path
 from platform import architecture
 from platform import platform as opersys
@@ -83,7 +84,7 @@ class LogManager:
             msg_err = (
                 "Impossible to create the logs folder. Does the user '{}' ({}) have "
                 "write permissions on: {}. Trace: {}"
-            ).format(environ.get("userdomain"), getlogin(), folder, err)
+            ).format(environ.get("userdomain"), getuser(), folder, err)
             exit_cli_error(msg_err)
         self.folder = folder
 
@@ -135,7 +136,7 @@ class LogManager:
         logger.info("Operating System: {}".format(opersys()))
         logger.info("Architecture: {}".format(architecture()[0]))
         logger.info("Computer: {}".format(gethostname()))
-        logger.info("Launched by: {}".format(getlogin()))
+        logger.info("Launched by: {}".format(getuser()))
         logger.info("OS Domain: {}".format(environ.get("userdomain")))
 
 
