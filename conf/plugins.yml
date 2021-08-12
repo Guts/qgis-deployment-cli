@@ -1,0 +1,36 @@
+model:
+  type: plugins
+  version_max: null
+  version_min: 0.1.0
+
+plugins:
+  - name: "Layers menu from project"
+    name_slug: "menu_from_project"
+    version: "2.0.1"
+    source: "qgis_repo"
+    git_repo: "https://github.com/xcaeag/MenuFromProject-Qgis-Plugin"
+    git_branch: ""
+    private: false
+    qgis_repo_id: "43"
+    qgis_repo_url: "https://plugins.qgis.org/plugins/plugins.xml"
+
+  - name: "QTribu"
+    name_slug: "qtribu"
+    version: "0.8.0"
+    source: "git_repo"
+    git_repo: "https://github.com/geotribu/qtribu/"
+    git_branch: ""
+    private: false
+    qgis_repo_id: ""
+    qgis_repo_url: "https://github.com/geotribu/qtribu/releases/latest/download/plugins.xml"
+
+
+  - name: "Spreadsheet Layers"
+    name_slug: "SpreadsheetLayers"
+    version: "2.0.1"
+    source: "qgis_repo"
+    git_repo: "https://github.com/camptocamp/QGIS-SpreadSheetLayers"
+    git_branch: ""
+    private: false
+    qgis_repo_id: "766"
+    qgis_repo_url: "https://plugins.qgis.org/plugins/plugins.xml"
