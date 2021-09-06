@@ -18,7 +18,7 @@ repos:
         args: [--markdown-linebreak-ext=md]
 
   - repo: https://github.com/psf/black
-    rev: 21.5b1
+    rev: 21.8b0
     hooks:
       - id: black
         exclude_types: [directory]
@@ -27,7 +27,7 @@ repos:
         types: [file, python]
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.8.0
+    rev: 5.9.3
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
