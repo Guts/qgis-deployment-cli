@@ -4,7 +4,7 @@ exclude: "node_modules|migrations|.venv|tests/dev/|tests/fixtures/"
 fail_fast: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=500"]
@@ -18,7 +18,7 @@ repos:
         args: [--markdown-linebreak-ext=md]
 
   - repo: https://github.com/psf/black
-    rev: 21.10b0
+    rev: 21.12b0
     hooks:
       - id: black
         exclude_types: [directory]
@@ -27,7 +27,7 @@ repos:
         types: [file, python]
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.9.3
+    rev: 5.10.1
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
