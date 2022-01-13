@@ -7,4 +7,4 @@ sphinx-autodoc-typehints<1.13
 sphinx-book-theme<1
 sphinx-click<3.1
 sphinx-copybutton<1
-sphinxcontrib-napoleon>=<1
+sphinxcontrib-napoleon<1
