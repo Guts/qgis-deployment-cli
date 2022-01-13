@@ -8,4 +8,4 @@ flake8-builtins>=1.5,<1.6
 flake8-eradicate>=1.0,<1.2
 flake8-isort>=4.0,<4.1
 pre-commit>=2.13,<2.17
-pytest-cov>=2.11,<2.13
+pytest-cov>=2.11,<3.1
