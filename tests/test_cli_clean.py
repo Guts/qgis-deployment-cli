@@ -31,7 +31,7 @@ def test_clean_help():
     """Test help command"""
     runner = CliRunner()
     result = runner.invoke(
-        qgis_deployment_toolbelt, ["--settings=./.env.example", "clean", "--help"]
+        qgis_deployment_toolbelt, ["--settings=.env.example", "clean", "--help"]
     )
     assert result.exit_code == 0
 

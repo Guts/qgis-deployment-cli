@@ -18,11 +18,10 @@ setup(
     ),
     include_package_data=True,
     install_requires=[
-        "click>=7.1,<7.2",
-        "click-keyring>=0.1,<0.3",
-        "click-log>=0.3,<0.4",
-        "click-spinner>=0.1,<0.2",
-        "send2trash==1.6.0b1",
+        "click>=8,<9",
+        "click-log<1",
+        "python-dotenv<0.20",
+        "send2trash>=1.7.1",
     ],
     entry_points="""
         [console_scripts]

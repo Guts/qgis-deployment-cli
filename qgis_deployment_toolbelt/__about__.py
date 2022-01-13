@@ -29,7 +29,7 @@ __summary__ = (
 )
 __title__ = "QGIS Deployment Toolbelt"
 __title_clean__ = "".join(e for e in __title__ if e.isalnum())
-__uri__ = "https://gitlab.com/Oslandia/qgis/qgis-deployment-cli/"
+__uri__ = "https://github.com/Guts/qgis-deployment-cli/"
 
 __version__ = "0.1.0"
 __version_info__ = tuple(

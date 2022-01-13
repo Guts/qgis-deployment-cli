@@ -27,4 +27,4 @@ Open <http://localhost:8000> in a web browser to see the HTML render updated whe
 
 ## Deploy documentation website
 
-Documentation website is hosted on GitLab Pages.
+Documentation website is hosted on GitHub Pages.

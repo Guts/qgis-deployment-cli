@@ -1,11 +1,10 @@
 # Documentation
 # -------------
 
-myst-parser[linkify]>=0.14,<0.15
-sphinx>=3.5,<4
+myst-parser[linkify]>=0.14,<0.17
 sphinx-autobuild==2021.3.14
-sphinx-autodoc-typehints>=1.10,<1.13
-sphinx-book-theme>=0.1,<0.2
-sphinx-click>=2.5,<2.6
-sphinx-copybutton>=0.3,<1
-sphinxcontrib-napoleon>=0.7,<1
+sphinx-autodoc-typehints<1.16
+sphinx-book-theme<1
+sphinx-click<3.1
+sphinx-copybutton<1
+sphinxcontrib-napoleon<1
