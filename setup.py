@@ -19,7 +19,6 @@ setup(
     include_package_data=True,
     install_requires=[
         "click>=8,<9",
-        "click-log<1",
         "python-dotenv<0.20",
         "send2trash>=1.7.1",
     ],
