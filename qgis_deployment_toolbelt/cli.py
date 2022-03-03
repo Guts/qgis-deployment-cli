@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 # submodules
 from qgis_deployment_toolbelt import LogManager
 from qgis_deployment_toolbelt.__about__ import __version__
-from qgis_deployment_toolbelt.commands import cli_check, cli_clean
+from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_environment
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error
 
 # #############################################################################
@@ -151,6 +151,7 @@ def qgis_deployment_toolbelt(
 
 # -- SUB-COMMANDS ----------------------------------------------------------------------
 # Add subcommands to the main command group
+qgis_deployment_toolbelt.add_command(cli_environment.environment_setup)
 qgis_deployment_toolbelt.add_command(cli_check.check)
 qgis_deployment_toolbelt.add_command(cli_clean.clean)
 
