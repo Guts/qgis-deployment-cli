@@ -4,6 +4,8 @@
         88
     ],
     "editor.wordWrapColumn": 88,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs":"active",
     "files.associations": {
         "./requirements/*.txt": "pip-requirements"
     },
