@@ -132,3 +132,4 @@ dmypy.json
 
 version_info.txt
 _logs/
+*.pfx
