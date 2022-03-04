@@ -24,6 +24,6 @@
     "python.linting.pylintEnabled": false,
     // extensions
     "autoDocstring.guessTypes": true,
-    "autoDocstring.docstringFormat": "google",
+    "autoDocstring.docstringFormat": "one-line-sphinx",
     "autoDocstring.generateDocstringOnEnter": false
 }

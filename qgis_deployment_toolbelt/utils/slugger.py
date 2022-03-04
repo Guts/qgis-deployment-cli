@@ -3,7 +3,7 @@
 """
     Minimalist slugifier.
 
-    Author: Julien Moura (@geojulien) - IRENA
+    Author: Julien Moura (https://github.com/guts)
 """
 
 # #############################################################################

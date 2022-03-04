@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Command-line to run Scan scripts without connection and post-synchronize the results.
+    Small module to get network proxies configuration.
 
     Author: Julien Moura (github.com/guts)
 """
