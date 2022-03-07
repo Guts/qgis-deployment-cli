@@ -29,9 +29,6 @@
     "autoDocstring.docstringFormat": "one-line-sphinx",
     "autoDocstring.generateDocstringOnEnter": false,
     "yaml.schemas": {
-        "yaml.schemas": {
-            // "docs/schemas/schema.json": "tests/fixtures/*.yml",
-            "docs/schemas/schema.json": "tests/fixtures/*.yaml"
-          },
+        "docs/schemas/schema.json": "tests/fixtures/*.yml",
     }
 }
