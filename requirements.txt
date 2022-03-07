@@ -1,3 +1,10 @@
 -i https://pypi.org/simple
 
--r requirements/base.txt
+# Common requirements
+# -------------------
+setuptools
+wheel
+
+# Project requirements
+# --------------------
+-e "."

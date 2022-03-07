@@ -20,6 +20,8 @@ setup(
     install_requires=[
         "click>=8,<9",
         "python-dotenv<0.20",
+        "pyyaml>=5.4,<6",
+        "py-setenv>=1.1,<1.2",
         "send2trash>=1.7.1",
     ],
     entry_points="""
