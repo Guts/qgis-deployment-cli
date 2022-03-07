@@ -18,9 +18,10 @@ from timeit import default_timer
 # 3rd party library
 import click
 
+from qgis_deployment_toolbelt.jobs import EnvironmentManager
+
 # submodules
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
-from qgis_deployment_toolbelt.utils.environment_manager import EnvironmentManager
 
 # #############################################################################
 # ########## Globals ###############
