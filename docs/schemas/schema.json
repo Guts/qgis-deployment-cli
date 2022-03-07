@@ -1,0 +1,47 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json",
+    "$comment": "Deploy and configure QGIS and related components (plugins, shortcuts, etc.).",
+    "$definitions": {
+        "title": {
+            "description": "The title of the job.",
+            "type": "string",
+            "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$"
+        },
+        "environment_variables": {
+            "$ref": "#/definitions/EnvironmentVariables"
+        },
+        "EnvironmentVariables": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DEBUG": {
+          "type": "boolean"
+        },
+        "FULL_OFFLINE_MODE": {
+          "type": "boolean"
+        },
+        "SSL_VERIFICATION": {
+          "type": "boolean"
+        },
+        "HTTP_PROXY": {
+          "type": "null"
+        },
+        "HTTPS_PROXY": {
+            "default": "null",
+            "type": "string"
+        },
+        "FIXTURES_DIR": {
+          "default": "null",
+          "type": "string"
+        },
+        "SYNCHRONOUS_MODE": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "title": "EnvironmentVariables"
+        }
+    }
+}

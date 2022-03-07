@@ -27,5 +27,11 @@
     // extensions
     "autoDocstring.guessTypes": true,
     "autoDocstring.docstringFormat": "one-line-sphinx",
-    "autoDocstring.generateDocstringOnEnter": false
+    "autoDocstring.generateDocstringOnEnter": false,
+    "yaml.schemas": {
+        "yaml.schemas": {
+            // "docs/schemas/schema.json": "tests/fixtures/*.yml",
+            "docs/schemas/schema.json": "tests/fixtures/*.yaml"
+          },
+    }
 }
