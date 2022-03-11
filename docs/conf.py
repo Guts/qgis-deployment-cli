@@ -53,7 +53,6 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.viewcode",
     # 3rd party
     "myst_parser",
     "sphinx_autodoc_typehints",
