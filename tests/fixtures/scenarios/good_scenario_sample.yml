@@ -23,15 +23,18 @@ steps:
   - name: Set environment variables
     uses: manage-env-vars@v1
     with:
-      - OSGEO4W_DOWNLOAD_FOLDER:
-        value: "%APPDATA%\\OSGeo4W"
-        scope: "user"
-        action: "add"
-      - OSGEO4W_INSTALL_FOLDER_QGIS:
-        value: "%PROGRAMFILES%\\QGIS\\QGIS-LTR-OSGEO4W"
-        scope: "user"
-        action: "add"
       - PYQGIS_STARTUP:
         value: "%USERHOME%\\scripts\\qgis_startup.py"
         scope: "user"
         action: "add"
+
+  - name: Download profiles from remote git repository
+    uses: qprofiles-manager@v1
+    with:
+      action: download
+      source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
+      protocol: git
+      local_destination: ~/.cache/OCARHY/QGIS/profiles
+
+  - name: Create shortcuts for profiles
+    uses: shortcuts-manager@v1
