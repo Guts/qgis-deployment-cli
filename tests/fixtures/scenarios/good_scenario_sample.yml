@@ -1,24 +1,19 @@
-title: "Sample scenario of QGIS Deployment Toolbelt"
+# This is a sample of a YAML file for the QGIS Deployment Toolbelt scenario.
+# For now, it's more a roadmap than a real description of what it's implemented.
 
-# Globals
+title: "Sample scenario of QGIS Deployment Toolbelt"
+id: sample-scenario-good
+
 environment_variables:
   DEBUG: false
-
-  # Network
-  FULL_OFFLINE_MODE: false # if enabled, no network connection will be used
+  SCENARIO_VALIDATION: false
+  OFFLINE_MODE: false
   SSL_VERIFICATION: true
-
-  # PROXIES - CAN BE:
-  #   - HTTP: 'http://user:pass@ip.pr.ox.y:port/'
-  #   - SOCKS: 'socks5://user:pass@host:port'
   HTTP_PROXY: null
   HTTPS_PROXY: null
-
-  # Support or development purposes
   FIXTURES_DIR: "tests/fixtures"
   SYNCHRONOUS_MODE: false
 
-# Jobs definition
 steps:
   - name: Set environment variables
     uses: manage-env-vars@v1
@@ -38,3 +33,20 @@ steps:
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager@v1
+    with:
+      action: create
+      desktop: true
+      start_menu: true
+      exclude_profiles: debug
+
+  - name: Create report
+    uses: telemetry-manager@v1
+    with:
+      action: send
+      module: sentry
+
+  - name: Send log
+    uses: telemetry-manager@v1
+    with:
+      action: send
+      module: sentry

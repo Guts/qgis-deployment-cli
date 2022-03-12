@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "description": "Definition of a job, i.e. a logic execution which can be ran during a step.",
+  "title": "Steps",
+  "type": "array",
+  "items": [
+    {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name to display and use in logs.",
+          "title": "Displayed name",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "uses": {
+          "type": "string",
+          "description": "Job name.",
+          "title": "Which job to use.",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "with": {
+          "type": ["array", "object"],
+          "description": "Parameters for the job.",
+          "title": "Job parameters.",
+          "oneOf": [
+              {
+                  "$ref": "manage-env-vars.json"
+              }
+          ]
+        }
+      },
+      "required": ["name", "uses"]
+    }
+  ]
+}

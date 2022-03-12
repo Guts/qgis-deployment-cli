@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "description": "QGIS Deployment Toolbelt - Environment variables",
+  "title": "Define environment variables for the QGIS Deployment CLI execution.",
+  "type": "object",
+  "properties": {
+    "DEBUG": {
+      "default": false,
+      "description": "Enable debug mode. Make the execution more verbose but quite slower too.",
+      "title": "Debug mode",
+      "type": "boolean"
+    },
+    "SCENARIO_VALIDATION": {
+      "default": false,
+      "description": "Enable scenario validation. This will check the scenario against the JSON schema.",
+      "title": "Scenario validation",
+      "type": "boolean"
+    },
+    "OFFLINE_MODE": {
+      "default": false,
+      "description": "If set to true, the QGIS Deployment CLI will not try to connect to the QGIS Server.",
+      "title": "Offline mode",
+      "type": "boolean"
+    },
+    "SSL_VERIFICATION": {
+      "default": true,
+      "description": "If set to true, the SSL certificate of remote servers will verified. If you disable it, you assume a lower security.",
+      "title": "SSL verification",
+      "type": "boolean"
+    },
+    "HTTP_PROXY": {
+      "default": null,
+      "markdownDescription": "HTTP proxy to use for network requests. Can be:\n- HTTP: 'http://user:pass@ip.pr.ox.y:port/'\n- SOCKS: 'socks5://user:pass@host:port'",
+      "title": "Proxy URL for HTTP",
+      "type": ["null", "string"]
+    },
+    "HTTPS_PROXY": {
+      "default": null,
+      "description": "Same as HTTP_PROXY bu for HTTPS.",
+      "title": "Proxy URL for HTTPS",
+      "type": ["null", "string"]
+    },
+    "FIXTURES_DIR": {
+      "default": null,
+      "description": "Folder to look for specific tests fixtures. Only for development purposes.",
+      "title": "Development tests fixtures directory",
+      "type": "string"
+    },
+    "SYNCHRONOUS_MODE": {
+      "default": false,
+      "description": "Enable or disable single processing mode. Enable it only if you're facing multiprocessing issues.",
+      "title": "Synchronous mode",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}
