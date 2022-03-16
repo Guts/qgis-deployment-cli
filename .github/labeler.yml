@@ -7,3 +7,10 @@ dependencies:
 
 documentation:
   - docs/**/*
+
+jobs:
+  - qgis_deployment_toolbelt/jobs/**/*
+
+packaging:
+  - qgis_deployment_toolbelt/builder/**/*
+  - setup.py
