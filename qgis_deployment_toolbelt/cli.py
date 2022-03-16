@@ -138,11 +138,14 @@ def qgis_deployment_toolbelt(
 
         # Validate scenario
         if (
-            scenario.environment_variables.get("SCENARIO_VALIDATION") is True
-            and not scenario.validate_scenario()
+            scenario.environment_variables.get("SCENARIO_VALIDATION", True) is True
+            and not scenario.validate_scenario()[0]
         ):
             exit_cli_error(
                 "Scenario validation failed. Please check the scenario file."
+                "\nValidation report:\n- {}".format(
+                    "\n- ".join(scenario.validate_scenario()[1])
+                )
             )
 
         # Use metadata to inform which scenario is running

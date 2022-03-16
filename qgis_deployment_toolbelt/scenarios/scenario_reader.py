@@ -13,10 +13,11 @@
 
 # Standard library
 import logging
+from functools import lru_cache
 from io import BufferedIOBase
 from os import R_OK, access
 from pathlib import Path
-from typing import List, Union
+from typing import List, Tuple, Union
 
 # 3rd party
 import yaml
@@ -116,37 +117,43 @@ class ScenarioReader:
         # return sanitized path
         return yaml_buffer
 
-    def validate_scenario(self) -> bool:
+    @lru_cache
+    def validate_scenario(self) -> Tuple[bool, List[str]]:
         """Validate scenario file.
 
         TODO: use json schema to validate scenario file.
 
-        :returns: True if scenario is valid, False otherwise
-        :rtype: bool
+        :returns: True if scenario is valid, False otherwise and a report of validation
+        errors (which is None if the scenario is valid).
+        :rtype: Tuple[bool, List[str]]
         """
+        # variables
+        required_root_keys: tuple = ("metadata", "environment_variables", "steps")
+
+        # outputs
         valid: bool = True
+        report: List[str] = []
 
         # check if scenario is a dict
         if not isinstance(self.scenario, dict):
-            logger.error("Scenario is not a dict: {}".format(self.scenario))
+            report.append(f"Scenario is not a dict but {type(self.scenario)}")
             valid = False
 
         # check scenario basic structure
-        if any(
-            [
-                i not in self.scenario
-                for i in ("metadata", "environment_variables", "steps")
-            ]
-        ):
-            logger.error("Scenario doesn't have metadata: {}".format(self.scenario))
+        if any([i not in self.scenario for i in required_root_keys]):
+            report.append(
+                "Some of required root keys are missing: {}".format(
+                    ", ".join(required_root_keys)
+                )
+            )
             valid = False
 
         # check if metadata is a dict
         if not isinstance(self.metadata, dict):
-            logger.error("Metadata is not a dict: {}".format(self.metadata))
+            report.append("Metadata is not a dict: {}".format(self.metadata))
             valid = False
 
-        return valid
+        return valid, report
 
     @property
     def metadata(self) -> dict:
