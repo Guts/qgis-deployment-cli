@@ -114,6 +114,14 @@ class ScenarioReader:
         # return sanitized path
         return yaml_buffer
 
+    def validate_scenario(self) -> bool:
+        """Validate scenario file.
+
+        :returns: True if scenario is valid, False otherwise
+        :rtype: bool
+        """
+        raise NotImplementedError
+
 
 # #############################################################################
 # ##### Stand alone program ########
@@ -123,5 +131,7 @@ if __name__ == "__main__":
     """Standalone execution."""
     from pprint import pprint
 
-    reader = ScenarioReader(Path("tests/fixtures/scenarios/good_scenario_sample.yml"))
+    reader = ScenarioReader(
+        Path("tests/fixtures/scenarios/good_scenario_sample.qdt.yml")
+    )
     pprint(reader.yaml_data)
