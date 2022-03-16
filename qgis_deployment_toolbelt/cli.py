@@ -32,6 +32,8 @@ START_TIME = default_timer()
 
 # logs
 logger = logging.getLogger(__name__)
+log_console_handler = logging.StreamHandler()
+logger.addHandler(log_console_handler)
 
 # default CLI context.
 # See: https://click.palletsprojects.com/en/7.x/commands/#context-defaults
@@ -64,7 +66,7 @@ CONTEXT_SETTINGS = dict(obj={})
 @click.option(
     "-s",
     "--scenario",
-    default="scenario.yml",
+    default="scenario.qdt.yml",
     show_default=True,
     help="Scenario file to use.",
     type=click.Path(readable=True, file_okay=True, dir_okay=False, resolve_path=True),
@@ -86,7 +88,7 @@ def qgis_deployment_toolbelt(
     \f
     Args:
         cli_context (click.Context): Click context
-        settings (Path): path to a settings file containing credentials to read database
+        scenario (Path): path to a scenario file to use
         clear (bool): option to clear the terminal berfore any other step
         verbose (bool): option to force the verbose mode
 
@@ -94,23 +96,40 @@ def qgis_deployment_toolbelt(
 
         .. code-block:: powershell
 
-            qgis_deployment_toolbelt -c -v -l "Deploy profile" -s "tests/test.conf" check
+            qgis-deployment-toolbelt -c --verbose check
 
     """
     # let's be clear or not
     if clear:
         click.clear()
 
-    logger.debug(
-        "QGIS Deployment Toolbelt started after {:5.2f}s.".format(
-            default_timer() - START_TIME
+    # -- LOG/VERBOSITY MANAGEMENT ------------------------------------------------------
+    # if verbose, override conf value
+    if verbose:
+        logger.setLevel(logging.DEBUG)
+        for h in logger.handlers:
+            h.setLevel(logging.DEBUG)
+    logger.info(f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled.")
+
+    click.echo(
+        "Timestamp: {} started after {:5.2f}s.".format(
+            cli_context.info_name, default_timer() - START_TIME
         )
     )
 
+    # -- USING DEFAULT SCENARIO OR NOT -------------------------------------------------
+    # si pas de fichier scenario par défaut
+    # et si pas de sous-commande
+
     if cli_context.invoked_subcommand is None:
-        click.echo("I was invoked without subcommand")
+        logger.debug(
+            "Command-line invoked subcommand: {}.".format(
+                cli_context.invoked_subcommand
+            )
+        )
+
     else:
-        click.echo(f"I am about to invoke {cli_context.invoked_subcommand}")
+        logger.debug(f"I am about to invoke {cli_context.invoked_subcommand}")
 
     # -- LOAD CONFIGURATION FILE -------------------------------------------------------
     if cli_context.invoked_subcommand:
@@ -123,22 +142,11 @@ def qgis_deployment_toolbelt(
     if not scenario or not Path(scenario).exists():
         logger.error("Scenario file is not a file: {}".format(scenario))
 
-    # -- LOG/VERBOSITY MANAGEMENT ------------------------------------------------------
-    # if verbose, override conf value
-    # if verbose:
-    #     debug_level = 2
-
-    # logs_mngr = LogManager(
-    #     debug_level=debug_level,
-    #     label=label,
-    #     folder=Path(logs_folder),
-    # )
-    # logs_mngr.headers()
-    # logger.info("%s mode enabled." % logs_mngr.log_level)
-
     # end
     logger.debug(
-        "Main CLI completed after {:5.2f}s.".format(default_timer() - START_TIME)
+        "Timestamp: {} completed after {:5.2f}s.".format(
+            cli_context.info_name, default_timer() - START_TIME
+        )
     )
 
 
@@ -156,3 +164,6 @@ if __name__ == "__main__":
     """Standalone execution."""
     # launch cli
     qgis_deployment_toolbelt(obj={})
+    # logging.basicConfig(level=logging.DEBUG, )
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)

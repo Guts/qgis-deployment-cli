@@ -10,7 +10,8 @@ This is the main way to use this toobelt. You write your deployment scenario by 
 
 The format used is YAML and the syntax is largely inspired by DevOPS oriented tools like Ansible or CI/CD platforms (GitHub Actions, GitLab CI in particular).
 
-By default, the toolbelt will look for a file named `.env.yml` in the current directory. If it is not found, it will look for a file named `.env.yaml` and if it is not found, it will look for a file named `.env.json`.
+By default, the toolbelt will look for a file named `scenario.qdt.yml` in the current directory.  
+If it is not found, it will expect subcommands to run.
 
 ### Sample scenario
 
@@ -51,4 +52,11 @@ In order to minimize friction and maximize productivity, the project tries to pr
 
 ## As a CLI
 
-> TO DOC
+To use as a CLI, make sure to remove any `scenario.qdt.yml` file from the current directory.
+
+Then, you can use the following commands:
+
+```bash
+qdeploy-toolbelt --verbose check
+qdeploy-toolbelt env-setup
+```
