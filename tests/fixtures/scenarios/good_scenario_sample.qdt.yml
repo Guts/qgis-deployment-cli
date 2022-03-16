@@ -1,8 +1,12 @@
 # This is a sample of a YAML file for the QGIS Deployment Toolbelt scenario.
 # For now, it's more a roadmap than a real description of what it's implemented.
 
-title: "Sample scenario of QGIS Deployment Toolbelt"
-id: sample-scenario-good
+metadata:
+  title: "Sample scenario of QGIS Deployment Toolbelt"
+  id: sample-scenario-good
+  description: >-
+    This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
+    demonstrate capabilities.
 
 environment_variables:
   DEBUG: false

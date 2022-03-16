@@ -11,6 +11,9 @@
     },
     // Python environment
     "python.pythonPath": ".venv/bin/python",
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
     // Formatter
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
@@ -29,6 +32,6 @@
     "autoDocstring.docstringFormat": "one-line-sphinx",
     "autoDocstring.generateDocstringOnEnter": false,
     "yaml.schemas": {
-        "docs/schemas/schema.json": "tests/fixtures/*.yml",
+        "docs/schemas/schema.json": "tests/fixtures/scenarios/*.qdt.yml",
     }
 }
