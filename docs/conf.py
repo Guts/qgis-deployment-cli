@@ -163,7 +163,7 @@ myst_enable_extensions = [
     "smartquotes",
     "substitution",
 ]
-myst_url_schemes = ("http", "https", "mailto")
+myst_url_schemes = ["http", "https", "mailto"]
 
 # -- Options for Sphinx API doc ----------------------------------------------
 # run api doc
