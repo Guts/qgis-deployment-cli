@@ -1,18 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json",
+  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/schema.json",
   "$comment": "Deploy and configure QGIS and related components (plugins, shortcuts, etc.).",
   "type": "object",
   "properties": {
-    "title": {
-      "description": "The title of the job.",
-      "type": "string",
-      "pattern": "^[A-Za-z0-9 ]+$"
-    },
-    "id": {
-      "description": "Unique identifier of the job.",
-      "type": "string",
-      "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$"
+    "metadata": {
+      "$ref": "metadata.json"
     },
     "environment_variables": {
       "$ref": "environment_variables.json"

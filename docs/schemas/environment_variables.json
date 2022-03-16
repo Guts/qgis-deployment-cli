@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/environment_variables.json",
   "description": "QGIS Deployment Toolbelt - Environment variables",
-  "title": "Define environment variables for the QGIS Deployment CLI execution.",
+  "title": "Define environment variables for the QGIS Deployment CLI execution. Attention, no confusion: these are the settings for the toolbelt, not for the QGIS installation.",
   "type": "object",
   "properties": {
     "DEBUG": {

@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/manage-env-vars.json",
   "description": "Job in charge of setting/updating/removing environment variables no the target computer.",
   "title": "Manage environment variables.",
   "type": "array"
