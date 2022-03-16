@@ -10,6 +10,7 @@
 
 # Standard library
 import logging
+from os import environ
 from pathlib import Path
 from timeit import default_timer
 
@@ -17,11 +18,10 @@ from timeit import default_timer
 import click
 
 # submodules
-# from qgis_deployment_toolbelt import LogManager
 from qgis_deployment_toolbelt.__about__ import __version__
 from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_environment
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
-from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error
+from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_normal
 
 # #############################################################################
 # ########## Globals ###############
@@ -120,27 +120,54 @@ def qgis_deployment_toolbelt(
     # -- USING DEFAULT SCENARIO OR NOT -------------------------------------------------
     # si pas de fichier scenario par défaut
     # et si pas de sous-commande
+    if cli_context.invoked_subcommand is None and Path(scenario).is_file():
+        logger.debug(f"Straight run launched using default scenario file: {scenario}.")
 
-    if cli_context.invoked_subcommand is None:
-        logger.debug(
-            "Command-line invoked subcommand: {}.".format(
-                cli_context.invoked_subcommand
+        # -- LOAD CONFIGURATION FILE ---------------------------------------------------
+        scenario_loaded = ScenarioReader(in_yaml=scenario).yaml_data
+
+        # Apply log level from scenario (only if verbose mode is disabled)
+        if (
+            scenario_loaded.get("environment_variables").get("DEBUG") is True
+            and not verbose
+        ):
+            logger.setLevel(logging.DEBUG)
+            for h in logger.handlers:
+                h.setLevel(logging.DEBUG)
+            logger.info(
+                f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled."
+            )
+
+        # Use metadata to inform which scenario is running
+        scenario_metadata: dict = scenario_loaded.get("metadata")
+        click.echo(
+            "Running scenario: {title} ({id}).\n{description}".format(
+                **scenario_metadata
             )
         )
 
+        # Set environment vars for the scenario
+        for var, value in scenario_loaded.get("environment_variables").items():
+            if value is not None:
+                logger.debug(f"Setting environment variable {var} = {value}.")
+                environ[var] = str(value)
+            else:
+                logger.debug(f"Ignored None value: {var}.")
+
+    # -- ERROR -------------------------------------------------------------------------
+    elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():
+        exit_cli_error(
+            "Straight run launched but no default scenario file found."
+            "\nPlease make sure there is a default scenario file `scenario.qdt.yml` "
+            f"here {Path(scenario).parent} or use it as a CLI passing the scenario "
+            "filepath as an argument."
+        )
     else:
-        logger.debug(f"I am about to invoke {cli_context.invoked_subcommand}")
-
-    # -- LOAD CONFIGURATION FILE -------------------------------------------------------
-    if cli_context.invoked_subcommand:
-        logger.error(
-            "Command-line invoked subcommand: {}.".format(
-                cli_context.invoked_subcommand
-            )
+        logger.debug(
+            f"CLI mode enabled. and invoking {cli_context.invoked_subcommand} "
+            f"with arguments: {cli_context.args}."
         )
-
-    if not scenario or not Path(scenario).exists():
-        logger.error("Scenario file is not a file: {}".format(scenario))
+        exit_cli_normal(message="CLI mode enabled", abort=False)
 
     # end
     logger.debug(
@@ -164,6 +191,3 @@ if __name__ == "__main__":
     """Standalone execution."""
     # launch cli
     qgis_deployment_toolbelt(obj={})
-    # logging.basicConfig(level=logging.DEBUG, )
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
