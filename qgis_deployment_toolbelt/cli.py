@@ -10,7 +10,7 @@
 
 # Standard library
 import logging
-from os import environ
+from os import environ, getenv
 from pathlib import Path
 from timeit import default_timer
 
@@ -136,6 +136,15 @@ def qgis_deployment_toolbelt(
                 f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled."
             )
 
+        # Validate scenario
+        if (
+            scenario.environment_variables.get("SCENARIO_VALIDATION") is True
+            and not scenario.validate_scenario()
+        ):
+            exit_cli_error(
+                "Scenario validation failed. Please check the scenario file."
+            )
+
         # Use metadata to inform which scenario is running
         click.echo(
             "Running scenario: {title} ({id}).\n{description}".format(
@@ -152,7 +161,7 @@ def qgis_deployment_toolbelt(
                 logger.debug(f"Ignored None value: {var}.")
 
         # -- STEPS JOBS
-        click.echo(scenario.steps)
+        # click.echo(scenario.steps)
 
     # -- ERROR -------------------------------------------------------------------------
     elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():

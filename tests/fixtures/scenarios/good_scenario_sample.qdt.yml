@@ -10,7 +10,7 @@ metadata:
 
 environment_variables:
   DEBUG: false
-  SCENARIO_VALIDATION: false
+  SCENARIO_VALIDATION: true
   OFFLINE_MODE: false
   SSL_VERIFICATION: true
   HTTP_PROXY: null

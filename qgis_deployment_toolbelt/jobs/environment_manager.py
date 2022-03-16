@@ -38,13 +38,11 @@ logger = logging.getLogger(__name__)
 
 class EnvironmentManager:
     """
-    Class to manage the environment setup (variables, etc.)
+    Class to manage the environment setup (variables, etc.) of QGIS installation.
     """
 
+    ID: str = "manage-env-vars"
     WINDOWS: bool = opersys == "win32"
-
-    def __init__(self) -> None:
-        pass
 
     def apply_environment_variables(self, env_vars: dict) -> None:
         """Apply environment variables from dictionary to the

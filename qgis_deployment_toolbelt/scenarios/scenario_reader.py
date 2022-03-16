@@ -119,10 +119,34 @@ class ScenarioReader:
     def validate_scenario(self) -> bool:
         """Validate scenario file.
 
+        TODO: use json schema to validate scenario file.
+
         :returns: True if scenario is valid, False otherwise
         :rtype: bool
         """
-        raise NotImplementedError
+        valid: bool = True
+
+        # check if scenario is a dict
+        if not isinstance(self.scenario, dict):
+            logger.error("Scenario is not a dict: {}".format(self.scenario))
+            valid = False
+
+        # check scenario basic structure
+        if any(
+            [
+                i not in self.scenario
+                for i in ("metadata", "environment_variables", "steps")
+            ]
+        ):
+            logger.error("Scenario doesn't have metadata: {}".format(self.scenario))
+            valid = False
+
+        # check if metadata is a dict
+        if not isinstance(self.metadata, dict):
+            logger.error("Metadata is not a dict: {}".format(self.metadata))
+            valid = False
+
+        return valid
 
     @property
     def metadata(self) -> dict:
