@@ -16,7 +16,7 @@ import logging
 from io import BufferedIOBase
 from os import R_OK, access
 from pathlib import Path
-from typing import Union
+from typing import List, Union
 
 # 3rd party
 import yaml
@@ -37,6 +37,8 @@ logger = logging.getLogger(__name__)
 class ScenarioReader:
     """Read and validate scenario files."""
 
+    scenario: dict = None
+
     def __init__(self, in_yaml: Union[str, Path, BufferedIOBase]):
         """Instanciating Isogeo Metadata YAML Reader."""
         # check and get YAML path
@@ -44,11 +46,11 @@ class ScenarioReader:
             self.input_yaml = self.check_yaml_file(in_yaml)
             # extract data from input file
             with self.input_yaml.open(mode="r") as bytes_data:
-                self.yaml_data = yaml.safe_load(bytes_data)
+                self.scenario = yaml.safe_load(bytes_data)
         elif isinstance(in_yaml, BufferedIOBase):
             self.input_yaml = self.check_yaml_buffer(in_yaml)
             # extract data from input file
-            self.yaml_data = yaml.safe_load(self.input_yaml)
+            self.scenario = yaml.safe_load(self.input_yaml)
         else:
             raise TypeError
 
@@ -122,6 +124,33 @@ class ScenarioReader:
         """
         raise NotImplementedError
 
+    @property
+    def metadata(self) -> dict:
+        """Get metadata from scenario.
+
+        :returns: metadata
+        :rtype: dict
+        """
+        return self.scenario.get("metadata")
+
+    @property
+    def environment_variables(self) -> dict:
+        """Get environment variables from scenario.
+
+        :returns: environment variables
+        :rtype: dict
+        """
+        return self.scenario.get("environment_variables")
+
+    @property
+    def steps(self) -> List[dict]:
+        """Get steps from scenario.
+
+        :returns: steps
+        :rtype: List[dict]
+        """
+        return self.scenario.get("steps")
+
 
 # #############################################################################
 # ##### Stand alone program ########
@@ -134,4 +163,4 @@ if __name__ == "__main__":
     reader = ScenarioReader(
         Path("tests/fixtures/scenarios/good_scenario_sample.qdt.yml")
     )
-    pprint(reader.yaml_data)
+    pprint(reader.scenario)

@@ -66,6 +66,7 @@ CONTEXT_SETTINGS = dict(obj={})
 @click.option(
     "-s",
     "--scenario",
+    "scenario_filepath",
     default="scenario.qdt.yml",
     show_default=True,
     help="Scenario file to use.",
@@ -79,7 +80,7 @@ CONTEXT_SETTINGS = dict(obj={})
 @click.pass_context
 def qgis_deployment_toolbelt(
     cli_context: click.Context,
-    scenario: Path,
+    scenario_filepath: Path,
     clear: bool,
     verbose: bool,
 ):
@@ -88,7 +89,7 @@ def qgis_deployment_toolbelt(
     \f
     Args:
         cli_context (click.Context): Click context
-        scenario (Path): path to a scenario file to use
+        scenario_filepath (Path): path to a scenario file to use
         clear (bool): option to clear the terminal berfore any other step
         verbose (bool): option to force the verbose mode
 
@@ -118,19 +119,16 @@ def qgis_deployment_toolbelt(
     )
 
     # -- USING DEFAULT SCENARIO OR NOT -------------------------------------------------
-    # si pas de fichier scenario par défaut
-    # et si pas de sous-commande
-    if cli_context.invoked_subcommand is None and Path(scenario).is_file():
-        logger.debug(f"Straight run launched using default scenario file: {scenario}.")
+    if cli_context.invoked_subcommand is None and Path(scenario_filepath).is_file():
+        logger.debug(
+            f"Straight run launched using default scenario file: {scenario_filepath}."
+        )
 
         # -- LOAD CONFIGURATION FILE ---------------------------------------------------
-        scenario_loaded = ScenarioReader(in_yaml=scenario).yaml_data
+        scenario = ScenarioReader(in_yaml=scenario_filepath)
 
         # Apply log level from scenario (only if verbose mode is disabled)
-        if (
-            scenario_loaded.get("environment_variables").get("DEBUG") is True
-            and not verbose
-        ):
+        if scenario.environment_variables.get("DEBUG") is True and not verbose:
             logger.setLevel(logging.DEBUG)
             for h in logger.handlers:
                 h.setLevel(logging.DEBUG)
@@ -139,20 +137,22 @@ def qgis_deployment_toolbelt(
             )
 
         # Use metadata to inform which scenario is running
-        scenario_metadata: dict = scenario_loaded.get("metadata")
         click.echo(
             "Running scenario: {title} ({id}).\n{description}".format(
-                **scenario_metadata
+                **scenario.metadata
             )
         )
 
         # Set environment vars for the scenario
-        for var, value in scenario_loaded.get("environment_variables").items():
+        for var, value in scenario.environment_variables.items():
             if value is not None:
                 logger.debug(f"Setting environment variable {var} = {value}.")
                 environ[var] = str(value)
             else:
                 logger.debug(f"Ignored None value: {var}.")
+
+        # -- STEPS JOBS
+        click.echo(scenario.steps)
 
     # -- ERROR -------------------------------------------------------------------------
     elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():

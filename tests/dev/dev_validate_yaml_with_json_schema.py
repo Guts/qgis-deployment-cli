@@ -32,7 +32,7 @@ def add_local_schemas_to(resolver, schema_folder, base_uri, schema_ext=".schema.
 
 
 reader = ScenarioReader(Path("tests/fixtures/scenarios/good_scenario_sample.qdt.yml"))
-# pprint(reader.yaml_data)
+# pprint(reader.scenario)
 
 schema = Path("docs/schemas/schema.json")
 print(schema.is_file())
@@ -49,12 +49,12 @@ with schema.open("r") as s:
 # )
 
 # jsonschema.validate(
-#     instance=reader.yaml_data,
+#     instance=reader.scenario,
 #     schema=str(schema.resolve()),
 #     resolver=json_ref_resolver,
 # )
 
-instance_data = reader.yaml_data
+instance_data = reader.scenario
 schema_folder = Path("docs/schemas/")
 schema_filename = schema_folder / "schema.json"
 base_uri = "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/"

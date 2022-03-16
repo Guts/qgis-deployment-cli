@@ -49,7 +49,7 @@ class TestScenarioReader(unittest.TestCase):
         """Test YAML loader"""
         for i in self.good_scenario_files:
             reader = ScenarioReader(in_yaml=i)
-            self.assertIsInstance(reader.yaml_data, dict)
-            self.assertIn("title", reader.yaml_data)
-            self.assertIn("environment_variables", reader.yaml_data)
-            self.assertIn("steps", reader.yaml_data)
+            self.assertIsInstance(reader.scenario, dict)
+            self.assertIn("title", reader.scenario)
+            self.assertIn("environment_variables", reader.scenario)
+            self.assertIn("steps", reader.scenario)
