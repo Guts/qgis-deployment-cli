@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Get source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install project requirements
         run: |
