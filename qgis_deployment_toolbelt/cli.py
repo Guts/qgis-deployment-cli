@@ -10,7 +10,7 @@
 
 # Standard library
 import logging
-from os import environ, getenv
+from os import environ
 from pathlib import Path
 from timeit import default_timer
 
@@ -20,6 +20,7 @@ import click
 # submodules
 from qgis_deployment_toolbelt.__about__ import __version__
 from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_environment
+from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_normal
 
@@ -164,7 +165,25 @@ def qgis_deployment_toolbelt(
                 logger.debug(f"Ignored None value: {var}.")
 
         # -- STEPS JOBS
-        # click.echo(scenario.steps)
+        steps_ok = []
+        orchestrator = JobsOrchestrator()
+
+        # filter out unrecognized jobs
+        for step in scenario.steps:
+            if step.get("uses") not in orchestrator.jobs_ids:
+                logger.warning(
+                    f"{step.get('uses')} not found in available jobs. Skipping."
+                )
+                continue
+            else:
+                steps_ok.append(step)
+
+        # run job
+        for step in steps_ok:
+            click.secho(f"Running job: {step.get('uses')}.")
+            # orchestrator.run_job(step.get("uses"), step.get("params"))
+            job = orchestrator.get_job_class_from_id(step.get("uses"))
+            job.run(env_vars=step.get("with"))
 
     # -- ERROR -------------------------------------------------------------------------
     elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():
