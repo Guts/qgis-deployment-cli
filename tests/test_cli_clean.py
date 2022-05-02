@@ -11,6 +11,7 @@
 # ##################################
 
 # Standard library
+from pathlib import Path
 
 # 3rd party library
 from click.testing import CliRunner
@@ -22,6 +23,10 @@ from qgis_deployment_toolbelt.cli import qgis_deployment_toolbelt
 # ######## Globals #################
 # ##################################
 
+sample_scenario_good: Path = Path(
+    "tests/fixtures/scenarios/good_scenario_sample.qdt.yml"
+)
+
 # #############################################################################
 # ######## Classes #################
 # ##################################
@@ -31,7 +36,8 @@ def test_clean_help():
     """Test help command"""
     runner = CliRunner()
     result = runner.invoke(
-        qgis_deployment_toolbelt, ["--settings=.env.example", "clean", "--help"]
+        qgis_deployment_toolbelt,
+        [f"--scenario={str(sample_scenario_good.resolve)}", "clean", "--help"],
     )
     assert result.exit_code == 0
 

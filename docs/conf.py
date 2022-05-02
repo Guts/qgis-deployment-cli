@@ -53,7 +53,6 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.viewcode",
     # 3rd party
     "myst_parser",
     "sphinx_autodoc_typehints",
@@ -164,7 +163,7 @@ myst_enable_extensions = [
     "smartquotes",
     "substitution",
 ]
-myst_url_schemes = ("http", "https", "mailto")
+myst_url_schemes = ["http", "https", "mailto"]
 
 # -- Options for Sphinx API doc ----------------------------------------------
 # run api doc

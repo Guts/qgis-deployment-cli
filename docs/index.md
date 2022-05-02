@@ -12,6 +12,8 @@ caption: How to use
 maxdepth: 1
 ---
 usage/installation
+usage/how_it_works
+usage/how_to_use
 usage/settings
 ```
 

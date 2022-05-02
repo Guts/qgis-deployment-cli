@@ -36,17 +36,15 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-class EnvironmentManager:
+class JobEnvironmentVariables:
     """
-    Class to manage the environment setup (variables, etc.)
+    Class to manage the environment variables of QGIS installation.
     """
 
+    ID: str = "manage-env-vars"
     WINDOWS: bool = opersys == "win32"
 
-    def __init__(self) -> None:
-        pass
-
-    def apply_environment_variables(self, env_vars: dict) -> None:
+    def run(self, env_vars: dict) -> None:
         """Apply environment variables from dictionary to the
 
         :param dict env_vars: dictionary with environment variable name as key and
@@ -62,9 +60,10 @@ class EnvironmentManager:
                         suppress_echo=True,
                     )
             self.win_refresh_environment()
+        # TODO: for linux, edit ~/.profile or add a .env file and source it from ~./profile
         else:
-            logger.info(
-                f"Setting persistent environment variables is not supported on this platform: {opersys}"
+            logger.warning(
+                f"Setting persistent environment variables is not supported on {opersys}"
             )
 
     def win_refresh_environment(self) -> bool:

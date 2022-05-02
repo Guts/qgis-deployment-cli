@@ -11,6 +11,9 @@
     },
     // Python environment
     "python.pythonPath": ".venv/bin/python",
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
     // Formatter
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
@@ -27,5 +30,8 @@
     // extensions
     "autoDocstring.guessTypes": true,
     "autoDocstring.docstringFormat": "one-line-sphinx",
-    "autoDocstring.generateDocstringOnEnter": false
+    "autoDocstring.generateDocstringOnEnter": false,
+    "yaml.schemas": {
+        "docs/schemas/schema.json": "tests/fixtures/scenarios/*.qdt.yml",
+    }
 }
