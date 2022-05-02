@@ -18,7 +18,9 @@ from timeit import default_timer
 # 3rd party library
 import click
 
-from qgis_deployment_toolbelt.jobs import EnvironmentManager
+from qgis_deployment_toolbelt.jobs.job_environment_variables import (
+    JobEnvironmentVariables,
+)
 
 # submodules
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
@@ -63,8 +65,8 @@ def environment_setup(cli_context: click.Context, deployment_configuration: Path
     with Path(deployment_configuration).open("r") as f:
         scenario_data = json.load(f)
 
-    env_manager = EnvironmentManager()
-    env_manager.apply_environment_variables(scenario_data.get("environment_variables"))
+    env_manager = JobEnvironmentVariables()
+    env_manager.run(scenario_data.get("environment_variables"))
 
     # ending
     exit_cli_success(
