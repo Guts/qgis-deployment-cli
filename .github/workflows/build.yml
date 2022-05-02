@@ -60,7 +60,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: qgis_deployment_toolbelt_windows_executable
           path: builds/windows/
