@@ -45,7 +45,7 @@ jobs:
         run: python -O .\builder\pyinstaller_build_windows.py
 
       - name: Save it as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: qgis_deployment_toolbelt_windows_executable
           path: dist/qgis_deployment_toolbelt*
