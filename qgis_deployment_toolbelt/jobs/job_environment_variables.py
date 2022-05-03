@@ -64,11 +64,14 @@ class JobEnvironmentVariables:
                         suppress_echo=True,
                     )
             self.win_refresh_environment()
+
         # TODO: for linux, edit ~/.profile or add a .env file and source it from ~./profile
         else:
-            logger.warning(
+            logger.debug(
                 f"Setting persistent environment variables is not supported on {opersys}"
             )
+
+        logger.debug(f"Job {self.ID} ran successfully.")
 
     def win_refresh_environment(self) -> bool:
         """This ensures that changes to Windows registry are immediately propagated.
