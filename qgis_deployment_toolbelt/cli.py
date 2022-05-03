@@ -179,12 +179,14 @@ def qgis_deployment_toolbelt(
                 steps_ok.append(step)
 
         # run job
-        for step in steps_ok:
-            click.secho(f"Running job: {step.get('uses')}.")
-            job = orchestrator.init_job_class_from_id(
-                job_id=step.get("uses"), options=step.get("with")
-            )
-            job.run()
+        with click.progressbar(
+            steps_ok, label="Running the scenario.."
+        ) as progress_bar:
+            for step in progress_bar:
+                job = orchestrator.init_job_class_from_id(
+                    job_id=step.get("uses"), options=step.get("with")
+                )
+                job.run()
 
     # -- ERROR -------------------------------------------------------------------------
     elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():
