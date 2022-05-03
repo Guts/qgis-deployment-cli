@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Tools to manage the environment setup (variables, etc.)
+    Download remote QGIS profiles to local.
 
     Author: Julien Moura (https://github.com/guts)
 """
@@ -11,14 +11,15 @@
 # ########## Libraries #############
 # ##################################
 
-import logging
-
 # Standard library
-from email.policy import default
-from sys import platform as opersys
+import logging
+from os.path import expanduser, expandvars
+from pathlib import Path
 
-# Imports depending on operating system
-import dulwich
+from click import option
+
+# package
+from qgis_deployment_toolbelt.profiles import RemoteGitHandler
 
 # #############################################################################
 # ########## Globals ###############
@@ -80,8 +81,23 @@ class JobProfilesDownloader:
 
     def run(self) -> None:
         """Execute job logic."""
+        # prepare local destination
+        local_path: Path = Path(
+            expandvars(expanduser(self.options.get("local_destination")))
+        )
+        if not local_path.exists():
+            local_path.mkdir(parents=True)
 
-        pass
+        # download or refresh
+        if self.options.get("action") != "download":
+            raise NotImplementedError
+
+        # prepare remote source
+        if self.options.get("protocol") == "git":
+            downloader = RemoteGitHandler(url=self.options.get("source"))
+            downloader.clone_or_pull(local_path)
+
+        logger.debug(f"Job {self.ID} ran successfully.")
 
     def validate_options(self, options: dict) -> bool:
         """Validate options.
