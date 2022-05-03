@@ -16,7 +16,6 @@ from timeit import default_timer
 
 # 3rd party library
 import click
-from regex import E
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import __version__
