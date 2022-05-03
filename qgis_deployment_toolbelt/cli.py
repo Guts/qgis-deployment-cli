@@ -16,6 +16,7 @@ from timeit import default_timer
 
 # 3rd party library
 import click
+from regex import E
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import __version__
@@ -183,10 +184,13 @@ def qgis_deployment_toolbelt(
             steps_ok, label="Running the scenario.."
         ) as progress_bar:
             for step in progress_bar:
-                job = orchestrator.init_job_class_from_id(
-                    job_id=step.get("uses"), options=step.get("with")
-                )
-                job.run()
+                try:
+                    job = orchestrator.init_job_class_from_id(
+                        job_id=step.get("uses"), options=step.get("with")
+                    )
+                    job.run()
+                except Exception as err:
+                    exit_cli_error(err)
 
     # -- ERROR -------------------------------------------------------------------------
     elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():

@@ -11,8 +11,10 @@
 # ########## Libraries #############
 # ##################################
 
-# Standard library
 import logging
+
+# Standard library
+from email.policy import default
 from sys import platform as opersys
 
 # Imports depending on operating system
@@ -37,6 +39,36 @@ class JobProfilesDownloader:
     """
 
     ID: str = "qprofiles-manager"
+    OPTIONS_SCHEMA: dict = {
+        "action": {
+            "type": str,
+            "required": False,
+            "default": "download",
+            "possible_values": ("download", "refresh"),
+            "condition": "in",
+        },
+        "local_destination": {
+            "type": str,
+            "required": False,
+            "default": ".cache/qgis-deployment-toolbelt/profiles",
+            "possible_values": None,
+            "condition": None,
+        },
+        "protocol": {
+            "type": str,
+            "required": True,
+            "default": "http",
+            "possible_values": ("http", "git", "copy"),
+            "condition": "in",
+        },
+        "source": {
+            "type": str,
+            "required": True,
+            "default": None,
+            "possible_values": ("https://", "http://", "git://", "file://"),
+            "condition": "startswith",
+        },
+    }
 
     def __init__(self, options: dict) -> None:
         """Instantiate the class.
@@ -44,14 +76,11 @@ class JobProfilesDownloader:
         :param dict options: profiles source (remote, can be a local network) and
         destination (local).
         """
-        self.options: dict = options
+        self.options: dict = self.validate_options(options)
 
     def run(self) -> None:
-        """Apply environment variables from dictionary to the
+        """Execute job logic."""
 
-        :param dict env_vars: dictionary with environment variable name as key and
-        some parameters as values (value, scope, action...).
-        """
         pass
 
     def validate_options(self, options: dict) -> bool:
@@ -60,7 +89,40 @@ class JobProfilesDownloader:
         :param dict options: options to validate.
         :return bool: True if options are valid.
         """
-        return True
+        for option in options:
+            if option not in self.OPTIONS_SCHEMA:
+                raise Exception(
+                    f"Job: {self.ID}. Option '{option}' is not valid."
+                    f" Valid options are: {self.OPTIONS_SCHEMA.keys()}"
+                )
+
+            option_in = options.get(option)
+            option_def: dict = self.OPTIONS_SCHEMA.get(option)
+            # check value type
+            if not isinstance(option_in, option_def.get("type")):
+                raise Exception(
+                    f"Job: {self.ID}. Option '{option}' has an invalid value."
+                    f"\nExpected {option_def.get('type')}, got {type(option_in)}"
+                )
+            # check value condition
+            if option_def.get("condition") == "startswith" and not option_in.startswith(
+                option_def.get("possible_values")
+            ):
+                raise Exception(
+                    f"Job: {self.ID}. Option '{option}' has an invalid value."
+                    f"\nExpected: starts with one of: {', '.join(option_def.get('possible_values'))}"
+                )
+            elif option_def.get(
+                "condition"
+            ) == "in" and option_in not in option_def.get("possible_values"):
+                raise Exception(
+                    f"Job: {self.ID}. Option '{option}' has an invalid value."
+                    f"\nExpected: one of: {', '.join(option_def.get('possible_values'))}"
+                )
+            else:
+                pass
+
+        return options
 
 
 # #############################################################################
