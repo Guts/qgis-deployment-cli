@@ -29,6 +29,7 @@ development/windows
 development/documentation
 development/testing
 development/packaging
+development/releasing
 development/history
 ```
 
