@@ -33,7 +33,7 @@ __title__ = "QGIS Deployment Toolbelt"
 __title_clean__ = "".join(e for e in __title__ if e.isalnum())
 __uri__ = "https://github.com/Guts/qgis-deployment-cli/"
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __version_info__ = tuple(
     [
         int(num) if num.isdigit() else num
