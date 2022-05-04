@@ -32,6 +32,6 @@
     "autoDocstring.generateDocstringOnEnter": false,
     "yaml.schemas": {
         "docs/schemas/schema.json": "tests/fixtures/scenarios/*.qdt.yml",
-        "https://json.schemastore.org/github-workflow.json": ".github/workflows/build_release.yml"
+        "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
     }
 }
