@@ -7,4 +7,4 @@ wheel
 
 # Project requirements
 # --------------------
--e "."
+-r requirements/base.txt
