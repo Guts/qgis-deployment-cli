@@ -1,0 +1,19 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot
+  categories:
+    - title: Bugs fixes 🐛
+      labels:
+        - bug
+    - title: Exciting New Features 🎉
+      labels:
+        - jobs
+        - enhancement
+    - title: Tooling 🛠
+      labels:
+        - ci-cd
+        - packaging
+    - title: Other Changes
+      labels:
+        - "*"
