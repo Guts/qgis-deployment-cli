@@ -108,13 +108,13 @@ jobs:
       - name: Retrieve artifact from Ubuntu build
         uses: actions/download-artifact@v3
         with:
-          name: qgis_deployment_toolbelt_windows_executable
+          name: ubuntu_executable
           path: builds/ubuntu/
 
       - name: Retrieve artifact from Windows build
         uses: actions/download-artifact@v3
         with:
-          name: qgis_deployment_toolbelt_windows_executable
+          name: windows_executable
           path: builds/windows/
 
       # - name: Create Release
@@ -135,6 +135,6 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: builds/windows/
+      #     asset_path: builds/**/*
       #     asset_name: qgis_deployment_toolbelt_windows_executable.zip
       #     asset_content_type: application/zip
