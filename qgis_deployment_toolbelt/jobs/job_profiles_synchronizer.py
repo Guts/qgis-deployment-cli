@@ -16,8 +16,6 @@ import logging
 from os.path import expanduser, expandvars
 from pathlib import Path
 
-from click import option
-
 # package
 from qgis_deployment_toolbelt.profiles import RemoteGitHandler
 
@@ -86,7 +84,7 @@ class JobProfilesDownloader:
             expandvars(expanduser(self.options.get("local_destination")))
         )
         if not local_path.exists():
-            local_path.mkdir(parents=True)
+            local_path.mkdir(parents=True, exist_ok=True)
 
         # download or refresh
         if self.options.get("action") != "download":

@@ -15,14 +15,13 @@
 
 # Standard library
 import logging
-import shutil
-import traceback
-import warnings
+from os import urandom
 from pathlib import Path
 from typing import Union
 
 # 3rd party
 from dulwich import porcelain
+from dulwich.repo import Repo
 from giturlparse import GitUrlParsed
 from giturlparse import parse as git_parse
 from giturlparse import validate as git_validate
@@ -53,23 +52,55 @@ class RemoteGitHandler:
         """Flag if a repository is a git repository."""
         return git_validate(self._url)
 
-    def is_local_path_git_repository(self, local_path: Union[str, Path]) -> bool:
-        """Flag if a repository is a git repository."""
-        return git_validate(self._url)
-
     @property
     def url_parsed(self) -> GitUrlParsed:
-        return git_parse(self._url)
+        return git_parse(self.url)
 
-    def clone_or_pull(self, local_path: Union[str, Path]) -> None:
-        """Clone or pull a repository."""
+    def download(self, local_path: Union[str, Path]) -> Repo:
+        """Just a wrapper around the specific logic of this handler.
+
+        :param Union[str, Path] local_path: path to the local folder where to download
+        :return Repo: the local repository object
+        """
+        return self.clone_or_pull(local_path)
+
+    def is_local_path_git_repository(self, local_path: Union[str, Path]) -> bool:
+        """Flag if local folder is a git repository."""
+        return Path(local_path / ".git").is_dir()
+
+    def clone_or_pull(self, local_path: Union[str, Path]) -> Repo:
+        """Clone or pull remote repository to local path.
+        If this one doesn't exist, it's created.
+
+        :param Union[str, Path] local_path: path to the folder where to clone (or pull)
+        :return Repo: the local repository object
+        """
+        # convert to path
+        if isinstance(local_path, str):
+            local_path = Path(local_path)
+
+        print(self.url_parsed.branch)
+
         # clone
-        if not Path(local_path).exists():
+        if local_path.exists() and not self.is_local_path_git_repository(local_path):
             logger.info(f"Cloning repository {self.url} to {local_path}")
-            porcelain.clone(self.url, local_path)
-        else:
+            return porcelain.clone(
+                source=self.url,
+                target=local_path,
+                depth=1,
+                branch=self.url_parsed.branch,
+            )
+        elif local_path.exists() and self.is_local_path_git_repository(local_path):
             logger.info(f"Pulling repository {self.url} to {local_path}")
-            porcelain.pull(local_path)
+            porcelain.pull(local_path, fast_forward=True)
+            return Repo(root=local_path.as_posix())
+        elif not local_path.exists():
+            logger.debug(
+                f"Local path does not exists: {local_path.as_uri()}. "
+                "Creating it and trying again..."
+            )
+            local_path.mkdir(parents=True, exist_ok=True)
+            return self.clone_or_pull(local_path)
 
 
 # #############################################################################
