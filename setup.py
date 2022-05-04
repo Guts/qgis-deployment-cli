@@ -19,6 +19,8 @@ setup(
     include_package_data=True,
     install_requires=[
         "click>=8,<9",
+        "dulwich>=0.20.0,<0.21.0",
+        "giturlparse>=0.10,<0.11",
         "pyyaml>=5.4,<7",
         "py-setenv>=1.1,<1.2",
         "send2trash>=1.7.1",

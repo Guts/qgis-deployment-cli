@@ -44,14 +44,18 @@ class JobEnvironmentVariables:
     ID: str = "manage-env-vars"
     WINDOWS: bool = opersys == "win32"
 
-    def run(self, env_vars: dict) -> None:
-        """Apply environment variables from dictionary to the
+    def __init__(self, options: dict) -> None:
+        """Instantiate the class.
 
-        :param dict env_vars: dictionary with environment variable name as key and
+        :param dict options: dictionary with environment variable name as key and
         some parameters as values (value, scope, action...).
         """
+        self.options: dict = options
+
+    def run(self) -> None:
+        """Apply environment variables from dictionary to the system."""
         if self.WINDOWS:
-            for env_var, var_params in env_vars.items():
+            for env_var, var_params in self.options.items():
                 if var_params[2] == "add":
                     setenv(
                         name=env_var,
@@ -60,11 +64,14 @@ class JobEnvironmentVariables:
                         suppress_echo=True,
                     )
             self.win_refresh_environment()
+
         # TODO: for linux, edit ~/.profile or add a .env file and source it from ~./profile
         else:
-            logger.warning(
+            logger.debug(
                 f"Setting persistent environment variables is not supported on {opersys}"
             )
+
+        logger.debug(f"Job {self.ID} ran successfully.")
 
     def win_refresh_environment(self) -> bool:
         """This ensures that changes to Windows registry are immediately propagated.

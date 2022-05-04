@@ -20,6 +20,9 @@ from typing import List, Tuple
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
     JobEnvironmentVariables,
 )
+from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
+    JobProfilesDownloader,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -36,7 +39,7 @@ logger = logging.getLogger(__name__)
 class JobsOrchestrator:
     """Orchestrate jobs."""
 
-    JOBS = (JobEnvironmentVariables,)
+    JOBS = (JobEnvironmentVariables, JobProfilesDownloader)
     PACKAGE_NAME: str = "qgis_deployment_toolbelt.jobs"
 
     def __init__(self) -> None:
@@ -56,11 +59,15 @@ class JobsOrchestrator:
         """
         return tuple([job.ID for job in self.JOBS])
 
-    def get_job_class_from_id(self, job_id: str) -> object:
+    def get_job_module_from_id(self, job_id: str) -> object:
         """Get job class from id."""
         for job in self.JOBS:
             if job.ID == job_id:
-                return job()
+                return job
+
+    def init_job_class_from_id(self, job_id: str, options: dict) -> object:
+        """Get job class from id and instanciate it with options."""
+        return self.get_job_module_from_id(job_id)(options)
 
     def import_job(self, job_name: str):
         """Import a job."""
