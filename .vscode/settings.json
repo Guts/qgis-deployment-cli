@@ -10,7 +10,6 @@
         "./requirements/*.txt": "pip-requirements"
     },
     // Python environment
-    "python.pythonPath": ".venv/bin/python",
     "python.defaultInterpreterPath": ".venv/bin/python",
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.terminal.activateEnvironment": true,
@@ -33,5 +32,6 @@
     "autoDocstring.generateDocstringOnEnter": false,
     "yaml.schemas": {
         "docs/schemas/schema.json": "tests/fixtures/scenarios/*.qdt.yml",
+        "https://json.schemastore.org/github-workflow.json": ".github/workflows/build_release.yml"
     }
 }
