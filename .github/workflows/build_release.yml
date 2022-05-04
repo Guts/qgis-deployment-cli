@@ -138,3 +138,10 @@ jobs:
       #     asset_path: builds/**/*
       #     asset_name: qgis_deployment_toolbelt_windows_executable.zip
       #     asset_content_type: application/zip
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          fail_on_unmatched_files: true
+          files: builds/**/*
+          generate_release_notes: true
