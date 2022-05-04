@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
-          cache-dependency-path: "requirements/packaging.txt"
+          cache-dependency-path: "requirements/*.txt"
 
       - name: Install project requirements
         run: |
@@ -73,7 +73,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
-          cache-dependency-path: "requirements/packaging.txt"
+          cache-dependency-path: "requirements/*.txt"
 
       - name: Install project requirements
         run: |
