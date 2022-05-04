@@ -52,8 +52,9 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: DicoGIS_ubuntu_executable
+          name: ubuntu_executable
           path: dist/*
+          if-no-files-found: error
 
   build-windows:
     name: "📦 Windows"
@@ -89,8 +90,9 @@ jobs:
       - name: Save it as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: qgis_deployment_toolbelt_windows_executable
-          path: dist/qgis_deployment_toolbelt*
+          name: windows_executable
+          path: dist/*
+          if-no-files-found: error
 
   release:
     name: "Release on tag 🚀"
@@ -100,7 +102,14 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Retrieve artifact from Ubuntu build
+        uses: actions/download-artifact@v3
+        with:
+          name: qgis_deployment_toolbelt_windows_executable
+          path: builds/ubuntu/
+
+      - name: Retrieve artifact from Windows build
+        uses: actions/download-artifact@v3
         with:
           name: qgis_deployment_toolbelt_windows_executable
           path: builds/windows/
