@@ -22,6 +22,9 @@ from qgis_deployment_toolbelt import __about__
 # The directory containing this file
 HERE = Path(__file__).parent
 
+with open(HERE / "requirements/base.txt") as f:
+    requirements = f.read().splitlines()
+
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
@@ -53,14 +56,7 @@ setup(
         exclude=["contrib", "docs", "*.tests", "*.tests.*", "tests.*", "tests", ".venv"]
     ),
     include_package_data=True,
-    install_requires=[
-        "click>=8,<9",
-        "dulwich>=0.20.0,<0.21.0",
-        "giturlparse>=0.10,<0.11",
-        "pyyaml>=5.4,<7",
-        "py-setenv>=1.1,<1.2",
-        "send2trash>=1.7.1",
-    ],
+    install_requires=requirements,
     entry_points="""
         [console_scripts]
         qdeploy-toolbelt=qgis_deployment_toolbelt.cli:qgis_deployment_toolbelt
