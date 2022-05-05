@@ -26,6 +26,39 @@ env:
 
 # Jobs definition
 jobs:
+  build-pypi:
+    name: "📦 Python Wheel"
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: "requirements/*.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U -r requirements.txt
+          python -m pip install -U -r requirements/packaging.txt
+
+      - name: Install project as a package
+        run: python -m pip install -e .
+
+      - name: Generates wheel
+        run: python setup.py sdist bdist_wheel
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: python_wheel
+          path: dist/*
+          if-no-files-found: error
+
   build-ubuntu:
     name: "📦 Ubuntu LTS"
     runs-on: ubuntu-20.04
@@ -105,6 +138,12 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
+      - name: Retrieve artifact from Python build
+        uses: actions/download-artifact@v3
+        with:
+          name: python_wheel
+          path: builds/wheel/
+
       - name: Retrieve artifact from Ubuntu build
         uses: actions/download-artifact@v3
         with:
@@ -116,28 +155,6 @@ jobs:
         with:
           name: windows_executable
           path: builds/windows/
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: "${{ github.ref }}"
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Add Windows executable as release Asset
-      #   id: upload-release-asset-windows
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: builds/**/*
-      #     asset_name: qgis_deployment_toolbelt_windows_executable.zip
-      #     asset_content_type: application/zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
