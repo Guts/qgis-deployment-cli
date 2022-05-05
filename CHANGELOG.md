@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.3.0 - 2022-05-05
+
+- Add Python Wheel as packaging option
+- Deploy release to Python Package Index
+- Complete and improve documentation
+
 ## 0.2.0 - 2022-05-04
 
 - Real start of development!
