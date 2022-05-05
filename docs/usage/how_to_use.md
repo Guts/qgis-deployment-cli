@@ -1,12 +1,8 @@
 # How to use
 
-> TO DOC
-
-----
-
 ## Using scenarios
 
-This is the main way to use this toobelt. You write your deployment scenario by describing the steps to be done to prepare the QGIS environment, take a coffee (cup of tea is also tolerated)
+This is the main way to use this toobelt. You write your deployment scenario by describing the steps to be done to prepare the QGIS environment, take a coffee (cup of tea is also tolerated) and look at the scenario running.
 
 The format used is YAML and the syntax is largely inspired by DevOPS oriented tools like Ansible or CI/CD platforms (GitHub Actions, GitLab CI in particular).
 
