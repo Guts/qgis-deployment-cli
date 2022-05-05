@@ -44,6 +44,7 @@ extensions = [
     # 3rd party
     "myst_parser",
     "sphinx_autodoc_typehints",
+    "sphinx_click",
     "sphinx_copybutton",
     "sphinxext.opengraph",
 ]
@@ -98,9 +99,11 @@ html_theme = "sphinx_book_theme"
 html_theme_options = {
     "home_page_in_toc": True,
     "path_to_docs": "docs",
-    "repository_url": __about__.__uri__,
-    # "use_edit_page_button": True,
-    "use_fullscreen_button": True,
+    "repository_branch": "main",
+    "repository_url": __about__.__uri_repository__,
+    "show_toc_level": 3,
+    "use_edit_page_button": True,
+    "use_fullscreen_button": False,
     "use_issues_button": True,
     "use_repository_button": True,
 }
