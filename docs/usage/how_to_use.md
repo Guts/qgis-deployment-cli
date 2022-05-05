@@ -27,16 +27,16 @@ In order to minimize friction and maximize productivity, the project tries to pr
 1. Ensure your editor of choice has support for YAML schema validation.
 2. Add the following lines at the top of your scenario file:
 
-``` yaml
+```yaml
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json
 ```
 
 #### Visual Studio Code
 
-1. Install the [vscode-yaml][https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml] extension for YAML language support.
+1. Install the [vscode-yaml][https://marketplace.visualstudio.com/items?itemname=redhat.vscode-yaml] extension for YAML language support.
 2. Add the schema under the `yaml.schemas` key in your user or workspace [`settings.json`][https://code.visualstudio.com/docs/getstarted/settings]:
 
-``` json
+```json
 {
   "yaml.schemas": {
     "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json": "*.qdt.yml"
@@ -44,7 +44,7 @@ In order to minimize friction and maximize productivity, the project tries to pr
 }
 ```
 
-----
+---
 
 ## As a CLI
 
@@ -56,3 +56,5 @@ Then, you can use the following commands:
 qdeploy-toolbelt --verbose check
 qdeploy-toolbelt env-setup
 ```
+
+See: [Command-line interface usage](./cli.md)
