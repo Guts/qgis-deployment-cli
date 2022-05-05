@@ -1,10 +1,14 @@
 # {{ title }} - Documentation
 
+> **Description:** {{ description }}  
 > **Author and contributors:** {{ author }}  
 > **Version:** {{ version }}  
 > **Source code:** {{ repo_url }}  
 > **Last documentation build:** {{ date_update }}
+
 ----
+
+![QGIS Deployment Toolbelt CLI](/static/qgis-deployment-toolbelt_cli_help.png)
 
 ```{toctree}
 ---

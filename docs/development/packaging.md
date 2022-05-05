@@ -16,7 +16,7 @@ python .\builder\version_info_templater.py
 python -O .\builder\pyinstaller_build_windows.py
 ```
 
-![](/static/executable_windows_properties_details.png)
+![QGIS Deployment Toolbelt - Executable properties](/static/executable_windows_properties_details.png)
 
 To run it, double-click on the executable file (*.exe).
 
@@ -85,7 +85,7 @@ Requirements:
 
 Opening the properties of the executable, the related tab should look like this:
 
-![](/static/executable_windows_properties_signed.png)
+![QGIS Deployment Toolbelt - Properties security](/static/executable_windows_properties_signed.png)
 
 ----
 

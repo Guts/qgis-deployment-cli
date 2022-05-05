@@ -19,23 +19,11 @@ on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
 
 # -- Project information -----------------------------------------------------
-project = __about__.__title__
 author = __about__.__author__
 copyright = __about__.__copyright__
-
-# The short X.Y version
-version = __about__.__version__
-# The full version, including alpha/beta/rc tags
-release = __about__.__version__
-
-# replacement variables
-myst_substitutions = {
-    "author": author,
-    "date_update": datetime.now().strftime("%d %B %Y"),
-    "repo_url": __about__.__uri__,
-    "title": project,
-    "version": version,
-}
+description = __about__.__summary__
+project = __about__.__title__
+version = release = __about__.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -57,7 +45,7 @@ extensions = [
     "myst_parser",
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
-    "sphinxcontrib.napoleon",
+    "sphinxext.opengraph",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -163,7 +151,32 @@ myst_enable_extensions = [
     "smartquotes",
     "substitution",
 ]
-myst_url_schemes = ["http", "https", "mailto"]
+# replacement variables
+myst_substitutions = {
+    "author": author,
+    "date_update": datetime.now().strftime("%d %B %Y"),
+    "description": description,
+    "repo_url": __about__.__uri__,
+    "title": project,
+    "version": version,
+}
+
+
+myst_url_schemes = ("http", "https", "mailto")
+
+# OpenGraph
+ogp_image = (
+    f"[__about__.__uri_homepage__]/_images/qgis-deployment-toolbelt_cli_help.png"
+)
+ogp_site_name = f"{project} - Documentation"
+ogp_site_url = __about__.__uri_homepage__
+ogp_custom_meta_tags = [
+    "<meta name='twitter:card' content='summary_large_image'>",
+    f'<meta property="twitter:description" content="{description}" />',
+    f'<meta property="twitter:image" content="{ogp_image}" />',
+    '<meta property="twitter:site" content="@geojulien" />',
+    f'<meta property="twitter:title" content="{project}" />',
+]
 
 # -- Options for Sphinx API doc ----------------------------------------------
 # run api doc
