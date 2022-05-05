@@ -10,10 +10,13 @@ changelog:
       labels:
         - jobs
         - enhancement
-    - title: Tooling 🛠
+    - title: Tooling 🔧
       labels:
         - ci-cd
         - packaging
+    - title: Documentation 📖
+      labels:
+        - documentation
     - title: Other Changes
       labels:
         - "*"
