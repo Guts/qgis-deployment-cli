@@ -123,7 +123,12 @@ class JobProfilesDownloader:
             # ensure it exists
             self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
             # copy downloaded profiles into this
-            copytree(self.local_path, self.qgis_profiles_path, copy_function=copy2)
+            copytree(
+                self.local_path,
+                self.qgis_profiles_path,
+                copy_function=copy2,
+                dirs_exist_ok=True,
+            )
         else:
             logger.error(
                 f"QGIS Profiles folder already exists and it's not empty: {self.qgis_profiles_path.resolve()}"
