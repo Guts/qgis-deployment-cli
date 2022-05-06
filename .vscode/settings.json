@@ -5,9 +5,13 @@
     ],
     "editor.wordWrapColumn": 88,
     "editor.bracketPairColorization.enabled": true,
-    "editor.guides.bracketPairs":"active",
+    "editor.guides.bracketPairs": "active",
     "files.associations": {
         "./requirements/*.txt": "pip-requirements"
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
     },
     // Python environment
     "python.defaultInterpreterPath": ".venv/bin/python",
