@@ -1,4 +1,9 @@
 #! python3  # noqa: E265
+
+"""Also view https://gist.github.com/Guts/459ba5b9e48eb6457781fd8fbd5460a5
+"""
+
+# standard
 import shutil
 from pathlib import Path
 from shutil import copy, copy2, copyfile, copytree
