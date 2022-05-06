@@ -15,7 +15,7 @@
 import logging
 from os.path import expanduser, expandvars
 from pathlib import Path
-from shutil import copy
+from shutil import copy2, copytree
 from sys import platform as opersys
 
 # package
@@ -86,7 +86,7 @@ class JobProfilesDownloader:
                 f"Your operating system {opersys} is not supported. "
                 f"Supported platforms: {','.join(OS_CONFIG.keys())}."
             )
-        self.qgis_profiles_path: Path = Path(self.PROFILES_FOLDER.get(opersys))
+        self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
         # TODO: handle custom profiles folder through QGIS_CUSTOM_CONFIG_PATH
 
         # prepare local destination
@@ -110,21 +110,24 @@ class JobProfilesDownloader:
             raise NotImplementedError
 
         # copy profiles to the QGIS 3
+        self.sync_local_profiles()
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
     def sync_local_profiles(self) -> None:
         """Sync local profiles."""
-        # check if local profiles folder exists
-        if not self.qgis_profiles_path.exists():
-            # create it
+        # check if local profiles folder exists or it's empty
+        if not self.qgis_profiles_path.exists() or not any(
+            self.qgis_profiles_path.iterdir()
+        ):
+            # ensure it exists
             self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
             # copy downloaded profiles into this
-            for item in self.local_path.glob("**/*"):
-                if item.is_dir():
-                    continue
-
-                # only files
+            copytree(self.local_path, self.qgis_profiles_path, copy_function=copy2)
+        else:
+            logger.error(
+                f"QGIS Profiles folder already exists and it's not empty: {self.qgis_profiles_path.resolve()}"
+            )
 
     def validate_options(self, options: dict) -> bool:
         """Validate options.
