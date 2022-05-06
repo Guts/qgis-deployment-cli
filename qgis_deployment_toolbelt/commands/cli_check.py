@@ -12,14 +12,15 @@
 
 # Standard library
 import logging
-from platform import platform
-from pprint import pprint
+import platform
+from sys import platform as opersys
 from timeit import default_timer
 
 # 3rd party library
 import click
 
 # submodules
+from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
 
 # #############################################################################
@@ -49,6 +50,12 @@ def check(cli_context: click.Context):
         cli_context (click.Context): Click context
     """
     logger.info("CHECK started after {:5.2f}s.".format(default_timer() - START_TIME))
+
+    # Supported platforms
+    if opersys not in OS_CONFIG:
+        exit_cli_error(
+            f"Your operating system is not supported: {platform.uname().system}"
+        )
 
     # ending
     exit_cli_success(
