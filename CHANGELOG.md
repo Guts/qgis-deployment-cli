@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.4.0 - 2022-05-06
+
+- Deploy: install downloaded profiles into a fresh QGIS install
+- Check: operaing system compatibility
+- Improve isort and codecov configurations
+
 ## 0.3.0 - 2022-05-05
 
 - Add Python Wheel as packaging option
