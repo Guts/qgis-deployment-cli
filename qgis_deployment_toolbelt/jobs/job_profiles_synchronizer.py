@@ -15,8 +15,11 @@
 import logging
 from os.path import expanduser, expandvars
 from pathlib import Path
+from shutil import copy2, copytree
+from sys import platform as opersys
 
 # package
+from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.profiles import RemoteGitHandler
 
 # #############################################################################
@@ -77,15 +80,24 @@ class JobProfilesDownloader:
         """
         self.options: dict = self.validate_options(options)
 
-    def run(self) -> None:
-        """Execute job logic."""
+        # profile folder
+        if opersys not in OS_CONFIG:
+            raise OSError(
+                f"Your operating system {opersys} is not supported. "
+                f"Supported platforms: {','.join(OS_CONFIG.keys())}."
+            )
+        self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
+        # TODO: handle custom profiles folder through QGIS_CUSTOM_CONFIG_PATH
+
         # prepare local destination
-        local_path: Path = Path(
+        self.local_path: Path = Path(
             expandvars(expanduser(self.options.get("local_destination")))
         )
-        if not local_path.exists():
-            local_path.mkdir(parents=True, exist_ok=True)
+        if not self.local_path.exists():
+            self.local_path.mkdir(parents=True, exist_ok=True)
 
+    def run(self) -> None:
+        """Execute job logic."""
         # download or refresh
         if self.options.get("action") != "download":
             raise NotImplementedError
@@ -93,9 +105,34 @@ class JobProfilesDownloader:
         # prepare remote source
         if self.options.get("protocol") == "git":
             downloader = RemoteGitHandler(url=self.options.get("source"))
-            downloader.clone_or_pull(local_path)
+            downloader.clone_or_pull(self.local_path)
+        else:
+            raise NotImplementedError
+
+        # copy profiles to the QGIS 3
+        self.sync_local_profiles()
 
         logger.debug(f"Job {self.ID} ran successfully.")
+
+    def sync_local_profiles(self) -> None:
+        """Sync local profiles."""
+        # check if local profiles folder exists or it's empty
+        if not self.qgis_profiles_path.exists() or not any(
+            self.qgis_profiles_path.iterdir()
+        ):
+            # ensure it exists
+            self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
+            # copy downloaded profiles into this
+            copytree(
+                self.local_path,
+                self.qgis_profiles_path,
+                copy_function=copy2,
+                dirs_exist_ok=True,
+            )
+        else:
+            logger.error(
+                f"QGIS Profiles folder already exists and it's not empty: {self.qgis_profiles_path.resolve()}"
+            )
 
     def validate_options(self, options: dict) -> bool:
         """Validate options.
