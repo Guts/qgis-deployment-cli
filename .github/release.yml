@@ -6,7 +6,7 @@ changelog:
     - title: Bugs fixes 🐛
       labels:
         - bug
-    - title: Exciting New Features 🎉
+    - title: Features and enhancements 🎉
       labels:
         - jobs
         - enhancement
