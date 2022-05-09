@@ -52,4 +52,5 @@ class TestScenarioReader(unittest.TestCase):
             self.assertIsInstance(reader.scenario, dict)
             self.assertIn("title", reader.scenario)
             self.assertIn("environment_variables", reader.scenario)
+            self.assertIn("metadata", reader.scenario)
             self.assertIn("steps", reader.scenario)
