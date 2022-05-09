@@ -6,7 +6,7 @@
 > **Source code:** {{ repo_url }}  
 > **Last documentation build:** {{ date_update }}
 
-----
+---
 
 ![QGIS Deployment Toolbelt CLI](/static/qgis-deployment-toolbelt_cli_help.png)
 
@@ -18,6 +18,7 @@ maxdepth: 1
 usage/installation
 usage/how_it_works
 usage/how_to_use
+usage/cli
 usage/settings
 ```
 
