@@ -14,6 +14,7 @@
 # Standard library
 from os.path import expandvars
 from pathlib import Path
+from posixpath import expanduser
 from typing import NamedTuple
 
 # #############################################################################
@@ -33,9 +34,13 @@ class OSConfiguration(NamedTuple):
 
 OS_CONFIG: dict = {
     "darwin": OSConfiguration(
-        profiles_path=Path("~/Library/Application Support/QGIS/QGIS3/profiles/")
+        profiles_path=Path(
+            Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/"
+        )
     ),
-    "linux": OSConfiguration(profiles_path=Path("~/.local/share/QGIS/QGIS3/profiles/")),
+    "linux": OSConfiguration(
+        profiles_path=Path(Path.home() / ".local/share/QGIS/QGIS3/profiles/")
+    ),
     "windows": OSConfiguration(
         profiles_path=Path(expandvars("%APPDATA%/Roaming/QGIS/QGIS3/profiles"))
     ),
