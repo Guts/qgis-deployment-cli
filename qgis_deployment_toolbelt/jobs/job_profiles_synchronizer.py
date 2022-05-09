@@ -17,6 +17,7 @@ from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
+from typing import Tuple
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
@@ -71,6 +72,8 @@ class JobProfilesDownloader:
             "condition": "startswith",
         },
     }
+    PROFILES_NAMES_DOWNLOADED: list = []
+    PROFILES_NAMES_INSTALLED: list = []
 
     def __init__(self, options: dict) -> None:
         """Instantiate the class.
@@ -88,6 +91,13 @@ class JobProfilesDownloader:
             )
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
         # TODO: handle custom profiles folder through QGIS_CUSTOM_CONFIG_PATH
+
+        # list installed profiles
+        self.PROFILES_NAMES_INSTALLED = [
+            d.name
+            for d in self.qgis_profiles_path.iterdir()
+            if d.is_dir() and not d.name.startswith(".")
+        ]
 
         # prepare local destination
         self.local_path: Path = Path(
@@ -109,12 +119,56 @@ class JobProfilesDownloader:
         else:
             raise NotImplementedError
 
+        # check of there are some profiles folders within the downloaded folder
+        profiles_folders = self.filter_profiles_folder()
+        if profiles_folders is None:
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return
+
+        # store downloaded profiles names
+        self.PROFILES_NAMES_DOWNLOADED = [d.name for d in profiles_folders]
+        logger.info(
+            f"{len(self.PROFILES_NAMES_DOWNLOADED)} downloaded profiles: "
+            f"{', '.join(self.PROFILES_NAMES_DOWNLOADED)}"
+        )
+
         # copy profiles to the QGIS 3
-        self.sync_local_profiles()
+        self.sync_local_profiles(source_profiles_folder=profiles_folders)
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
-    def sync_local_profiles(self) -> None:
+    def filter_profiles_folder(self) -> Tuple[Path] or None:
+        """Parse downloaded folder to filter on QGIS profiles folders.
+
+        :return Tuple[Path] or None: tuple of profiles folders paths
+        """
+        # first, try to get folders containing a profile.json
+        qgis_profiles_folder = [
+            f.parent for f in self.local_path.glob("**/profile.json")
+        ]
+        if len(qgis_profiles_folder):
+            return tuple(qgis_profiles_folder)
+
+        # if empty, try to identify if a folder is a QGIS profile - but unsure
+        for d in self.local_path.glob("**"):
+            if (
+                d.is_dir()
+                and d.parent.name == "profiles"
+                and not d.name.startswith(".")
+            ):
+                qgis_profiles_folder.append(d)
+
+        if len(qgis_profiles_folder):
+            return tuple(qgis_profiles_folder)
+
+        # if still empty, raise a warning but returns every folder under a `profiles` folder
+        # TODO: try to identify if a folder is a QGIS profile with some approximate criteria
+
+        if len(qgis_profiles_folder):
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return None
+
+    def sync_local_profiles(self, source_profiles_folder: tuple) -> None:
         """Sync local profiles."""
         # check if local profiles folder exists or it's empty
         if not self.qgis_profiles_path.exists() or not any(
@@ -123,15 +177,17 @@ class JobProfilesDownloader:
             # ensure it exists
             self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
             # copy downloaded profiles into this
-            copytree(
-                self.local_path,
-                self.qgis_profiles_path,
-                copy_function=copy2,
-                dirs_exist_ok=True,
-            )
+            for d in source_profiles_folder:
+                copytree(
+                    d,
+                    self.qgis_profiles_path,
+                    copy_function=copy2,
+                    dirs_exist_ok=True,
+                )
         else:
             logger.error(
-                f"QGIS Profiles folder already exists and it's not empty: {self.qgis_profiles_path.resolve()}"
+                "QGIS Profiles folder already exists and it's not empty: "
+                f"{self.qgis_profiles_path.resolve()}"
             )
 
     def validate_options(self, options: dict) -> bool:

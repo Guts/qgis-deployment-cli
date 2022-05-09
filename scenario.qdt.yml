@@ -9,7 +9,7 @@ metadata:
     demonstrate capabilities.
 
 environment_variables:
-  DEBUG: false
+  DEBUG: true
   SCENARIO_VALIDATION: true
   OFFLINE_MODE: false
   SSL_VERIFICATION: true
@@ -33,7 +33,7 @@ steps:
       action: download
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
-      local_destination: ~/.cache/OCARHY/QGIS/profiles
+      local_destination: ~/.cache/qgis-deployment-toolblet/QGIS/
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
