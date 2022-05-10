@@ -1,9 +1,8 @@
-# Project requirements
-# --------------------
 click>=8,<9
-click-log>=0.3,<0.4
-python-dotenv>=0.17,<0.20
-semver>=2,<3
 send2trash>=1.7,<1.18
+giturlparse>=0.10,<0.11
 pywin32==223 ; sys_platform == 'win32'
+dulwich>=0.20.0,<0.21.0
+pyyaml>=5.4,<7
+py-setenv>=1.1,<1.2
 winshell==0.6.4a ; sys_platform == 'win32'

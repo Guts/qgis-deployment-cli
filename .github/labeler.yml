@@ -2,8 +2,22 @@ ci-cd:
   - .github/**/*
 
 dependencies:
-  - ./requirements.txt
-  - ./requirements/*.txt
+  - any: ["requirements.txt", "requirements/*.txt"]
 
 documentation:
   - docs/**/*
+
+jobs:
+  - qgis_deployment_toolbelt/jobs/**/*
+
+packaging:
+  - builder/**/*
+  - qgis_deployment_toolbelt/builder/**/*
+  - setup.py
+
+quality:
+  - tests/**/*
+
+tooling:
+  - setup.cfg
+  - .vscode/**/*

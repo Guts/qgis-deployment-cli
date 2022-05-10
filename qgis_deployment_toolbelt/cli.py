@@ -10,19 +10,19 @@
 
 # Standard library
 import logging
-from os import getenv
+from os import environ
 from pathlib import Path
 from timeit import default_timer
 
 # 3rd party library
 import click
-from dotenv import load_dotenv
 
 # submodules
-from qgis_deployment_toolbelt import LogManager
 from qgis_deployment_toolbelt.__about__ import __version__
-from qgis_deployment_toolbelt.commands import cli_check, cli_clean
-from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error
+from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_environment
+from qgis_deployment_toolbelt.jobs import JobsOrchestrator
+from qgis_deployment_toolbelt.scenarios import ScenarioReader
+from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_normal
 
 # #############################################################################
 # ########## Globals ###############
@@ -33,6 +33,8 @@ START_TIME = default_timer()
 
 # logs
 logger = logging.getLogger(__name__)
+log_console_handler = logging.StreamHandler()
+logger.addHandler(log_console_handler)
 
 # default CLI context.
 # See: https://click.palletsprojects.com/en/7.x/commands/#context-defaults
@@ -47,7 +49,6 @@ CONTEXT_SETTINGS = dict(obj={})
     chain=True,
     invoke_without_command=True,
     context_settings=CONTEXT_SETTINGS,
-    no_args_is_help=True,
 )
 @click.option(
     "-c",
@@ -64,22 +65,13 @@ CONTEXT_SETTINGS = dict(obj={})
     help="Set output verbosity to the maximum level, overriding the configuration option.",
 )
 @click.option(
-    "-l",
-    "--label",
-    help="Customize the task name (used as log file name).",
-    default="qgis_deployment_toolbelt",
-    show_default=True,
-)
-@click.option(
     "-s",
-    "--settings",
-    default=".env",
+    "--scenario",
+    "scenario_filepath",
+    default="scenario.qdt.yml",
     show_default=True,
-    prompt="Configuration file",
-    help="Environment file containing settings",
-    type=click.Path(
-        exists=True, readable=True, file_okay=True, dir_okay=False, resolve_path=True
-    ),
+    help="Scenario file to use.",
+    type=click.Path(readable=True, file_okay=True, dir_okay=False, resolve_path=True),
 )
 @click.version_option(
     version=__version__,
@@ -89,8 +81,7 @@ CONTEXT_SETTINGS = dict(obj={})
 @click.pass_context
 def qgis_deployment_toolbelt(
     cli_context: click.Context,
-    label: str,
-    settings: Path,
+    scenario_filepath: Path,
     clear: bool,
     verbose: bool,
 ):
@@ -99,8 +90,7 @@ def qgis_deployment_toolbelt(
     \f
     Args:
         cli_context (click.Context): Click context
-        label (str): name of run, used to custom some outputs (logs...)
-        settings (Path): path to a settings file containing credentials to read database
+        scenario_filepath (Path): path to a scenario file to use
         clear (bool): option to clear the terminal berfore any other step
         verbose (bool): option to force the verbose mode
 
@@ -108,49 +98,125 @@ def qgis_deployment_toolbelt(
 
         .. code-block:: powershell
 
-            qgis_deployment_toolbelt -c -v -l "Deploy profile" -s "tests/test.conf" check
+            qgis-deployment-toolbelt -c --verbose check
 
     """
     # let's be clear or not
     if clear:
         click.clear()
 
-    # -- LOAD CONFIGURATION FILE -------------------------------------------------------
-    try:
-        load_dotenv(settings, override=True)
-        debug_level = int(getenv("DEBUG", 0))
-        logs_folder = getenv("LOGS_FOLDER", "_logs")
-    except Exception as err:
-        exit_cli_error(
-            "Error occurred during configuration reading: {}"
-            " Please run the check command and fix the problem. "
-            "Trace: {}".format(settings, err),
-            0,
-        )
-        verbose = 1
-        logs_folder = "."
-
     # -- LOG/VERBOSITY MANAGEMENT ------------------------------------------------------
     # if verbose, override conf value
     if verbose:
-        debug_level = 2
+        logger.setLevel(logging.DEBUG)
+        for h in logger.handlers:
+            h.setLevel(logging.DEBUG)
+    logger.info(f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled.")
 
-    logs_mngr = LogManager(
-        debug_level=debug_level,
-        label=label,
-        folder=Path(logs_folder),
+    click.echo(
+        "Timestamp: {} started after {:5.2f}s.".format(
+            cli_context.info_name, default_timer() - START_TIME
+        )
     )
-    logs_mngr.headers()
-    logger.info("%s mode enabled." % logs_mngr.log_level)
+
+    # -- USING DEFAULT SCENARIO OR NOT -------------------------------------------------
+    if cli_context.invoked_subcommand is None and Path(scenario_filepath).is_file():
+        logger.debug(
+            f"Straight run launched using default scenario file: {scenario_filepath}."
+        )
+
+        # -- LOAD CONFIGURATION FILE ---------------------------------------------------
+        scenario = ScenarioReader(in_yaml=scenario_filepath)
+
+        # Apply log level from scenario (only if verbose mode is disabled)
+        if scenario.environment_variables.get("DEBUG") is True and not verbose:
+            logger.setLevel(logging.DEBUG)
+            for h in logger.handlers:
+                h.setLevel(logging.DEBUG)
+            logger.info(
+                f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled."
+            )
+
+        # Validate scenario
+        if (
+            scenario.environment_variables.get("SCENARIO_VALIDATION", True) is True
+            and not scenario.validate_scenario()[0]
+        ):
+            exit_cli_error(
+                "Scenario validation failed. Please check the scenario file."
+                "\nValidation report:\n- {}".format(
+                    "\n- ".join(scenario.validate_scenario()[1])
+                )
+            )
+
+        # Use metadata to inform which scenario is running
+        click.echo(
+            "Running scenario: {title} ({id}).\n{description}".format(
+                **scenario.metadata
+            )
+        )
+
+        # Set environment vars for the scenario
+        for var, value in scenario.environment_variables.items():
+            if value is not None:
+                logger.debug(f"Setting environment variable {var} = {value}.")
+                environ[var] = str(value)
+            else:
+                logger.debug(f"Ignored None value: {var}.")
+
+        # -- STEPS JOBS
+        steps_ok = []
+        orchestrator = JobsOrchestrator()
+
+        # filter out unrecognized jobs
+        for step in scenario.steps:
+            if step.get("uses") not in orchestrator.jobs_ids:
+                logger.warning(
+                    f"{step.get('uses')} not found in available jobs. Skipping."
+                )
+                continue
+            else:
+                steps_ok.append(step)
+
+        # run job
+        with click.progressbar(
+            steps_ok, label="Running the scenario.."
+        ) as progress_bar:
+            for step in progress_bar:
+                try:
+                    job = orchestrator.init_job_class_from_id(
+                        job_id=step.get("uses"), options=step.get("with")
+                    )
+                    job.run()
+                except Exception as err:
+                    exit_cli_error(err)
+
+    # -- ERROR -------------------------------------------------------------------------
+    elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():
+        exit_cli_error(
+            "Straight run launched but no default scenario file found."
+            "\nPlease make sure there is a default scenario file `scenario.qdt.yml` "
+            f"here {Path(scenario).parent} or use it as a CLI passing the scenario "
+            "filepath as an argument."
+        )
+    else:
+        logger.debug(
+            f"CLI mode enabled. and invoking {cli_context.invoked_subcommand} "
+            f"with arguments: {cli_context.args}."
+        )
+        exit_cli_normal(message="CLI mode enabled", abort=False)
 
     # end
-    logger.info(
-        "Main CLI completed after {:5.2f}s.".format(default_timer() - START_TIME)
+    logger.debug(
+        "Timestamp: {} completed after {:5.2f}s.".format(
+            cli_context.info_name, default_timer() - START_TIME
+        )
     )
 
 
 # -- SUB-COMMANDS ----------------------------------------------------------------------
 # Add subcommands to the main command group
+qgis_deployment_toolbelt.add_command(cli_environment.environment_setup)
 qgis_deployment_toolbelt.add_command(cli_check.check)
 qgis_deployment_toolbelt.add_command(cli_clean.clean)
 

@@ -1,0 +1,56 @@
+# This is a sample of a YAML file for the QGIS Deployment Toolbelt scenario.
+# For now, it's more a roadmap than a real description of what it's implemented.
+
+metadata:
+  title: "Sample scenario of QGIS Deployment Toolbelt"
+  id: sample-scenario-good
+  description: >-
+    This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
+    demonstrate capabilities.
+
+environment_variables:
+  DEBUG: false
+  SCENARIO_VALIDATION: true
+  OFFLINE_MODE: false
+  SSL_VERIFICATION: true
+  HTTP_PROXY: null
+  HTTPS_PROXY: null
+  FIXTURES_DIR: "tests/fixtures"
+  SYNCHRONOUS_MODE: false
+
+steps:
+  - name: Set environment variables
+    uses: manage-env-vars@v1
+    with:
+      - PYQGIS_STARTUP:
+        value: "%USERHOME%\\scripts\\qgis_startup.py"
+        scope: "user"
+        action: "add"
+
+  - name: Download profiles from remote git repository
+    uses: qprofiles-manager@v1
+    with:
+      action: download
+      source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
+      protocol: git
+      local_destination: ~/.cache/OCARHY/QGIS/profiles
+
+  - name: Create shortcuts for profiles
+    uses: shortcuts-manager@v1
+    with:
+      action: create
+      desktop: true
+      start_menu: true
+      exclude_profiles: debug
+
+  - name: Create report
+    uses: telemetry-manager@v1
+    with:
+      action: send
+      module: sentry
+
+  - name: Send log
+    uses: telemetry-manager@v1
+    with:
+      action: send
+      module: sentry

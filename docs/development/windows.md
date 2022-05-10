@@ -30,7 +30,6 @@ py -3.8 -m venv .venv
 python -m pip install -U pip setuptools wheel
 
 # install dependencies
-python -m pip install -U -r requirements/base.txt
 python -m pip install -U -r requirements/development.txt
 
 # finally, install the package in editable mode

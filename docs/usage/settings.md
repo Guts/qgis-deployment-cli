@@ -2,9 +2,12 @@
 
 > TO DOC
 
-## Sample configuration file
+## Using environment variables
 
-```{eval-rst}
-.. literalinclude:: ../../.env.example
-  :language: ini
-```
+> TO DOC
+
+----
+
+## Settings
+
+> TO DOC

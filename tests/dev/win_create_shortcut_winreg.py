@@ -1,4 +1,5 @@
-#! /usr/bin/env python
+#! python3  # noqa: E265
+
 import os
 import sys
 import sysconfig

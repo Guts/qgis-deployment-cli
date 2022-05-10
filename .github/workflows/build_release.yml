@@ -1,0 +1,194 @@
+name: "📦 Build & 🚀 Release"
+
+# Triggers
+on:
+  push:
+    branches: [main]
+
+    paths:
+      - ".github/workflows/build_release.yml"
+      - "builder/**/*"
+      - "qgis_deployment_toolbelt/**/*.py"
+
+    tags:
+      - "*"
+
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/build_release.yml"
+
+# Globals
+env:
+  PROJECT_FOLDER: "qgis_deployment_toolbelt"
+  PYTHON_VERSION: 3.8
+  PYINSTALLER_LOG_LEVEL: "DEBUG"
+
+# Jobs definition
+jobs:
+  build-python-wheel:
+    name: "📦 Python Wheel"
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: "requirements/*.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U -r requirements.txt
+          python -m pip install -U -r requirements/packaging.txt
+
+      - name: Install project as a package
+        run: python -m pip install -e .
+
+      - name: Generates wheel
+        run: python setup.py sdist bdist_wheel
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: python_wheel
+          path: dist/*
+          if-no-files-found: error
+
+  build-ubuntu:
+    name: "📦 Ubuntu LTS"
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: "requirements/*.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U -r requirements.txt
+          python -m pip install -U -r requirements/packaging.txt
+
+      - name: Install project as a package
+        run: python -m pip install -e .
+
+      - name: Generates Executable
+        run: python -O ./builder/pyinstaller_build_ubuntu.py
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu_executable
+          path: dist/*
+          if-no-files-found: error
+
+  build-windows:
+    name: "📦 Windows"
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: "requirements/*.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U -r requirements.txt
+          python -m pip install -U -r requirements/packaging.txt
+
+      - name: Install project as a package
+        run: python -m pip install -e .
+
+      - name: Generates MS Version Info
+        run: python .\builder\version_info_templater.py
+
+      - name: Generates MS Executable
+        run: python -O .\builder\pyinstaller_build_windows.py
+
+      - name: Save it as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows_executable
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    name: "🚀 GitHub Release"
+    runs-on: ubuntu-latest
+    needs: [build-python-wheel, build-ubuntu, build-windows]
+
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Retrieve artifact from Python build
+        uses: actions/download-artifact@v3
+        with:
+          name: python_wheel
+          path: builds/wheel/
+
+      - name: Retrieve artifact from Ubuntu build
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu_executable
+          path: builds/ubuntu/
+
+      - name: Retrieve artifact from Windows build
+        uses: actions/download-artifact@v3
+        with:
+          name: windows_executable
+          path: builds/windows/
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          fail_on_unmatched_files: true
+          files: builds/**/*
+          generate_release_notes: true
+
+  release-pypi:
+    name: "🐍 Release on PyPI"
+    runs-on: ubuntu-latest
+    needs: [build-python-wheel]
+
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U twine
+
+      - name: Retrieve artifact from Python build
+        uses: actions/download-artifact@v3
+        with:
+          name: python_wheel
+          path: builds/wheel/
+
+      - name: Publish on PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: twine upload builds/wheel/*

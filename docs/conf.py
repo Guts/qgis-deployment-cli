@@ -19,23 +19,11 @@ on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
 
 # -- Project information -----------------------------------------------------
-project = __about__.__title__
 author = __about__.__author__
 copyright = __about__.__copyright__
-
-# The short X.Y version
-version = __about__.__version__
-# The full version, including alpha/beta/rc tags
-release = __about__.__version__
-
-# replacement variables
-myst_substitutions = {
-    "author": author,
-    "date_update": datetime.now().strftime("%d %B %Y"),
-    "repo_url": __about__.__uri__,
-    "title": project,
-    "version": version,
-}
+description = __about__.__summary__
+project = __about__.__title__
+version = release = __about__.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -53,12 +41,12 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.viewcode",
     # 3rd party
     "myst_parser",
     "sphinx_autodoc_typehints",
+    "sphinx_click",
     "sphinx_copybutton",
-    "sphinxcontrib.napoleon",
+    "sphinxext.opengraph",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -111,9 +99,11 @@ html_theme = "sphinx_book_theme"
 html_theme_options = {
     "home_page_in_toc": True,
     "path_to_docs": "docs",
-    "repository_url": __about__.__uri__,
-    # "use_edit_page_button": True,
-    "use_fullscreen_button": True,
+    "repository_branch": "main",
+    "repository_url": __about__.__uri_repository__,
+    "show_toc_level": 3,
+    "use_edit_page_button": True,
+    "use_fullscreen_button": False,
     "use_issues_button": True,
     "use_repository_button": True,
 }
@@ -164,7 +154,32 @@ myst_enable_extensions = [
     "smartquotes",
     "substitution",
 ]
+# replacement variables
+myst_substitutions = {
+    "author": author,
+    "date_update": datetime.now().strftime("%d %B %Y"),
+    "description": description,
+    "repo_url": __about__.__uri__,
+    "title": project,
+    "version": version,
+}
+
+
 myst_url_schemes = ("http", "https", "mailto")
+
+# OpenGraph
+ogp_image = (
+    f"[__about__.__uri_homepage__]/_images/qgis-deployment-toolbelt_cli_help.png"
+)
+ogp_site_name = f"{project} - Documentation"
+ogp_site_url = __about__.__uri_homepage__
+ogp_custom_meta_tags = [
+    "<meta name='twitter:card' content='summary_large_image'>",
+    f'<meta property="twitter:description" content="{description}" />',
+    f'<meta property="twitter:image" content="{ogp_image}" />',
+    '<meta property="twitter:site" content="@geojulien" />',
+    f'<meta property="twitter:title" content="{project}" />',
+]
 
 # -- Options for Sphinx API doc ----------------------------------------------
 # run api doc

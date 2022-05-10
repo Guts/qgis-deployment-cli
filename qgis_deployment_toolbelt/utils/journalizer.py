@@ -22,9 +22,6 @@ from platform import architecture
 from platform import platform as opersys
 from socket import gethostname
 
-# 3rd party
-import click_log
-
 # modules
 from qgis_deployment_toolbelt.__about__ import __title__
 from qgis_deployment_toolbelt.__about__ import __title_clean__ as package_name
@@ -103,8 +100,6 @@ class LogManager:
         logging.captureWarnings(False)
         logger = logging.getLogger()
         logger.setLevel(self.console_level)
-        click_log.basic_config(logger)
-        click_log.ColorFormatter.colors["info"] = dict(fg="bright_black")
 
         # create console handler - seems to be ignored by click
         log_console_handler = logging.StreamHandler()
