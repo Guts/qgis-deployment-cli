@@ -16,6 +16,14 @@ Unreleased
 
 -->
 
+## 0.6.0 - 2022-05-10
+
+- Profiles synchronization now handle the mixed case where some of downloaded profiles are already installed, and some are not.
+- Extend unit tests
+- Minor clean up
+
+> See the [GitHub Release for a detailed changelog](https://github.com/Guts/qgis-deployment-cli/releases/tag/0.6.0).
+
 ## 0.5.0 - 2022-05-09
 
 - Improve profiles synchronization logic by filtering on folders which are (or seem to be) QGIS profiles
