@@ -2,6 +2,7 @@ changelog:
   exclude:
     authors:
       - dependabot
+      - pre-commit-ci
   categories:
     - title: Bugs fixes 🐛
       labels:
@@ -10,6 +11,7 @@ changelog:
       labels:
         - jobs
         - enhancement
+        - quality
     - title: Tooling 🔧
       labels:
         - ci-cd
