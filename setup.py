@@ -43,12 +43,18 @@ setup(
     url=__about__.__uri__,
     version=__about__.__version__,
     classifiers=[
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Information Technology",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+        "Operating System :: Microsoft :: Windows :: Windows 10",
+        "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering :: GIS",
+        "Topic :: System :: Installation/Setup",
     ],
     # packaging
     py_modules=["qgis_deployment_toolbelt"],
