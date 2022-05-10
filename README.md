@@ -10,6 +10,10 @@
 [![codecov](https://codecov.io/gh/Guts/qgis-deployment-cli/branch/main/graph/badge.svg?token=ZHGRNMA7TV)](https://codecov.io/gh/Guts/qgis-deployment-cli)
 [![📦 Build & 🚀 Release](https://github.com/Guts/qgis-deployment-cli/actions/workflows/build_release.yml/badge.svg?branch=main)](https://github.com/Guts/qgis-deployment-cli/actions/workflows/build_release.yml)
 
+[![PyPi version badge](https://badgen.net/pypi/v/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
+
 Cross-platform (but Windows focused) CLI to perform deployment operations: profiles, plugins, etc.
 
 **Interested**? For further details, [read the documentation](https://guts.github.io/qgis-deployment-cli//) :books:.
