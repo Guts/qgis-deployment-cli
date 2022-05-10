@@ -169,7 +169,13 @@ class JobProfilesDownloader:
             return None
 
     def sync_local_profiles(self, source_profiles_folder: tuple) -> None:
-        """Sync local profiles."""
+        """Copy downloaded profiles to QGIS profiles folder.
+        If the QGIS profiles folder doesn't exist, it will be created and every
+        downloaded profile will be copied.
+        If a profile is already installed, it won't be overwritten.
+
+        :param tuple source_profiles_folder: list of downloaded profiles folders paths
+        """
         # check if local profiles folder exists or it's empty
         if not self.qgis_profiles_path.exists() or not any(
             self.qgis_profiles_path.iterdir()
@@ -184,9 +190,43 @@ class JobProfilesDownloader:
                     copy_function=copy2,
                     dirs_exist_ok=True,
                 )
+        elif len(
+            set(self.PROFILES_NAMES_DOWNLOADED) - set(self.PROFILES_NAMES_INSTALLED)
+        ):
+            already_installed = [
+                p
+                for p in self.PROFILES_NAMES_DOWNLOADED
+                if p in self.PROFILES_NAMES_INSTALLED
+            ]
+            not_installed = [
+                p
+                for p in self.PROFILES_NAMES_DOWNLOADED
+                if p not in self.PROFILES_NAMES_INSTALLED
+            ]
+
+            logger.error(
+                "Mixed case. "
+                f"Already installed profiles: {','.join(already_installed)}. "
+                f"Not installed: {','.join(not_installed)}."
+            )
+
+            for d in source_profiles_folder:
+                if d.name in not_installed:
+                    # create destination parent folder
+                    to_profile_parent_folderpath = Path(
+                        self.qgis_profiles_path / d.name
+                    )
+                    to_profile_parent_folderpath.mkdir(parents=True, exist_ok=True)
+                    copytree(
+                        d,
+                        to_profile_parent_folderpath,
+                        copy_function=copy2,
+                        dirs_exist_ok=True,
+                    )
+
         else:
             logger.error(
-                "QGIS Profiles folder already exists and it's not empty: "
+                "QGIS Profiles folder already exists, it's not empty: "
                 f"{self.qgis_profiles_path.resolve()}"
             )
 
@@ -217,7 +257,8 @@ class JobProfilesDownloader:
             ):
                 raise Exception(
                     f"Job: {self.ID}. Option '{option}' has an invalid value."
-                    f"\nExpected: starts with one of: {', '.join(option_def.get('possible_values'))}"
+                    "\nExpected: starts with one of: "
+                    f"{', '.join(option_def.get('possible_values'))}"
                 )
             elif option_def.get(
                 "condition"

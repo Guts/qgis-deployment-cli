@@ -14,7 +14,6 @@
 # Standard library
 from os.path import expandvars
 from pathlib import Path
-from posixpath import expanduser
 from typing import NamedTuple
 
 # #############################################################################
