@@ -74,3 +74,7 @@ class TestScenarioReader(unittest.TestCase):
         """Test missing scenario."""
         with self.assertRaises(TypeError):
             ScenarioReader()
+
+        with self.assertRaises(TypeError):
+            yaml_as_dict = {"metadata": {"name": "test"}}
+            ScenarioReader(yaml_as_dict)
