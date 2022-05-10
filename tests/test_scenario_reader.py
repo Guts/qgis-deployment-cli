@@ -54,13 +54,12 @@ class TestScenarioReader(unittest.TestCase):
             self.assertIsInstance(reader.scenario, dict)
 
             # scenario sections
-            self.assertIn("title", reader.scenario)
             self.assertIn("environment_variables", reader.scenario)
             self.assertIn("metadata", reader.scenario)
             self.assertIn("steps", reader.scenario)
 
             # validation
-            validation = reader.validate()
+            validation = reader.validate_scenario()
             self.assertIsInstance(validation, tuple)
             self.assertEqual(len(validation), 2)
             self.assertIsInstance(validation[0], bool)
