@@ -15,7 +15,6 @@
 
 # Standard library
 import logging
-from os import urandom
 from pathlib import Path
 from typing import Union
 
