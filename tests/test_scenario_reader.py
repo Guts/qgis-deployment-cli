@@ -50,7 +50,26 @@ class TestScenarioReader(unittest.TestCase):
         for i in self.good_scenario_files:
             reader = ScenarioReader(in_yaml=i)
             self.assertIsInstance(reader.scenario, dict)
+
+            # scenario sections
             self.assertIn("title", reader.scenario)
             self.assertIn("environment_variables", reader.scenario)
             self.assertIn("metadata", reader.scenario)
             self.assertIn("steps", reader.scenario)
+
+            # validation
+            validation = reader.validate()
+            self.assertIsInstance(validation, tuple)
+            self.assertEqual(len(validation), 2)
+            self.assertIsInstance(validation[0], bool)
+            self.assertIsInstance(validation[1], list)
+
+            # properties
+            self.assertIsInstance(reader.metadata, dict)
+            self.assertIsInstance(reader.environment_variables, dict)
+            self.assertIsInstance(reader.steps, list)
+
+    def test_missing_scenario(self):
+        """Test missing scenario."""
+        with self.assertRaises(TypeError):
+            ScenarioReader()
