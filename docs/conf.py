@@ -17,7 +17,6 @@ from qgis_deployment_toolbelt import __about__
 # -- Build environment -----------------------------------------------------
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
-
 # -- Project information -----------------------------------------------------
 author = __about__.__author__
 copyright = __about__.__copyright__
@@ -169,7 +168,7 @@ myst_url_schemes = ("http", "https", "mailto")
 
 # OpenGraph
 ogp_image = (
-    f"[__about__.__uri_homepage__]/_images/qgis-deployment-toolbelt_cli_help.png"
+    f"{__about__.__uri_homepage__}/_images/qgis-deployment-toolbelt_cli_help.png"
 )
 ogp_site_name = f"{project} - Documentation"
 ogp_site_url = __about__.__uri_homepage__
