@@ -14,7 +14,7 @@
 # Standard library
 from os.path import expandvars
 from pathlib import Path
-from typing import NamedTuple
+from typing import NamedTuple, Tuple
 
 # #############################################################################
 # ########## Classes ###############
@@ -25,6 +25,8 @@ class OSConfiguration(NamedTuple):
     """Settings related to QGIS and depending on operating system"""
 
     profiles_path: Path
+    shortcut_extension: str
+    shortcut_icon_extensions: Tuple["str"]
 
 
 # #############################################################################
@@ -34,13 +36,19 @@ class OSConfiguration(NamedTuple):
 OS_CONFIG: dict = {
     "darwin": OSConfiguration(
         profiles_path=Path(
-            Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/"
+            Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/",
+            shortcut_extension="app",
+            shortcut_icon_extensions=("icns",),
         )
     ),
     "linux": OSConfiguration(
-        profiles_path=Path(Path.home() / ".local/share/QGIS/QGIS3/profiles/")
+        profiles_path=Path(Path.home() / ".local/share/QGIS/QGIS3/profiles/"),
+        shortcut_extension=".desktop",
+        shortcut_icon_extensions=("ico", "svg", "png"),
     ),
     "windows": OSConfiguration(
-        profiles_path=Path(expandvars("%APPDATA%/Roaming/QGIS/QGIS3/profiles"))
+        profiles_path=Path(expandvars("%APPDATA%/Roaming/QGIS/QGIS3/profiles")),
+        shortcut_extension=".lnk",
+        shortcut_icon_extensions=("ico",),
     ),
 }
