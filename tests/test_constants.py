@@ -14,9 +14,6 @@ import unittest
 from pathlib import Path
 from sys import platform as opersys
 
-# standard library
-from types import NoneType
-
 # project
 from qgis_deployment_toolbelt import constants
 
