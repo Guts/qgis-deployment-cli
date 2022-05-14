@@ -34,7 +34,7 @@ class TestConstants(unittest.TestCase):
 
         self.assertIsInstance(os_config.profiles_path, Path)
         self.assertIsInstance(os_config.shortcut_extension, str)
-        self.assertIsInstance(os_config.shortcut_forbidden_chars, tuple)
+        self.assertIsInstance(os_config.shortcut_forbidden_chars, (tuple, None))
         self.assertIsInstance(os_config.shortcut_icon_extensions, tuple)
 
 
