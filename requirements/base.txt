@@ -3,4 +3,5 @@ dulwich>=0.20.0,<0.21.0
 giturlparse>=0.10,<0.11
 pyyaml>=5.4,<7
 py-setenv>=1.1,<1.2
+pywin32==304 ; sys_platform == 'win32'
 send2trash>=1.7.1
