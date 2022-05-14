@@ -10,10 +10,12 @@
         python -m unittest tests.test_constants.TestConstants.test_constants
 """
 
-# standard library
 import unittest
 from pathlib import Path
 from sys import platform as opersys
+
+# standard library
+from types import NoneType
 
 # project
 from qgis_deployment_toolbelt import constants
@@ -34,7 +36,7 @@ class TestConstants(unittest.TestCase):
 
         self.assertIsInstance(os_config.profiles_path, Path)
         self.assertIsInstance(os_config.shortcut_extension, str)
-        self.assertIsInstance(os_config.shortcut_forbidden_chars, (tuple, None))
+        self.assertIsInstance(os_config.shortcut_forbidden_chars, (tuple, type(None)))
         self.assertIsInstance(os_config.shortcut_icon_extensions, tuple)
 
 
