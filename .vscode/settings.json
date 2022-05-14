@@ -30,6 +30,10 @@
         "--verbose"
     ],
     "python.linting.pylintEnabled": false,
+    // Tests
+    "python.testing.pytestArgs": [],
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": true,
     // extensions
     "autoDocstring.guessTypes": true,
     "autoDocstring.docstringFormat": "one-line-sphinx",
