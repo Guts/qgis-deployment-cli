@@ -28,7 +28,7 @@ class OSConfiguration:
 
     profiles_path: Path
     shortcut_extension: str
-    shortcut_forbidden_chars: Tuple[str] = None
+    shortcut_forbidden_chars: Tuple[str] = (None,)
     shortcut_icon_extensions: Tuple["str"] = ("ico",)
 
 
