@@ -19,11 +19,12 @@ env:
 
 jobs:
   unit-test:
-    runs-on: ubuntu-20.04
     strategy:
       matrix:
+        os: [macos-latest, ubuntu-20.04, windows-latest]
         python-version: ["3.8", "3.9", "3.10"]
 
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Get source code
         uses: actions/checkout@v3
