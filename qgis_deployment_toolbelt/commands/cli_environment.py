@@ -66,7 +66,7 @@ def environment_setup(cli_context: click.Context, deployment_configuration: Path
         scenario_data = json.load(f)
 
     env_manager = JobEnvironmentVariables()
-    env_manager.run(scenario_data.get("environment_variables"))
+    env_manager.run(scenario_data.get("settings"))
 
     # ending
     exit_cli_success(

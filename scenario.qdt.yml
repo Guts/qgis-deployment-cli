@@ -8,7 +8,8 @@ metadata:
     This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
     demonstrate capabilities.
 
-environment_variables:
+# Toolbelt settings
+settings:
   DEBUG: true
   SCENARIO_VALIDATION: true
   OFFLINE_MODE: false
@@ -18,6 +19,7 @@ environment_variables:
   FIXTURES_DIR: "tests/fixtures"
   SYNCHRONOUS_MODE: false
 
+# Deployment workflow, step by step
 steps:
   - name: Set environment variables
     uses: manage-env-vars

@@ -41,7 +41,7 @@ class ScenarioReader:
     scenario: dict = None
 
     def __init__(self, in_yaml: Union[str, Path, BufferedIOBase]):
-        """Instanciating Isogeo Metadata YAML Reader."""
+        """Instanciating YAML scenario reader."""
         # check and get YAML path
         if isinstance(in_yaml, (str, Path)):
             self.input_yaml = self.check_yaml_file(in_yaml)
@@ -128,7 +128,7 @@ class ScenarioReader:
         :rtype: Tuple[bool, List[str]]
         """
         # variables
-        required_root_keys: tuple = ("metadata", "environment_variables", "steps")
+        required_root_keys: tuple = ("metadata", "settings", "steps")
 
         # outputs
         valid: bool = True
@@ -165,13 +165,13 @@ class ScenarioReader:
         return self.scenario.get("metadata")
 
     @property
-    def environment_variables(self) -> dict:
-        """Get environment variables from scenario.
+    def settings(self) -> dict:
+        """Get toolbelt settings from scenario.
 
-        :returns: environment variables
+        :returns: settings
         :rtype: dict
         """
-        return self.scenario.get("environment_variables")
+        return self.scenario.get("settings")
 
     @property
     def steps(self) -> List[dict]:

@@ -1,7 +1,9 @@
 #! python3  # noqa: E265
 
 """
-    Test CLI's check command.
+    Test CLI's main command.
+
+    Author: Julien Moura (Oslandia)
 """
 
 # #############################################################################
@@ -30,13 +32,12 @@ sample_scenario_good: Path = Path(
 # ##################################
 
 
-def test_check_help():
+def test_main_help():
     """Test help command"""
     runner = CliRunner()
     result = runner.invoke(
         qgis_deployment_toolbelt,
-        [f"--scenario={str(sample_scenario_good.resolve())}", "check", "--help"],
-        catch_exceptions=False,
+        ["--help"],
     )
     assert result.exit_code == 0
 
