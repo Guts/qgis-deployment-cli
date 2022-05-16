@@ -17,10 +17,12 @@ import logging
 from pathlib import Path
 from typing import List, Tuple
 
+from qgis_deployment_toolbelt.jobs.job_environment_variables import (
+    JobEnvironmentVariables,
+)
 from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
     JobProfilesDownloader,
 )
-from qgis_deployment_toolbelt.jobs.job_settings import JobEnvironmentVariables
 
 # #############################################################################
 # ########## Globals ###############
