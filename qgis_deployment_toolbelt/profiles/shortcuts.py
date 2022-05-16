@@ -70,7 +70,7 @@ class ApplicationShortcut:
         # -- CHECK TYPE AND STORE ATTRIBUTES
         # mandatory
         if isinstance(name, str):
-            if any([i in name for i in self.os_config.shortcut_forbidden_chars]):
+            if self.os_config.valid_shortcut_name(name):
                 raise ValueError(f"Shortcut name {name} contains invalid characters.")
             self.name = name
         else:

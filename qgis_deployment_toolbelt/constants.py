@@ -13,6 +13,7 @@
 
 # Standard library
 from dataclasses import dataclass
+from email.policy import default
 from os.path import expandvars
 from pathlib import Path
 from typing import NamedTuple, Tuple
@@ -28,8 +29,21 @@ class OSConfiguration:
 
     profiles_path: Path
     shortcut_extension: str
-    shortcut_forbidden_chars: Tuple[str] = (None,)
-    shortcut_icon_extensions: Tuple["str"] = ("ico",)
+    shortcut_forbidden_chars: Tuple[str] = None
+    shortcut_icon_extensions: Tuple[str] = None
+
+    def valid_shortcut_name(self, shortcut_name: str) -> bool:
+        """Check if a shortcut name is valid.
+
+        :param str shortcut_name: _description_
+        :return bool: _description_
+        """
+        if self.shortcut_forbidden_chars is None:
+            return True
+        for char in self.shortcut_forbidden_chars:
+            if char in shortcut_name:
+                return False
+        return True
 
 
 # #############################################################################
