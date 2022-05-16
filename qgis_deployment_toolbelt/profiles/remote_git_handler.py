@@ -83,14 +83,14 @@ class RemoteGitHandler:
             logger.info(f"Cloning repository {self.url} to {local_path}")
             return porcelain.clone(
                 source=self.url,
-                target=local_path,
-                depth=1,
+                target=str(local_path.resolve()),
                 branch=self.url_parsed.branch,
+                depth=5,
             )
         elif local_path.exists() and self.is_local_path_git_repository(local_path):
             logger.info(f"Pulling repository {self.url} to {local_path}")
-            porcelain.pull(local_path, fast_forward=True)
-            return Repo(root=local_path.as_posix())
+            porcelain.pull(str(local_path.resolve()), force=True)
+            return Repo(root=str(local_path.resolve()))
         elif not local_path.exists():
             logger.debug(
                 f"Local path does not exists: {local_path.as_uri()}. "
