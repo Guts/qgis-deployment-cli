@@ -42,6 +42,16 @@ def test_main_help():
     assert result.exit_code == 0
 
 
+def test_main_run():
+    """Test main cli command"""
+    runner = CliRunner()
+    result = runner.invoke(
+        qgis_deployment_toolbelt,
+        [f"--scenario={str(sample_scenario_good.resolve())}"],
+    )
+    assert result.exit_code == 0
+
+
 # #############################################################################
 # ######## Standalone ##############
 # ##################################
