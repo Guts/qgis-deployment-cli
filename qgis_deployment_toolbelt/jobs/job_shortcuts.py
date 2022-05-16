@@ -43,29 +43,45 @@ class JobShortcutsManager:
             "type": str,
             "required": False,
             "default": "create",
-            "possible_values": ("create", "remove"),
+            "possible_values": ("create", "create_or_restore", "remove"),
             "condition": "in",
         },
-        "desktop": {
-            "type": bool,
-            "required": False,
-            "default": False,
-            "possible_values": None,
-            "condition": None,
-        },
-        "start_menu": {
-            "type": bool,
-            "required": False,
-            "default": True,
-            "possible_values": None,
-            "condition": None,
-        },
-        "exclude_profiles": {
-            "type": list,
+        "include": {
+            "type": (list, str),
             "required": False,
             "default": None,
             "possible_values": None,
             "condition": None,
+            "sub_options": {
+                "additional_arguments": {
+                    "type": str,
+                    "required": False,
+                    "default": None,
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "icon": {
+                    "type": str,
+                    "required": False,
+                    "default": None,
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "desktop": {
+                    "type": bool,
+                    "required": False,
+                    "default": False,
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "start_menu": {
+                    "type": bool,
+                    "required": False,
+                    "default": True,
+                    "possible_values": None,
+                    "condition": None,
+                },
+            },
         },
     }
     SHORTCUTS_CREATED: list = []
