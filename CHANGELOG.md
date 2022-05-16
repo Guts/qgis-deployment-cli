@@ -16,6 +16,19 @@ Unreleased
 
 -->
 
+## 0.7.0 - 2022-05-xx (UNRELEASED)
+
+- Add module to create and delete application shortcuts
+- Promote constants module to a dataclass (Python 3.7+)
+- Remove subcommand to set environment variables
+- Rename `environment_variables` section to `settings` in scenario files
+- Fix the default QGIS profiles path on Windows
+- Fix environment variables manager
+- Fix and improve clean command
+- Run unit tests on multiple operating systems: MacOS, Ubuntu LTS and Windows 10
+
+> See the [GitHub Release for a detailed changelog](https://github.com/Guts/qgis-deployment-cli/releases/tag/0.7.0).
+
 ## 0.6.0 - 2022-05-10
 
 - Profiles synchronization now handle the mixed case where some of downloaded profiles are already installed, and some are not.
