@@ -130,9 +130,8 @@ class JobShortcutsManager:
                     exec_path=Path(expandvars(p.get("qgis_path"))),
                     description=f"Created with {__title__} {__version__}",
                     icon_path=self.get_icon_path(p.get("icon"), p.get("profile")),
-                    exec_arguments=tuple(
-                        f"--profile {p.get('profile')}",
-                        p.get("additional_arguments").split(" "),
+                    exec_arguments=self.get_arguments_ready(
+                        p.get("profile"), p.get("additional_arguments")
                     ),
                     work_dir=Path().home() / "Documents",
                 )
@@ -191,6 +190,22 @@ class JobShortcutsManager:
                 return li_subfolders[0].resolve()
 
         return None
+
+    def get_arguments_ready(self, profile: str, in_arguments: str = None) -> Tuple[str]:
+        """Prepare arguments for the executable shortcut.
+
+        :param list in_arguments: argument as defined in the scenario file
+
+        :return Tuple[str]: tuple of strings separated by spaces
+        """
+        # add profile name
+        arguments: list = ["--profile", profile]
+
+        # add additional arguments
+        if in_arguments:
+            arguments.extend(in_arguments.split(" "))
+
+        return arguments
 
     def validate_options(self, options: dict) -> bool:
         """Validate options.
