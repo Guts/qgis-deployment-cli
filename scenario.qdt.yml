@@ -43,7 +43,8 @@ steps:
       action: create
       desktop: true
       start_menu: true
-      exclude_profiles: debug
+      exclude_profiles:
+        - debug
 
   - name: Create report
     uses: telemetry-manager
