@@ -42,7 +42,6 @@ class JobEnvironmentVariables:
     """
 
     ID: str = "manage-env-vars"
-    WINDOWS: bool = opersys == "win32"
 
     def __init__(self, options: dict) -> None:
         """Instantiate the class.
@@ -54,7 +53,7 @@ class JobEnvironmentVariables:
 
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""
-        if self.WINDOWS:
+        if opersys == "win32":
             for env_var, var_params in self.options.items():
                 if var_params[2] == "add":
                     setenv(
