@@ -78,8 +78,6 @@ class RemoteGitHandler:
         if isinstance(local_path, str):
             local_path = Path(local_path)
 
-        print(self.url_parsed.branch)
-
         # clone
         if local_path.exists() and not self.is_local_path_git_repository(local_path):
             logger.info(f"Cloning repository {self.url} to {local_path}")
