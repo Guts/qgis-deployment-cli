@@ -31,9 +31,9 @@ steps:
     uses: qprofiles-manager
     with:
       action: download
-      source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
+      source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
       protocol: git
-      local_destination: ~/.cache/OCARHY/QGIS/profiles
+      local_destination: ~/.cache/qgis-deployment-toolbelt/tests
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
