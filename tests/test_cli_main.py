@@ -37,7 +37,7 @@ def test_main_help():
     runner = CliRunner()
     result = runner.invoke(
         qgis_deployment_toolbelt,
-        [f"--scenario={str(sample_scenario_good.resolve())}", "--help"],
+        ["--help"],
     )
     assert result.exit_code == 0
 
