@@ -13,9 +13,13 @@
 
 # Standard library
 import logging
+from os.path import expandvars
+from pathlib import Path
 from sys import platform as opersys
+from typing import Union
 
 # package
+from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.profiles import ApplicationShortcut
 
@@ -105,7 +109,25 @@ class JobShortcutsManager:
     def run(self) -> None:
         """Execute job logic."""
         # check action
-        if self.options.get("action") != "create":
+        if self.options.get("action") in ("create", "create_or_restore"):
+            for p in self.options.get("include", []):
+                shortcut = ApplicationShortcut(
+                    name=p.get("name"),
+                    exec_path=Path(expandvars(p.get("qgis_path"))),
+                    description=f"Created with {__title__} {__version__}",
+                    icon_path=self.get_icon_path(p.get("icon"), p.get("name")),
+                    exec_arguments=tuple(p.get("additional_arguments").split(" ")),
+                    work_dir=Path().home() / "Documents",
+                )
+                shortcut.create(
+                    desktop=p.get("desktop", False),
+                    start_menu=p.get("start_menu", True),
+                )
+                logger.info(f"Created shortcut {shortcut.name}")
+                self.SHORTCUTS_CREATED.append(shortcut)
+
+            logger.debug(f"Job {self.ID} ran successfully.")
+        else:
             raise NotImplementedError
 
         logger.debug(f"Job {self.ID} ran successfully.")
