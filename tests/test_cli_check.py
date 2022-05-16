@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Tests against CLI check command.
+    Test CLI's check command.
 """
 
 # #############################################################################
