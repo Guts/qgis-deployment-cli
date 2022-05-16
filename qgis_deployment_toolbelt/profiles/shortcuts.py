@@ -99,10 +99,12 @@ class ApplicationShortcut:
             raise TypeError(
                 f"If defined, exec_arguments must be a tuple or list, not {type(exec_arguments)}"
             )
-        if not icon_path or isinstance(icon_path, (str, Path)):
+        if isinstance(icon_path, (str, Path)):
             self.icon_path = Path(icon_path)
             if not self.icon_path.exists():
                 logger.warning(f"Icon does not exist: {self.exec_path}")
+        elif icon_path is None:
+            self.icon_path = icon_path
         else:
             raise TypeError(
                 f"If defined, icon_path must be a string or pathlib.Path, not {type(icon_path)}"
