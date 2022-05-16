@@ -32,10 +32,6 @@ START_TIME = default_timer()
 # logs
 logger = logging.getLogger(__name__)
 
-# default CLI context.
-# See: https://click.palletsprojects.com/en/7.x/commands/#context-defaults
-CONTEXT_SETTINGS = dict(obj={})
-
 
 # #############################################################################
 # ####### Command-line ############
