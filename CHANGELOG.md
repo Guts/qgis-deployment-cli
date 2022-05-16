@@ -16,12 +16,14 @@ Unreleased
 
 -->
 
-## 0.7.0 - 2022-05-xx (UNRELEASED)
+## 0.7.0 - 2022-05-16
 
 - Add module to create and delete application shortcuts
+- Add job to use the new module to automatically create shortcuts for QGIS profiles
 - Promote constants module to a dataclass (Python 3.7+)
 - Remove subcommand to set environment variables
 - Rename `environment_variables` section to `settings` in scenario files
+- Handle situation where the QGIS profiles folder doesn't exist
 - Fix the default QGIS profiles path on Windows
 - Fix environment variables manager
 - Fix and improve clean command
