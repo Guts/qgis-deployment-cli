@@ -74,7 +74,7 @@ OS_CONFIG: dict = {
         shortcut_icon_extensions=("ico", "svg", "png"),
     ),
     "win32": OSConfiguration(
-        profiles_path=Path(expandvars("%APPDATA%/Roaming/QGIS/QGIS3/profiles")),
+        profiles_path=Path(expandvars("%APPDATA%/QGIS/QGIS3/profiles")),
         shortcut_extension=".lnk",
         shortcut_forbidden_chars=("<", ">", ":", '"', "/", "\\", "|", "?", "*"),
         shortcut_icon_extensions=("ico",),
