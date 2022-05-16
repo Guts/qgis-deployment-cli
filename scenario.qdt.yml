@@ -35,7 +35,7 @@ steps:
       action: download
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
-      local_destination: ~/.cache/qgis-deployment-toolblet/QGIS/
+      local_destination: ~/.cache/qgis-deployment-toolbet/QGIS/
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
