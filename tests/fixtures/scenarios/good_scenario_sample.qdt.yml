@@ -8,7 +8,7 @@ metadata:
     This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
     demonstrate capabilities.
 
-environment_variables:
+settings:
   DEBUG: false
   SCENARIO_VALIDATION: true
   OFFLINE_MODE: false
