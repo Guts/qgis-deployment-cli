@@ -23,6 +23,7 @@ from qgis_deployment_toolbelt.jobs.job_environment_variables import (
 from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
     JobProfilesDownloader,
 )
+from qgis_deployment_toolbelt.jobs.job_shortcuts import JobShortcutsManager
 
 # #############################################################################
 # ########## Globals ###############
@@ -39,7 +40,7 @@ logger = logging.getLogger(__name__)
 class JobsOrchestrator:
     """Orchestrate jobs."""
 
-    JOBS = (JobEnvironmentVariables, JobProfilesDownloader)
+    JOBS = (JobEnvironmentVariables, JobProfilesDownloader, JobShortcutsManager)
     PACKAGE_NAME: str = "qgis_deployment_toolbelt.jobs"
 
     def __init__(self) -> None:
