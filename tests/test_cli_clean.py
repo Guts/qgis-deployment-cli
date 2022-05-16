@@ -1,9 +1,9 @@
 #! python3  # noqa: E265
 
 """
-    Command-line to sycnhronize Scan results.
+    Test CLI's clean command.
 
-    Author: Isogeo
+    Author: Julien Moura (Oslandia)
 """
 
 # #############################################################################

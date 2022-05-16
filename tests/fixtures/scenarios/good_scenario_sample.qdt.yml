@@ -20,7 +20,7 @@ environment_variables:
 
 steps:
   - name: Set environment variables
-    uses: manage-env-vars@v1
+    uses: manage-env-vars
     with:
       - PYQGIS_STARTUP:
         value: "%USERHOME%\\scripts\\qgis_startup.py"
@@ -28,7 +28,7 @@ steps:
         action: "add"
 
   - name: Download profiles from remote git repository
-    uses: qprofiles-manager@v1
+    uses: qprofiles-manager
     with:
       action: download
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
@@ -36,7 +36,7 @@ steps:
       local_destination: ~/.cache/OCARHY/QGIS/profiles
 
   - name: Create shortcuts for profiles
-    uses: shortcuts-manager@v1
+    uses: shortcuts-manager
     with:
       action: create
       desktop: true
@@ -44,13 +44,13 @@ steps:
       exclude_profiles: debug
 
   - name: Create report
-    uses: telemetry-manager@v1
+    uses: telemetry-manager
     with:
       action: send
       module: sentry
 
   - name: Send log
-    uses: telemetry-manager@v1
+    uses: telemetry-manager
     with:
       action: send
       module: sentry
