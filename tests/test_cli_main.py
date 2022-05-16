@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Command-line to sycnhronize Scan results.
+    Test CLI's main command.
 
     Author: Julien Moura (Oslandia)
 """
@@ -32,36 +32,14 @@ sample_scenario_good: Path = Path(
 # ##################################
 
 
-def test_clean_help():
+def test_main_help():
     """Test help command"""
     runner = CliRunner()
     result = runner.invoke(
         qgis_deployment_toolbelt,
-        [f"--scenario={str(sample_scenario_good.resolve())}", "clean", "--help"],
+        [f"--scenario={str(sample_scenario_good.resolve())}", "--help"],
     )
     assert result.exit_code == 0
-
-
-# def test_clean_minimal_params():
-#     """Test minimal required parameters"""
-#     runner = CliRunner()
-#     result = runner.invoke(qgis_deployment_toolbelt, ["--settings=./.env.example",])
-#     assert result.exit_code == 0
-
-
-# def test_clean_complete_params():
-#     """Test maximal parameters"""
-#     runner = CliRunner()
-#     result = runner.invoke(
-#         qgis_deployment_toolbelt,
-#         [
-#             "--label=UnitTests",
-#             "--settings=./.env.example",
-#             "--formats=shp",
-#             "--directory=./tests/fixtures",
-#         ],
-#     )
-#     assert result.exit_code == 0
 
 
 # #############################################################################
