@@ -129,7 +129,7 @@ def qgis_deployment_toolbelt(
         scenario = ScenarioReader(in_yaml=scenario_filepath)
 
         # Apply log level from scenario (only if verbose mode is disabled)
-        if scenario.environment_variables.get("DEBUG") is True and not verbose:
+        if scenario.settings.get("DEBUG") is True and not verbose:
             logger.setLevel(logging.DEBUG)
             for h in logger.handlers:
                 h.setLevel(logging.DEBUG)
@@ -139,7 +139,7 @@ def qgis_deployment_toolbelt(
 
         # Validate scenario
         if (
-            scenario.environment_variables.get("SCENARIO_VALIDATION", True) is True
+            scenario.settings.get("SCENARIO_VALIDATION", True) is True
             and not scenario.validate_scenario()[0]
         ):
             exit_cli_error(
@@ -157,7 +157,7 @@ def qgis_deployment_toolbelt(
         )
 
         # Set environment vars for the scenario
-        for var, value in scenario.environment_variables.items():
+        for var, value in scenario.settings.items():
             if value is not None:
                 logger.debug(f"Setting environment variable {var} = {value}.")
                 environ[var] = str(value)
@@ -201,7 +201,7 @@ def qgis_deployment_toolbelt(
         )
     else:
         logger.debug(
-            f"CLI mode enabled. and invoking {cli_context.invoked_subcommand} "
+            f"CLI mode enabled, invoking {cli_context.invoked_subcommand} "
             f"with arguments: {cli_context.args}."
         )
         exit_cli_normal(message="CLI mode enabled", abort=False)

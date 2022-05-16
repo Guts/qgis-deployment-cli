@@ -54,7 +54,7 @@ class TestScenarioReader(unittest.TestCase):
             self.assertIsInstance(reader.scenario, dict)
 
             # scenario sections
-            self.assertIn("environment_variables", reader.scenario)
+            self.assertIn("settings", reader.scenario)
             self.assertIn("metadata", reader.scenario)
             self.assertIn("steps", reader.scenario)
 
@@ -67,7 +67,7 @@ class TestScenarioReader(unittest.TestCase):
 
             # properties
             self.assertIsInstance(reader.metadata, dict)
-            self.assertIsInstance(reader.environment_variables, dict)
+            self.assertIsInstance(reader.settings, dict)
             self.assertIsInstance(reader.steps, list)
 
     def test_missing_scenario(self):

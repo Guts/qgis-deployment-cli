@@ -7,8 +7,8 @@
     "metadata": {
       "$ref": "metadata.json"
     },
-    "environment_variables": {
-      "$ref": "environment_variables.json"
+    "settings": {
+      "$ref": "settings.json"
     },
     "steps": {
       "description": "The steps to perform.",

@@ -17,12 +17,10 @@ import logging
 from pathlib import Path
 from typing import List, Tuple
 
-from qgis_deployment_toolbelt.jobs.job_environment_variables import (
-    JobEnvironmentVariables,
-)
 from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
     JobProfilesDownloader,
 )
+from qgis_deployment_toolbelt.jobs.job_settings import JobEnvironmentVariables
 
 # #############################################################################
 # ########## Globals ###############
@@ -91,14 +89,14 @@ if __name__ == "__main__":
     from generic import JobBase
 
     # mod = importlib.import_module(
-    #     name="job_environment_variables", package="qgis_deployment_toolbelt.jobs"
+    #     name="job_settings", package="qgis_deployment_toolbelt.jobs"
     # )
     # print(mod.__doc__, mod.__name__, dir(mod))
 
     orchestrator = JobsOrchestrator()
     jobs_available = orchestrator.available_jobs
 
-    j = orchestrator.import_job("job_environment_variables")
+    j = orchestrator.import_job("job_settings")
     print(j.__doc__, j.__name__, dir(j))
 
     # orchestrator.import_all_jobs()

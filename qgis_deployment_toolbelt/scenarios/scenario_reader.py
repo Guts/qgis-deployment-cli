@@ -128,7 +128,7 @@ class ScenarioReader:
         :rtype: Tuple[bool, List[str]]
         """
         # variables
-        required_root_keys: tuple = ("metadata", "environment_variables", "steps")
+        required_root_keys: tuple = ("metadata", "settings", "steps")
 
         # outputs
         valid: bool = True
@@ -165,13 +165,13 @@ class ScenarioReader:
         return self.scenario.get("metadata")
 
     @property
-    def environment_variables(self) -> dict:
-        """Get environment variables from scenario.
+    def settings(self) -> dict:
+        """Get toolbelt settings from scenario.
 
-        :returns: environment variables
+        :returns: settings
         :rtype: dict
         """
-        return self.scenario.get("environment_variables")
+        return self.scenario.get("settings")
 
     @property
     def steps(self) -> List[dict]:
