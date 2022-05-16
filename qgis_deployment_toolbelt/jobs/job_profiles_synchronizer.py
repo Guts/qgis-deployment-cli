@@ -90,6 +90,13 @@ class JobProfilesDownloader:
                 f"Supported platforms: {','.join(OS_CONFIG.keys())}."
             )
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
+        if not self.qgis_profiles_path.exists():
+            logger.warning(
+                f"QGIS profiles folder not found: {self.qgis_profiles_path}. "
+                "Creating it to properly run the job."
+            )
+            self.qgis_profiles_path.mkdir(parents=True)
+
         # TODO: handle custom profiles folder through QGIS_CUSTOM_CONFIG_PATH
 
         # list installed profiles
