@@ -14,6 +14,7 @@
 # Standard library
 import logging
 from dataclasses import dataclass
+from os import getenv
 from os.path import expandvars
 from pathlib import Path
 from typing import Tuple
@@ -34,8 +35,8 @@ logger = logging.getLogger(__name__)
 class OSConfiguration:
     """Settings related to QGIS and depending on operating system"""
 
-    profiles_path: Path
-    shortcut_extension: str
+    profiles_path: Path = getenv("QGIS_CUSTOM_CONFIG_PATH")
+    shortcut_extension: str = None
     shortcut_forbidden_chars: Tuple[str] = None
     shortcut_icon_extensions: Tuple[str] = None
 
@@ -63,18 +64,30 @@ class OSConfiguration:
 OS_CONFIG: dict = {
     "darwin": OSConfiguration(
         profiles_path=Path(
-            Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/"
+            getenv(
+                "QGIS_CUSTOM_CONFIG_PATH",
+                Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/",
+            )
         ),
         shortcut_extension="app",
         shortcut_icon_extensions=("icns",),
     ),
     "linux": OSConfiguration(
-        profiles_path=Path(Path.home() / ".local/share/QGIS/QGIS3/profiles/"),
+        profiles_path=Path(
+            getenv(
+                "QGIS_CUSTOM_CONFIG_PATH",
+                Path.home() / ".local/share/QGIS/QGIS3/profiles/",
+            )
+        ),
         shortcut_extension=".desktop",
         shortcut_icon_extensions=("ico", "svg", "png"),
     ),
     "win32": OSConfiguration(
-        profiles_path=Path(expandvars("%APPDATA%/QGIS/QGIS3/profiles")),
+        profiles_path=Path(
+            getenv(
+                "QGIS_CUSTOM_CONFIG_PATH", expandvars("%APPDATA%/QGIS/QGIS3/profiles")
+            )
+        ),
         shortcut_extension=".lnk",
         shortcut_forbidden_chars=("<", ">", ":", '"', "/", "\\", "|", "?", "*"),
         shortcut_icon_extensions=("ico",),
