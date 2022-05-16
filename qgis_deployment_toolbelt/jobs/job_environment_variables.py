@@ -14,6 +14,7 @@
 # Standard library
 import logging
 from sys import platform as opersys
+from typing import List
 
 # Imports depending on operating system
 if opersys == "win32":
@@ -43,25 +44,27 @@ class JobEnvironmentVariables:
 
     ID: str = "manage-env-vars"
 
-    def __init__(self, options: dict) -> None:
+    def __init__(self, options: List[dict]) -> None:
         """Instantiate the class.
 
-        :param dict options: dictionary with environment variable name as key and
+        :param List[dict] options: dictionary with environment variable name as key and
         some parameters as values (value, scope, action...).
         """
-        self.options: dict = options
+
+        self.options: dict = self.validate_options(options)
 
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""
         if opersys == "win32":
-            for env_var, var_params in self.options.items():
-                if var_params[2] == "add":
+            for env_var in self.options:
+                if env_var.get("action") == "add":
                     setenv(
-                        name=env_var,
-                        value=var_params[0],
-                        user=var_params[1] == "user",
+                        name=env_var.get("name"),
+                        value=env_var.get("value"),
+                        user=env_var.get("scope") == "user",
                         suppress_echo=True,
                     )
+            # force Windows to refresh the environment
             self.win_refresh_environment()
 
         # TODO: for linux, edit ~/.profile or add a .env file and source it from ~./profile
@@ -71,6 +74,20 @@ class JobEnvironmentVariables:
             )
 
         logger.debug(f"Job {self.ID} ran successfully.")
+
+    def validate_options(self, options: List[dict]) -> List[dict]:
+        """Validate options.
+
+        :param List[dict] options: options to validate.
+        :return List[dict]: options if they are valid.
+        """
+        if not isinstance(options, list):
+            raise TypeError(f"Options must be a list, not {type(options)}")
+        for option in options:
+            if not isinstance(option, dict):
+                raise TypeError(f"Options must be a dict, not {type(option)}")
+
+        return options
 
     def win_refresh_environment(self) -> bool:
         """This ensures that changes to Windows registry are immediately propagated.
