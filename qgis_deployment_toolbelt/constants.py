@@ -12,11 +12,18 @@
 # ##################################
 
 # Standard library
+import logging
 from dataclasses import dataclass
-from email.policy import default
 from os.path import expandvars
 from pathlib import Path
-from typing import NamedTuple, Tuple
+from typing import Tuple
+
+# #############################################################################
+# ########## Globals ###############
+# ##################################
+
+# logs
+logger = logging.getLogger(__name__)
 
 # #############################################################################
 # ########## Classes ###############
@@ -42,6 +49,9 @@ class OSConfiguration:
             return True
         for char in self.shortcut_forbidden_chars:
             if char in shortcut_name:
+                logger.error(
+                    f"Shortcut name '{shortcut_name}' contains forbidden char '{char}'"
+                )
                 return False
         return True
 
