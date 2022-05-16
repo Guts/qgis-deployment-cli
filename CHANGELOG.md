@@ -16,6 +16,13 @@ Unreleased
 
 -->
 
+## 0.8.0 - 2022-05-16
+
+- Pin dulwich version to avoid recurring connection errors
+- Add support for environment variable `QGIS_CUSTOM_CONFIG_PATH`
+- Make clone/pull more robust
+- Extend unit tests
+
 ## 0.7.0 - 2022-05-16
 
 - Add module to create and delete application shortcuts
