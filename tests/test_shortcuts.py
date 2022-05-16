@@ -28,7 +28,7 @@ class TestShortcut(unittest.TestCase):
     def test_shortcut_creation_complete(self):
         """Test creation of shortcut."""
         shortcut = ApplicationShortcut(
-            name="test_shortcut",
+            name="test shortcut",
             description="A test shortcut",
             exec_path=Path(__file__),
             exec_arguments=("--test", "unit"),
@@ -41,7 +41,8 @@ class TestShortcut(unittest.TestCase):
             start_menu=True,
         )
 
-        self.assertIsInstance(shortcuts_paths, tuple)
+        if opersys == "win32":
+            self.assertIsInstance(shortcuts_paths, tuple)
 
 
 # ############################################################################
