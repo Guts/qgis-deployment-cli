@@ -16,7 +16,7 @@ import logging
 from os.path import expandvars
 from pathlib import Path
 from sys import platform as opersys
-from typing import Union
+from typing import Tuple, Union
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
@@ -64,6 +64,13 @@ class JobShortcutsManager:
                     "possible_values": None,
                     "condition": None,
                 },
+                "desktop": {
+                    "type": bool,
+                    "required": False,
+                    "default": False,
+                    "possible_values": None,
+                    "condition": None,
+                },
                 "icon": {
                     "type": str,
                     "required": False,
@@ -71,10 +78,17 @@ class JobShortcutsManager:
                     "possible_values": None,
                     "condition": None,
                 },
-                "desktop": {
-                    "type": bool,
+                "label": {
+                    "type": str,
                     "required": False,
-                    "default": False,
+                    "default": "QGIS",
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "profile": {
+                    "type": str,
+                    "required": True,
+                    "default": None,
                     "possible_values": None,
                     "condition": None,
                 },
@@ -112,11 +126,14 @@ class JobShortcutsManager:
         if self.options.get("action") in ("create", "create_or_restore"):
             for p in self.options.get("include", []):
                 shortcut = ApplicationShortcut(
-                    name=p.get("name"),
+                    name=p.get("label"),
                     exec_path=Path(expandvars(p.get("qgis_path"))),
                     description=f"Created with {__title__} {__version__}",
-                    icon_path=self.get_icon_path(p.get("icon"), p.get("name")),
-                    exec_arguments=tuple(p.get("additional_arguments").split(" ")),
+                    icon_path=self.get_icon_path(p.get("icon"), p.get("profile")),
+                    exec_arguments=tuple(
+                        f"--profile {p.get('profile')}",
+                        p.get("additional_arguments").split(" "),
+                    ),
                     work_dir=Path().home() / "Documents",
                 )
                 shortcut.create(
