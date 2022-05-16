@@ -38,11 +38,15 @@ steps:
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
     with:
-      action: create
-      desktop: true
-      start_menu: true
-      exclude_profiles:
-        - debug
+      action: create_or_restore
+      include:
+        - profile: oslandia
+          label: "QGIS - Profil Oslandia"
+          additional_arguments: "--noversioncheck"
+          desktop: true
+          start_menu: true
+          icon: "qgis_icon_oslandia.ico"
+          qgis_path: "%PROGRAMFILES%\\QGIS\\3_22\\bin\\qgis-bin.exe"
 
   - name: Create report
     uses: telemetry-manager

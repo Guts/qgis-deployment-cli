@@ -99,18 +99,22 @@ class ApplicationShortcut:
             raise TypeError(
                 f"If defined, exec_arguments must be a tuple or list, not {type(exec_arguments)}"
             )
-        if not icon_path or isinstance(icon_path, (str, Path)):
+        if isinstance(icon_path, (str, Path)):
             self.icon_path = Path(icon_path)
             if not self.icon_path.exists():
                 logger.warning(f"Icon does not exist: {self.exec_path}")
+        elif icon_path is None:
+            self.icon_path = icon_path
         else:
             raise TypeError(
                 f"If defined, icon_path must be a string or pathlib.Path, not {type(icon_path)}"
             )
-        if not work_dir or isinstance(work_dir, (str, Path)):
+        if isinstance(work_dir, (str, Path)):
             self.work_dir = Path(work_dir)
             if not self.work_dir.exists():
                 logger.warning(f"Work folder does not exist: {self.work_dir}")
+        elif work_dir is None:
+            self.work_dir = work_dir
         else:
             raise TypeError(
                 f"If defined, work_dir must be a string or pathlib.Path, not {type(work_dir)}"
@@ -139,26 +143,6 @@ class ApplicationShortcut:
 
         if opersys == "win32":
             return self.win32_create()
-
-    @staticmethod
-    def delete(
-        name: str, desktop: bool = False, start_menu: bool = False
-    ) -> Tuple[str, str]:
-        """Remove existing Shortcut from the system.
-
-        :param str name: Name of shortcut
-        :param bool desktop: Delete Shortcut on Desktop
-        :param bool start_menu: Delete Shortcut on Start Menu
-
-        :return: desktop and start menu path
-        :return Tuple[str, str]: desktop_path, start menu path
-        """
-        if os.name == "nt":
-            from pycrosskit.shortcut_platforms.windows import delete_shortcut
-        else:
-            from pycrosskit.shortcut_platforms.linux import delete_shortcut
-
-        return delete_shortcut(name, desktop, start_menu)
 
     # -- PROPERTIES --------------------------------------------------------------
     @property
@@ -271,28 +255,3 @@ class ApplicationShortcut:
             shortcut_start_menu_path = None
 
         return (shortcut_desktop_path, shortcut_start_menu_path)
-
-    # def win32_delete_shortcut(
-    #     name: str, startmenu: bool = False, desktop: bool = False
-    # ) -> Tuple[str, str]:
-    #     """Remove shortcut from the system.
-
-    #     :param str name: Shortcut Object
-    #     :param bool startmenu: True to create Start Menu Shortcut, defaults to False
-    #     :param bool desktop: True to create Desktop Shortcut, defaults to False
-
-    #     :return Tuple[str, str]: desktop_path, startmenu_path
-    #     """
-    #     user_folders = get_folders()
-    #     desktop_path, startmenu_path = "", ""
-    #     if startmenu:
-    #         startmenu_path = str(Path(user_folders.startmenu) / (name + scut_ext))
-    #         if os.path.exists(startmenu_path):
-    #             os.chmod(startmenu_path, stat.S_IWRITE)
-    #             os.remove(startmenu_path)
-    #     if desktop:
-    #         desktop_path = str(Path(user_folders.desktop) / (name + scut_ext))
-    #         if os.path.exists(desktop_path):
-    #             os.chmod(desktop_path, stat.S_IWRITE)
-    #             os.remove(desktop_path)
-    #     return desktop_path, startmenu_path

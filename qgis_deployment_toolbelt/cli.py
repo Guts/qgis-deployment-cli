@@ -183,6 +183,7 @@ def qgis_deployment_toolbelt(
             steps_ok, label="Running the scenario.."
         ) as progress_bar:
             for step in progress_bar:
+                click.secho("Running step: {}".format(step.get("uses")), fg="green")
                 try:
                     job = orchestrator.init_job_class_from_id(
                         job_id=step.get("uses"), options=step.get("with")

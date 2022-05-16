@@ -13,9 +13,13 @@
 
 # Standard library
 import logging
+from os.path import expandvars
+from pathlib import Path
 from sys import platform as opersys
+from typing import Tuple, Union
 
 # package
+from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.profiles import ApplicationShortcut
 
@@ -43,29 +47,59 @@ class JobShortcutsManager:
             "type": str,
             "required": False,
             "default": "create",
-            "possible_values": ("create", "remove"),
+            "possible_values": ("create", "create_or_restore", "remove"),
             "condition": "in",
         },
-        "desktop": {
-            "type": bool,
-            "required": False,
-            "default": False,
-            "possible_values": None,
-            "condition": None,
-        },
-        "start_menu": {
-            "type": bool,
-            "required": False,
-            "default": True,
-            "possible_values": None,
-            "condition": None,
-        },
-        "exclude_profiles": {
-            "type": list,
+        "include": {
+            "type": (list, str),
             "required": False,
             "default": None,
             "possible_values": None,
             "condition": None,
+            "sub_options": {
+                "additional_arguments": {
+                    "type": str,
+                    "required": False,
+                    "default": None,
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "desktop": {
+                    "type": bool,
+                    "required": False,
+                    "default": False,
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "icon": {
+                    "type": str,
+                    "required": False,
+                    "default": None,
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "label": {
+                    "type": str,
+                    "required": False,
+                    "default": "QGIS",
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "profile": {
+                    "type": str,
+                    "required": True,
+                    "default": None,
+                    "possible_values": None,
+                    "condition": None,
+                },
+                "start_menu": {
+                    "type": bool,
+                    "required": False,
+                    "default": True,
+                    "possible_values": None,
+                    "condition": None,
+                },
+            },
         },
     }
     SHORTCUTS_CREATED: list = []
@@ -89,10 +123,89 @@ class JobShortcutsManager:
     def run(self) -> None:
         """Execute job logic."""
         # check action
-        if self.options.get("action") != "create":
+        if self.options.get("action") in ("create", "create_or_restore"):
+            for p in self.options.get("include", []):
+                shortcut = ApplicationShortcut(
+                    name=p.get("label"),
+                    exec_path=Path(expandvars(p.get("qgis_path"))),
+                    description=f"Created with {__title__} {__version__}",
+                    icon_path=self.get_icon_path(p.get("icon"), p.get("profile")),
+                    exec_arguments=self.get_arguments_ready(
+                        p.get("profile"), p.get("additional_arguments")
+                    ),
+                    work_dir=Path().home() / "Documents",
+                )
+                shortcut.create(
+                    desktop=p.get("desktop", False),
+                    start_menu=p.get("start_menu", True),
+                )
+                logger.info(f"Created shortcut {shortcut.name}")
+                self.SHORTCUTS_CREATED.append(shortcut)
+
+            logger.debug(f"Job {self.ID} ran successfully.")
+        else:
             raise NotImplementedError
 
-        logger.debug(f"Job {self.ID} ran successfully.")
+    # -- INTERNAL LOGIC ------------------------------------------------------
+    def get_icon_path(self, icon: str, profile_name: str) -> Union[Path, None]:
+        """Try to get icon path.
+
+        First, right next to the toolbelt;
+        then under a subfolder starting from the toolbelt (adn handling pathlib OSError);
+        if still not, within the related profile folder.
+        None as fallback.
+
+        :param str icon: icon path as mentioned into the scenario file
+        :param str profile_name: QGIS profile name where to look into
+        :return Union[Path, None]: _description_
+        """
+        # try to get icon right aside the toolbelt
+        if Path(icon).is_file():
+            logger.debug(f"Icon found next to the toolbelt: {Path(icon).resolve()}")
+            return Path(icon).resolve()
+
+        # try to get icon within folders under toolbelt
+        try:
+            li_subfolders = list(Path(".").rglob(f"{icon}"))
+            if len(li_subfolders):
+                logger.debug(
+                    f"Icon found under the toolbelt: {li_subfolders[0].resolve()}"
+                )
+                return li_subfolders[0].resolve()
+        except OSError as err:
+            logger.error(
+                "Looking for icon within folders under toolbelt failed. %s" % err
+            )
+
+        # try to get icon within profile folder
+        qgis_profile_path: Path = Path(
+            OS_CONFIG.get(opersys).profiles_path / profile_name
+        )
+        if qgis_profile_path.is_dir():
+            li_subfolders = list(qgis_profile_path.rglob(f"{icon}"))
+            if len(li_subfolders):
+                logger.debug(
+                    f"Icon found within profile folder: {li_subfolders[0].resolve()}"
+                )
+                return li_subfolders[0].resolve()
+
+        return None
+
+    def get_arguments_ready(self, profile: str, in_arguments: str = None) -> Tuple[str]:
+        """Prepare arguments for the executable shortcut.
+
+        :param list in_arguments: argument as defined in the scenario file
+
+        :return Tuple[str]: tuple of strings separated by spaces
+        """
+        # add profile name
+        arguments: list = ["--profile", profile]
+
+        # add additional arguments
+        if in_arguments:
+            arguments.extend(in_arguments.split(" "))
+
+        return arguments
 
     def validate_options(self, options: dict) -> bool:
         """Validate options.
