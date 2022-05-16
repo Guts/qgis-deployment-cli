@@ -42,7 +42,16 @@ CONTEXT_SETTINGS = dict(obj={})
 # #################################
 @click.command(name="clean")
 @click.option(
-    "-rm",
+    "-d",
+    "--days-older",
+    help="Number of days after which the file is deleted.",
+    default=30,
+    show_default=True,
+    type=click.INT,
+    envvar="QGIS_DEPLOYMENT_CLEAN_DAYS_OLDER",
+)
+@click.option(
+    "-e",
     "--remove-empty-folders",
     help="Remove empty folders.",
     is_flag=True,
@@ -50,28 +59,25 @@ CONTEXT_SETTINGS = dict(obj={})
     show_default=True,
 )
 @click.pass_context
-def clean(cli_context: click.Context, remove_empty_folders: bool):
+def clean(
+    cli_context: click.Context, days_older: int, remove_empty_folders: bool
+) -> None:
     """Delete logs and output folders older than the frequency set in the \
     configuration: `CLEAN_FREQUENCY`.
 
     \f
     :param click.core.Context cli_context: Click context
+    :param int days_older: number of days after which the file is deleted.
     :param bool remove_empty_folders: if passed, empty folders will be deleted too
     """
     logger.info("CLEAN started after {:5.2f}s.".format(default_timer() - START_TIME))
 
     # extract values from CLI context
-    logs_folder = cli_context.obj.get("FOLDER_LOGS")
-    config_dict = cli_context.obj.get("SETTINGS_DICT")
+    logs_folder = Path("./_logs/")
+    if not logs_folder.exists():
+        exit_cli_success(f"No logs to clean in: {logs_folder.resolve()}", abort=True)
 
-    logger.info(
-        "Suppression des fichiers antérieurs à {} jours.".format(
-            config_dict.get("global").get("clean_frequency_days")
-        )
-    )
-    date_ref_days_ago = datetime.now() - timedelta(
-        days=int(config_dict.get("global").get("clean_frequency_days"))
-    )
+    date_ref_days_ago = datetime.now() - timedelta(days=days_older)
 
     # logs folder
     li_folders_logs = Path(logs_folder).iterdir()
