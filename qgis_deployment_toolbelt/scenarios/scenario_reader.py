@@ -41,7 +41,7 @@ class ScenarioReader:
     scenario: dict = None
 
     def __init__(self, in_yaml: Union[str, Path, BufferedIOBase]):
-        """Instanciating Isogeo Metadata YAML Reader."""
+        """Instanciating YAML scenario reader."""
         # check and get YAML path
         if isinstance(in_yaml, (str, Path)):
             self.input_yaml = self.check_yaml_file(in_yaml)
