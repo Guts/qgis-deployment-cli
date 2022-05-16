@@ -130,7 +130,50 @@ class JobShortcutsManager:
         else:
             raise NotImplementedError
 
-        logger.debug(f"Job {self.ID} ran successfully.")
+    # -- INTERNAL LOGIC ------------------------------------------------------
+    def get_icon_path(self, icon: str, profile_name: str) -> Union[Path, None]:
+        """Try to get icon path.
+
+        First, right next to the toolbelt;
+        then under a subfolder starting from the toolbelt (adn handling pathlib OSError);
+        if still not, within the related profile folder.
+        None as fallback.
+
+        :param str icon: icon path as mentioned into the scenario file
+        :param str profile_name: QGIS profile name where to look into
+        :return Union[Path, None]: _description_
+        """
+        # try to get icon right aside the toolbelt
+        if Path(icon).is_file():
+            logger.debug(f"Icon found next to the toolbelt: {Path(icon).resolve()}")
+            return Path(icon).resolve()
+
+        # try to get icon within folders under toolbelt
+        try:
+            li_subfolders = list(Path(".").rglob(f"{icon}"))
+            if len(li_subfolders):
+                logger.debug(
+                    f"Icon found under the toolbelt: {li_subfolders[0].resolve()}"
+                )
+                return li_subfolders[0].resolve()
+        except OSError as err:
+            logger.error(
+                "Looking for icon within folders under toolbelt failed. %s" % err
+            )
+
+        # try to get icon within profile folder
+        qgis_profile_path: Path = Path(
+            OS_CONFIG.get(opersys).profiles_path / profile_name
+        )
+        if qgis_profile_path.is_dir():
+            li_subfolders = list(qgis_profile_path.rglob(f"{icon}"))
+            if len(li_subfolders):
+                logger.debug(
+                    f"Icon found within profile folder: {li_subfolders[0].resolve()}"
+                )
+                return li_subfolders[0].resolve()
+
+        return None
 
     def validate_options(self, options: dict) -> bool:
         """Validate options.
