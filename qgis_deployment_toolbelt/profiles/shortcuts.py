@@ -201,6 +201,8 @@ class ApplicationShortcut:
 
         For Windows, note that we return `CSIDL_PROFILE`, not `CSIDL_APPDATA`,
         `CSIDL_LOCAL_APPDATA` or `CSIDL_COMMON_APPDATA`.
+        See: https://www.nirsoft.net/articles/find_special_folder_location.html
+        TODO: evaluate use of platformdirs
 
         :return Path: path to the user home
         """

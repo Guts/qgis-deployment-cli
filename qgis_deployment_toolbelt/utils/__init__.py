@@ -1,4 +1,4 @@
 #! python3  # noqa: E265
 
 # submodules
-from .journalizer import LogManager  # noqa: E402 F401
+from .str2bool import str2bool  # noqa: E402 F401

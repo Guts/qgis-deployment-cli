@@ -5,9 +5,9 @@
     .. code-block:: python
 
         # for whole test
-        python -m unittest tests.test_job_environment_variables
+        python -m unittest tests.test_jobs_launch
         # for specific
-        python -m unittest tests.test_job_environment_variables.TestJobsLaunch.test_jobs_launcher
+        python -m unittest tests.test_jobs_launch.TestJobsLaunch.test_jobs_launcher
 """
 
 # #############################################################################
@@ -20,9 +20,6 @@ from pathlib import Path
 
 # package
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
-from qgis_deployment_toolbelt.jobs.job_environment_variables import (
-    JobEnvironmentVariables,
-)
 from qgis_deployment_toolbelt.scenarios.scenario_reader import ScenarioReader
 
 # #############################################################################

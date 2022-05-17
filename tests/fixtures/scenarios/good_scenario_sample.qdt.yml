@@ -23,7 +23,7 @@ steps:
     uses: manage-env-vars
     with:
       - PYQGIS_STARTUP:
-        value: "%USERHOME%\\scripts\\qgis_startup.py"
+        value: "~/scripts/qgis_startup.py"
         scope: "user"
         action: "add"
 

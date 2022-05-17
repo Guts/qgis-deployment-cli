@@ -13,6 +13,8 @@
 
 # Standard library
 import logging
+from os.path import expanduser, expandvars
+from pathlib import Path
 from sys import platform as opersys
 from typing import List
 
@@ -60,7 +62,7 @@ class JobEnvironmentVariables:
                 if env_var.get("action") == "add":
                     setenv(
                         name=env_var.get("name"),
-                        value=env_var.get("value"),
+                        value=self.prepare_value(env_var.get("value")),
                         user=env_var.get("scope") == "user",
                         suppress_echo=True,
                     )
@@ -74,6 +76,29 @@ class JobEnvironmentVariables:
             )
 
         logger.debug(f"Job {self.ID} ran successfully.")
+
+    def prepare_value(self, value: str) -> str:
+        """Prepare value to be used in the environment variable.
+
+        :param str value: value to prepare.
+        :return str: prepared value.
+        """
+        try:
+            # test if value is a path
+            value_as_path = Path(expanduser(expandvars(value)))
+            if not value_as_path.exists():
+                logger.warning(
+                    f"{value} seems to be a valid path but does not exist (yet)."
+                )
+
+            return str(value_as_path.resolve())
+        except Exception as err:
+            logger.debug(f"Value {value} is not a valid path: {err}")
+
+        if opersys == "win32":
+            return value
+        else:
+            return f'"{value}"'
 
     def validate_options(self, options: List[dict]) -> List[dict]:
         """Validate options.
