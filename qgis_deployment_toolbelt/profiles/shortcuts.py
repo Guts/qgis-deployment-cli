@@ -15,7 +15,7 @@ import logging
 import os
 from pathlib import Path
 from sys import platform as opersys
-from typing import Tuple, Union
+from typing import Iterable, Tuple, Union
 
 # Imports depending on operating system
 if opersys == "win32":
@@ -44,7 +44,7 @@ class ApplicationShortcut:
         self,
         name: str,
         exec_path: Union[str, Path],
-        exec_arguments: Tuple[str] = None,
+        exec_arguments: Iterable[str] = None,
         description: str = None,
         icon_path: Union[str, Path] = None,
         work_dir: Union[str, Path] = None,
@@ -53,11 +53,10 @@ class ApplicationShortcut:
 
         :param str name: name of the shortcut that will be created
         :param Union[str, Path] exec_path: path to the executable (which should exist)
-        :param Tuple[str] exec_arguments: list of arguments and options to pass to the executable, defaults to None
+        :param Iterable[str] exec_arguments: list of arguments and options to pass to the executable, defaults to None
         :param str description: shortcut description, defaults to None
-        :param Union[str, Path] icon_path: path to icon .ico, defaults to None
+        :param Union[str, Path] icon_path: path to icon file, defaults to None
         :param Union[str, Path] work_dir: current folder where to start the executable, defaults to None
-
         """
         # retrieve operating system specific configuration
         if opersys not in OS_CONFIG:
@@ -86,35 +85,26 @@ class ApplicationShortcut:
             )
 
         # optional
-        if not description or isinstance(description, str):
+        if isinstance(exec_arguments, (tuple, list, type(None))):
+            self.exec_arguments = self.check_exec_arguments(exec_arguments)
+        else:
+            raise TypeError(
+                f"If defined, exec_arguments must be a tuple or list, not {type(exec_arguments)}"
+            )
+        if isinstance(description, (str, type(None))):
             self.description = description
         else:
             raise TypeError(
                 f"If defined, description must be a string, not {type(description)}"
             )
-
-        if not exec_arguments or isinstance(exec_arguments, (tuple, list)):
-            self.exec_arguments = " ".join(exec_arguments)
-        else:
-            raise TypeError(
-                f"If defined, exec_arguments must be a tuple or list, not {type(exec_arguments)}"
-            )
-        if isinstance(icon_path, (str, Path)):
-            self.icon_path = Path(icon_path)
-            if not self.icon_path.exists():
-                logger.warning(f"Icon does not exist: {self.exec_path}")
-        elif icon_path is None:
-            self.icon_path = icon_path
+        if isinstance(icon_path, (str, Path, type(None))):
+            self.icon_path = self.check_icon_path(icon_path)
         else:
             raise TypeError(
                 f"If defined, icon_path must be a string or pathlib.Path, not {type(icon_path)}"
             )
-        if isinstance(work_dir, (str, Path)):
-            self.work_dir = Path(work_dir)
-            if not self.work_dir.exists():
-                logger.warning(f"Work folder does not exist: {self.work_dir}")
-        elif work_dir is None:
-            self.work_dir = work_dir
+        if isinstance(work_dir, (str, Path, type(None))):
+            self.work_dir = self.check_work_dir(work_dir)
         else:
             raise TypeError(
                 f"If defined, work_dir must be a string or pathlib.Path, not {type(work_dir)}"
@@ -144,6 +134,57 @@ class ApplicationShortcut:
         if opersys == "win32":
             return self.win32_create()
 
+    def check_exec_arguments(
+        self, exec_arguments: Union[Iterable[str], None]
+    ) -> Union[Tuple[str], None]:
+        """Check if exec_arguments are valid.
+
+        :param Union[Iterable[str], None] exec_arguments: input executable arguments to check
+
+        :return Union[Tuple[str], None]: tuple of arguments
+        """
+        if not exec_arguments:
+            return None
+        # store as path
+        return " ".join(exec_arguments)
+
+    def check_icon_path(self, icon_path: Union[str, Path, None]) -> Union[Path, None]:
+        """Check icon path and return full path if it exists.
+
+        :param Union[str, Path] icon_path: input icon path to check
+
+        :return Union[Path, None]: icon path as Path if str or Path, else None
+        """
+        if not icon_path:
+            return None
+        # store as path
+        icon_path = Path(icon_path)
+        # checks
+        if icon_path.exists():
+            return icon_path.resolve()
+        else:
+
+            logger.warning(f"Icon does not exist: {icon_path}")
+            return None
+
+    def check_work_dir(self, work_dir: Union[str, Path, None]) -> Union[Path, None]:
+        """Check work dir and return full path if it exists.
+
+        :param Union[str, Path] work_dir: input work dir to check
+
+        :return Union[Path, None]: work dir as Path if str or Path, else None
+        """
+        if not work_dir:
+            return None
+        # store as path
+        work_dir = Path(work_dir)
+        # checks
+        if work_dir.is_dir():
+            return work_dir.resolve()
+        else:
+            logger.warning(f"Work folder does not exist: {work_dir}")
+            return None
+
     # -- PROPERTIES --------------------------------------------------------------
     @property
     def desktop_path(self) -> Path:
@@ -158,8 +199,8 @@ class ApplicationShortcut:
     def homedir_path(self) -> Path:
         """Return home directory.
 
-        For Windows, note that we return CSIDL_PROFILE, not CSIDL_APPDATA,
-        CSIDL_LOCAL_APPDATA or CSIDL_COMMON_APPDATA.
+        For Windows, note that we return `CSIDL_PROFILE`, not `CSIDL_APPDATA`,
+        `CSIDL_LOCAL_APPDATA` or `CSIDL_COMMON_APPDATA`.
 
         :return Path: path to the user home
         """
@@ -187,7 +228,7 @@ class ApplicationShortcut:
     def startmenu_path(self) -> Path:
         """Return user Start Menu Programs folder.
 
-        For Windows, note that we return CSIDL_PROGRAMS not CSIDL_COMMON_PROGRAMS.
+        For Windows, note that we return `CSIDL_PROGRAMS` not `CSIDL_COMMON_PROGRAMS`.
 
         :return Path: path to the Start Menu Programs folder
         """
@@ -247,7 +288,10 @@ class ApplicationShortcut:
             if self.work_dir is not None:
                 wscript.WorkingDirectory = str(self.work_dir.resolve())
             wscript.WindowStyle = 0
-            wscript.Description = self.description
+            if self.description:
+                wscript.Description = self.description
+            else:
+                wscript.Description = f"Created by {__title__} {__version__}"
             if self.icon_path is not None:
                 wscript.IconLocation = str(self.icon_path.resolve())
             wscript.save()

@@ -28,12 +28,12 @@ class TestShortcut(unittest.TestCase):
     def test_shortcut_creation_complete(self):
         """Test creation of shortcut."""
         shortcut = ApplicationShortcut(
-            name="test shortcut",
-            description="A test shortcut",
+            name="QDT - Test shortcut complete",
             exec_path=Path(__file__),
             exec_arguments=("--test", "unit"),
-            work_dir=Path(__file__).parent,
+            description="A test shortcut",
             icon_path=Path(__file__).parent / "icon.png",
+            work_dir=Path(__file__).parent,
         )
 
         shortcuts_paths = shortcut.create(
@@ -43,6 +43,66 @@ class TestShortcut(unittest.TestCase):
 
         if opersys == "win32":
             self.assertIsInstance(shortcuts_paths, tuple)
+
+    def test_shortcut_creation_minimal(self):
+        """Test creation of shortcut."""
+        shortcut = ApplicationShortcut(
+            name="QDT - Test shortcut minimal",
+            exec_path=Path(__file__),
+        )
+
+        shortcuts_paths = shortcut.create(
+            desktop=True,
+            start_menu=True,
+        )
+
+        if opersys == "win32":
+            self.assertIsInstance(shortcuts_paths, tuple)
+
+    def test_shortcut_bad_types(self):
+        """Test shortcut TypeError raises."""
+        with self.assertRaises(TypeError):
+            ApplicationShortcut(
+                name=["QDT - Test shortcut bad type"],
+                exec_path=Path(__file__),
+            )
+
+        with self.assertRaises(TypeError):
+            ApplicationShortcut(
+                name="QDT - Test shortcut bad type",
+                exec_path=[Path(__file__)],
+            )
+
+        with self.assertRaises(TypeError):
+            ApplicationShortcut(
+                name="QDT - Test shortcut bad type",
+                exec_path=Path(__file__),
+                exec_arguments="--test unit",
+            )
+
+        with self.assertRaises(TypeError):
+            ApplicationShortcut(
+                name="QDT - Test shortcut bad type",
+                exec_path=Path(__file__),
+                exec_arguments=("--test", "unit"),
+                description=["A test shortcut"],
+            )
+
+        with self.assertRaises(TypeError):
+            ApplicationShortcut(
+                name="QDT - Test shortcut bad type",
+                exec_path=Path(__file__),
+                exec_arguments=("--test", "unit"),
+                description="A test shortcut",
+                icon_path=["icon.png"],
+            )
+
+        with self.assertRaises(TypeError):
+            ApplicationShortcut(
+                name="QDT - Test shortcut bad type",
+                exec_path=Path(__file__),
+                work_dir=["C:\\"],
+            )
 
 
 # ############################################################################
