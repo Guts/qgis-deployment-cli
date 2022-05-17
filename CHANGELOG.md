@@ -16,6 +16,11 @@ Unreleased
 
 -->
 
+## 0.9.0 - 2022-05-xx
+
+- Fix a bug when the icon path was not set for a shortcut
+- Extend unit tests
+
 ## 0.8.0 - 2022-05-16
 
 - Pin dulwich version to avoid recurring connection errors
