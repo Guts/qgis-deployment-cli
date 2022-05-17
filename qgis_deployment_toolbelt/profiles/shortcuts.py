@@ -164,7 +164,7 @@ class ApplicationShortcut:
             return icon_path.resolve()
         else:
 
-            logger.warning(f"Icon does not exist: {self.exec_path}")
+            logger.warning(f"Icon does not exist: {icon_path}")
             return None
 
     def check_work_dir(self, work_dir: Union[str, Path, None]) -> Union[Path, None]:
@@ -182,7 +182,7 @@ class ApplicationShortcut:
         if work_dir.is_dir():
             return work_dir.resolve()
         else:
-            logger.warning(f"Work folder does not exist: {self.work_dir}")
+            logger.warning(f"Work folder does not exist: {work_dir}")
             return None
 
     # -- PROPERTIES --------------------------------------------------------------
