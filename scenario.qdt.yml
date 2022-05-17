@@ -12,20 +12,14 @@ metadata:
 settings:
   DEBUG: true
   SCENARIO_VALIDATION: true
-  OFFLINE_MODE: false
-  SSL_VERIFICATION: true
-  HTTP_PROXY: null
-  HTTPS_PROXY: null
-  FIXTURES_DIR: "tests/fixtures"
-  SYNCHRONOUS_MODE: false
 
 # Deployment workflow, step by step
 steps:
   - name: Set environment variables
     uses: manage-env-vars
     with:
-      - PYQGIS_STARTUP:
-        value: "%USERHOME%\\scripts\\qgis_startup.py"
+      - name: PYQGIS_STARTUP
+        value: "~/scripts/qgis_startup.py"
         scope: "user"
         action: "add"
 
