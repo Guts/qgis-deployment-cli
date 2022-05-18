@@ -16,10 +16,16 @@ Unreleased
 
 -->
 
-## 0.9.0 - 2022-05-xx
+## 0.9.0 - 2022-05-18
 
+- handle `~` char in scenario files to represent the end-user home folder
+- add [`utils.str2bool`](https://guts.github.io/qgis-deployment-cli/_apidoc/qgis_deployment_toolbelt.utils.str2bool.html) to convert `str` to `bool`. Useful to process environment variables which are always stored/retrieved as strings.
+- add [`utils.win32utils.get_environment_variable`](https://guts.github.io/qgis-deployment-cli/_apidoc/qgis_deployment_toolbelt.utils.win32utils.html) to retrieve environment variable directly from Windows registry, because `os.getenv` uses the configuration at the run moment
+- Documentation: add an auto-generated table of dependencies and their license within the [Credits page](https://guts.github.io/qgis-deployment-cli/misc/credits.html)
 - Fix a bug when the icon path was not set for a shortcut
-- Extend unit tests
+- Extend unit tests to reach 60% of coverage
+
+> See the [GitHub Release for a detailed changelog](https://github.com/Guts/qgis-deployment-cli/releases/tag/0.9.0).
 
 ## 0.8.0 - 2022-05-16
 
@@ -27,6 +33,8 @@ Unreleased
 - Add support for environment variable `QGIS_CUSTOM_CONFIG_PATH`
 - Make clone/pull more robust
 - Extend unit tests
+
+> See the [GitHub Release for a detailed changelog](https://github.com/Guts/qgis-deployment-cli/releases/tag/0.8.0).
 
 ## 0.7.0 - 2022-05-16
 
