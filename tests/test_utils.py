@@ -12,6 +12,8 @@
 
 # standard library
 import unittest
+from os import environ
+from sys import platform as opersys
 
 # project
 from qgis_deployment_toolbelt.utils import str2bool
@@ -53,6 +55,12 @@ class TestUtils(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             str2bool(value="vrai", raise_exc=True)
+
+    @unittest.skipIf(opersys != "win32", "Test specific to Windows.")
+    def test_win32_getenv(self):
+        """Test specific Windows environment variable getter."""
+        # OK
+        self.assertIsInstance(get_environment_variable(environ[0]), str)
 
 
 # ############################################################################
