@@ -60,8 +60,10 @@ class TestUtils(unittest.TestCase):
     def test_win32_getenv(self):
         """Test specific Windows environment variable getter."""
         # OK
-        first_envvar = list(environ.keys())[0]
-        self.assertIsInstance(get_environment_variable(first_envvar), str)
+        self.assertIsInstance(get_environment_variable("TEMP"), str)
+
+        # KO
+        self.assertIsNone(get_environment_variable("YOUPI"))
 
 
 # ############################################################################
