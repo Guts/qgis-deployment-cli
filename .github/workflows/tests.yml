@@ -12,7 +12,8 @@ on:
     paths:
       - "**/*.py"
       - ".github/workflows/tests.yml"
-      - "requirements/*.txt"
+      - "requirements/base.txt"
+      - "requirements/testing.txt"
 
 env:
   PROJECT_FOLDER: "qgis_deployment_toolbelt"
