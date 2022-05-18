@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Minimalist slugifier.
+    Utilities specific for Windows.
 
     Author: Julien Moura (https://github.com/guts)
 """
