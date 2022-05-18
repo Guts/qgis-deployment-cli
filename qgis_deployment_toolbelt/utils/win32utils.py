@@ -54,7 +54,7 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> Union[str
         with winreg.OpenKey(*hkey, access=winreg.KEY_READ) as key:
             value, regtype = winreg.QueryValueEx(key, envvar_name)
         return value
-    except WindowsError:
+    except OSError:
         logger.error(
             f"Environment variable {envvar_name} not found in registry (scope: {scope}"
         )
