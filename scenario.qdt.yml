@@ -30,16 +30,24 @@ steps:
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
       local_destination: ~/.cache/qgis-deployment-toolbelt/Oslandia/
+      sync_mode: "overwrite"
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
     with:
       action: create_or_restore
       include:
+        - profile: conf_qgis_fr
+          label: "QGIS - Conf QGIS FR"
+          additional_arguments: "--noversioncheck"
+          desktop: false
+          start_menu: true
+          icon: "qgis_icon.ico"
+          qgis_path: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
         - profile: oslandia
           label: "QGIS - Profil Oslandia"
           additional_arguments: "--noversioncheck"
           desktop: true
           start_menu: true
           icon: "qgis_icon_oslandia.ico"
-          qgis_path: "%PROGRAMFILES%\\QGIS\\3_22\\bin\\qgis-bin.exe"
+          qgis_path: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
