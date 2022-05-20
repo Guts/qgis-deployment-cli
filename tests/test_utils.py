@@ -16,7 +16,7 @@ from os import environ
 from sys import platform as opersys
 
 # project
-from qgis_deployment_toolbelt.utils import str2bool
+from qgis_deployment_toolbelt.utils import get_proxy_settings, str2bool
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
 
@@ -27,6 +27,13 @@ from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
 
 class TestUtils(unittest.TestCase):
     """Test package utilities."""
+
+    def test_proxy_settings(self):
+        """Test proxy settings retriever."""
+        # OK
+        self.assertIsNone(get_proxy_settings())
+        environ["HTTP_PROXY"] = "http://proxy.example.com:3128"
+        self.assertIsInstance(get_proxy_settings(), dict)
 
     def test_slugger(self):
         """Test minimalist slugify function."""

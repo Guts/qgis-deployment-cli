@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-def proxy_settings() -> Union[dict, None]:
+def get_proxy_settings() -> Union[dict, None]:
     """Retrieves network proxy settings from operating system configuration or
     environment variables.
 
