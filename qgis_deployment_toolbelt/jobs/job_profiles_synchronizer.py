@@ -71,6 +71,18 @@ class JobProfilesDownloader:
             "possible_values": ("https://", "http://", "git://", "file://"),
             "condition": "startswith",
         },
+        "sync_mode": {
+            "type": str,
+            "required": False,
+            "default": "only_missing",
+            "possible_values": (
+                "only_missing",
+                "only_different_version",
+                "only_new_version",
+                "overwrite",
+            ),
+            "condition": "in",
+        },
     }
     PROFILES_NAMES_DOWNLOADED: list = []
     PROFILES_NAMES_INSTALLED: list = []
