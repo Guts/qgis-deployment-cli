@@ -18,6 +18,8 @@
 import tempfile
 import unittest
 from pathlib import Path
+from shutil import rmtree
+from sys import version_info
 
 # 3rd party
 from giturlparse import GitUrlParsed
@@ -101,12 +103,15 @@ class TestGitHandler(unittest.TestCase):
         self.assertEqual("gitlab", git_handler.url_parsed.platform)
         self.assertEqual("profils_qgis_fr_2022", git_handler.url_parsed.repo)
 
-    def test_git_clone(self):
-        """Test git parsed URL"""
+    @unittest.skipUnless(version_info.minor >= 10, "requires python 3.10")
+    def test_git_clone_py310(self):
+        """Test git parsed URL.
+
+        TODO: remove the decorator when python 3.8 and 3.9 are not supported anymore"""
         self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
         git_handler = RemoteGitHandler(self.good_git_url)
 
-        with tempfile.TemporaryDirectory() as tmpdirname:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             local_dest = Path(tmpdirname) / "test_git_clone"
             # clone
             git_handler.download(local_path=local_dest)
@@ -115,3 +120,23 @@ class TestGitHandler(unittest.TestCase):
 
             # check pull is working
             git_handler.clone_or_pull(local_path=local_dest)
+
+    def test_git_clone_py38(self):
+        """Test git parsed URL.
+
+        TODO: remove this test when python 3.8 and 3.9 are not supported anymore"""
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+        git_handler = RemoteGitHandler(self.good_git_url)
+
+        # test folder
+        local_dest = Path(".") / "tests/fixtures/test_git_clone"
+
+        # clone
+        git_handler.download(local_path=local_dest.resolve())
+        # check if clone worked and new folder is a local git repo
+        self.assertTrue(git_handler.is_local_path_git_repository(local_dest))
+
+        # check pull is working
+        git_handler.clone_or_pull(local_path=local_dest)
+
+        rmtree(local_dest, ignore_errors=True)
