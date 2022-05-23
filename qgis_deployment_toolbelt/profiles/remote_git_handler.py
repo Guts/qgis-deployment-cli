@@ -49,7 +49,7 @@ class RemoteGitHandler:
     @property
     def is_url_git_repository(self) -> bool:
         """Flag if a repository is a git repository."""
-        return git_validate(self._url)
+        return git_validate(self.url)
 
     @property
     def url_parsed(self) -> GitUrlParsed:
