@@ -106,7 +106,4 @@ class RemoteGitHandler:
 
 if __name__ == "__main__":
     """Standalone execution."""
-    git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
-    git_handler = RemoteGitHandler(git_url)
-    t = git_handler.url_parsed
-    print(sorted(t.data.keys()))
+    pass
