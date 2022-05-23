@@ -187,30 +187,36 @@ class JobProfilesDownloader:
             logger.error("No QGIS profile found in the downloaded folder.")
             return None
 
-    def sync_local_profiles(self, source_profiles_folder: tuple) -> None:
+    def sync_local_profiles(self, source_profiles_folder: Tuple[Path]) -> None:
         """Copy downloaded profiles to QGIS profiles folder.
         If the QGIS profiles folder doesn't exist, it will be created and every
         downloaded profile will be copied.
         If a profile is already installed, it won't be overwritten.
 
-        :param tuple source_profiles_folder: list of downloaded profiles folders paths
+        :param Tuple[Path] source_profiles_folder: list of downloaded profiles folders paths
         """
         # check if local profiles folder exists or it's empty
         if not self.qgis_profiles_path.exists() or not any(
             self.qgis_profiles_path.iterdir()
         ):
-            # ensure it exists
+            logger.info(
+                "The QGIS profiles folder does not exist or is empty: "
+                f"{self.qgis_profiles_path.resolve()}. Probably a fresh install."
+                "Copying downloaded profiles..."
+            )
+            # ensure QGIS profiles folder exists
             self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
-            # copy downloaded profiles into this
-            for d in source_profiles_folder:
-                copytree(
-                    d,
-                    self.qgis_profiles_path,
-                    copy_function=copy2,
-                    dirs_exist_ok=True,
-                )
-        elif len(
-            set(self.PROFILES_NAMES_DOWNLOADED) - set(self.PROFILES_NAMES_INSTALLED)
+
+            # copy all downloaded profiles
+            self.sync_overwrite_local_profiles(
+                profiles_folder_to_copy=source_profiles_folder
+            )
+
+        elif (
+            len(
+                set(self.PROFILES_NAMES_DOWNLOADED) - set(self.PROFILES_NAMES_INSTALLED)
+            )
+            and self.options.get("sync_mode") == "only_missing"
         ):
             already_installed = [
                 p
@@ -247,6 +253,33 @@ class JobProfilesDownloader:
             logger.error(
                 "QGIS Profiles folder already exists, it's not empty: "
                 f"{self.qgis_profiles_path.resolve()}"
+            )
+
+    def sync_copy_only_missing(self, profiles_folder_to_copy: Tuple[Path]) -> None:
+        """Copy only missing profiles from downloaded ones to QGIS profiles folder to
+        local destination."""
+        # copy downloaded profiles into this
+        for d in profiles_folder_to_copy:
+            copytree(
+                d,
+                self.qgis_profiles_path,
+                copy_function=copy2,
+                dirs_exist_ok=True,
+            )
+
+    def sync_overwrite_local_profiles(
+        self, profiles_folder_to_copy: Tuple[Path]
+    ) -> None:
+        """Overwrite local profiles with downloaded ones."""
+        # ensure QGIS profiles folder exists
+        self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
+        # copy downloaded profiles into this
+        for d in profiles_folder_to_copy:
+            copytree(
+                d,
+                self.qgis_profiles_path,
+                copy_function=copy2,
+                dirs_exist_ok=True,
             )
 
     def validate_options(self, options: dict) -> bool:
