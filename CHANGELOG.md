@@ -16,6 +16,11 @@ Unreleased
 
 -->
 
+## 0.10.0 - 2022-05-25
+
+- Minor bug fixes
+- Extends unit tests (65%)
+
 ## 0.9.0 - 2022-05-18
 
 - handle `~` char in scenario files to represent the end-user home folder
