@@ -8,13 +8,9 @@ You can schedule the deployment through QGIS Deployment Toolbelt using a task sc
 
     ![Task scheduler](/static/task_scheduler_windows_app.png)
 
-<br>
-
 2. Click on **Create Task**
 
    ![Create_task](/static/task_scheduler_windows_create_task.png)
-
-<br>
 
 3. Fill in the **general information**
 
@@ -22,15 +18,11 @@ You can schedule the deployment through QGIS Deployment Toolbelt using a task sc
 
    ![General_information](/static/task_scheduler_windows_create_task_general.png)
 
-<br>
-
-4. **Launch condition**
+4. **Launch condition** 
 
    Define the conditions for launching the task: at login, once a day, once a week...
 
-   ![Launch_condition](/static/task_scheduler_windows_create_task_trigger.png)
-
-<br>
+   ![Launch_condition](/static/task_scheduler_windows_create_task_trigger.png) 
 
 5. **Action** performed
 
@@ -40,8 +32,6 @@ You can schedule the deployment through QGIS Deployment Toolbelt using a task sc
    ![Action](/static/task_scheduler_windows_create_task_action.png)
 
    More parameters are available in the last tabs: **Conditions** and **Settings**
-
-<br>
 
 6. **Monitoring**
 
