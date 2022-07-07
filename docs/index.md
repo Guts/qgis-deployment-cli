@@ -20,6 +20,7 @@ usage/how_it_works
 usage/how_to_use
 usage/cli
 usage/settings
+usage/schedule_deployment
 ```
 
 ```{toctree}
