@@ -6,35 +6,45 @@ You can schedule the deployment through QGIS Deployment Toolbelt using a task sc
 
 1. Open the **Task Scheduler**
 
-![Task scheduler](../static/task_scheduler_windows_app.png)
+    ![Task scheduler](/static/task_scheduler_windows_app.png)
+
+<br>
 
 2. Click on **Create Task**
 
-![Create_task](../static/task_scheduler_windows_create_task.png)
+   ![Create_task](/static/task_scheduler_windows_create_task.png)
+
+<br>
 
 3. Fill in the **general information**
 
-Assign a name and set security options.
+   Assign a name and set security options.
 
-![General_information](../static/task_scheduler_windows_create_task_general.png)
+   ![General_information](/static/task_scheduler_windows_create_task_general.png)
+
+<br>
 
 4. **Launch condition**
 
-Define the conditions for launching the task: at login, once a day, once a week...
+   Define the conditions for launching the task: at login, once a day, once a week...
 
-![Launch_condition](../static/task_scheduler_windows_create_task_trigger.png)
+   ![Launch_condition](/static/task_scheduler_windows_create_task_trigger.png)
+
+<br>
 
 5. **Action** performed
 
-Define the action performed by the task. The action performed will be the execution of a program.
-Choose the path of the executable and remember to specify the launch folder.
+   Define the action performed by the task. The action performed will be the execution of a program.
+   Choose the path of the executable and remember to specify the launch folder.
 
-![Action](../static/task_scheduler_windows_create_task_action.png)
+   ![Action](/static/task_scheduler_windows_create_task_action.png)
 
-More parameters are available in the last tabs: **Conditions** and **Settings**
+   More parameters are available in the last tabs: **Conditions** and **Settings**
+
+<br>
 
 6. **Monitoring**
 
-![Monitoring](../static/task_scheduler_windows_monitoring.png)
+   ![Monitoring](/static/task_scheduler_windows_monitoring.png)
 
-On the home screen, you can see the tasks, their status, you can edit/start/delete... them.
+   On the home screen, you can see the tasks, their status, you can edit/start/delete... them.
