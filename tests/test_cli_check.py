@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Tests against CLI check command.
+    Test CLI's check command.
 """
 
 # #############################################################################
@@ -9,6 +9,7 @@
 # ##################################
 
 # Standard library
+from pathlib import Path
 
 # 3rd party library
 from click.testing import CliRunner
@@ -20,6 +21,10 @@ from qgis_deployment_toolbelt.cli import qgis_deployment_toolbelt
 # ######## Globals #################
 # ##################################
 
+sample_scenario_good: Path = Path(
+    "tests/fixtures/scenarios/good_scenario_sample.qdt.yml"
+)
+
 # #############################################################################
 # ######## Classes #################
 # ##################################
@@ -30,7 +35,7 @@ def test_check_help():
     runner = CliRunner()
     result = runner.invoke(
         qgis_deployment_toolbelt,
-        ["--settings=.env.example", "check", "--help"],
+        [f"--scenario={str(sample_scenario_good.resolve())}", "check", "--help"],
         catch_exceptions=False,
     )
     assert result.exit_code == 0

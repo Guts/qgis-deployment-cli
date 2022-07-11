@@ -4,11 +4,19 @@
         88
     ],
     "editor.wordWrapColumn": 88,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
     "files.associations": {
         "./requirements/*.txt": "pip-requirements"
     },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
     // Python environment
-    "python.pythonPath": ".venv/bin/python",
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
     // Formatter
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
@@ -22,8 +30,16 @@
         "--verbose"
     ],
     "python.linting.pylintEnabled": false,
+    // Tests
+    "python.testing.pytestArgs": [],
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": true,
     // extensions
     "autoDocstring.guessTypes": true,
-    "autoDocstring.docstringFormat": "google",
-    "autoDocstring.generateDocstringOnEnter": false
+    "autoDocstring.docstringFormat": "one-line-sphinx",
+    "autoDocstring.generateDocstringOnEnter": false,
+    "yaml.schemas": {
+        "docs/schemas/schema.json": "tests/fixtures/scenarios/*.qdt.yml",
+        "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
+    }
 }

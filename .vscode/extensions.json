@@ -1,7 +1,7 @@
 {
     "recommendations": [
-        "coenraads.bracket-pair-colorizer-2",
         "ms-python.python",
-        "njpwerner.autodocstring"
+        "njpwerner.autodocstring",
+        "redhat.vscode-yaml"
     ]
 }

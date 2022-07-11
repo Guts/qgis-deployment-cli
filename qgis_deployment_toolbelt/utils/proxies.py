@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Command-line to run Scan scripts without connection and post-synchronize the results.
+    Small module to get network proxies configuration.
 
     Author: Julien Moura (github.com/guts)
 """
@@ -13,30 +13,28 @@
 # Standard library
 import logging
 from os import environ
-from timeit import default_timer
+from typing import Union
 from urllib.request import getproxies
 
 # #############################################################################
 # ########## Globals ###############
 # ##################################
 
-# chronometer
-START_TIME = default_timer()
-
 # logs
 logger = logging.getLogger(__name__)
 
-# default CLI context.
-# See: https://click.palletsprojects.com/en/7.x/commands/#context-defaults
-CONTEXT_SETTINGS = dict(obj={})
 
 # #############################################################################
 # ########## Functions #############
 # ##################################
 
 
-def proxy_settings():
-    """Retrieves network proxy settings from OS or an environment file."""
+def get_proxy_settings() -> Union[dict, None]:
+    """Retrieves network proxy settings from operating system configuration or
+    environment variables.
+
+    :return Union[dict, None]: system proxy settings or None if no proxy is set
+    """
     if environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
         proxy_settings = {
             "http": environ.get("HTTP_PROXY"),

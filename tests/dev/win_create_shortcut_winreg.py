@@ -1,9 +1,10 @@
-#! /usr/bin/env python
+#! python3  # noqa: E265
+
 import os
 import sys
-import shutil
 import sysconfig
 import winreg
+
 from win32com.client import Dispatch
 
 
@@ -28,7 +29,7 @@ packageName = "iromlab"
 scriptsDir = sysconfig.get_path("scripts")
 
 # Target of shortcut
-target = os.path.join(scriptsDir, packageName + ".exe")
+target = sys.executable
 
 # Name of link file
 linkName = packageName + ".lnk"

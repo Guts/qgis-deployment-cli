@@ -1,10 +1,14 @@
 # {{ title }} - Documentation
 
+> **Description:** {{ description }}  
 > **Author and contributors:** {{ author }}  
 > **Version:** {{ version }}  
 > **Source code:** {{ repo_url }}  
 > **Last documentation build:** {{ date_update }}
-----
+
+---
+
+![QGIS Deployment Toolbelt CLI](/static/qgis-deployment-toolbelt_cli_help.png)
 
 ```{toctree}
 ---
@@ -12,7 +16,11 @@ caption: How to use
 maxdepth: 1
 ---
 usage/installation
+usage/how_it_works
+usage/how_to_use
+usage/cli
 usage/settings
+usage/schedule_deployment
 ```
 
 ```{toctree}
@@ -27,6 +35,7 @@ development/windows
 development/documentation
 development/testing
 development/packaging
+development/releasing
 development/history
 ```
 

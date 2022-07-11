@@ -3,7 +3,7 @@
 """
     Minimalist slugifier.
 
-    Author: Julien Moura (@geojulien) - IRENA
+    Author: Julien Moura (https://github.com/guts)
 """
 
 # #############################################################################
@@ -65,5 +65,4 @@ def sluggy(text_to_slugify: str, replacer: str = "-") -> str:
 
 if __name__ == "__main__":
     """Standalone execution."""
-    sample_txt = "Oyé oyé brâves gens de 1973 ! Hé oh ! Sentons-nous l'ail %$*§ ?!"
-    print(sluggy(sample_txt))
+    pass

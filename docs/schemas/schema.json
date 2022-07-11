@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/schema.json",
+  "$comment": "Deploy and configure QGIS and related components (plugins, shortcuts, etc.).",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "metadata.json"
+    },
+    "settings": {
+      "$ref": "settings.json"
+    },
+    "steps": {
+      "description": "The steps to perform.",
+      "title": "deployment steps",
+      "type": "array",
+      "$ref": "jobs/generic.json"
+    }
+  }
+}

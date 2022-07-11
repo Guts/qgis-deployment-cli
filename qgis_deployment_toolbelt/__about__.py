@@ -22,6 +22,8 @@ __author__ = "Julien Moura (Oslandia)"
 __copyright__ = "2021 - {0}, {1}".format(date.today().year, __author__)
 __email__ = "qgis@oslandia.com"
 __executable_name__ = "QGIS_DeploymentCLI.exe"
+__package_name__ = "qgis-deployment-toolbelt"
+__keywords__ = ["cli, QGIS, deployment, profiles"]
 __license__ = "GNU Lesser General Public License v3.0"
 __summary__ = (
     "QGIS deployment toolbelt is a CLI (Command Line Interface) to perform "
@@ -29,9 +31,12 @@ __summary__ = (
 )
 __title__ = "QGIS Deployment Toolbelt"
 __title_clean__ = "".join(e for e in __title__ if e.isalnum())
-__uri__ = "https://github.com/Guts/qgis-deployment-cli/"
+__uri_homepage__ = "https://guts.github.io/qgis-deployment-cli/"
+__uri_repository__ = "https://github.com/Guts/qgis-deployment-cli/"
+__uri_tracker__ = "https://github.com/Guts/qgis-deployment-cli/issues/"
+__uri__ = __uri_repository__
 
-__version__ = "0.1.0"
+__version__ = "0.10.0"
 __version_info__ = tuple(
     [
         int(num) if num.isdigit() else num
