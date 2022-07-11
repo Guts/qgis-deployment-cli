@@ -20,8 +20,6 @@ import click
 # submodules
 from qgis_deployment_toolbelt.__about__ import __version__
 from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_qgis_plugins
-from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error
-from qgis_deployment_toolbelt.commands import cli_check, cli_clean
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_normal
