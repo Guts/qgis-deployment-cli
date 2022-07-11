@@ -1,0 +1,929 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; QGIS Deployment Toolbelt 0.10.0 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">How to use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/how_it_works.html">How it works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/cli.html">Command-line interface usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/settings.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/schedule_deployment.html">Schedule the deployment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_apidoc/modules.html">Code documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/contribute.html">Contributing Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/ubuntu.html">Develop on Ubuntu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/windows.html">Develop on Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/testing.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/packaging.html">Packaging into an executable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/releasing.html">Release workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/history.html">CHANGELOG</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="misc/compatibility.html">Platform compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc/credits.html">Credits</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/Guts/qgis-deployment-cli/"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/Guts/qgis-deployment-cli//issues/new?title=Issue%20on%20page%20%2Fgenindex.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#Symbols"><strong>Symbols</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="Symbols">Symbols</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    --clear
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-c">qdeploy-toolbelt command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --days-older
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-clean-d">clean command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --remove-empty-folders
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-clean-e">clean command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --scenario
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-s">qdeploy-toolbelt command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --verbose
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-v">qdeploy-toolbelt command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --version
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-version">qdeploy-toolbelt command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    -c
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-c">qdeploy-toolbelt command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -d
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-clean-d">clean command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -e
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-clean-e">clean command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -s
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-s">qdeploy-toolbelt command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -v
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-v">qdeploy-toolbelt command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut">ApplicationShortcut (class in qgis_deployment_toolbelt.profiles.shortcuts)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.available_jobs">available_jobs (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.check_exec_arguments">check_exec_arguments() (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.check_icon_path">check_icon_path() (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.check_work_dir">check_work_dir() (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader.check_yaml_buffer">check_yaml_buffer() (qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader.check_yaml_file">check_yaml_file() (qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader method)</a>
+</li>
+      <li>
+    clean command line option
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-clean-d">--days-older</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-clean-e">--remove-empty-folders</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-clean-d">-d</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-clean-e">-e</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler.clone_or_pull">clone_or_pull() (qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.create">create() (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.desktop_path">desktop_path (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler.download">download() (qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.bouncer.html#qgis_deployment_toolbelt.utils.bouncer.exit_cli_error">exit_cli_error() (in module qgis_deployment_toolbelt.utils.bouncer)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.bouncer.html#qgis_deployment_toolbelt.utils.bouncer.exit_cli_normal">exit_cli_normal() (in module qgis_deployment_toolbelt.utils.bouncer)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.bouncer.html#qgis_deployment_toolbelt.utils.bouncer.exit_cli_success">exit_cli_success() (in module qgis_deployment_toolbelt.utils.bouncer)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.filter_profiles_folder">filter_profiles_folder() (qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.get_arguments_ready">get_arguments_ready() (qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.win32utils.html#qgis_deployment_toolbelt.utils.win32utils.get_environment_variable">get_environment_variable() (in module qgis_deployment_toolbelt.utils.win32utils)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.get_icon_path">get_icon_path() (qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.get_job_module_from_id">get_job_module_from_id() (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.logger.html#qgis_deployment_toolbelt.utils.logger.get_logger">get_logger() (in module qgis_deployment_toolbelt.utils.logger)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.proxies.html#qgis_deployment_toolbelt.utils.proxies.get_proxy_settings">get_proxy_settings() (in module qgis_deployment_toolbelt.utils.proxies)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.journalizer.html#qgis_deployment_toolbelt.utils.journalizer.LogManager.headers">headers() (qgis_deployment_toolbelt.utils.journalizer.LogManager method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.homedir_path">homedir_path (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables.ID">ID (qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables attribute)</a>
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.ID">(qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader attribute)</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.ID">(qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.import_all_jobs">import_all_jobs() (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.import_job">import_job() (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.init_job_class_from_id">init_job_class_from_id() (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.logger.html#qgis_deployment_toolbelt.utils.logger.init_Logger">init_Logger() (in module qgis_deployment_toolbelt.utils.logger)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.journalizer.html#qgis_deployment_toolbelt.utils.journalizer.LogManager.initial_logger_config">initial_logger_config() (qgis_deployment_toolbelt.utils.journalizer.LogManager method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler.is_local_path_git_repository">is_local_path_git_repository() (qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler.is_url_git_repository">is_url_git_repository (qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables">JobEnvironmentVariables (class in qgis_deployment_toolbelt.jobs.job_environment_variables)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader">JobProfilesDownloader (class in qgis_deployment_toolbelt.jobs.job_profiles_synchronizer)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.JOBS">JOBS (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.jobs_ids">jobs_ids (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator property)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager">JobShortcutsManager (class in qgis_deployment_toolbelt.jobs.job_shortcuts)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator">JobsOrchestrator (class in qgis_deployment_toolbelt.jobs.orchestrator)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.logger.html#qgis_deployment_toolbelt.utils.logger.Logger.log">log() (qgis_deployment_toolbelt.utils.logger.Logger method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.journalizer.html#qgis_deployment_toolbelt.utils.journalizer.LogManager.LOG_FORMAT">LOG_FORMAT (qgis_deployment_toolbelt.utils.journalizer.LogManager attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.logger.html#qgis_deployment_toolbelt.utils.logger.Logger">Logger (class in qgis_deployment_toolbelt.utils.logger)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.journalizer.html#qgis_deployment_toolbelt.utils.journalizer.LogManager">LogManager (class in qgis_deployment_toolbelt.utils.journalizer)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader.metadata">metadata (qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader property)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.html#module-qgis_deployment_toolbelt">qgis_deployment_toolbelt</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.cli.html#module-qgis_deployment_toolbelt.cli">qgis_deployment_toolbelt.cli</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.commands.html#module-qgis_deployment_toolbelt.commands">qgis_deployment_toolbelt.commands</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.commands.cli_check.html#module-qgis_deployment_toolbelt.commands.cli_check">qgis_deployment_toolbelt.commands.cli_check</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.commands.cli_clean.html#module-qgis_deployment_toolbelt.commands.cli_clean">qgis_deployment_toolbelt.commands.cli_clean</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#module-qgis_deployment_toolbelt.constants">qgis_deployment_toolbelt.constants</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.html#module-qgis_deployment_toolbelt.jobs">qgis_deployment_toolbelt.jobs</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#module-qgis_deployment_toolbelt.jobs.job_environment_variables">qgis_deployment_toolbelt.jobs.job_environment_variables</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#module-qgis_deployment_toolbelt.jobs.job_profiles_synchronizer">qgis_deployment_toolbelt.jobs.job_profiles_synchronizer</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#module-qgis_deployment_toolbelt.jobs.job_shortcuts">qgis_deployment_toolbelt.jobs.job_shortcuts</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#module-qgis_deployment_toolbelt.jobs.orchestrator">qgis_deployment_toolbelt.jobs.orchestrator</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.html#module-qgis_deployment_toolbelt.profiles">qgis_deployment_toolbelt.profiles</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#module-qgis_deployment_toolbelt.profiles.remote_git_handler">qgis_deployment_toolbelt.profiles.remote_git_handler</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#module-qgis_deployment_toolbelt.profiles.shortcuts">qgis_deployment_toolbelt.profiles.shortcuts</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.html#module-qgis_deployment_toolbelt.scenarios">qgis_deployment_toolbelt.scenarios</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#module-qgis_deployment_toolbelt.scenarios.scenario_reader">qgis_deployment_toolbelt.scenarios.scenario_reader</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.html#module-qgis_deployment_toolbelt.utils">qgis_deployment_toolbelt.utils</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.bouncer.html#module-qgis_deployment_toolbelt.utils.bouncer">qgis_deployment_toolbelt.utils.bouncer</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.journalizer.html#module-qgis_deployment_toolbelt.utils.journalizer">qgis_deployment_toolbelt.utils.journalizer</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.logger.html#module-qgis_deployment_toolbelt.utils.logger">qgis_deployment_toolbelt.utils.logger</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.proxies.html#module-qgis_deployment_toolbelt.utils.proxies">qgis_deployment_toolbelt.utils.proxies</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.slugger.html#module-qgis_deployment_toolbelt.utils.slugger">qgis_deployment_toolbelt.utils.slugger</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.str2bool.html#module-qgis_deployment_toolbelt.utils.str2bool">qgis_deployment_toolbelt.utils.str2bool</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.win32utils.html#module-qgis_deployment_toolbelt.utils.win32utils">qgis_deployment_toolbelt.utils.win32utils</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.OPTIONS_SCHEMA">OPTIONS_SCHEMA (qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader attribute)</a>
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.OPTIONS_SCHEMA">(qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#qgis_deployment_toolbelt.constants.OSConfiguration">OSConfiguration (class in qgis_deployment_toolbelt.constants)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator.PACKAGE_NAME">PACKAGE_NAME (qgis_deployment_toolbelt.jobs.orchestrator.JobsOrchestrator attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables.prepare_value">prepare_value() (qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.PROFILES_NAMES_DOWNLOADED">PROFILES_NAMES_DOWNLOADED (qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.PROFILES_NAMES_INSTALLED">PROFILES_NAMES_INSTALLED (qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#qgis_deployment_toolbelt.constants.OSConfiguration.profiles_path">profiles_path (qgis_deployment_toolbelt.constants.OSConfiguration attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    qdeploy-toolbelt command line option
+
+      <ul>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-c">--clear</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-s">--scenario</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-v">--verbose</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-version">--version</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-c">-c</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-s">-s</a>
+</li>
+        <li><a href="usage/cli.html#cmdoption-qdeploy-toolbelt-v">-v</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.html#module-qgis_deployment_toolbelt">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.cli
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.cli.html#module-qgis_deployment_toolbelt.cli">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.commands
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.commands.html#module-qgis_deployment_toolbelt.commands">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.commands.cli_check
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.commands.cli_check.html#module-qgis_deployment_toolbelt.commands.cli_check">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.commands.cli_clean
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.commands.cli_clean.html#module-qgis_deployment_toolbelt.commands.cli_clean">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.constants
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#module-qgis_deployment_toolbelt.constants">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.jobs
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.html#module-qgis_deployment_toolbelt.jobs">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.jobs.job_environment_variables
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#module-qgis_deployment_toolbelt.jobs.job_environment_variables">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.jobs.job_profiles_synchronizer
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#module-qgis_deployment_toolbelt.jobs.job_profiles_synchronizer">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.jobs.job_shortcuts
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#module-qgis_deployment_toolbelt.jobs.job_shortcuts">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    qgis_deployment_toolbelt.jobs.orchestrator
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.orchestrator.html#module-qgis_deployment_toolbelt.jobs.orchestrator">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.profiles
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.html#module-qgis_deployment_toolbelt.profiles">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.profiles.remote_git_handler
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#module-qgis_deployment_toolbelt.profiles.remote_git_handler">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.profiles.shortcuts
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#module-qgis_deployment_toolbelt.profiles.shortcuts">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.scenarios
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.html#module-qgis_deployment_toolbelt.scenarios">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.scenarios.scenario_reader
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#module-qgis_deployment_toolbelt.scenarios.scenario_reader">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.html#module-qgis_deployment_toolbelt.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils.bouncer
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.bouncer.html#module-qgis_deployment_toolbelt.utils.bouncer">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils.journalizer
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.journalizer.html#module-qgis_deployment_toolbelt.utils.journalizer">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils.logger
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.logger.html#module-qgis_deployment_toolbelt.utils.logger">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils.proxies
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.proxies.html#module-qgis_deployment_toolbelt.utils.proxies">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils.slugger
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.slugger.html#module-qgis_deployment_toolbelt.utils.slugger">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils.str2bool
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.str2bool.html#module-qgis_deployment_toolbelt.utils.str2bool">module</a>
+</li>
+      </ul></li>
+      <li>
+    qgis_deployment_toolbelt.utils.win32utils
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.utils.win32utils.html#module-qgis_deployment_toolbelt.utils.win32utils">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler">RemoteGitHandler (class in qgis_deployment_toolbelt.profiles.remote_git_handler)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables.run">run() (qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables method)</a>
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.run">(qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader method)</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.run">(qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader.scenario">scenario (qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader">ScenarioReader (class in qgis_deployment_toolbelt.scenarios.scenario_reader)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader.settings">settings (qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader property)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#qgis_deployment_toolbelt.constants.OSConfiguration.shortcut_extension">shortcut_extension (qgis_deployment_toolbelt.constants.OSConfiguration attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#qgis_deployment_toolbelt.constants.OSConfiguration.shortcut_forbidden_chars">shortcut_forbidden_chars (qgis_deployment_toolbelt.constants.OSConfiguration attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#qgis_deployment_toolbelt.constants.OSConfiguration.shortcut_icon_extensions">shortcut_icon_extensions (qgis_deployment_toolbelt.constants.OSConfiguration attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.SHORTCUTS_CREATED">SHORTCUTS_CREATED (qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.SHORTCUTS_REMOVED">SHORTCUTS_REMOVED (qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager attribute)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.slugger.html#qgis_deployment_toolbelt.utils.slugger.sluggy">sluggy() (in module qgis_deployment_toolbelt.utils.slugger)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.startmenu_path">startmenu_path (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut property)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader.steps">steps (qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader property)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.utils.str2bool.html#qgis_deployment_toolbelt.utils.str2bool.str2bool">str2bool() (in module qgis_deployment_toolbelt.utils.str2bool)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.sync_local_profiles">sync_local_profiles() (qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.remote_git_handler.html#qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler.url_parsed">url_parsed (qgis_deployment_toolbelt.profiles.remote_git_handler.RemoteGitHandler property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.constants.html#qgis_deployment_toolbelt.constants.OSConfiguration.valid_shortcut_name">valid_shortcut_name() (qgis_deployment_toolbelt.constants.OSConfiguration method)</a>
+</li>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables.validate_options">validate_options() (qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables method)</a>
+
+      <ul>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.html#qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader.validate_options">(qgis_deployment_toolbelt.jobs.job_profiles_synchronizer.JobProfilesDownloader method)</a>
+</li>
+        <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_shortcuts.html#qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager.validate_options">(qgis_deployment_toolbelt.jobs.job_shortcuts.JobShortcutsManager method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.scenarios.scenario_reader.html#qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader.validate_scenario">validate_scenario() (qgis_deployment_toolbelt.scenarios.scenario_reader.ScenarioReader method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.profiles.shortcuts.html#qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut.win32_create">win32_create() (qgis_deployment_toolbelt.profiles.shortcuts.ApplicationShortcut method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/qgis_deployment_toolbelt.jobs.job_environment_variables.html#qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables.win_refresh_environment">win_refresh_environment() (qgis_deployment_toolbelt.jobs.job_environment_variables.JobEnvironmentVariables method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Julien Moura (Oslandia)<br/>
+  
+      &copy; Copyright 2021 - 2022, Julien Moura (Oslandia).<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

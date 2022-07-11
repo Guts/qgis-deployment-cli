@@ -1,0 +1,18 @@
+qgis\_deployment\_toolbelt.jobs package
+=======================================
+
+.. automodule:: qgis_deployment_toolbelt.jobs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   qgis_deployment_toolbelt.jobs.job_environment_variables
+   qgis_deployment_toolbelt.jobs.job_profiles_synchronizer
+   qgis_deployment_toolbelt.jobs.job_shortcuts
+   qgis_deployment_toolbelt.jobs.orchestrator

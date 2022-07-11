@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.utils.bouncer module
+===============================================
+
+.. automodule:: qgis_deployment_toolbelt.utils.bouncer
+   :members:
+   :undoc-members:
+   :show-inheritance:

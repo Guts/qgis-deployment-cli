@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.utils.str2bool module
+================================================
+
+.. automodule:: qgis_deployment_toolbelt.utils.str2bool
+   :members:
+   :undoc-members:
+   :show-inheritance:

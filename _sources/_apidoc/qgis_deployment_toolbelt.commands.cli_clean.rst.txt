@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.commands.cli\_clean module
+=====================================================
+
+.. automodule:: qgis_deployment_toolbelt.commands.cli_clean
+   :members:
+   :undoc-members:
+   :show-inheritance:

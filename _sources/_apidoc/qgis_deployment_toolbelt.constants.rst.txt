@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.constants module
+===========================================
+
+.. automodule:: qgis_deployment_toolbelt.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:

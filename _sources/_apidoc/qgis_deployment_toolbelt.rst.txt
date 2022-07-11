@@ -1,0 +1,28 @@
+qgis\_deployment\_toolbelt package
+==================================
+
+.. automodule:: qgis_deployment_toolbelt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   qgis_deployment_toolbelt.commands
+   qgis_deployment_toolbelt.jobs
+   qgis_deployment_toolbelt.profiles
+   qgis_deployment_toolbelt.scenarios
+   qgis_deployment_toolbelt.utils
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   qgis_deployment_toolbelt.cli
+   qgis_deployment_toolbelt.constants

@@ -1,0 +1,16 @@
+qgis\_deployment\_toolbelt.profiles package
+===========================================
+
+.. automodule:: qgis_deployment_toolbelt.profiles
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   qgis_deployment_toolbelt.profiles.remote_git_handler
+   qgis_deployment_toolbelt.profiles.shortcuts

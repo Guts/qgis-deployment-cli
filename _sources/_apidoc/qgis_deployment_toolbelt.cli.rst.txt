@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.cli module
+=====================================
+
+.. automodule:: qgis_deployment_toolbelt.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:

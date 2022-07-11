@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.utils.win32utils module
+==================================================
+
+.. automodule:: qgis_deployment_toolbelt.utils.win32utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

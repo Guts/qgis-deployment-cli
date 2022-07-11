@@ -1,0 +1,16 @@
+qgis\_deployment\_toolbelt.commands package
+===========================================
+
+.. automodule:: qgis_deployment_toolbelt.commands
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   qgis_deployment_toolbelt.commands.cli_check
+   qgis_deployment_toolbelt.commands.cli_clean

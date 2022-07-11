@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.jobs.job\_shortcuts module
+=====================================================
+
+.. automodule:: qgis_deployment_toolbelt.jobs.job_shortcuts
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.utils.logger module
+==============================================
+
+.. automodule:: qgis_deployment_toolbelt.utils.logger
+   :members:
+   :undoc-members:
+   :show-inheritance:

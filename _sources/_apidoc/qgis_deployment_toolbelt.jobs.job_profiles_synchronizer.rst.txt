@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.jobs.job\_profiles\_synchronizer module
+==================================================================
+
+.. automodule:: qgis_deployment_toolbelt.jobs.job_profiles_synchronizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

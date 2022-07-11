@@ -1,0 +1,7 @@
+qgis\_deployment\_toolbelt.scenarios.scenario\_reader module
+============================================================
+
+.. automodule:: qgis_deployment_toolbelt.scenarios.scenario_reader
+   :members:
+   :undoc-members:
+   :show-inheritance:
