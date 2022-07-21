@@ -1,0 +1,58 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<plugins>
+    <pyqgis_plugin name="Red Layer" version="2.1.0" plugin_id="752">
+        <description><![CDATA[quick georeferenced sketches and annotations]]></description>
+        <about><![CDATA[A qgis plugin for sketching and drawing on map canvas. It is intended for quick annotations and field use. Sketches can be drawn in different colors and widths and can be converted in memory layer if needed. The sketches are stored in the project directory in a separate .sketch txt file that can be shared with other users.]]></about>
+        <version>2.1.0</version>
+        <trusted>False</trusted>
+        <qgis_minimum_version>2.99.0</qgis_minimum_version>
+        <qgis_maximum_version>3.99.0</qgis_maximum_version>
+        <homepage><![CDATA[http://geogear.wordpress.com]]></homepage>
+        <file_name>redLayer.2.1.0.zip</file_name>
+        <icon>/media/packages/2021/sketch_M7Nyh03.svg</icon>
+        <author_name><![CDATA[Enrico Ferreguti]]></author_name>
+        <download_url>http://hekla.oslandia.net/gendarmerie_stsi2/plugins/redLayer-2.1.zip</download_url>
+        <uploaded_by><![CDATA[enricofer]]></uploaded_by>
+        <create_date>2021-02-26T14:50:00.642741</create_date>
+        <update_date></update_date>
+        <experimental>False</experimental>
+        <deprecated>False</deprecated>
+        <tracker><![CDATA[https://github.com/enricofer/redLayer/issues]]></tracker>
+        <repository><![CDATA[https://github.com/enricofer/redLayer]]></repository>
+        <tags><![CDATA[draw,sketch,annotations,pen]]></tags>
+        <downloads>23062</downloads>
+        <average_vote>4.066531115629479</average_vote>
+        <rating_votes>30</rating_votes>
+        <external_dependencies></external_dependencies>
+        <server>False</server>
+    </pyqgis_plugin>
+    <pyqgis_plugin name="French Locator Filter" version="1.0.0" plugin_id="1846">
+        <description><![CDATA[Adds a geocoder to the QGIS Locator Filter, using the national French open address API.]]></description>
+        <about><![CDATA[The French geo.api is an open Geocoder service provided by French Government.
+A Locator Filter implements the fetching of data from internal or external sources.
+This plugin is forked from the work of Richard Duivenvoorde. Kudos Richard
+Read more: &lt;a href=&quot;http://www.qgis.nl/2018/05/16/english-coding-a-qgslocator-plugin/?lang=en&quot;&gt;http://www.qgis.nl/2018/05/16/english-coding-a-qgslocator-plugin&lt;/a&gt;]]></about>
+        <version>1.0.0</version>
+        <trusted>True</trusted>
+        <qgis_minimum_version>3.16.0</qgis_minimum_version>
+        <qgis_maximum_version>3.99.0</qgis_maximum_version>
+        <homepage><![CDATA[https://oslandia.gitlab.io/qgis/french_locator_filter/]]></homepage>
+        <file_name>french_locator_filter.1.0.0.zip</file_name>
+        <icon>/media/packages/2021/icon_Mw2w27f.svg</icon>
+        <author_name><![CDATA[Régis Haubourg (Oslandia), Richard Duivenvoorde, Zuidt, Julien Moura (Oslandia)]]></author_name>
+        <download_url>https://plugins.qgis.org/plugins/french_locator_filter/version/1.0.0/download/</download_url>
+        <uploaded_by><![CDATA[oslandia]]></uploaded_by>
+        <create_date>2021-06-17T04:27:29.655833</create_date>
+        <update_date></update_date>
+        <experimental>False</experimental>
+        <deprecated>False</deprecated>
+        <tracker><![CDATA[https://gitlab.com/Oslandia/qgis/french_locator_filter/-/issues]]></tracker>
+        <repository><![CDATA[https://gitlab.com/Oslandia/qgis/french_locator_filter/]]></repository>
+        <tags><![CDATA[filter,geocoder,france,locator,addok,french]]></tags>
+        <downloads>8997</downloads>
+        <average_vote>4.799040191961607</average_vote>
+        <rating_votes>5</rating_votes>
+        <external_dependencies></external_dependencies>
+        <server>False</server>
+    </pyqgis_plugin>
+</plugins>
