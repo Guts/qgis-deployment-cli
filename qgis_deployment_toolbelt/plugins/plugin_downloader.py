@@ -58,6 +58,15 @@ class QgisPluginsDownloader:
                 f"Unable to identify the repository type: {repository_path}"
             )
 
+    def is_official_repository(self):
+        pass
+
+    def is_latest_version(self):
+        pass
+
+    def get_code_repository(self):
+        pass
+
 
 # #############################################################################
 # ##### Main #######################
