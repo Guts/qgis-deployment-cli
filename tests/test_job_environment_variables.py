@@ -7,7 +7,7 @@
         # for whole test
         python -m unittest tests.test_job_environment_variables
         # for specific
-        python -m unittest tests.test_job_environment_variables.TestJobsLaunch.test_jobs_launcher
+        python -m unittest tests.test_job_environment_variables.TestJobEnvironmentVariables.test_environment_variables_set
 """
 
 # #############################################################################
