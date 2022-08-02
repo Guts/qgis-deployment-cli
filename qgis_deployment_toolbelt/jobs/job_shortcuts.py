@@ -127,7 +127,7 @@ class JobShortcutsManager:
             for p in self.options.get("include", []):
                 shortcut = ApplicationShortcut(
                     name=p.get("label"),
-                    exec_path=Path(expandvars(p.get("qgis_path"))),
+                    exec_path=self.get_qgis_path(p.get("qgis_path")),
                     description=f"Created with {__title__} {__version__}",
                     icon_path=self.get_icon_path(p.get("icon"), p.get("profile")),
                     exec_arguments=self.get_arguments_ready(
@@ -147,10 +147,23 @@ class JobShortcutsManager:
             raise NotImplementedError
 
     # -- INTERNAL LOGIC ------------------------------------------------------
+    def get_qgis_path(self, qgis: str) -> Union[Path, None]:
+        """Try to get qgis path.
+
+        :param str qgis: qgis path as mentioned into the scenario file
+        :return Union[Path, None]: _description_
+        """
+        # try to get the value of the qgis_path key
+        if not qgis:
+            return None
+
+        return Path(expandvars(qgis))
+
     def get_icon_path(self, icon: str, profile_name: str) -> Union[Path, None]:
         """Try to get icon path.
 
-        First, right next to the toolbelt;
+        First, check that an icon key has been specified in the scenario file;
+        then, right next to the toolbelt;
         then under a subfolder starting from the toolbelt (adn handling pathlib OSError);
         if still not, within the related profile folder.
         None as fallback.
@@ -159,6 +172,10 @@ class JobShortcutsManager:
         :param str profile_name: QGIS profile name where to look into
         :return Union[Path, None]: _description_
         """
+        # try to get the value of the icon key
+        if not icon:
+            return None
+
         # try to get icon right aside the toolbelt
         if Path(icon).is_file():
             logger.debug(f"Icon found next to the toolbelt: {Path(icon).resolve()}")
