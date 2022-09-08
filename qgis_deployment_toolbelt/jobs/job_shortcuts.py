@@ -151,7 +151,7 @@ class JobShortcutsManager:
         """Try to get qgis path.
 
         :param str qgis: qgis path as mentioned into the scenario file
-        :return Union[Path, None]: _description_
+        :return Union[Path, None]:  qgis path as Path if str or Path, else None
         """
         # try to get the value of the qgis_path key
         if not qgis:
@@ -170,7 +170,7 @@ class JobShortcutsManager:
 
         :param str icon: icon path as mentioned into the scenario file
         :param str profile_name: QGIS profile name where to look into
-        :return Union[Path, None]: _description_
+        :return Union[Path, None]: icon path as Path if str or Path, else None
         """
         # try to get the value of the icon key
         if not icon:
