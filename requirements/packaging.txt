@@ -1,7 +1,7 @@
 # Packaging
 # ---------
 
-distro==1.7.* ; sys_platform == 'linux'
+distro==1.8.* ; sys_platform == 'linux'
 pyinstaller>=5,<5.5
 pyinstaller-hooks-contrib==2022.*
 pypiwin32==223 ; sys_platform == 'win32'
