@@ -22,7 +22,7 @@ jobs:
   unit-test:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-20.04, windows-latest]
+        os: [macos-latest, ubuntu-22.04, windows-latest]
         python-version: ["3.8", "3.9", "3.10"]
 
     runs-on: ${{ matrix.os }}
@@ -51,3 +51,39 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.1
+
+
+  integration-test:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-22.04, windows-latest]
+        python-version: ["3.8", "3.9", "3.10"]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: "requirements/*.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U -r requirements.txt
+
+      - name: Install project as a package
+        run: python -m pip install -e .
+
+      - name: QDT - Echoing version
+        run: qdeploy-toolbelt --version
+
+      - name: QDT - Verbose check
+        run: qgis-deployment-toolbelt --verbose --check
+
+      - name: QDT - Sample scenario
+        run: qgis-deployment-toolbelt --verbose
