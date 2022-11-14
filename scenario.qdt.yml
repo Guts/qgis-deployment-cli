@@ -30,7 +30,6 @@ steps:
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
       local_destination: ~/.cache/qgis-deployment-toolbelt/Oslandia/
-      sync_mode: "overwrite"
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
