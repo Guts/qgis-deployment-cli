@@ -20,6 +20,7 @@ usage/how_it_works
 usage/how_to_use
 usage/cli
 usage/settings
+jobs/index
 usage/schedule_deployment
 ```
 
