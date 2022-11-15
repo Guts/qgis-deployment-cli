@@ -137,7 +137,10 @@ class JobSplashScreenManager:
 
                 # enable UI customization
                 self.set_ui_customization_enabled(
-                    qgis3ini_filepath=cfg_qgis_base, switch=True
+                    qgis3ini_filepath=cfg_qgis_base,
+                    section="UI",
+                    option="Customization\\enabled",
+                    switch=True,
                 )
 
                 # set the splash screen into the customization file
@@ -149,16 +152,23 @@ class JobSplashScreenManager:
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def set_ui_customization_enabled(
-        self, qgis3ini_filepath: Path, switch: bool = True
+        self, qgis3ini_filepath: Path, section: str, option: str, switch: bool = True
     ) -> bool:
         """Enable/disable UI customization in the profile QGIS3.ini file.
 
         :param Path qgis3ini_filepath: path to the QGIS3.ini configuration file
+        :param str section: section name in ini file
+        :param str option: option name in the section of the ini file
         :param bool switch: True to enable, False to disable UI customization,
         defaults to True
 
         :return bool: UI customization state. True is enabled, False is disabled.
         """
+        # boolean syntax for PyQt
+        switch_value = "false"
+        if switch:
+            switch_value = "true"
+
         # make sure that the file exists
         if not qgis3ini_filepath.exists():
             logger.warning(
@@ -167,7 +177,7 @@ class JobSplashScreenManager:
             )
             qgis3ini_filepath.touch(exist_ok=True)
             qgis3ini_filepath.write_text(
-                data="[UI]\nCustomization\\enabled=true", encoding="UTF8"
+                data=f"[{section}]\n{option}={switch_value}", encoding="UTF8"
             )
 
         # check
@@ -175,10 +185,8 @@ class JobSplashScreenManager:
         ini_qgis3.optionxform = str
         ini_qgis3.read(qgis3ini_filepath, encoding="UTF8")
 
-        if ini_qgis3.has_option(section="UI", option="Customization\\enabled"):
-            actual_state = ini_qgis3.getboolean(
-                section="UI", option="Customization\\enabled"
-            )
+        if ini_qgis3.has_option(section=section, option=option):
+            actual_state = ini_qgis3.getboolean(section=section, option=option)
             # when actual UI customization is enabled
             if actual_state and switch:
                 logger.debug(
@@ -187,9 +195,9 @@ class JobSplashScreenManager:
                 return True
             elif actual_state and not switch:
                 ini_qgis3.set(
-                    section="UI",
-                    option="Customization\\enabled",
-                    value="false",
+                    section=section,
+                    option=option,
+                    value=switch_value,
                 )
                 with qgis3ini_filepath.open("w", encoding="UTF8") as configfile:
                     ini_qgis3.write(configfile, space_around_delimiters=False)
@@ -202,9 +210,9 @@ class JobSplashScreenManager:
             # when actual UI customization is disabled
             elif not actual_state and switch:
                 ini_qgis3.set(
-                    section="UI",
-                    option="Customization\\enabled",
-                    value="true",
+                    section=section,
+                    option=option,
+                    value=switch_value,
                 )
                 with qgis3ini_filepath.open("w", encoding="UTF8") as configfile:
                     ini_qgis3.write(configfile, space_around_delimiters=False)
