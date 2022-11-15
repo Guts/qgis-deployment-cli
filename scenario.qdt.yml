@@ -50,3 +50,8 @@ steps:
           start_menu: true
           icon: "qgis_icon_oslandia.ico"
           qgis_path: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
+
+  - name: Set splash screen
+    uses: splash-screen-manager
+    with:
+      action: create_or_restore
