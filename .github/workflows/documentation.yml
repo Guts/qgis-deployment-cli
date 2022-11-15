@@ -54,7 +54,7 @@ jobs:
           python -m pip install -U "ghp-import<3"
 
       - name: Build doc using Sphinx
-        run: sphinx-build -b html -d docs/_build/cache -j auto -q docs docs/_build/html
+        run: sphinx-build -b html -d docs/_build/cache -q docs docs/_build/html
 
       - name: Deploy to GitHub Pages
         run: ghp-import --force --no-history --no-jekyll --push docs/_build/html
