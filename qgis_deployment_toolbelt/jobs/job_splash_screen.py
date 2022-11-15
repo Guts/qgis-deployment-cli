@@ -90,40 +90,57 @@ class JobSplashScreenManager:
         ]
 
         if self.options.get("action") in ("create", "create_or_restore"):
-            for profile in li_installed_profiles_path:
+            for profile_dir in li_installed_profiles_path:
+
+                # default absolute splash screen path
+                splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
 
                 # target QGIS configuration files
-                cfg_qgis_base = profile / "QGIS/QGIS3.ini"
-                cfg_qgis_custom = profile / "QGIS/QGISCUSTOMIZATION3.ini"
+                cfg_qgis_base = profile_dir / "QGIS/QGIS3.ini"
+                cfg_qgis_custom = profile_dir / "QGIS/QGISCUSTOMIZATION3.ini"
 
-                if Path(profile / "profile.json").is_file():
-                    profile = QdtProfile.from_json(
-                        profile_json_path=Path(profile / "profile.json"),
-                        profile_folder=profile,
+                # case where splash image is specified into the profile.json
+                if Path(profile_dir / "profile.json").is_file():
+                    qdt_profile = QdtProfile.from_json(
+                        profile_json_path=Path(profile_dir / "profile.json"),
+                        profile_folder=profile_dir.resolve(),
                     )
-                    print("HAHA", profile.splash)
-                    if isinstance(profile.splash, Path):
-                        print("ggg")
+
+                    # if the splash image referenced into the profile.json exists, make
+                    # sure it complies QGIS splash screen rules
+                    if (
+                        isinstance(qdt_profile.splash, Path)
+                        and qdt_profile.splash.is_file()
+                    ):
                         # make sure that the filename complies with what QGIS expects
-                        if profile.splash.name != self.SPLASH_FILENAME:
-                            splash_filepath = profile.splash.with_name(
+                        if qdt_profile.splash.name != splash_screen_filepath.name:
+                            splash_filepath = qdt_profile.splash.with_name(
                                 self.SPLASH_FILENAME
                             )
-                            profile.splash.replace(splash_filepath)
+                            qdt_profile.splash.replace(splash_filepath)
                             logger.debug(
                                 f"Specified splash screen renamed into {splash_filepath}."
                             )
                         else:
                             # homogeneize filepath var name
-                            splash_filepath = profile.splash
+                            logger.debug(
+                                f"Splash screen already exists at {splash_screen_filepath}"
+                            )
 
-                        print("HOHOH")
-                        # enable UI customization
-                        self.set_ui_customization_enabled(
-                            qgis3ini_filepath=cfg_qgis_base, switch=True
-                        )
+                # now, splash screen image should be at {profile_dir}/images/splash.png
+                if not splash_screen_filepath.is_file():
+                    # TODO: check image size to fit QGIS restrictions
+                    logger.debug(
+                        f"No splash screen found or defined for profile {profile_dir.name}"
+                    )
+                    continue
 
-                        # set the splash screen into the customization file
+                # enable UI customization
+                self.set_ui_customization_enabled(
+                    qgis3ini_filepath=cfg_qgis_base, switch=True
+                )
+
+                # set the splash screen into the customization file
 
         else:
             raise NotImplementedError
@@ -154,6 +171,53 @@ class JobSplashScreenManager:
             )
 
         # check
+        ini_qgis3 = ConfigParser()
+        ini_qgis3.optionxform = str
+        ini_qgis3.read(qgis3ini_filepath, encoding="UTF8")
+
+        if ini_qgis3.has_option(section="UI", option="Customization\\enabled"):
+            actual_state = ini_qgis3.getboolean(
+                section="UI", option="Customization\\enabled"
+            )
+            # when actual UI customization is enabled
+            if actual_state and switch:
+                logger.debug(
+                    f"UI Customization is already ENABLED in {qgis3ini_filepath}"
+                )
+                return True
+            elif actual_state and not switch:
+                ini_qgis3.set(
+                    section="UI",
+                    option="Customization\\enabled",
+                    value="false",
+                )
+                with qgis3ini_filepath.open("w", encoding="UTF8") as configfile:
+                    ini_qgis3.write(configfile, space_around_delimiters=False)
+                logger.debug(
+                    "UI Customization was ENABLED and has been "
+                    f"DISABLED in {qgis3ini_filepath}"
+                )
+                return False
+
+            # when actual UI customization is disabled
+            elif not actual_state and switch:
+                ini_qgis3.set(
+                    section="UI",
+                    option="Customization\\enabled",
+                    value="true",
+                )
+                with qgis3ini_filepath.open("w", encoding="UTF8") as configfile:
+                    ini_qgis3.write(configfile, space_around_delimiters=False)
+                logger.debug(
+                    "UI Customization was DISABLED and has been "
+                    f"ENABLED in {qgis3ini_filepath}"
+                )
+                return True
+            elif not actual_state and not switch:
+                logger.debug(
+                    f"UI Customization is already DISABLED in {qgis3ini_filepath}"
+                )
+                return True
 
     def apply_custom(
         self, profile_customization_filepath: Path, splash_screen_folder_path: Path
