@@ -20,6 +20,7 @@ from sys import platform as opersys
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.win32utils import normalize_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -144,6 +145,11 @@ class JobSplashScreenManager:
                 )
 
                 # set the splash screen into the customization file
+                self.set_splash_screen(
+                    qgiscustomization3ini_filepath=cfg_qgis_custom,
+                    splash_screen_filepath=splash_screen_filepath.resolve(),
+                    switch=True,
+                )
 
         else:
             raise NotImplementedError
@@ -180,12 +186,13 @@ class JobSplashScreenManager:
                 data=f"[{section}]\n{option}={switch_value}", encoding="UTF8"
             )
 
-        # check
+        # read configuration file
         ini_qgis3 = ConfigParser()
         ini_qgis3.optionxform = str
         ini_qgis3.read(qgis3ini_filepath, encoding="UTF8")
 
-        if ini_qgis3.has_option(section=section, option=option):
+        # if section and option already exist
+        if ini_qgis3.has_option(section=section, option=option):  # = section AND option
             actual_state = ini_qgis3.getboolean(section=section, option=option)
             # when actual UI customization is enabled
             if actual_state and switch:
@@ -261,39 +268,110 @@ class JobSplashScreenManager:
             )
             return False
 
-    def apply_custom(
-        self, profile_customization_filepath: Path, splash_screen_folder_path: Path
+    def set_splash_screen(
+        self,
+        qgiscustomization3ini_filepath: Path,
+        splash_screen_filepath: Path,
+        switch: bool = True,
     ):
-        """Apply custom splash screen."""
-        # modify splash path
-        if profile_customization_filepath.exists():
-            ini_custom = ConfigParser()
-            ini_custom.optionxform = str
-            ini_custom.read(profile_customization_filepath, encoding="UTF8")
+        """Add/remove splash screen path to the QGISCUSTOMIZATION3.ini file.
 
-            if "Customization" in ini_custom.sections():
-                ini_custom.set(
-                    section="Customization",
-                    option="splashpath",
-                    value=splash_screen_folder_path,
+        :param Path qgiscustomization3ini_filepath: path to the QGISCUSTOMIZATION3.ini
+        configuration file
+        :param Path splash_screen_filepath: path to the folder containing the
+        splash.png file
+        :param bool switch: True to add, False to remove, defaults to True
+
+        :return bool: True is the splash folder is present. False is absent.
+        """
+        # vars
+        section = "Customization"
+        option = "splashpath"
+        # normalize splash screen folder path
+        nrm_splash_screen_folder = normalize_path(
+            splash_screen_filepath.parent, add_trailing_slash_if_dir=True
+        )
+
+        # make sure that the file exists
+        if not qgiscustomization3ini_filepath.exists() and switch:
+            logger.warning(
+                f"Configuration file {qgiscustomization3ini_filepath} doesn't exist. "
+                "It will be created but maybe it was not the expected behavior."
+            )
+            qgiscustomization3ini_filepath.touch(exist_ok=True)
+            qgiscustomization3ini_filepath.write_text(
+                data=f"[Customization]\nsplashpath={nrm_splash_screen_folder}",
+                encoding="UTF8",
+            )
+
+        # open
+        ini_qgiscustom3 = ConfigParser()
+        ini_qgiscustom3.optionxform = str
+        ini_qgiscustom3.read(qgiscustomization3ini_filepath, encoding="UTF8")
+
+        # check existing option value
+        if ini_qgiscustom3.has_option(section=section, option=option):
+            actual_state = ini_qgiscustom3.get(section=section, option=option)
+
+            if actual_state == nrm_splash_screen_folder and switch:
+                logger.debug(
+                    f"Splash screen {splash_screen_filepath} is already "
+                    f"ENABLED in {qgiscustomization3ini_filepath}"
                 )
-                with profile_customization_filepath.open(
+                return True
+            elif actual_state != nrm_splash_screen_folder and switch:
+                ini_qgiscustom3.set(
+                    section=section,
+                    option=option,
+                    value=nrm_splash_screen_folder,
+                )
+                with qgiscustomization3ini_filepath.open(
                     "w", encoding="UTF8"
                 ) as configfile:
-                    ini_custom.write(configfile, space_around_delimiters=False)
-
-        else:
-            ini_custom = ConfigParser()
-            ini_custom["Customization"] = {"splashpath": splash_screen_folder_path}
-            with profile_customization_filepath.open(
-                mode="w", encoding="UTF8"
-            ) as configfile:
-                ini_custom.write(configfile, space_around_delimiters=False)
-
-            self.log(
-                message="Customization file did not exists. "
-                f"It has been created with the new splash screen: {profile_customization_filepath}"
+                    ini_qgiscustom3.write(configfile, space_around_delimiters=False)
+                logger.debug(
+                    f"Splash screen {splash_screen_filepath} has been "
+                    f"ENABLED in {qgiscustomization3ini_filepath}"
+                )
+                return True
+        elif ini_qgiscustom3.has_section(section=section) and switch:
+            # section exist but not the option, so let's add it as required
+            ini_qgiscustom3.set(
+                section=section,
+                option=option,
+                value=nrm_splash_screen_folder,
             )
+            with qgiscustomization3ini_filepath.open(
+                "w", encoding="UTF8"
+            ) as configfile:
+                ini_qgiscustom3.write(configfile, space_around_delimiters=False)
+            logger.debug(
+                f"'{option}' option was missing in {section}, it's just been added and "
+                f"ENABLED in {qgiscustomization3ini_filepath}"
+            )
+            return True
+        elif not ini_qgiscustom3.has_section(section=section) and switch:
+            # even the section is missing. Let's add everything
+            ini_qgiscustom3.add_section(section)
+            ini_qgiscustom3.set(
+                section=section,
+                option=option,
+                value=nrm_splash_screen_folder,
+            )
+            with qgiscustomization3ini_filepath.open(
+                "w", encoding="UTF8"
+            ) as configfile:
+                ini_qgiscustom3.write(configfile, space_around_delimiters=False)
+            logger.debug(
+                f"'{option}' option was missing in {section}, it's just been added and "
+                f"ENABLED in {qgiscustomization3ini_filepath}"
+            )
+            return True
+        else:
+            logger.debug(
+                f"Section '{section}' is not present so {option} is DISABLED in {qgis3ini_filepath}"
+            )
+            return False
 
     def validate_options(self, options: dict) -> bool:
         """Validate options.
