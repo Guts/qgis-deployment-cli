@@ -17,6 +17,7 @@ import logging
 from pathlib import Path
 from sys import platform as opersys
 from sys import version_info
+from typing import Union
 
 # Imports depending on Python version
 if version_info[1] < 11:
@@ -220,17 +221,18 @@ class QdtProfile:
         return self._name
 
     @property
-    def splash(self) -> str:
-        """Returns the profile splash image as string.
+    def splash(self) -> Union[str, Path]:
+        """Returns the profile splash image as path if can be resolved or as string.
 
         :return str: profile version.
         """
         if (
             self._splash
-            and isinstance(self._folder, Path)
-            and Path(self.folder / self._splash).is_file()
+            and isinstance(self.folder, Path)
+            and self.folder.joinpath(self._splash).is_file()
         ):
-            return Path(self.folder / self._splash)
+            print(self.folder.joinpath(self._splash))
+            return self.folder.joinpath(self._splash)
         else:
             return self._splash
 
