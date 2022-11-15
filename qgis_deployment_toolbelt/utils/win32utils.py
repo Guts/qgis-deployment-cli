@@ -12,6 +12,8 @@
 
 # Standard library
 import logging
+from os import sep  # required since pathlib strips trailing whitespace
+from pathlib import Path
 from sys import platform as opersys
 from typing import Union
 
@@ -61,10 +63,36 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> Union[str
         return None
 
 
+def normalize_path(input_path: Path, add_trailing_slash_if_dir: bool = True) -> str:
+    r"""Returns a path as normalized and fully escaped for Windows old-school file style.
+
+    :param Path input_path: path to normalize
+    :param bool add_trailing_slash_if_dir: add a trailing slash if the input is a folder,\
+        defaults to True
+
+    :return str: normalized path as string
+
+    :example:
+
+    .. code-block:: python
+
+        t = Path(r'C:\Users\risor\Documents\GitHub\Geotribu\qtribu\qtribu\resources\images')
+        print(normalize_path(t))
+        > C:\\Users\\risor\\Documents\\GitHub\\Geotribu\\qtribu\\qtribu\\resources\\images\\
+
+    """
+    if input_path.is_dir() and add_trailing_slash_if_dir:
+        return repr(str(input_path.resolve()) + sep).replace("'", "")
+    else:
+        return repr(str(input_path.resolve())).replace("'", "")
+
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
 
 if __name__ == "__main__":
     """Standalone execution."""
-    pass
+    # pass
+    t = Path("C:/Users/risor/Documents/GitHub/Geotribu/qtribu/qtribu/resources/images")
+    print(normalize_path(t))
