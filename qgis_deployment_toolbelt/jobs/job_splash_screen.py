@@ -226,6 +226,40 @@ class JobSplashScreenManager:
                     f"UI Customization is already DISABLED in {qgis3ini_filepath}"
                 )
                 return True
+        elif ini_qgis3.has_section(section=section) and switch:
+            # section exist but not the option, so let's add it as required
+            ini_qgis3.set(
+                section=section,
+                option=option,
+                value=switch_value,
+            )
+            with qgis3ini_filepath.open("w", encoding="UTF8") as configfile:
+                ini_qgis3.write(configfile, space_around_delimiters=False)
+            logger.debug(
+                f"'{option}' option was missing in {section}, it's just been added and "
+                f"ENABLED in {qgis3ini_filepath}"
+            )
+            return True
+        elif not ini_qgis3.has_section(section=section) and switch:
+            # even the section is missing. Let's add everything
+            ini_qgis3.add_section(section)
+            ini_qgis3.set(
+                section=section,
+                option=option,
+                value=switch_value,
+            )
+            with qgis3ini_filepath.open("w", encoding="UTF8") as configfile:
+                ini_qgis3.write(configfile, space_around_delimiters=False)
+            logger.debug(
+                f"'{option}' option was missing in {section}, it's just been added and "
+                f"ENABLED in {qgis3ini_filepath}"
+            )
+            return True
+        else:
+            logger.debug(
+                f"Section '{section}' is not present so {option} is DISABLED in {qgis3ini_filepath}"
+            )
+            return False
 
     def apply_custom(
         self, profile_customization_filepath: Path, splash_screen_folder_path: Path
