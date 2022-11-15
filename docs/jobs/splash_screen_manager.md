@@ -13,8 +13,21 @@ Sample job configuration in your scenario file:
   uses: splash-screen-manager
   with:
     action: create_or_restore
-    source_profiles: ~/.cache/qgis-deployment-toolbelt/Oslandia/
 ```
+
+----
+
+## Options
+
+### action
+
+Tell the job what to do with splash screens:
+
+Possible_values:
+
+- `create`: add splash screen if not set
+- `create_or_restore`: add splash screen if not set and replace eventual existing one
+- `remove`: remove splash screen
 
 ----
 
