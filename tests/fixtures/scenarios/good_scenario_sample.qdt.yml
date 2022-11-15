@@ -52,7 +52,6 @@ steps:
     uses: splash-screen-manager
     with:
       action: create_or_restore
-      source_profiles: ~/.cache/qgis-deployment-toolbelt/tests
 
   - name: Create report
     uses: telemetry-manager
