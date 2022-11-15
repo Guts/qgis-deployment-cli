@@ -141,7 +141,7 @@ class QdtProfile:
                 QdtProfile = QdtProfile.from_json(
                         Path(src_profile / "profile.json")
                     )
-                print(profile.splash.resolve)
+                print(profile.splash.resolve())
 
         """
         # checks
@@ -231,7 +231,6 @@ class QdtProfile:
             and isinstance(self.folder, Path)
             and self.folder.joinpath(self._splash).is_file()
         ):
-            print(self.folder.joinpath(self._splash))
             return self.folder.joinpath(self._splash)
         else:
             return self._splash
