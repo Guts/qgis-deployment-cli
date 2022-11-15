@@ -111,7 +111,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["static"]
+# html_static_path = ["static"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -148,7 +148,7 @@ myst_enable_extensions = [
     "dollarmath",
     "html_admonition",
     "html_image",
-    "linkify",
+    # "linkify",
     "replacements",
     "smartquotes",
     "substitution",
@@ -164,7 +164,7 @@ myst_substitutions = {
 }
 
 
-myst_url_schemes = ("http", "https", "mailto")
+myst_heading_anchors = 3
 
 # OpenGraph
 ogp_image = (
