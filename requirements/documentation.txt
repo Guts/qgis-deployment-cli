@@ -2,7 +2,7 @@
 # -------------
 
 myst-parser[linkify]>=0.14,<0.19
-pip-licenses>=3.5,<3.6
+pip-licenses>=3.5,<4.1
 sphinx-autobuild==2021.3.14
 sphinx-autodoc-typehints<1.20
 sphinx-book-theme<1
