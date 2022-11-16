@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.11.0 - 2022-11-16
+
+- Add new job to manage custom splash screen
+- Fix: job shortcut-manager was failing when icon is not defined
+- Bump dependencies
+
 ## 0.10.0 - 2022-05-25
 
 - Minor bug fixes
