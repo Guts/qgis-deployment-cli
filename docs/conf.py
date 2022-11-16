@@ -42,7 +42,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     # 3rd party
     "myst_parser",
-    "sphinx_autodoc_typehints",
+    # "sphinx_autodoc_typehints",
     "sphinx_click",
     "sphinx_copybutton",
     "sphinxext.opengraph",
