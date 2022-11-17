@@ -73,6 +73,14 @@ CONTEXT_SETTINGS = dict(obj={})
     help="Scenario file to use.",
     type=click.Path(readable=True, file_okay=True, dir_okay=False, resolve_path=True),
 )
+@click.option(
+    "-check-validity",
+    "--check-validity",
+    "check_validity",
+    is_flag=True,
+    show_default=True,
+    help="Check the validity of the scenario",
+)
 @click.version_option(
     version=__version__,
     message="%(version)s",
@@ -82,6 +90,7 @@ CONTEXT_SETTINGS = dict(obj={})
 def qgis_deployment_toolbelt(
     cli_context: click.Context,
     scenario_filepath: Path,
+    check_validity: bool,
     clear: bool,
     verbose: bool,
 ):
@@ -91,6 +100,7 @@ def qgis_deployment_toolbelt(
     Args:
         cli_context (click.Context): Click context
         scenario_filepath (Path): path to a scenario file to use
+        check_validity (bool): option to check the validity of the scenario
         clear (bool): option to clear the terminal berfore any other step
         verbose (bool): option to force the verbose mode
 
@@ -98,9 +108,27 @@ def qgis_deployment_toolbelt(
 
         .. code-block:: powershell
 
-            qgis-deployment-toolbelt -c --verbose check
+            qgis-deployment-toolbelt --check-validity -c --verbose check
 
     """
+    scenario = None
+    result_scenario_validity = None
+
+    # -- LOAD CONFIGURATION FILE ---------------------------------------------------
+    if Path(scenario_filepath).is_file():
+        scenario = ScenarioReader(in_yaml=scenario_filepath)
+        scenario_validity = scenario.validate_scenario()
+        if not scenario_validity[0]:
+            result_scenario_validity = (                "Scenario validation failed. Please check the scenario file."
+                "\nValidation report:\n- {}".format(
+                    "\n- ".join(scenario_validity[1])
+                ))
+
+    # Check the validity of the scenario
+    if check_validity and scenario is not None:
+        if result_scenario_validity is not None:
+            exit_cli_error(result_scenario_validity)
+
     # let's be clear or not
     if clear:
         click.clear()
@@ -120,13 +148,14 @@ def qgis_deployment_toolbelt(
     )
 
     # -- USING DEFAULT SCENARIO OR NOT -------------------------------------------------
-    if cli_context.invoked_subcommand is None and Path(scenario_filepath).is_file():
+    if cli_context.invoked_subcommand is None and scenario is not None:
         logger.debug(
             f"Straight run launched using default scenario file: {scenario_filepath}."
         )
 
-        # -- LOAD CONFIGURATION FILE ---------------------------------------------------
-        scenario = ScenarioReader(in_yaml=scenario_filepath)
+        # Check the validity of the scenario
+        if result_scenario_validity is not None:
+            exit_cli_error(result_scenario_validity)
 
         # Apply log level from scenario (only if verbose mode is disabled)
         if scenario.settings.get("DEBUG") is True and not verbose:
@@ -135,18 +164,6 @@ def qgis_deployment_toolbelt(
                 h.setLevel(logging.DEBUG)
             logger.info(
                 f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled."
-            )
-
-        # Validate scenario
-        if (
-            scenario.settings.get("SCENARIO_VALIDATION", True) is True
-            and not scenario.validate_scenario()[0]
-        ):
-            exit_cli_error(
-                "Scenario validation failed. Please check the scenario file."
-                "\nValidation report:\n- {}".format(
-                    "\n- ".join(scenario.validate_scenario()[1])
-                )
             )
 
         # Use metadata to inform which scenario is running
@@ -193,9 +210,7 @@ def qgis_deployment_toolbelt(
                     exit_cli_error(err)
 
     # -- ERROR -------------------------------------------------------------------------
-    elif (
-        cli_context.invoked_subcommand is None and not Path(scenario_filepath).is_file()
-    ):
+    elif cli_context.invoked_subcommand is None and scenario is None:
         exit_cli_error(
             "Straight run launched but no default scenario file found."
             "\nPlease make sure there is a default scenario file `scenario.qdt.yml` "
