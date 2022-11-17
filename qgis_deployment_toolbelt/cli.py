@@ -107,7 +107,7 @@ def qgis_deployment_toolbelt(
 
         .. code-block:: powershell
 
-            qgis-deployment-toolbelt --check-validity -c --verbose check
+            qgis-deployment-toolbelt --disable_validation -c --verbose check
 
     """
     scenario = None
