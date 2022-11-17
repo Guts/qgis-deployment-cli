@@ -74,12 +74,11 @@ CONTEXT_SETTINGS = dict(obj={})
     type=click.Path(readable=True, file_okay=True, dir_okay=False, resolve_path=True),
 )
 @click.option(
-    "-check-validity",
-    "--check-validity",
-    "check_validity",
+    "--disable-validation",
+    "disable_validation",
     is_flag=True,
     show_default=True,
-    help="Check the validity of the scenario",
+    help="Disable the validation of the scenario",
 )
 @click.version_option(
     version=__version__,
@@ -90,7 +89,7 @@ CONTEXT_SETTINGS = dict(obj={})
 def qgis_deployment_toolbelt(
     cli_context: click.Context,
     scenario_filepath: Path,
-    check_validity: bool,
+    disable_validation: bool,
     clear: bool,
     verbose: bool,
 ):
@@ -100,7 +99,7 @@ def qgis_deployment_toolbelt(
     Args:
         cli_context (click.Context): Click context
         scenario_filepath (Path): path to a scenario file to use
-        check_validity (bool): option to check the validity of the scenario
+        disable_validation (bool): option to disable the validation of the scenario
         clear (bool): option to clear the terminal berfore any other step
         verbose (bool): option to force the verbose mode
 
@@ -125,7 +124,7 @@ def qgis_deployment_toolbelt(
             )
 
     # Check the validity of the scenario
-    if check_validity and scenario is not None:
+    if not disable_validation and scenario is not None:
         if result_scenario_validity is not None:
             exit_cli_error(result_scenario_validity)
 
