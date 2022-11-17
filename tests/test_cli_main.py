@@ -61,6 +61,16 @@ def test_main_run():
     assert result.exit_code == 1
 
 
+def test_main_run_with_check_validity_option():
+    """Test main cli command with the check-validity option"""
+    runner = CliRunner()
+    result = runner.invoke(
+        qgis_deployment_toolbelt,
+        [f"--scenario={str(sample_scenario_good.resolve())}", "check_validity"],
+    )
+    assert result.exit_code == 2
+
+
 # #############################################################################
 # ######## Standalone ##############
 # ##################################
