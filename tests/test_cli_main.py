@@ -26,6 +26,9 @@ from qgis_deployment_toolbelt.cli import qgis_deployment_toolbelt
 sample_scenario_good: Path = Path(
     "tests/fixtures/scenarios/good_scenario_sample.qdt.yml"
 )
+sample_scenario_false: Path = Path(
+    "tests/fixtures/scenarios/false_scenario_sample.qdt.yml"
+)
 sample_scenario_imaginary: Path = Path(
     "tests/fixtures/scenarios/imaginary_scenario_sample.qdt.yml"
 )
@@ -57,6 +60,22 @@ def test_main_run():
     result = runner.invoke(
         qgis_deployment_toolbelt,
         [f"--scenario={str(sample_scenario_imaginary.resolve())}"],
+    )
+    assert result.exit_code == 1
+
+
+def test_main_run_with_disable_validation_option():
+    """Test main cli command with the disable validation option"""
+    runner = CliRunner()
+    result = runner.invoke(
+        qgis_deployment_toolbelt,
+        [f"--scenario={str(sample_scenario_good.resolve())}", "--disable-validation"],
+    )
+    assert result.exit_code == 0
+
+    result = runner.invoke(
+        qgis_deployment_toolbelt,
+        [f"--scenario={str(sample_scenario_false.resolve())}", "--disable-validation"],
     )
     assert result.exit_code == 1
 
