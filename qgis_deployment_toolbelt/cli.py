@@ -119,10 +119,10 @@ def qgis_deployment_toolbelt(
         scenario = ScenarioReader(in_yaml=scenario_filepath)
         scenario_validity = scenario.validate_scenario()
         if not scenario_validity[0]:
-            result_scenario_validity = (                "Scenario validation failed. Please check the scenario file."
-                "\nValidation report:\n- {}".format(
-                    "\n- ".join(scenario_validity[1])
-                ))
+            result_scenario_validity = (
+                "Scenario validation failed. Please check the scenario file."
+                "\nValidation report:\n- {}".format("\n- ".join(scenario_validity[1]))
+            )
 
     # Check the validity of the scenario
     if check_validity and scenario is not None:
