@@ -193,7 +193,9 @@ def qgis_deployment_toolbelt(
                     exit_cli_error(err)
 
     # -- ERROR -------------------------------------------------------------------------
-    elif cli_context.invoked_subcommand is None and not Path(scenario_filepath).is_file():
+    elif (
+        cli_context.invoked_subcommand is None and not Path(scenario_filepath).is_file()
+    ):
         exit_cli_error(
             "Straight run launched but no default scenario file found."
             "\nPlease make sure there is a default scenario file `scenario.qdt.yml` "
