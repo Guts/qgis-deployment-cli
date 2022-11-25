@@ -92,13 +92,12 @@ class RemoteGitHandler:
 
         # clone
         if local_path.exists() and not self.is_local_path_git_repository(local_path):
-            logger.info(f"Cloning repository {self.url} to {local_path}")
             try:
                 return self._clone(local_path=local_path)
             except Exception as err:
                 logger.error(
-                    f"Error cloning the remote repository{self.url} "
-                    f"(branch {self.branch}) to {local_path}."
+                    f"Error cloning the remote repository {self.url} "
+                    f"(branch {self.branch}) to {local_path}. "
                     f"Trace: {err}."
                 )
                 raise err
@@ -144,18 +143,17 @@ class RemoteGitHandler:
         # clone
         if local_path.exists() and not self.is_local_path_git_repository(local_path):
             logger.info(f"Cloning repository {self.url} to {local_path}")
-            with porcelain.open_repo_closing(str(local_path.resolve())) as local_repo:
-                repo = porcelain.clone(
-                    source=self.url,
-                    target=local_repo,
-                    branch=self.branch,
-                    depth=5,
-                )
-                gobj = local_repo.get_object(repo.head())
-                logger.debug(
-                    f"Latest commit cloned: {gobj.sha().hexdigest()} by {gobj.author}"
-                    f" at {gobj.commit_time}"
-                )
+            local_repo = porcelain.clone(
+                source=self.url,
+                target=str(local_path.resolve()),
+                branch=self.branch,
+                depth=5,
+            )
+            gobj = local_repo.get_object(local_repo.head())
+            logger.debug(
+                f"Latest commit cloned: {gobj.sha().hexdigest()} by {gobj.author}"
+                f" at {gobj.commit_time}"
+            )
             return local_repo
 
     def _fetch(self, local_path: Union[str, Path]) -> Repo:
