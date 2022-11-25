@@ -10,7 +10,6 @@ metadata:
 
 # Toolbelt settings
 settings:
-  DEBUG: true
   SCENARIO_VALIDATION: true
 
 # Deployment workflow, step by step
