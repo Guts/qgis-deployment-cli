@@ -39,12 +39,14 @@ logger = logging.getLogger(__name__)
 class RemoteGitHandler:
     """Handle generic git remote repository."""
 
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str, branch: str = None) -> None:
         """Constructor."""
         # validation
         if not git_validate(url):
             raise ValueError(f"Invalid git URL: {url}")
         self.url = url
+        self.branch = branch or self.url_parsed.branch
+        print(self.branch)
 
     @property
     def is_url_git_repository(self) -> bool:
@@ -84,7 +86,7 @@ class RemoteGitHandler:
             return porcelain.clone(
                 source=self.url,
                 target=str(local_path.resolve()),
-                branch=self.url_parsed.branch,
+                branch=self.branch,
                 depth=5,
             )
         elif local_path.exists() and self.is_local_path_git_repository(local_path):
