@@ -31,11 +31,6 @@ from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_norm
 # chronometer
 START_TIME = default_timer()
 
-# logs
-logger = logging.getLogger(__name__)
-log_console_handler = logging.StreamHandler()
-logger.addHandler(log_console_handler)
-
 # default CLI context.
 # See: https://click.palletsprojects.com/en/7.x/commands/#context-defaults
 CONTEXT_SETTINGS = dict(obj={})
@@ -135,9 +130,15 @@ def qgis_deployment_toolbelt(
     # -- LOG/VERBOSITY MANAGEMENT ------------------------------------------------------
     # if verbose, override conf value
     if verbose:
-        logger.setLevel(logging.DEBUG)
-        for h in logger.handlers:
-            h.setLevel(logging.DEBUG)
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.WARNING
+
+    logging.basicConfig(
+        format="[%(levelname)s] %(message)s",
+        level=log_level,
+    )
+    logger = logging.getLogger(__name__)
     logger.info(f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled.")
 
     click.echo(
@@ -155,15 +156,6 @@ def qgis_deployment_toolbelt(
         # Check the validity of the scenario
         if result_scenario_validity is not None:
             exit_cli_error(result_scenario_validity)
-
-        # Apply log level from scenario (only if verbose mode is disabled)
-        if scenario.settings.get("DEBUG") is True and not verbose:
-            logger.setLevel(logging.DEBUG)
-            for h in logger.handlers:
-                h.setLevel(logging.DEBUG)
-            logger.info(
-                f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled."
-            )
 
         # Use metadata to inform which scenario is running
         click.echo(
