@@ -33,6 +33,7 @@ steps:
       action: download
       source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
       protocol: git
+      branch: main
       local_destination: ~/.cache/qgis-deployment-toolbelt/tests
 
   - name: Create shortcuts for profiles

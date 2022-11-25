@@ -64,6 +64,13 @@ class JobProfilesDownloader:
             "possible_values": ("http", "git", "copy"),
             "condition": "in",
         },
+        "branch": {
+            "type": str,
+            "required": False,
+            "default": "master",
+            "possible_values": None,
+            "condition": None,
+        },
         "source": {
             "type": str,
             "required": True,
@@ -121,8 +128,11 @@ class JobProfilesDownloader:
 
         # prepare remote source
         if self.options.get("protocol") == "git":
-            downloader = RemoteGitHandler(url=self.options.get("source"))
-            downloader.clone_or_pull(self.local_path)
+            downloader = RemoteGitHandler(
+                url=self.options.get("source"),
+                branch=self.options.get("branch", "master"),
+            )
+            downloader.download(local_path=self.local_path)
         else:
             raise NotImplementedError
 

@@ -29,6 +29,7 @@ steps:
       action: download
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
+      branch: main
       local_destination: ~/.cache/qgis-deployment-toolbelt/Oslandia/
 
   - name: Create shortcuts for profiles
