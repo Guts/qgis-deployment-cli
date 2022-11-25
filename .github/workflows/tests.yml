@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-22.04, windows-latest]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -51,7 +51,6 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.1
-
 
   integration-test:
     strategy:
