@@ -13,12 +13,16 @@
 # standard library
 import unittest
 from os import environ
+from pathlib import Path
 from sys import platform as opersys
 
 # project
 from qgis_deployment_toolbelt.utils import get_proxy_settings, str2bool
 from qgis_deployment_toolbelt.utils.slugger import sluggy
-from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
+from qgis_deployment_toolbelt.utils.win32utils import (
+    get_environment_variable,
+    normalize_path,
+)
 
 # ############################################################################
 # ########## Classes #############
@@ -27,6 +31,20 @@ from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
 
 class TestUtils(unittest.TestCase):
     """Test package utilities."""
+
+    def test_normalize_path(self):
+        """Test path normalizer"""
+        t = Path(
+            "C:/Users/username/Documents/Git/QGIS/great plugins/qtribu/resources/images"
+        )
+        self.assertEqual(
+            normalize_path(
+                input_path=t,
+                add_trailing_slash_if_dir=True,
+                force_trailing_slash_if_dir_not_exists=True,
+            ),
+            "C:\\Users\\username\\Documents\\Git\\QGIS\\great plugins\\qtribu\\resources\\images\\",
+        )
 
     def test_proxy_settings(self):
         """Test proxy settings retriever."""

@@ -112,12 +112,18 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> Optional[
         return None
 
 
-def normalize_path(input_path: Path, add_trailing_slash_if_dir: bool = True) -> str:
+def normalize_path(
+    input_path: Path,
+    add_trailing_slash_if_dir: bool = True,
+    force_trailing_slash_if_dir_not_exists: bool = False,
+) -> str:
     r"""Returns a path as normalized and fully escaped for Windows old-school file style.
 
     :param Path input_path: path to normalize
     :param bool add_trailing_slash_if_dir: add a trailing slash if the input is a folder,\
         defaults to True
+    :param bool force_trailing_slash_if_dir_not_exists: add a trailing slash even if \
+        the input path doesn't exist or is not a dir, defaults to False
 
     :return str: normalized path as string
 
@@ -131,6 +137,8 @@ def normalize_path(input_path: Path, add_trailing_slash_if_dir: bool = True) -> 
 
     """
     if input_path.is_dir() and add_trailing_slash_if_dir:
+        return repr(str(input_path.resolve()) + sep).replace("'", "")
+    elif force_trailing_slash_if_dir_not_exists:
         return repr(str(input_path.resolve()) + sep).replace("'", "")
     else:
         return repr(str(input_path.resolve())).replace("'", "")
@@ -208,5 +216,7 @@ def set_environment_variable(
 if __name__ == "__main__":
     """Standalone execution."""
     # pass
-    t = Path("C:/Users/risor/Documents/GitHub/Geotribu/qtribu/qtribu/resources/images")
+    t = Path(
+        "C:/Users/username/Documents/Git/QGIS/great plugins/qtribu/resources/images"
+    )
     print(normalize_path(t))
