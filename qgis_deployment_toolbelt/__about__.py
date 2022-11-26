@@ -18,7 +18,7 @@ __all__ = [
     "__version__",
 ]
 
-__author__ = "Julien Moura (Oslandia)"
+__author__ = "Julien Moura (Oslandia), Vincent Bré (Oslandia)"
 __copyright__ = "2021 - {0}, {1}".format(date.today().year, __author__)
 __email__ = "qgis@oslandia.com"
 __executable_name__ = "QGIS_DeploymentCLI.exe"
