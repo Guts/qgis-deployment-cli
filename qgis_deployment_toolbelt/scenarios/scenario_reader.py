@@ -73,6 +73,7 @@ class ScenarioReader:
             must_exists=True,
             must_be_readable=True,
         )
+        yaml_path = Path(yaml_path)
 
         # check integrity and structure
         with yaml_path.open(mode="r") as in_yaml_file:

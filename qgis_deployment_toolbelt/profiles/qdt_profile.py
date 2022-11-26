@@ -152,12 +152,13 @@ class QdtProfile:
             must_exists=True,
             must_be_readable=True,
         )
-        check_path(
-            input_path=profile_folder,
-            must_be_a_folder=True,
-            must_exists=True,
-            must_be_readable=True,
-        )
+        if profile_folder:
+            check_path(
+                input_path=profile_folder,
+                must_be_a_folder=True,
+                must_exists=True,
+                must_be_readable=True,
+            )
 
         # load JSON
         with profile_json_path.open(mode="r", encoding="utf8") as in_profile_json:

@@ -7,7 +7,7 @@
         # for whole tests
         python -m unittest tests.test_qdt_profile_object
         # for specific test
-        python -m unittest tests.test_qdt_profile_object.TestQdtProfile.test_profile_load_from_json
+        python -m unittest tests.test_qdt_profile_object.TestQdtProfile.test_profile_load_from_json_basic
 """
 
 # standard
@@ -36,7 +36,7 @@ class TestQdtProfile(unittest.TestCase):
     def test_profile_load_from_json_basic(self):
         """Test profile loading from JSON."""
         for i in self.good_profiles_files:
-            qdt_profile = QdtProfile.from_json(i)
+            qdt_profile = QdtProfile.from_json(profile_json_path=i)
             self.assertIsInstance(qdt_profile, QdtProfile)
 
             # attributes types
