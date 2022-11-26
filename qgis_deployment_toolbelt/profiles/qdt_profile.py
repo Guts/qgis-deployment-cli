@@ -27,6 +27,7 @@ else:
 
 # Package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -145,10 +146,19 @@ class QdtProfile:
 
         """
         # checks
-        if not profile_json_path.is_file():
-            raise FileNotFoundError(f"{profile_json_path.resolve()} does not exist.")
-        if profile_folder and not profile_folder.is_dir():
-            raise TypeError(f"{profile_folder.resolve()} is not a folder.")
+        check_path(
+            input_path=profile_json_path,
+            must_be_a_file=True,
+            must_exists=True,
+            must_be_readable=True,
+        )
+        if profile_folder:
+            check_path(
+                input_path=profile_folder,
+                must_be_a_folder=True,
+                must_exists=True,
+                must_be_readable=True,
+            )
 
         # load JSON
         with profile_json_path.open(mode="r", encoding="utf8") as in_profile_json:

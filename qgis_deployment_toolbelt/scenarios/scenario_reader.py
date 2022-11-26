@@ -15,12 +15,14 @@
 import logging
 from functools import lru_cache
 from io import BufferedIOBase
-from os import R_OK, access
 from pathlib import Path
 from typing import List, Tuple, Union
 
 # 3rd party
 import yaml
+
+# package
+from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -65,25 +67,13 @@ class ScenarioReader:
         :rtype: Path
         """
         # if path as string load it in Path object
-        if isinstance(yaml_path, str):
-            try:
-                yaml_path = Path(yaml_path)
-            except Exception as exc:
-                raise TypeError("Converting yaml path failed: {}".format(exc))
-
-        # check if file exists
-        if not yaml_path.exists():
-            raise FileExistsError(
-                "YAML file to check doesn't exist: {}".format(yaml_path.resolve())
-            )
-
-        # check if it's a file
-        if not yaml_path.is_file():
-            raise IOError("YAML file is not a file: {}".format(yaml_path.resolve()))
-
-        # check if file is readable
-        if not access(yaml_path, R_OK):
-            raise IOError("yaml file isn't readable: {}".format(yaml_path))
+        check_path(
+            input_path=yaml_path,
+            must_be_a_file=True,
+            must_exists=True,
+            must_be_readable=True,
+        )
+        yaml_path = Path(yaml_path)
 
         # check integrity and structure
         with yaml_path.open(mode="r") as in_yaml_file:
