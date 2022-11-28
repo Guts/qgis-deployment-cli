@@ -183,6 +183,10 @@ class TestUtilsCheckPath(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             check_path(input_path="imaginary/path", must_exists=True)
 
+        # must be readable
+        self.assertTrue(check_path(input_path="imaginary/path", raise_error=False, must_exists=False, must_be_readable=False))
+        self.assertTrue(check_path(input_path="setup.py", raise_error=False, must_exists=False, must_be_readable=True))
+
         # must be a file
         self.assertFalse(
             check_path(
