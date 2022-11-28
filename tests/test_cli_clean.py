@@ -11,13 +11,16 @@
 # ##################################
 
 # Standard library
+import unittest
 from pathlib import Path
+import shutil
 
 # 3rd party library
 from click.testing import CliRunner
 
 # module to test
 from qgis_deployment_toolbelt.cli import qgis_deployment_toolbelt
+from qgis_deployment_toolbelt.commands import cli_clean
 
 # #############################################################################
 # ######## Globals #################
@@ -62,6 +65,24 @@ def test_clean_help():
 #         ],
 #     )
 #     assert result.exit_code == 0
+
+class TestClean(unittest.TestCase):
+    """Test module"""
+    def test_cli_clean(self):
+        """Test clean method from the cli_clean module"""
+        logs_dir = Path().resolve() / "_logs"
+        logs_subdir = logs_dir / "log1"
+        shutil.rmtree(logs_dir, ignore_errors=True)
+        with self.assertRaises(SystemExit) as excinfo:
+            cli_clean.clean()
+        self.assertEqual(str(excinfo.exception), "1")
+
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        logs_subdir.mkdir(parents=True, exist_ok=True)
+        with self.assertRaises(SystemExit) as excinfo:
+            cli_clean.clean()
+        self.assertEqual(str(excinfo.exception), "0")
+
 
 
 # #############################################################################
