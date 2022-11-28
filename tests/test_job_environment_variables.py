@@ -87,3 +87,26 @@ class TestJobEnvironmentVariables(unittest.TestCase):
                 get_environment_variable("QDT_TEST_FAKE_ENV_VAR_PATH"),
                 str(Path(expanduser("~/scripts/qgis_startup.py")).resolve()),
             )
+
+    def test_prepare_value(self):
+        """Test prepare_value method"""
+        job_env_vars = JobEnvironmentVariables([])
+        value_test = f"tests/{Path(__file__).name}"
+        self.assertEqual(job_env_vars.prepare_value(value=value_test),
+                         str(Path().resolve() / value_test)
+                         )
+        value_test = "imaginary/path"
+        self.assertEqual(
+            job_env_vars.prepare_value(value=value_test),
+            str(Path().resolve() / value_test)
+        )
+        self.assertTrue(job_env_vars.prepare_value(value=[]))
+
+    def test_validate_options(self):
+        """Test validate_options method"""
+        job_env_vars = JobEnvironmentVariables([])
+        # Options must be a list of dictionaries
+        with self.assertRaises(TypeError):
+            job_env_vars.validate_options(options="options_test")
+        with self.assertRaises(TypeError):
+            job_env_vars.validate_options(options=["options_test"])
