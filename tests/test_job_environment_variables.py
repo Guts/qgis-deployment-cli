@@ -16,10 +16,10 @@
 
 # Standard library
 import unittest
-from unittest import mock
 from os.path import expanduser
 from pathlib import Path
 from sys import platform as opersys
+from unittest import mock
 
 # package
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
@@ -94,13 +94,14 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         """Test prepare_value method"""
         job_env_vars = JobEnvironmentVariables([])
         value_test = f"tests/{Path(__file__).name}"
-        self.assertEqual(job_env_vars.prepare_value(value=value_test),
-                         str(Path().resolve() / value_test)
-                         )
+        self.assertEqual(
+            job_env_vars.prepare_value(value=value_test),
+            str(Path().resolve() / value_test),
+        )
         value_test = "imaginary/path"
         self.assertEqual(
             job_env_vars.prepare_value(value=value_test),
-            str(Path().resolve() / value_test)
+            str(Path().resolve() / value_test),
         )
         self.assertTrue(job_env_vars.prepare_value(value=[]))
 
@@ -114,27 +115,29 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             job_env_vars.validate_options(options=["options_test"])
 
 
-
 # simulate an opersys variable equal to win32
-@mock.patch('qgis_deployment_toolbelt.jobs.job_environment_variables.opersys', "win32")
+@mock.patch("qgis_deployment_toolbelt.jobs.job_environment_variables.opersys", "win32")
 class TestJobEnvironmentVariablesImaginaryOpersysWin32(unittest.TestCase):
     """Test module with a fake opersys variable equal to win32"""
+
     def test_run(self):
         """Test run method"""
-        job_env_vars = JobEnvironmentVariables([
-            {
-                "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
-                "value": True,
-                "scope": "user",
-                "action": "add",
-            },
-            {
-                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
-                "value": "~/scripts/qgis_startup.py",
-                "scope": "user",
-                "action": "add_test",
-            },
-        ])
+        job_env_vars = JobEnvironmentVariables(
+            [
+                {
+                    "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
+                    "value": True,
+                    "scope": "user",
+                    "action": "add",
+                },
+                {
+                    "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                    "value": "~/scripts/qgis_startup.py",
+                    "scope": "user",
+                    "action": "add_test",
+                },
+            ]
+        )
         self.assertIsNone(job_env_vars.run())
 
     def test_prepare_value(self):

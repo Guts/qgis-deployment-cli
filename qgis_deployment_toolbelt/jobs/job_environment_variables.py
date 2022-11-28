@@ -18,7 +18,6 @@ from pathlib import Path
 from sys import platform as opersys
 from typing import List
 
-
 # Imports depending on operating system
 if opersys == "win32":
     """windows"""

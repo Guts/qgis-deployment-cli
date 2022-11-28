@@ -10,10 +10,11 @@
 # ########## Libraries #############
 # ##################################
 
+import shutil
+
 # Standard library
 import unittest
 from pathlib import Path
-import shutil
 
 # 3rd party library
 from click.testing import CliRunner
@@ -66,8 +67,10 @@ def test_clean_help():
 #     )
 #     assert result.exit_code == 0
 
+
 class TestClean(unittest.TestCase):
     """Test module"""
+
     def test_cli_clean(self):
         """Test clean method from the cli_clean module"""
         logs_dir = Path().resolve() / "_logs"
@@ -82,7 +85,6 @@ class TestClean(unittest.TestCase):
         with self.assertRaises(SystemExit) as excinfo:
             cli_clean.clean()
         self.assertEqual(str(excinfo.exception), "0")
-
 
 
 # #############################################################################
