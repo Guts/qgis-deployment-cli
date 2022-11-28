@@ -176,6 +176,7 @@ class TestUtilsCheckPath(unittest.TestCase):
             )
 
         # must exist
+        self.assertFalse(check_path(input_path="imaginary/path", raise_error=False, must_exists=False))
         self.assertFalse(
             check_path(input_path="imaginary/path", raise_error=False, must_exists=True)
         )
