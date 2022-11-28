@@ -16,6 +16,7 @@
 
 # Standard library
 import unittest
+from unittest import mock
 from os.path import expanduser
 from pathlib import Path
 from sys import platform as opersys
@@ -28,6 +29,7 @@ from qgis_deployment_toolbelt.utils import str2bool
 
 if opersys == "win32":
     from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
+
 
 # #############################################################################
 # ########## Classes ###############
@@ -110,3 +112,32 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             job_env_vars.validate_options(options="options_test")
         with self.assertRaises(TypeError):
             job_env_vars.validate_options(options=["options_test"])
+
+
+
+# simulate an opersys variable equal to win32
+@mock.patch('qgis_deployment_toolbelt.jobs.job_environment_variables.opersys', "win32")
+class TestJobEnvironmentVariablesImaginaryOpersysWin32(unittest.TestCase):
+
+    def test_run(self):
+        """Test run method"""
+        job_env_vars = JobEnvironmentVariables([
+            {
+                "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
+                "value": True,
+                "scope": "user",
+                "action": "add",
+            },
+            {
+                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                "value": "~/scripts/qgis_startup.py",
+                "scope": "user",
+                "action": "add_test",
+            },
+        ])
+        self.assertIsNone(job_env_vars.run())
+
+    def test_prepare_value(self):
+        """Test prepare_value method"""
+        job_env_vars = JobEnvironmentVariables([])
+        self.assertEqual(job_env_vars.prepare_value(value=[]), [])
