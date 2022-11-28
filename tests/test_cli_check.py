@@ -10,6 +10,7 @@
 
 # Standard library
 import unittest
+from unittest import mock
 from pathlib import Path
 
 # 3rd party library
@@ -49,6 +50,17 @@ class TestCheck(unittest.TestCase):
         with self.assertRaises(SystemExit) as excinfo:
             cli_check.check()
         self.assertEqual(str(excinfo.exception), "0")
+
+@mock.patch('qgis_deployment_toolbelt.commands.cli_check.opersys', "win32_fake")
+
+class TestCheckImaginaryOpersys(unittest.TestCase):
+    """Test module with a fake opersys variable """
+    def test_cli_check(self):
+        """Test check method from the cli_check module"""
+        with self.assertRaises(SystemExit) as excinfo:
+            cli_check.check()
+        self.assertEqual(str(excinfo.exception), "1")
+
 
 
 # #############################################################################
