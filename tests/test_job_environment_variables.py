@@ -118,7 +118,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
 # simulate an opersys variable equal to win32
 @mock.patch('qgis_deployment_toolbelt.jobs.job_environment_variables.opersys', "win32")
 class TestJobEnvironmentVariablesImaginaryOpersysWin32(unittest.TestCase):
-
+    """Test module with a fake opersys variable equal to win32"""
     def test_run(self):
         """Test run method"""
         job_env_vars = JobEnvironmentVariables([
