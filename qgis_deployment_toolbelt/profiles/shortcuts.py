@@ -20,8 +20,8 @@ from typing import Iterable, Tuple, Union
 # Imports depending on operating system
 if opersys == "win32":
     """windows"""
-    import win32com.client
     import pythoncom
+    import win32com.client
     from win32comext.shell import shell, shellcon
 else:
     pass
