@@ -99,20 +99,24 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             str(Path().resolve() / value_test),
         )
         value_test = "imaginary/path"
+        self.assertEqual(
+            job_env_vars.prepare_value(value=value_test),
+            str(Path().resolve() / value_test),
+        )
         if opersys == "win32":
-            self.assertEqual(
-                job_env_vars.prepare_value(value=value_test),
-                value_test.replace("/", "\\"),
-            )
+            # self.assertEqual(
+            #     job_env_vars.prepare_value(value=value_test),
+            #     value_test.replace("/","\\"),
+            # )
             self.assertEqual(
                 job_env_vars.prepare_value(value=[]),
                 [],
             )
         else:
-            self.assertEqual(
-                job_env_vars.prepare_value(value=value_test),
-                str(Path().resolve() / value_test),
-            )
+            # self.assertEqual(
+            #     job_env_vars.prepare_value(value=value_test),
+            #     str(Path().resolve() / value_test),
+            # )
             self.assertEqual(
                 job_env_vars.prepare_value(value=[]),
                 '"[]"',
