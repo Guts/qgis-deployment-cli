@@ -104,7 +104,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         )
         value_test = "imaginary/path"
         if opersys == "win32":
-            if PYTHON_RELEASE.startswith("3.8"):
+            if PYTHON_RELEASE.startswith(("3.8", "3.9")):
                 self.assertEqual(
                     job_env_vars.prepare_value(value=value_test),
                     value_test.replace("/", "\\"),
