@@ -21,6 +21,7 @@ from typing import Iterable, Tuple, Union
 if opersys == "win32":
     """windows"""
     import win32com.client
+    import pythoncom
     from win32comext.shell import shell, shellcon
 else:
     pass
@@ -252,7 +253,7 @@ class ApplicationShortcut:
         :rtype: Tuple[Union[Path, None], Union[Path, None]]
         """
         # variable
-        _WSHELL = win32com.client.Dispatch("Wscript.Shell")
+        _WSHELL = win32com.client.Dispatch("Wscript.Shell", pythoncom.CoInitialize())
 
         # desktop shortcut
         if self.desktop:
