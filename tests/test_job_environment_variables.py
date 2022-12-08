@@ -102,7 +102,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         if opersys == "win32":
             self.assertEqual(
                 job_env_vars.prepare_value(value=value_test),
-                value_test.replace("/","\\"),
+                value_test.replace("/", "\\"),
             )
             self.assertEqual(
                 job_env_vars.prepare_value(value=[]),
