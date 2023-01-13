@@ -1,6 +1,7 @@
 # Testing dependencies
 # --------------------
 
+pillow>=9.4,<10
 pytest-cov>=3.0,<4.1
 semver>=2.13,<2.14
 validators>=0.19,<0.21
