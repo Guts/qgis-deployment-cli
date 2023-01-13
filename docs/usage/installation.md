@@ -17,4 +17,4 @@ The package is installable with pip:
 pip install qgis-deployment-toolbelt
 ```
 
-It's then availabl as a CLI: see [the relevant section](/usage/cli)
+It's then available as a CLI: see [the relevant section](/usage/cli)
