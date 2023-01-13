@@ -27,7 +27,6 @@ import imagesize
 # logs
 logger = logging.getLogger(__name__)
 
-compatible_images_extensions: tuple = (".jpg", ".jpeg", ".png")
 
 # #############################################################################
 # ########## Functions #############
@@ -43,7 +42,7 @@ def get_image_size(image_filepath: Path) -> Tuple[int, int]:
     """
     # handle SVG
     if image_filepath.suffix.lower() == ".svg":
-        svg_size = imagesize.get(image_filepath)
+        svg_size = get_svg_size(image_filepath)
         if not svg_size:
             return None
 
@@ -76,7 +75,7 @@ def get_svg_size(image_filepath: Path) -> Tuple[int, int]:
         return None
 
     try:
-        return (int(Decimal(root.attrib["width"])), int(Decimal(root.attrib["height"])))
+        return int(Decimal(root.attrib["width"])), int(Decimal(root.attrib["height"]))
     except Exception as err:
         logger.warning(
             "Unable to determine image dimensions from width/height "
@@ -91,42 +90,35 @@ def check_image_dimensions(
     max_width: int = 600,
     min_height: int = 250,
     max_height: int = 350,
+    allowed_images_extensions: tuple = (".jpg", ".jpeg", ".png", ".svg"),
 ) -> bool:
     """Check input image dimensions against passed limits.
 
     :param Union[str, Path] image_filepath: path to the image to check
-    :param int min_width: _description_, defaults to 500
-    :param int max_width: _description_, defaults to 600
-    :param int min_height: _description_, defaults to 250
-    :param int max_height: _description_, defaults to 350
+    :param int min_width: minimum width, defaults to 500
+    :param int max_width: maximum width, defaults to 600
+    :param int min_height: minimum height, defaults to 250
+    :param int max_height: maximum height, defaults to 350
 
     :return bool: True if image dimensions are inferior
-
-    :example:
-
-    .. code-block:: python
-
-        sample_txt = "Oyé oyé brâves gens de 1973 ! Hé oh ! Sentons-nous l'ail %$*§ ?!"
-        print(sluggy(sample_txt))
-        > oye-oye-braves-gens-de-1973-he-oh-sentons-nous-lail
     """
 
-    if image_filepath.suffix not in compatible_images_extensions:
-        logger.error("Image extension is not supported: ")
-        return None
-    # print(file.name, file.parents[0])
-
-    # get image dimensions
-    try:
-        width, height = imagesize.get(image_filepath)
-    except ValueError as exc:
-        logging.error(f"Invalid image: {image_filepath.resolve()}. Trace: {exc}")
-        width, height = -1, -1
-    except Exception as exc:
-        logging.error(
-            f"Something went wrong reading the image: {image_filepath.resolve()}. Trace: {exc}"
+    if image_filepath.suffix.lower() not in allowed_images_extensions:
+        logger.error(
+            f"Image extension {image_filepath.suffix.lower()} is not one of "
+            f"supported: {allowed_images_extensions}"
         )
-        width, height = -1, -1
+        return None
+
+    image_dimensions = get_image_size(image_filepath=image_filepath)
+    if not image_dimensions:
+        logger.info(
+            f"Unable to determine image dimensions ({image_filepath.resolve()}), "
+            "so unable to check it it complies with limits."
+        )
+        return None
+
+    return all(d <= l for d, l in zip(image_dimensions, (max_width, max_height)))
 
 
 # #############################################################################
