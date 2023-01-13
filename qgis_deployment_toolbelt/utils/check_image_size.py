@@ -34,6 +34,32 @@ compatible_images_extensions: tuple = (".jpg", ".jpeg", ".png")
 # ##################################
 
 
+def get_image_size(image_filepath: Path) -> Tuple[int, int]:
+    """Get image dimensions as a tuple (width,height). Return None in case of error.
+
+    :param Path image_filepath: path to the image
+
+    :return Tuple[int, int]: dimensions tuple (width,height)
+    """
+    # handle SVG
+    if image_filepath.suffix.lower() == ".svg":
+        svg_size = imagesize.get(image_filepath)
+        if not svg_size:
+            return None
+
+    # get image dimensions
+    try:
+        return imagesize.get(image_filepath)
+    except ValueError as exc:
+        logging.error(f"Invalid image: {image_filepath.resolve()}. Trace: {exc}")
+    except Exception as exc:
+        logging.error(
+            f"Something went wrong reading the image: {image_filepath.resolve()}. Trace: {exc}"
+        )
+
+    return None
+
+
 def get_svg_size(image_filepath: Path) -> Tuple[int, int]:
     """Extract SVG width and height from a SVG file and convert them into integers. \
     Relevant and working only if the file root has width and height attributes.
