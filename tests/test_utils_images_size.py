@@ -115,6 +115,15 @@ class TestUtilsImagesSizeChecker(unittest.TestCase):
             )
         )
 
+        self.assertFalse(
+            check_image_dimensions(
+                image_filepath=self.img_black_800x600,
+                max_width=300,
+                max_height=500,
+                allowed_images_extensions=(".png", ".webp"),
+            )
+        )
+
 
 # ############################################################################
 # ####### Stand-alone run ########
