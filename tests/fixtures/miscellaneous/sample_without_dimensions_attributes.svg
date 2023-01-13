@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="-50 -100 100 120" xmlns="http://www.w3.org/2000/svg">
+    <switch font-family="DejaVu Sans" font-size="100px" text-anchor="middle">
+        <text systemLanguage="gem">♂</text>
+        <text systemLanguage="gew">♀</text>
+        <text systemLanguage="gei">⚥</text>
+        <text systemLanguage="geu">⚲</text>
+        <text systemLanguage="geg">☿</text>
+        <text systemLanguage="gen">⚪</text>
+        <text systemLanguage="get">⚧</text>
+        <g systemLanguage="ged">
+            <text y="10" font-size="50px" font-weight="bold">d</text>
+            <circle cx="2.5" cy="-57.5" r="22.5" fill="none" stroke="#000" stroke-width="9" />
+            <path d="m-14-74 33 33m0-33-33 33" fill="none" stroke="#000" stroke-width="7" />
+        </g>
+        <text>?</text>
+    </switch>
+</svg>
