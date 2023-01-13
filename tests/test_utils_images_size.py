@@ -54,7 +54,7 @@ class TestUtilsImagesSizeChecker(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Executed after each test."""
-        # cls.img_tmp_folder.cleanup()
+        cls.img_tmp_folder.cleanup()
 
     # -- TESTS ---------------------------------------------------------
     def test_svg_size_with_dimensions(self):
