@@ -12,9 +12,10 @@
 
 # Standard library
 import logging
-from os import R_OK, access
+import xml.etree.ElementTree as ET
+from decimal import Decimal
 from pathlib import Path
-from typing import Union
+from typing import Tuple, Union
 
 # 3rd party
 import imagesize
@@ -31,6 +32,31 @@ compatible_images_extensions: tuple = (".jpg", ".jpeg", ".png")
 # #############################################################################
 # ########## Functions #############
 # ##################################
+
+
+def get_svg_size(image_filepath: Path) -> Tuple[int, int]:
+    """Extract SVG width and height from a SVG file and convert them into integers. \
+    Relevant and working only if the file root has width and height attributes.
+
+    :param Path image_filepath: path to the svg file
+
+    :return Tuple[int, int]: tuple of dimensions as integers (width,height)
+    """
+    try:
+        tree = ET.parse(image_filepath)
+        root = tree.getroot()
+    except Exception as err:
+        logger.error(f"Unable to open SVG file as XML: {image_filepath}. Trace: {err}")
+        return None
+
+    try:
+        return (int(Decimal(root.attrib["width"])), int(Decimal(root.attrib["height"])))
+    except Exception as err:
+        logger.warning(
+            "Unable to determine image dimensions from width/height "
+            f"attributes: {image_filepath}. It migh be infinitely scalable. Trace: {err}"
+        )
+        return None
 
 
 def check_image_dimensions(
@@ -58,33 +84,23 @@ def check_image_dimensions(
         print(sluggy(sample_txt))
         > oye-oye-braves-gens-de-1973-he-oh-sentons-nous-lail
     """
-    # check input path
-    if not isinstance(image_filepath, (str, Path)):
-        raise TypeError(
-            f"image_filepath must be a string or a Path, not {type(image_filepath)}."
+
+    if image_filepath.suffix not in compatible_images_extensions:
+        logger.error("Image extension is not supported: ")
+        return None
+    # print(file.name, file.parents[0])
+
+    # get image dimensions
+    try:
+        width, height = imagesize.get(image_filepath)
+    except ValueError as exc:
+        logging.error(f"Invalid image: {image_filepath.resolve()}. Trace: {exc}")
+        width, height = -1, -1
+    except Exception as exc:
+        logging.error(
+            f"Something went wrong reading the image: {image_filepath.resolve()}. Trace: {exc}"
         )
-
-    if isinstance(image_filepath, str):
-        try:
-            image_filepath = Path(image_filepath)
-        except Exception as exc:
-            raise TypeError(f"Converting image_filepath into Path failed. Trace: {exc}")
-
-    # check if file exists
-    if not image_filepath.exists():
-        raise FileExistsError(
-            "YAML file to check doesn't exist: {}".format(image_filepath.resolve())
-        )
-
-    # check if it's a file
-    if not image_filepath.is_file():
-        raise IOError("YAML file is not a file: {}".format(image_filepath.resolve()))
-
-    # check if file is readable
-    if not access(image_filepath, R_OK):
-        raise IOError("yaml file isn't readable: {}".format(image_filepath))
-
-    pass
+        width, height = -1, -1
 
 
 # #############################################################################
@@ -93,4 +109,14 @@ def check_image_dimensions(
 
 if __name__ == "__main__":
     """Standalone execution."""
-    pass
+    svg_path = Path(
+        "tests/fixtures/miscellaneous/sample_with_dimensions_attributes.svg"
+    )
+    assert svg_path.is_file()
+    print(get_svg_size(image_filepath=svg_path))
+
+    svg_path = Path(
+        "tests/fixtures/miscellaneous/sample_without_dimensions_attributes.svg"
+    )
+    assert svg_path.is_file()
+    print(get_svg_size(image_filepath=svg_path))
