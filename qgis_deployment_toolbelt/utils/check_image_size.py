@@ -45,6 +45,8 @@ def get_image_size(image_filepath: Path) -> Tuple[int, int]:
         svg_size = get_svg_size(image_filepath)
         if not svg_size:
             return None
+        else:
+            return svg_size
 
     # get image dimensions
     try:
@@ -132,6 +134,7 @@ if __name__ == "__main__":
     )
     assert svg_path.is_file()
     print(get_svg_size(image_filepath=svg_path))
+    print(get_image_size(image_filepath=svg_path))
 
     svg_path = Path(
         "tests/fixtures/miscellaneous/sample_without_dimensions_attributes.svg"
