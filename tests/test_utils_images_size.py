@@ -89,6 +89,32 @@ class TestUtilsImagesSizeChecker(unittest.TestCase):
         self.assertEqual(img_800x600[0], 800)
         self.assertEqual(img_800x600[1], 600)
 
+    def test_check_image_dimensions(self):
+        """Test image dimensions checker."""
+        self.assertTrue(
+            check_image_dimensions(
+                image_filepath=self.img_black_800x600, max_width=801, max_height=601
+            )
+        )
+
+        self.assertFalse(
+            check_image_dimensions(
+                image_filepath=self.img_black_800x600, max_width=300, max_height=601
+            )
+        )
+
+        self.assertFalse(
+            check_image_dimensions(
+                image_filepath=self.img_black_800x600, max_width=2000, max_height=200
+            )
+        )
+
+        self.assertFalse(
+            check_image_dimensions(
+                image_filepath=self.img_black_800x600, max_width=300, max_height=500
+            )
+        )
+
 
 # ############################################################################
 # ####### Stand-alone run ########
