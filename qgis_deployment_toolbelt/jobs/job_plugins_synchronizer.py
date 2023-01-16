@@ -39,7 +39,7 @@ class JobPluginsManager:
     Job to download and synchronize plugins.
     """
 
-    ID: str = "plugins-manager"
+    ID: str = "qplugins-manager"
     OPTIONS_SCHEMA: dict = {
         "action": {
             "type": str,
@@ -83,13 +83,6 @@ class JobPluginsManager:
         if self.options.get("action") in ("create", "create_or_restore"):
             for profile_dir in li_installed_profiles_path:
 
-                # default absolute splash screen path
-                splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
-
-                # target QGIS configuration files
-                cfg_qgis_base = profile_dir / "QGIS/QGIS3.ini"
-                cfg_qgis_custom = profile_dir / "QGIS/QGISCUSTOMIZATION3.ini"
-
                 # case where splash image is specified into the profile.json
                 if Path(profile_dir / "profile.json").is_file():
                     qdt_profile = QdtProfile.from_json(
@@ -97,36 +90,15 @@ class JobPluginsManager:
                         profile_folder=profile_dir.resolve(),
                     )
 
-                    # if the splash image referenced into the profile.json exists, make
-                    # sure it complies QGIS splash screen rules
-                    if (
-                        isinstance(qdt_profile.splash, Path)
-                        and qdt_profile.splash.is_file()
-                    ):
-                        # make sure that the filename complies with what QGIS expects
-                        if qdt_profile.splash.name != splash_screen_filepath.name:
-                            splash_filepath = qdt_profile.splash.with_name(
-                                self.SPLASH_FILENAME
-                            )
-                            qdt_profile.splash.replace(splash_filepath)
-                            logger.debug(
-                                f"Specified splash screen renamed into {splash_filepath}."
-                            )
-                        else:
-                            # homogeneize filepath var name
-                            logger.debug(
-                                f"Splash screen already exists at {splash_screen_filepath}"
-                            )
+                    # plugins
+                    profile_plugins_dir = profile_dir / "python/plugins"
+
+                    print(qdt_profile.plugins)
+
                 else:
                     logger.debug(f"No profile.json found for profile '{profile_dir}")
-
-                # now, splash screen image should be at {profile_dir}/images/splash.png
-                if not splash_screen_filepath.is_file():
-                    # TODO: check image size to fit QGIS restrictions
-                    logger.debug(
-                        f"No splash screen found or defined for profile {profile_dir.name}"
-                    )
                     continue
+
         else:
             raise NotImplementedError
 
