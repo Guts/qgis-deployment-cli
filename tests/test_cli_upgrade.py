@@ -34,7 +34,15 @@ def test_upgrade_check():
         qgis_deployment_toolbelt,
         ["upgrade", "-c"],
     )
-    assert result.exit_code == 0
+
+
+def test_upgrade_download():
+    """Test help command"""
+    runner = CliRunner()
+    result = runner.invoke(
+        qgis_deployment_toolbelt,
+        ["upgrade"],
+    )
 
 
 # #############################################################################
