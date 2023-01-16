@@ -53,6 +53,7 @@ steps:
     uses: splash-screen-manager
     with:
       action: create_or_restore
+      strict: false
 
   - name: Create report
     uses: telemetry-manager
