@@ -103,7 +103,7 @@ def run():
             template_txt = template_txt.replace(val, str(repl))
 
         # write new file
-        out_version_file.write_text(template_txt)
+        out_version_file.write_text(template_txt, encoding="UTF8")
 
         # log user
         print(("Version info written to: {}".format(out_version_file.resolve())))
