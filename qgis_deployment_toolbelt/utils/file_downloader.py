@@ -63,7 +63,8 @@ def download_remote_file_to_local(
     """
     # content search index
     if local_file_path.exists():
-        logger.warning(f"{local_file_path} already exists.")
+        logger.warning(f"{local_file_path} already exists. It's about to be replaced.")
+        local_file_path.unlink(missing_ok=True)
 
     # headers
     headers = {"User-Agent": user_agent}
