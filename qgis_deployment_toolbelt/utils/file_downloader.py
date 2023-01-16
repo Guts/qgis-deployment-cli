@@ -59,7 +59,7 @@ def download_remote_file_to_local(
         chunk_size (int): size of each chunk to read and write in bytes.
 
     Returns:
-        Path: path to the local index file (should be the same as local_file_path)
+        Path: path to the local file (should be the same as local_file_path)
     """
     # content search index
     if local_file_path.exists():
