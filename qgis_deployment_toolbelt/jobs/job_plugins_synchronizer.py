@@ -13,13 +13,17 @@
 
 # Standard library
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from configparser import ConfigParser
+from os import getenv
 from pathlib import Path
 from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.__about__ import __title_clean__
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 
 # #############################################################################
 # ########## Globals ###############
@@ -58,6 +62,10 @@ class JobPluginsManager:
         """
         self.options: dict = self.validate_options(options)
 
+        # local QDT folder
+        self.qdt_working_folder = get_qdt_working_directory()
+        logger.debug(f"Working folder: {self.qdt_working_folder}")
+
         # profile folder
         if opersys not in OS_CONFIG:
             raise OSError(
@@ -93,7 +101,20 @@ class JobPluginsManager:
                     # plugins
                     profile_plugins_dir = profile_dir / "python/plugins"
 
-                    print(qdt_profile.plugins)
+                    with ThreadPoolExecutor(
+                        max_workers=5, thread_name_prefix=f"{__title_clean__}"
+                    ) as executor:
+                        for plugin in qdt_profile.plugins:
+                            # local path
+
+                            # submit download to pool
+                            executor.submit(
+                                # func to execute
+                                download_remote_file_to_local,
+                                # func parameters
+                                remote_url_to_download=plugin.url,
+                                content_type="application/zip",
+                            )
 
                 else:
                     logger.debug(f"No profile.json found for profile '{profile_dir}")
