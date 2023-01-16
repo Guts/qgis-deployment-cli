@@ -19,7 +19,7 @@ import click
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import __version__
-from qgis_deployment_toolbelt.commands import cli_check, cli_clean
+from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_upgrade
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_normal
@@ -227,6 +227,7 @@ def qgis_deployment_toolbelt(
 # Add subcommands to the main command group
 qgis_deployment_toolbelt.add_command(cli_check.check)
 qgis_deployment_toolbelt.add_command(cli_clean.clean)
+qgis_deployment_toolbelt.add_command(cli_upgrade.upgrade)
 
 # #############################################################################
 # ##### Stand alone program ########
