@@ -21,7 +21,7 @@ on:
 # Globals
 env:
   PROJECT_FOLDER: "qgis_deployment_toolbelt"
-  PYTHON_VERSION: 3.10
+  PYTHON_VERSION: "3.10"
   PYINSTALLER_LOG_LEVEL: "DEBUG"
 
 # Jobs definition
