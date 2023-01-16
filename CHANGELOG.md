@@ -16,6 +16,16 @@ Unreleased
 
 -->
 
+## 0.13.0 - 2023-01-16
+
+### Features and enhancements 🎉
+
+* Add module to check image size by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/151>
+* Add test for utils.slugifier by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/165>
+* Improve test coverage on check image by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/166>
+* Increase test coverage by @vicente23 in <https://github.com/Guts/qgis-deployment-cli/pull/157>
+* Feature: add option to check splash screen dimensions by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/167>
+
 ## 0.12.0 - 2022-11-26
 
 ### Bugs fixes 🐛
