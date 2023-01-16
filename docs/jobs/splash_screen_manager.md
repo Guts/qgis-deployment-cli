@@ -13,6 +13,7 @@ Sample job configuration in your scenario file:
   uses: splash-screen-manager
   with:
     action: create_or_restore
+    strict: true
 ```
 
 ----
@@ -28,6 +29,15 @@ Possible_values:
 - `create`: add splash screen if not set
 - `create_or_restore`: add splash screen if not set and replace eventual existing one
 - `remove`: remove splash screen
+
+### strict
+
+Check image size against QGIS recomendations: 600x300.
+
+Possible values:
+
+- `true`: fail if the image dimensions does not comply with QGIS recomendations.
+- `false`: do not fail if the image dimensions does not comply with QGIS recomendations. A warning is logged.
 
 ----
 
