@@ -10,6 +10,7 @@ metadata:
 
 # Toolbelt settings
 settings:
+  LOCAL_QDT_WORKDIR: ~/.cache/qgis-deployment-toolbelt/Oslandia/
   SCENARIO_VALIDATION: true
 
 # Deployment workflow, step by step
