@@ -19,7 +19,9 @@ from sys import platform as opersys
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.exceptions import SplashScreenBadDimensions
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.check_image_size import check_image_dimensions
 from qgis_deployment_toolbelt.utils.win32utils import normalize_path
 
 # #############################################################################
@@ -48,7 +50,14 @@ class JobSplashScreenManager:
             "default": "create_or_restore",
             "possible_values": ("create", "create_or_restore", "remove"),
             "condition": "in",
-        }
+        },
+        "strict": {
+            "type": bool,
+            "required": False,
+            "default": False,
+            "possible_values": None,
+            "condition": None,
+        },
     }
     DEFAULT_SPLASH_FILEPATH: str = "images/splash.png"
     SPLASH_FILENAME: str = "splash.png"
@@ -125,11 +134,27 @@ class JobSplashScreenManager:
 
                 # now, splash screen image should be at {profile_dir}/images/splash.png
                 if not splash_screen_filepath.is_file():
-                    # TODO: check image size to fit QGIS restrictions
                     logger.debug(
                         f"No splash screen found or defined for profile {profile_dir.name}"
                     )
                     continue
+
+                # check image size to fit QGIS restrictions
+                is_img_compliant = check_image_dimensions(
+                    image_filepath=splash_screen_filepath.resolve(),
+                    max_width=605,
+                    max_height=305,
+                    allowed_images_extensions=(".png",),
+                )
+                if not is_img_compliant:
+                    err = SplashScreenBadDimensions(
+                        image_filepath=splash_screen_filepath,
+                        profile_name=profile_dir.name,
+                    )
+                    if self.options.get("strict") is True:
+                        raise err
+                    else:
+                        logger.warning(err.message)
 
                 # enable UI customization
                 self.set_ui_customization_enabled(
