@@ -14,8 +14,9 @@
 # Standard library
 import logging
 from dataclasses import dataclass
-from os import getenv
-from os.path import expandvars
+from functools import lru_cache
+from os import PathLike, getenv
+from os.path import expanduser, expandvars
 from pathlib import Path
 from typing import Tuple
 
@@ -25,6 +26,43 @@ from typing import Tuple
 
 # logs
 logger = logging.getLogger(__name__)
+
+# #############################################################################
+# ########## Functions #############
+# ##################################
+
+
+@lru_cache(maxsize=128)
+def get_qdt_working_directory(
+    specific_value: PathLike = None, identifier: str = "default"
+) -> Path:
+    """Get QDT working directory.
+
+    Args:
+        specific_value (PathLike, optional): a specific path to use. If set it's \
+            expanded and returned. Defaults to None.
+        identifier (str, optional): used to make the folder unique. If not set, \
+            'default' (sure, not so unique...) is used. Defaults to None.
+
+    Returns:
+        Path: path to the QDT working directory
+    """
+    if specific_value:
+        return Path(expandvars(expanduser(specific_value)))
+    elif getenv("QDT_PROFILES_PATH"):
+        return Path(expandvars(expanduser(getenv("QDT_PROFILES_PATH"))))
+    else:
+        return Path(
+            expandvars(
+                expanduser(
+                    getenv(
+                        "LOCAL_QDT_WORKDIR",
+                        f"~/.cache/qgis-deployment-toolbelt/{identifier}",
+                    ),
+                )
+            )
+        )
+
 
 # #############################################################################
 # ########## Classes ###############
