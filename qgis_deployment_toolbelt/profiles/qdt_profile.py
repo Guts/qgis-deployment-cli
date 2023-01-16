@@ -27,6 +27,7 @@ else:
 
 # Package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
@@ -43,6 +44,8 @@ logger = logging.getLogger(__name__)
 class QdtProfile:
     """Object definition for QGIS Profile handled by QDT."""
 
+    # optional mapping on attributes names.
+    # {attribute_name_in_output_object: attribute_name_from_input_file}
     ATTR_MAP = {
         "qgis_maximum_version": "qgisMaximumVersion",
         "qgis_minimum_version": "qgisMinimumVersion",
@@ -229,6 +232,14 @@ class QdtProfile:
         :return Path: profile name path
         """
         return self._name
+
+    @property
+    def plugins(self) -> list[dict]:
+        """Returns the plugins associated with the profile.
+
+        :return list[dict]: list of plugins
+        """
+        return [QgisPlugin.from_dict(p) for p in self._plugins]
 
     @property
     def splash(self) -> Union[str, Path]:
