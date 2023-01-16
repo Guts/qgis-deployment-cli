@@ -23,11 +23,7 @@ import click
 import semver
 
 # submodules
-from qgis_deployment_toolbelt.__about__ import (
-    __title__,
-    __title_clean__,
-    __uri_repository__,
-)
+from qgis_deployment_toolbelt.__about__ import __title__, __uri_repository__
 from qgis_deployment_toolbelt.__about__ import __version__ as actual_version
 from qgis_deployment_toolbelt.utils.bouncer import (
     exit_cli_error,
@@ -144,7 +140,9 @@ def upgrade(check_only: bool, where: Path):
 
     # compare it
     latest_version = latest_release.get("tag_name")
-    if semver.compare(actual_version, latest_version) < 0:
+    if semver.VersionInfo.parse(actual_version) < semver.VersionInfo.parse(
+        latest_version
+    ):
         if check_only:
             exit_cli_normal(
                 f"A newer version is available: {latest_version}", abort=True
