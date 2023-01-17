@@ -24,6 +24,7 @@ from qgis_deployment_toolbelt.__about__ import __title_clean__
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 
@@ -99,7 +100,44 @@ class JobPluginsManager:
             )
             return
 
-        # print(qdt_referenced_plugins)
+        # filter plugins to download, filtering out those which are not already  present locally
+        qdt_plugins_to_download = self.filter_list_downloadable_plugins(
+            input_list=qdt_referenced_plugins
+        )
+        if not len(qdt_plugins_to_download):
+            logger.info(
+                f"All referenced plugins are already present in {self.qdt_plugins_folder}. "
+                "Skipping download step."
+            )
+            return
+
+        # download plugins into the QDT local folder - only those which are not already present
+
+        # if self.options.get("action") in ("create", "create_or_restore"):
+
+        #     for plugin in qdt_referenced_plugins:
+        #         # destination
+
+        #         with ThreadPoolExecutor(
+        #             max_workers=5, thread_name_prefix=f"{__title_clean__}"
+        #         ) as executor:
+        #             for plugin in qdt_profile.plugins:
+        #                 # local path
+        #                 qdt_dest_plugin_path = Path(
+        #                     self.qdt_plugins_folder,
+        #                     sluggy(plugin.name),
+        #                     f"{sluggy(plugin.version)}.zip",
+        #                 )
+
+        #                 # submit download to pool
+        #                 executor.submit(
+        #                     # func to execute
+        #                     download_remote_file_to_local,
+        #                     # func parameters
+        #                     local_file_path=qdt_dest_plugin_path,
+        #                     remote_url_to_download=plugin.url,
+        #                     content_type="application/zip",
+        #                 )
 
         # li_installed_profiles_path = [
         #     d
@@ -186,6 +224,38 @@ class JobPluginsManager:
             f"{','.join(sorted(unique_profiles_identifiers))}"
         )
         return sorted(all_profiles, key=lambda x: x.id_with_version)
+
+    def filter_list_downloadable_plugins(
+        self, input_list: list[QgisPlugin]
+    ) -> list[QgisPlugin]:
+        """Filter input list of plugins keeping only those which are not present within \
+            the local QDT plugins folder.
+
+        Args:
+            input_list (list[QgisPlugin]): list of plugins to filter
+
+        Returns:
+            list[QgisPlugin]: list of plugins to download
+        """
+        plugins_to_download = []
+
+        for plugin in input_list:
+            # build destination path
+            plugin_download_path = Path(
+                self.qdt_plugins_folder, f"{plugin.id_with_version}.zip"
+            )
+
+            # check if file already exists
+            if plugin_download_path.is_file():
+                logger.debug(
+                    f"Plugin already exists at {plugin_download_path}, so it "
+                    "won't be downloaded."
+                )
+                continue
+
+            plugins_to_download.append(plugin)
+
+        return plugins_to_download
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def validate_options(self, options: dict) -> bool:
