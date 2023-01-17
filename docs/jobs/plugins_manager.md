@@ -21,13 +21,31 @@ Sample job configuration in your scenario file:
 
 ### action
 
-Tell the job what to do with splash screens:
+Tell the job what to do with plugins in **installed profiles**:
 
 Possible_values:
 
-- `create`: add splash screen if not set
-- `create_or_restore`: add splash screen if not set and replace eventual existing one
-- `remove`: remove splash screen
+- `create`: add plugins if they are not present
+- `create_or_restore`: add plugins if not present and replace eventual existing one
+- `remove`: remove plugins which are not listed
+
+### force
+
+Controls download mode.
+
+Possible_values:
+
+- `false` (_default_): download only plugins which are not present into the local QDT folder
+- `true`: download every plugin referenced in profile.json files into the local QDT folder, even if the archive is already here
+
+### threads
+
+Number of threads to use for downloading.
+
+Possible_values:
+
+- `1`: do not use multi-thread but download plugins synchroneously
+- `2`, `3`, `4` or `5` (_default_): number of threads to parallelize plugins download
 
 ----
 
