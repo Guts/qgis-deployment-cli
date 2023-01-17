@@ -16,7 +16,7 @@ import logging
 from dataclasses import dataclass
 from enum import Enum
 from sys import version_info
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import quote, urlsplit, urlunsplit
 
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 
@@ -84,8 +84,7 @@ class QgisPlugin:
             str: download URL
         """
         if self.url:
-            print("youhou")
-            return self.url
+            return quote(self.url, safe="/:")
         elif self.repository_url_xml and self.name and self.version:
             split_url = urlsplit(self.repository_url_xml)
             new_url = split_url._replace(path=split_url.path.replace("plugins.xml", ""))
@@ -107,15 +106,16 @@ class QgisPlugin:
             cls.OFFICIAL_REPOSITORY_URL_BASE
         ):
             input_dict["official_repository"] = True
+            input_dict["repository_url_xml"] = cls.OFFICIAL_REPOSITORY_XML
         else:
             pass
 
         # URL auto build
-        if input_dict.get("official_repository") is True:
+        if input_dict.get("official_repository") is True and not input_dict.get("url"):
             input_dict["url"] = (
                 f"{cls.OFFICIAL_REPOSITORY_URL_BASE}"
                 f"plugins/{input_dict.get('name')}/"
-                f"version/{input_dict.get('version')}/download"
+                f"version/{input_dict.get('version')}/download/"
             )
             input_dict["repository_url_xml"] = cls.OFFICIAL_REPOSITORY_XML
             input_dict["location"] = "remote"
@@ -163,3 +163,14 @@ if __name__ == "__main__":
 
     plugin_obj_three = QgisPlugin.from_dict(sample_plugin_unofficial)
     print(plugin_obj_three)
+
+    sample_plugin_different_name = {
+        "name": "Layers menu from project",
+        "version": "v2.0.6",
+        "url": "https://plugins.qgis.org/plugins/menu_from_project/version/v2.0.6/download/",
+        "type": "remote",
+    }
+
+    plugin_obj_four: QgisPlugin = QgisPlugin.from_dict(sample_plugin_different_name)
+    print(plugin_obj_four.url)
+    assert plugin_obj_four.url == plugin_obj_four.download_url
