@@ -54,7 +54,21 @@ class JobPluginsManager:
             "default": "create_or_restore",
             "possible_values": ("create", "create_or_restore", "remove"),
             "condition": "in",
-        }
+        },
+        "force": {
+            "type": bool,
+            "required": False,
+            "default": False,
+            "possible_values": None,
+            "condition": None,
+        },
+        "threads": {
+            "type": int,
+            "required": False,
+            "default": 5,
+            "possible_values": (1, 2, 3, 4, 5),
+            "condition": "in",
+        },
     }
 
     def __init__(self, options: dict) -> None:
@@ -101,92 +115,101 @@ class JobPluginsManager:
             return
 
         # filter plugins to download, filtering out those which are not already  present locally
-        qdt_plugins_to_download = self.filter_list_downloadable_plugins(
-            input_list=qdt_referenced_plugins
-        )
-        if not len(qdt_plugins_to_download):
-            logger.info(
-                f"All referenced plugins are already present in {self.qdt_plugins_folder}. "
-                "Skipping download step."
+        if self.options.get("force") is True:
+            qdt_plugins_to_download = qdt_referenced_plugins
+        else:
+            qdt_plugins_to_download = self.filter_list_downloadable_plugins(
+                input_list=qdt_referenced_plugins
             )
-            return
+            if not len(qdt_plugins_to_download):
+                logger.info(
+                    f"All referenced plugins are already present in {self.qdt_plugins_folder}. "
+                    "Skipping download step."
+                )
+                return
 
-        # download plugins into the QDT local folder - only those which are not already present
-
-        # if self.options.get("action") in ("create", "create_or_restore"):
-
-        #     for plugin in qdt_referenced_plugins:
-        #         # destination
-
-        #         with ThreadPoolExecutor(
-        #             max_workers=5, thread_name_prefix=f"{__title_clean__}"
-        #         ) as executor:
-        #             for plugin in qdt_profile.plugins:
-        #                 # local path
-        #                 qdt_dest_plugin_path = Path(
-        #                     self.qdt_plugins_folder,
-        #                     sluggy(plugin.name),
-        #                     f"{sluggy(plugin.version)}.zip",
-        #                 )
-
-        #                 # submit download to pool
-        #                 executor.submit(
-        #                     # func to execute
-        #                     download_remote_file_to_local,
-        #                     # func parameters
-        #                     local_file_path=qdt_dest_plugin_path,
-        #                     remote_url_to_download=plugin.url,
-        #                     content_type="application/zip",
-        #                 )
-
-        # li_installed_profiles_path = [
-        #     d
-        #     for d in self.qgis_profiles_path.iterdir()
-        #     if d.is_dir() and not d.name.startswith(".")
-        # ]
-
-        # if self.options.get("action") in ("create", "create_or_restore"):
-        #     for profile_dir in li_installed_profiles_path:
-
-        #         # case where splash image is specified into the profile.json
-        #         if Path(profile_dir / "profile.json").is_file():
-        #             qdt_profile = QdtProfile.from_json(
-        #                 profile_json_path=Path(profile_dir / "profile.json"),
-        #                 profile_folder=profile_dir.resolve(),
-        #             )
-        #             print("hop")
-        #             # plugins
-        #             # profile_plugins_dir = profile_dir / "python/plugins"
-
-        #             with ThreadPoolExecutor(
-        #                 max_workers=5, thread_name_prefix=f"{__title_clean__}"
-        #             ) as executor:
-        #                 for plugin in qdt_profile.plugins:
-        #                     # local path
-        #                     qdt_dest_plugin_path = Path(
-        #                         self.qdt_plugins_folder,
-        #                         sluggy(plugin.name),
-        #                         f"{sluggy(plugin.version)}.zip",
-        #                     )
-
-        #                     # submit download to pool
-        #                     executor.submit(
-        #                         # func to execute
-        #                         download_remote_file_to_local,
-        #                         # func parameters
-        #                         local_file_path=qdt_dest_plugin_path,
-        #                         remote_url_to_download=plugin.url,
-        #                         content_type="application/zip",
-        #                     )
-
-        #         else:
-        #             logger.debug(f"No profile.json found for profile '{profile_dir}")
-        #             continue
-
-        # else:
-        #     raise NotImplementedError
+        # launch download
+        downloaded_plugins, failed_downloads = self.download_plugins(
+            plugins_to_download=qdt_plugins_to_download,
+            destination_parent_folder=self.qdt_plugins_folder,
+            threads=self.options.get("threads", 5),
+        )
 
         logger.debug(f"Job {self.ID} ran successfully.")
+
+    def download_plugins(
+        self,
+        plugins_to_download: list[QgisPlugin],
+        destination_parent_folder: Path,
+        threads: int = 5,
+    ) -> tuple[list[Path], list[Path]]:
+        """Download listed plugins into the specified folder, using multithreads or not.
+
+        Args:
+            plugins_to_download (list[QgisPlugin]): list of plugins to download
+            destination_parent_folder (Path): where to store downloaded plugins
+            threads (int, optional): number of threads to use. If 0, downloads will be \
+                performed synchronously. Defaults to 5.
+
+        Returns:
+            tuple[list[Path],list[Path]]: tuple of (downloaded plugins, failed downloads)
+        """
+        downloaded_plugins: list[QgisPlugin] = []
+        failed_plugins: list[QgisPlugin] = []
+
+        if threads < 2:
+            logger.debug(f"Downloading {len(plugins_to_download)} threads.")
+            for plugin in plugins_to_download:
+                # local path
+                plugin_download_path = Path(
+                    destination_parent_folder, f"{plugin.id_with_version}.zip"
+                )
+                try:
+                    download_remote_file_to_local(
+                        local_file_path=plugin_download_path,
+                        remote_url_to_download=plugin.download_url,
+                        content_type="application/zip",
+                    )
+                    logger.info(
+                        f"Plugin {plugin.name} from {plugin.guess_download_url} "
+                        f"downloaded in {plugin_download_path}"
+                    )
+                    downloaded_plugins.append(plugin)
+                except Exception as err:
+                    logger.error(
+                        f"Download of plugin {plugin.name} failed. Trace: {err}"
+                    )
+                    failed_plugins.append(plugin)
+                    continue
+        else:
+            logger.debug(
+                f"Downloading {len(plugins_to_download)} using {threads} simultaneously."
+            )
+            with ThreadPoolExecutor(
+                max_workers=threads, thread_name_prefix=f"{__title_clean__}"
+            ) as executor:
+                for plugin in plugins_to_download:
+                    # local path
+                    plugin_download_path = Path(
+                        destination_parent_folder, f"{plugin.id_with_version}.zip"
+                    )
+
+                    # submit download to pool
+                    try:
+                        executor.submit(
+                            # func to execute
+                            download_remote_file_to_local,
+                            # func parameters
+                            local_file_path=plugin_download_path,
+                            remote_url_to_download=plugin.download_url,
+                            content_type="application/zip",
+                        )
+                        downloaded_plugins.append(plugin)
+                    except Exception as err:
+                        logger.error(err)
+                        failed_plugins.append(plugin)
+
+        return downloaded_plugins, failed_plugins
 
     def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin]:
         """Return a list of plugins referenced in profile.json files found within a \
