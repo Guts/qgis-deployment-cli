@@ -16,6 +16,9 @@ import logging
 from dataclasses import dataclass
 from enum import Enum
 from sys import version_info
+from urllib.parse import urlsplit, urlunsplit
+
+from qgis_deployment_toolbelt.utils.slugger import sluggy
 
 # Imports depending on Python version
 if version_info[1] < 11:
@@ -53,12 +56,40 @@ class QgisPlugin:
     OFFICIAL_REPOSITORY_URL_BASE = "https://plugins.qgis.org/"
     OFFICIAL_REPOSITORY_XML = "https://plugins.qgis.org/plugins/plugins.xml"
 
-    name: str = None
-    version: str = "latest"
+    name: str
     location: QgisPluginLocation = "remote"
-    url: str = None
-    repository_url_xml: str = None
     official_repository: bool = None
+    plugin_id: int = None
+    repository_url_xml: str = None
+    url: str = None
+    version: str = "latest"
+
+    @property
+    def id_with_version(self) -> str:
+        """Unique identifier using plugin_id (if set) and name + version slugified.
+
+        Returns:
+            str: plugin identifier meant to be unique per version
+        """
+        if self.plugin_id:
+            return f"{self.plugin_id}_{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
+        else:
+            return f"{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
+
+    def guess_download_url(self) -> str:
+        """Try to guess download URL if it's not set during the object init.
+
+        Returns:
+            str: download URL
+        """
+        if self.url:
+            return self.url
+        elif self.repository_url_xml and self.name and self.version:
+            split_url = urlsplit(self.repository_url_xml)
+            new_url = split_url._replace(path=split_url.path.replace("plugins.xml", ""))
+            return f"{urlunsplit(new_url)}/{self.name}.{self.version}.zip"
+        else:
+            return None
 
     @classmethod
     def from_dict(cls, input_dict: dict) -> Self:
@@ -84,6 +115,7 @@ class QgisPlugin:
                 f"plugins/{input_dict.get('name')}/{input_dict.get('version')}/download"
             )
             input_dict["repository_url_xml"] = cls.OFFICIAL_REPOSITORY_XML
+            input_dict["location"] = "remote"
 
         # return new instance with loaded object
         return cls(
@@ -107,13 +139,23 @@ if __name__ == "__main__":
     plugin_obj_one = QgisPlugin.from_dict(sample_plugin_complete)
     print(plugin_obj_one)
 
-    sample_plugin_incomplete = {
+    sample_plugin_minimal = {
         "name": "french_locator_filter",
         "version": "1.0.4",
         "official_repository": True,
     }
 
-    plugin_obj_two = QgisPlugin.from_dict(sample_plugin_incomplete)
+    plugin_obj_two = QgisPlugin.from_dict(sample_plugin_minimal)
     print(plugin_obj_two)
 
     assert plugin_obj_one == plugin_obj_two
+
+    sample_plugin_unofficial = {
+        "name": "Geotuileur",
+        "version": "1.0.0",
+        "official_repository": False,
+        "repository_url_xml": "https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml",
+    }
+
+    plugin_obj_three = QgisPlugin.from_dict(sample_plugin_unofficial)
+    print(plugin_obj_three)
