@@ -84,17 +84,31 @@ def download_remote_file_to_local(
                     break
                 buffile.write(chunk)
         logger.info(
-            f"Téléchargement du fichier distant {remote_url_to_download} dans "
-            f"{local_file_path} a réussi."
+            f"Downloading {remote_url_to_download} to {local_file_path} succeeded."
         )
     except HTTPError as error:
-        logger.error(error)
-        return error
+        logger.error(
+            f"Downloading {remote_url_to_download} to {local_file_path} failed. "
+            f"Cause: HTTPError. Trace: {error}"
+        )
+        raise error
     except URLError as error:
-        logger.error(error)
-        return error
+        logger.error(
+            f"Downloading {remote_url_to_download} to {local_file_path} failed. "
+            f"Cause: URLError. Trace: {error}"
+        )
+        raise error
     except TimeoutError as error:
-        logger.error(error)
-        return error
+        logger.error(
+            f"Downloading {remote_url_to_download} to {local_file_path} failed. "
+            f"Cause: TimeoutError. Trace: {error}"
+        )
+        raise error
+    except Exception as error:
+        logger.error(
+            f"Downloading {remote_url_to_download} to {local_file_path} failed. "
+            f"Cause: Unknown error. Trace: {error}"
+        )
+        raise error
 
     return local_file_path
