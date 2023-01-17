@@ -48,7 +48,7 @@ class QgisPlugin:
     """Model describing a QGIS plugin."""
 
     # optional mapping on attributes names.
-    # {attribute_name_in_output_object: attribute_name_from_input_file}
+    # Structure: {attribute_name_in_output_object: attribute_name_from_input_file}
     ATTR_MAP = {
         "location": "type",
     }
@@ -64,36 +64,16 @@ class QgisPlugin:
     url: str = None
     version: str = "latest"
 
-    @property
-    def id_with_version(self) -> str:
-        """Unique identifier using plugin_id (if set) and name + version slugified.
-
-        Returns:
-            str: plugin identifier meant to be unique per version
-        """
-        if self.plugin_id:
-            return f"{self.plugin_id}_{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
-        else:
-            return f"{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
-
-    @property
-    def download_url(self) -> str:
-        """Try to guess download URL if it's not set during the object init.
-
-        Returns:
-            str: download URL
-        """
-        if self.url:
-            return quote(self.url, safe="/:")
-        elif self.repository_url_xml and self.name and self.version:
-            split_url = urlsplit(self.repository_url_xml)
-            new_url = split_url._replace(path=split_url.path.replace("plugins.xml", ""))
-            return f"{urlunsplit(new_url)}{self.name}.{self.version}.zip"
-        else:
-            return None
-
     @classmethod
     def from_dict(cls, input_dict: dict) -> Self:
+        """Create object from a JSON file.
+
+        Args:
+            input_dict (dict): input dictionary
+
+        Returns:
+            Self: instanciated object
+        """
         # map attributes names
         for k, v in cls.ATTR_MAP.items():
             if v in input_dict.keys():
@@ -124,6 +104,34 @@ class QgisPlugin:
         return cls(
             **input_dict,
         )
+
+    @property
+    def download_url(self) -> str:
+        """Try to guess download URL if it's not set during the object init.
+
+        Returns:
+            str: download URL
+        """
+        if self.url:
+            return quote(self.url, safe="/:")
+        elif self.repository_url_xml and self.name and self.version:
+            split_url = urlsplit(self.repository_url_xml)
+            new_url = split_url._replace(path=split_url.path.replace("plugins.xml", ""))
+            return f"{urlunsplit(new_url)}{self.name}.{self.version}.zip"
+        else:
+            return None
+
+    @property
+    def id_with_version(self) -> str:
+        """Unique identifier using plugin_id (if set) and name + version slugified.
+
+        Returns:
+            str: plugin identifier meant to be unique per version
+        """
+        if self.plugin_id:
+            return f"{self.plugin_id}_{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
+        else:
+            return f"{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
 
 
 # #############################################################################
