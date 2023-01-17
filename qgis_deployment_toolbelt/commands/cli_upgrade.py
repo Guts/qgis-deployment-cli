@@ -31,7 +31,6 @@ from qgis_deployment_toolbelt.utils.bouncer import (
     exit_cli_success,
 )
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
-from qgis_deployment_toolbelt.utils.slugger import sluggy
 
 # #############################################################################
 # ########## Globals ###############
