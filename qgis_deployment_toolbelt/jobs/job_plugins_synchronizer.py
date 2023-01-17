@@ -22,8 +22,10 @@ from sys import platform as opersys
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
+from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
+from qgis_deployment_toolbelt.utils.slugger import sluggy
 
 # #############################################################################
 # ########## Globals ###############
@@ -66,7 +68,12 @@ class JobPluginsManager:
         self.qdt_working_folder = get_qdt_working_directory()
         logger.debug(f"Working folder: {self.qdt_working_folder}")
 
-        # profile folder
+        # where QDT downloads plugins
+        self.qdt_plugins_folder = self.qdt_working_folder.parent / "plugins"
+        self.qdt_plugins_folder.mkdir(exist_ok=True, parents=True)
+        logger.info(f"QDT plugins folder: {self.qdt_plugins_folder}")
+
+        # destination profiles folder
         if opersys not in OS_CONFIG:
             raise OSError(
                 f"Your operating system {opersys} is not supported. "
@@ -82,48 +89,103 @@ class JobPluginsManager:
 
     def run(self) -> None:
         """Execute job logic."""
-        li_installed_profiles_path = [
-            d
-            for d in self.qgis_profiles_path.iterdir()
-            if d.is_dir() and not d.name.startswith(".")
-        ]
+        # list plugins through different profiles
+        qdt_referenced_plugins = self.list_referenced_plugins(
+            parent_folder=self.qdt_working_folder
+        )
+        if not len(qdt_referenced_plugins):
+            logger.info(
+                f"No plugin found in profile.json files within {self.qdt_working_folder}"
+            )
+            return
 
-        if self.options.get("action") in ("create", "create_or_restore"):
-            for profile_dir in li_installed_profiles_path:
+        # print(qdt_referenced_plugins)
 
-                # case where splash image is specified into the profile.json
-                if Path(profile_dir / "profile.json").is_file():
-                    qdt_profile = QdtProfile.from_json(
-                        profile_json_path=Path(profile_dir / "profile.json"),
-                        profile_folder=profile_dir.resolve(),
-                    )
+        # li_installed_profiles_path = [
+        #     d
+        #     for d in self.qgis_profiles_path.iterdir()
+        #     if d.is_dir() and not d.name.startswith(".")
+        # ]
 
-                    # plugins
-                    profile_plugins_dir = profile_dir / "python/plugins"
+        # if self.options.get("action") in ("create", "create_or_restore"):
+        #     for profile_dir in li_installed_profiles_path:
 
-                    with ThreadPoolExecutor(
-                        max_workers=5, thread_name_prefix=f"{__title_clean__}"
-                    ) as executor:
-                        for plugin in qdt_profile.plugins:
-                            # local path
+        #         # case where splash image is specified into the profile.json
+        #         if Path(profile_dir / "profile.json").is_file():
+        #             qdt_profile = QdtProfile.from_json(
+        #                 profile_json_path=Path(profile_dir / "profile.json"),
+        #                 profile_folder=profile_dir.resolve(),
+        #             )
+        #             print("hop")
+        #             # plugins
+        #             # profile_plugins_dir = profile_dir / "python/plugins"
 
-                            # submit download to pool
-                            executor.submit(
-                                # func to execute
-                                download_remote_file_to_local,
-                                # func parameters
-                                remote_url_to_download=plugin.url,
-                                content_type="application/zip",
-                            )
+        #             with ThreadPoolExecutor(
+        #                 max_workers=5, thread_name_prefix=f"{__title_clean__}"
+        #             ) as executor:
+        #                 for plugin in qdt_profile.plugins:
+        #                     # local path
+        #                     qdt_dest_plugin_path = Path(
+        #                         self.qdt_plugins_folder,
+        #                         sluggy(plugin.name),
+        #                         f"{sluggy(plugin.version)}.zip",
+        #                     )
 
-                else:
-                    logger.debug(f"No profile.json found for profile '{profile_dir}")
-                    continue
+        #                     # submit download to pool
+        #                     executor.submit(
+        #                         # func to execute
+        #                         download_remote_file_to_local,
+        #                         # func parameters
+        #                         local_file_path=qdt_dest_plugin_path,
+        #                         remote_url_to_download=plugin.url,
+        #                         content_type="application/zip",
+        #                     )
 
-        else:
-            raise NotImplementedError
+        #         else:
+        #             logger.debug(f"No profile.json found for profile '{profile_dir}")
+        #             continue
+
+        # else:
+        #     raise NotImplementedError
 
         logger.debug(f"Job {self.ID} ran successfully.")
+
+    def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin]:
+        """Return a list of plugins referenced in profile.json files found within a \
+            parent folder and sorted by unique id with version.
+
+        Args:
+            parent_folder (Path): folder to start searching for profile.json files
+
+        Returns:
+            list[QgisPlugin]: list of plugins referenced within profile.json files
+        """
+        unique_profiles_identifiers: list = []
+        all_profiles: list[QgisPlugin] = []
+
+        profile_json_counter: int = 0
+        for profile_json in parent_folder.glob("**/*/profile.json"):
+            # increment counter
+            profile_json_counter += 1
+
+            # read profile.json
+            qdt_profile = QdtProfile.from_json(
+                profile_json_path=profile_json,
+                profile_folder=profile_json.parent,
+            )
+
+            # parse profile plugins
+            for plugin in qdt_profile.plugins:
+                if plugin.id_with_version not in unique_profiles_identifiers:
+                    unique_profiles_identifiers.append(plugin.id_with_version)
+                    all_profiles.append(plugin)
+
+        logger.debug(
+            f"{len(unique_profiles_identifiers)} unique plugins referenced in "
+            f"{profile_json_counter} profiles.json in {parent_folder.resolve()}: "
+            f"{','.join(sorted(unique_profiles_identifiers))}"
+        )
+        return sorted(all_profiles, key=lambda x: x.id_with_version)
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def validate_options(self, options: dict) -> bool:
