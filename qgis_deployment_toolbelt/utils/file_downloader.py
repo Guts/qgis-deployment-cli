@@ -55,7 +55,7 @@ def download_remote_file_to_local(
         local_file_path (Path): local path to the index file
         user_agent (str, optional): user agent to use to perform the request. Defaults \
             to f"{__title_clean__}/{__version__}".
-        conent_type (str): HTTP content-type.
+        content_type (str): HTTP content-type.
         chunk_size (int): size of each chunk to read and write in bytes.
 
     Returns:
@@ -69,7 +69,7 @@ def download_remote_file_to_local(
     # headers
     headers = {"User-Agent": user_agent}
     if content_type:
-        headers["Accept":content_type]
+        headers["Accept"] = content_type
 
     # download the remote file into local file
     custom_request = Request(url=remote_url_to_download, headers=headers)
