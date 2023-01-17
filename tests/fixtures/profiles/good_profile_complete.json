@@ -14,7 +14,8 @@
       "name": "french_locator_filter",
       "version": "1.0.4",
       "url": "https://plugins.qgis.org/plugins/french_locator_filter/version/1.0.4/download/",
-      "type": "remote"
+      "type": "remote",
+      "plugin_id": 1846
     },
     {
       "name": "pg_metadata",
@@ -27,6 +28,14 @@
       "version": "v2.0.6",
       "url": "https://plugins.qgis.org/plugins/menu_from_project/version/v2.0.6/download/",
       "type": "remote"
+    },
+    {
+      "name": "Geotuileur",
+      "version": "1.0.0",
+      "url": "https://oslandia.gitlab.io/qgis/ign-geotuileur/geotuileur.1.0.0.zip",
+      "location": "remote",
+      "official_repository": false,
+      "repository_url_xml": "https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml"
     }
   ]
 }
