@@ -32,6 +32,13 @@ steps:
       branch: main
       local_destination: ~/.cache/qgis-deployment-toolbelt/Oslandia/
 
+  - name: Synchronize plugins
+    uses: qplugins-manager
+    with:
+      action: create_or_restore
+      force: false
+      threads: 5
+
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
     with:
