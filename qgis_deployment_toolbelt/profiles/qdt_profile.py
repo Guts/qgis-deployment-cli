@@ -17,7 +17,7 @@ import logging
 from pathlib import Path
 from sys import platform as opersys
 from sys import version_info
-from typing import Union
+from typing import List, Union
 
 # Imports depending on Python version
 if version_info[1] < 11:
@@ -234,10 +234,10 @@ class QdtProfile:
         return self._name
 
     @property
-    def plugins(self) -> list[dict]:
+    def plugins(self) -> List[dict]:
         """Returns the plugins associated with the profile.
 
-        :return list[dict]: list of plugins
+        :return List[dict]: list of plugins
         """
         return [QgisPlugin.from_dict(p) for p in self._plugins]
 

@@ -14,19 +14,16 @@
 # Standard library
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from configparser import ConfigParser
-from os import getenv
 from pathlib import Path
 from sys import platform as opersys
+from typing import List, Tuple
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
-from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
-from qgis_deployment_toolbelt.utils.slugger import sluggy
 
 # #############################################################################
 # ########## Globals ###############
@@ -139,23 +136,23 @@ class JobPluginsManager:
 
     def download_plugins(
         self,
-        plugins_to_download: list[QgisPlugin],
+        plugins_to_download: List[QgisPlugin],
         destination_parent_folder: Path,
         threads: int = 5,
-    ) -> tuple[list[Path], list[Path]]:
+    ) -> Tuple[List[Path], List[Path]]:
         """Download listed plugins into the specified folder, using multithreads or not.
 
         Args:
-            plugins_to_download (list[QgisPlugin]): list of plugins to download
+            plugins_to_download (List[QgisPlugin]): list of plugins to download
             destination_parent_folder (Path): where to store downloaded plugins
             threads (int, optional): number of threads to use. If 0, downloads will be \
                 performed synchronously. Defaults to 5.
 
         Returns:
-            tuple[list[Path],list[Path]]: tuple of (downloaded plugins, failed downloads)
+            Tuple[List[Path],List[Path]]: tuple of (downloaded plugins, failed downloads)
         """
-        downloaded_plugins: list[QgisPlugin] = []
-        failed_plugins: list[QgisPlugin] = []
+        downloaded_plugins: List[QgisPlugin] = []
+        failed_plugins: List[QgisPlugin] = []
 
         if threads < 2:
             logger.debug(f"Downloading {len(plugins_to_download)} threads.")
@@ -211,7 +208,7 @@ class JobPluginsManager:
 
         return downloaded_plugins, failed_plugins
 
-    def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin]:
+    def list_referenced_plugins(self, parent_folder: Path) -> List[QgisPlugin]:
         """Return a list of plugins referenced in profile.json files found within a \
             parent folder and sorted by unique id with version.
 
@@ -219,10 +216,10 @@ class JobPluginsManager:
             parent_folder (Path): folder to start searching for profile.json files
 
         Returns:
-            list[QgisPlugin]: list of plugins referenced within profile.json files
+            List[QgisPlugin]: list of plugins referenced within profile.json files
         """
         unique_profiles_identifiers: list = []
-        all_profiles: list[QgisPlugin] = []
+        all_profiles: List[QgisPlugin] = []
 
         profile_json_counter: int = 0
         for profile_json in parent_folder.glob("**/*/profile.json"):
@@ -249,16 +246,16 @@ class JobPluginsManager:
         return sorted(all_profiles, key=lambda x: x.id_with_version)
 
     def filter_list_downloadable_plugins(
-        self, input_list: list[QgisPlugin]
-    ) -> list[QgisPlugin]:
+        self, input_list: List[QgisPlugin]
+    ) -> List[QgisPlugin]:
         """Filter input list of plugins keeping only those which are not present within \
             the local QDT plugins folder.
 
         Args:
-            input_list (list[QgisPlugin]): list of plugins to filter
+            input_list (List[QgisPlugin]): list of plugins to filter
 
         Returns:
-            list[QgisPlugin]: list of plugins to download
+            List[QgisPlugin]: list of plugins to download
         """
         plugins_to_download = []
 
