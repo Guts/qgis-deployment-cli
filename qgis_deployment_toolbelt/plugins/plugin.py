@@ -76,18 +76,20 @@ class QgisPlugin:
         else:
             return f"{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
 
-    def guess_download_url(self) -> str:
+    @property
+    def download_url(self) -> str:
         """Try to guess download URL if it's not set during the object init.
 
         Returns:
             str: download URL
         """
         if self.url:
+            print("youhou")
             return self.url
         elif self.repository_url_xml and self.name and self.version:
             split_url = urlsplit(self.repository_url_xml)
             new_url = split_url._replace(path=split_url.path.replace("plugins.xml", ""))
-            return f"{urlunsplit(new_url)}/{self.name}.{self.version}.zip"
+            return f"{urlunsplit(new_url)}{self.name}.{self.version}.zip"
         else:
             return None
 
@@ -111,8 +113,9 @@ class QgisPlugin:
         # URL auto build
         if input_dict.get("official_repository") is True:
             input_dict["url"] = (
-                f"{cls.OFFICIAL_REPOSITORY_URL_BASE}/"
-                f"plugins/{input_dict.get('name')}/{input_dict.get('version')}/download"
+                f"{cls.OFFICIAL_REPOSITORY_URL_BASE}"
+                f"plugins/{input_dict.get('name')}/"
+                f"version/{input_dict.get('version')}/download"
             )
             input_dict["repository_url_xml"] = cls.OFFICIAL_REPOSITORY_XML
             input_dict["location"] = "remote"
@@ -136,7 +139,8 @@ if __name__ == "__main__":
         "type": "remote",
     }
 
-    plugin_obj_one = QgisPlugin.from_dict(sample_plugin_complete)
+    plugin_obj_one: QgisPlugin = QgisPlugin.from_dict(sample_plugin_complete)
+    assert plugin_obj_one.url == plugin_obj_one.download_url
     print(plugin_obj_one)
 
     sample_plugin_minimal = {
