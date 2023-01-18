@@ -5,6 +5,7 @@
 caption: Jobs
 maxdepth: 1
 ---
-plugins_manager.md
+plugins_downloader.md
+plugins_synchronizer.md
 splash_screen_manager.md
 ```
