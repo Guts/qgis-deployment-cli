@@ -218,6 +218,7 @@ if __name__ == "__main__":
         "version": "v2.0.6",
         "url": "https://plugins.qgis.org/plugins/menu_from_project/version/v2.0.6/download/",
         "type": "remote",
+        "plugin_id": 1846,
     }
 
     plugin_obj_four: QgisPlugin = QgisPlugin.from_dict(sample_plugin_different_name)

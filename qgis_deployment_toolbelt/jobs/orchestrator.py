@@ -20,7 +20,10 @@ from typing import List, Tuple
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
     JobEnvironmentVariables,
 )
-from qgis_deployment_toolbelt.jobs.job_plugins_synchronizer import JobPluginsManager
+from qgis_deployment_toolbelt.jobs.job_plugins_downloader import JobPluginsDownloader
+from qgis_deployment_toolbelt.jobs.job_plugins_synchronizer import (
+    JobPluginsSynchronizer,
+)
 from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
     JobProfilesDownloader,
 )
@@ -44,7 +47,8 @@ class JobsOrchestrator:
 
     JOBS = (
         JobEnvironmentVariables,
-        JobPluginsManager,
+        JobPluginsDownloader,
+        JobPluginsSynchronizer,
         JobProfilesDownloader,
         JobShortcutsManager,
         JobSplashScreenManager,
