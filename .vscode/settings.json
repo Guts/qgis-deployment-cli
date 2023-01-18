@@ -36,7 +36,7 @@
     "python.testing.pytestEnabled": true,
     // extensions
     "autoDocstring.guessTypes": true,
-    "autoDocstring.docstringFormat": "one-line-sphinx",
+    "autoDocstring.docstringFormat": "google",
     "autoDocstring.generateDocstringOnEnter": false,
     "yaml.schemas": {
         "docs/schemas/schema.json": "tests/fixtures/scenarios/*.qdt.yml",

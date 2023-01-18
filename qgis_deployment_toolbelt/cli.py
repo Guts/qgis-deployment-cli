@@ -20,6 +20,7 @@ import click
 # submodules
 from qgis_deployment_toolbelt.__about__ import __version__
 from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_upgrade
+from qgis_deployment_toolbelt.constants import get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_normal
@@ -123,10 +124,6 @@ def qgis_deployment_toolbelt(
         if result_scenario_validity is not None:
             exit_cli_error(result_scenario_validity)
 
-    # let's be clear or not
-    if clear:
-        click.clear()
-
     # -- LOG/VERBOSITY MANAGEMENT ------------------------------------------------------
     # if verbose, override conf value
     if verbose:
@@ -171,6 +168,10 @@ def qgis_deployment_toolbelt(
                 environ[var] = str(value)
             else:
                 logger.debug(f"Ignored None value: {var}.")
+
+        logger.info(
+            f"QDT working folder: {get_qdt_working_directory(specific_value=scenario.settings.get('LOCAL_QDT_WORKDIR'), identifier=scenario.metadata.get('id'))}"
+        )
 
         # -- STEPS JOBS
         steps_ok = []
