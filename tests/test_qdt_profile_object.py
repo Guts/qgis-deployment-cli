@@ -42,6 +42,7 @@ class TestQdtProfile(unittest.TestCase):
             # attributes types
             self.assertIsInstance(qdt_profile.name, str)
             self.assertIsInstance(qdt_profile.version, str)
+            self.assertIsInstance(qdt_profile.plugins, list)
 
     def test_profile_load_from_json_with_parent_folder(self):
         """Test profile loading from JSON specifying parent folder."""
@@ -52,6 +53,7 @@ class TestQdtProfile(unittest.TestCase):
             # attributes types
             self.assertIsInstance(qdt_profile.name, str)
             self.assertIsInstance(qdt_profile.version, str)
+            self.assertIsInstance(qdt_profile.plugins, list)
 
     def test_profile_load_from_json_complete(self):
         """Test profile loading from JSON."""

@@ -61,10 +61,13 @@ def download_remote_file_to_local(
     Returns:
         Path: path to the local file (should be the same as local_file_path)
     """
-    # content search index
+    # check if file exists
     if local_file_path.exists():
         logger.warning(f"{local_file_path} already exists. It's about to be replaced.")
         local_file_path.unlink(missing_ok=True)
+
+    # mkae sure parents folder exist
+    local_file_path.parent.mkdir(parents=True, exist_ok=True)
 
     # headers
     headers = {"User-Agent": user_agent}

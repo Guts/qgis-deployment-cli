@@ -135,3 +135,4 @@ _logs/
 *.pfx
 docs/misc/licenses.md
 QGISDeploymentToolbelt_*Ubuntu*
+tests/fixtures/tmp/*

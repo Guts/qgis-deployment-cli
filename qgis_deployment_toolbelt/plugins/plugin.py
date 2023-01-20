@@ -11,10 +11,14 @@
 # ########## Libraries #############
 # ##################################
 
+
 # Standard library
+import configparser
 import logging
-from dataclasses import dataclass
+import zipfile
+from dataclasses import dataclass, fields
 from enum import Enum
+from pathlib import Path
 from sys import version_info
 from urllib.parse import quote, urlsplit, urlunsplit
 
@@ -51,15 +55,20 @@ class QgisPlugin:
     # Structure: {attribute_name_in_output_object: attribute_name_from_input_file}
     ATTR_MAP = {
         "location": "type",
+        "qgis_maximum_version": "qgisMaximumVersion",
+        "qgis_minimum_version": "qgisMinimumVersion",
     }
 
     OFFICIAL_REPOSITORY_URL_BASE = "https://plugins.qgis.org/"
     OFFICIAL_REPOSITORY_XML = "https://plugins.qgis.org/plugins/plugins.xml"
 
     name: str
+    folder_name: str = None
     location: QgisPluginLocation = "remote"
     official_repository: bool = None
     plugin_id: int = None
+    qgis_maximum_version: str = None
+    qgis_minimum_version: str = None
     repository_url_xml: str = None
     url: str = None
     version: str = "latest"
@@ -76,8 +85,8 @@ class QgisPlugin:
         """
         # map attributes names
         for k, v in cls.ATTR_MAP.items():
-            if v in input_dict.keys():
-                input_dict[k] = input_dict.pop(v, None)
+            if v.lower() in input_dict.keys():
+                input_dict[k] = input_dict.pop(v.lower(), None)
 
         # official repository autodetection
         if input_dict.get("repository_url_xml") == cls.OFFICIAL_REPOSITORY_XML:
@@ -100,10 +109,47 @@ class QgisPlugin:
             input_dict["repository_url_xml"] = cls.OFFICIAL_REPOSITORY_XML
             input_dict["location"] = "remote"
 
+        # remove keys which are not in object attributes
+        attributes_names = [f.name for f in fields(cls)]
+        for k in list(input_dict):
+            if k not in attributes_names:
+                del input_dict[k]
+
         # return new instance with loaded object
         return cls(
             **input_dict,
         )
+
+    @classmethod
+    def from_zip(cls, input_zip_path: Path) -> Self:
+        """Create object from a ZIP file.
+
+        Args:
+            input_zip_path (Path): filepath of the input zip
+
+        Returns:
+            Self: instanciated object
+        """
+        with zipfile.ZipFile(file=input_zip_path) as zf:
+            # find the metadata.txt file
+            for i in zf.infolist():
+                if not i.is_dir() and i.filename.split("/")[1] == "metadata.txt":
+                    break
+
+            # open and read it
+            zip_path = zipfile.Path(zf)
+            metadata_file = zip_path / i.filename
+            plugin_folder_name = metadata_file.parent.name
+            with metadata_file.open() as config_file:
+                config = configparser.ConfigParser()
+                config.read_file(config_file)
+
+        plugin_md_as_dict = {k: v for k, v in config.items(section="general")}
+
+        # add folder name
+        plugin_md_as_dict["folder_name"] = plugin_folder_name
+
+        return cls.from_dict(plugin_md_as_dict)
 
     @property
     def download_url(self) -> str:
@@ -132,6 +178,31 @@ class QgisPlugin:
             return f"{self.plugin_id}_{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
         else:
             return f"{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
+
+    @property
+    def installation_folder_name(self) -> str:
+        """Name of the folder when the plugin is installed into QGIS/profile/python/plugins/. \
+            If not clearly specified intot the profile.json, it tries to extract it from \
+            the download URL. As final fallback, it returns the slufigied plugin name.
+
+        Returns:
+            str: plugin folder name
+        """
+        if self.folder_name:
+            return self.folder_name
+        elif self.download_url:
+            try:
+                folder_name_from_url = urlsplit(self.download_url).path.split("/")[2]
+                self.folder_name = folder_name_from_url
+                return folder_name_from_url
+            except Exception as err:
+                logger.error(
+                    f"Plugin {self.name} - Determine plugin folder name from download"
+                    f"URL failed. Please specify it into profile.json file. Trace: {err}"
+                )
+                return sluggy(self.name)
+        else:
+            return sluggy(self.name)
 
 
 # #############################################################################
@@ -169,16 +240,30 @@ if __name__ == "__main__":
         "repository_url_xml": "https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml",
     }
 
-    plugin_obj_three = QgisPlugin.from_dict(sample_plugin_unofficial)
+    plugin_obj_three: QgisPlugin = QgisPlugin.from_dict(sample_plugin_unofficial)
     print(plugin_obj_three)
+    print(plugin_obj_three.folder_name)
+    print(plugin_obj_three.installation_folder_name)
+    print(plugin_obj_three.download_url)
 
     sample_plugin_different_name = {
         "name": "Layers menu from project",
         "version": "v2.0.6",
         "url": "https://plugins.qgis.org/plugins/menu_from_project/version/v2.0.6/download/",
         "type": "remote",
+        "plugin_id": 1846,
     }
 
     plugin_obj_four: QgisPlugin = QgisPlugin.from_dict(sample_plugin_different_name)
     print(plugin_obj_four.url)
+    print(plugin_obj_four.official_repository)
+    print(plugin_obj_four.folder_name)
+    print(plugin_obj_four.installation_folder_name)
+    print(plugin_obj_four.folder_name)
     assert plugin_obj_four.url == plugin_obj_four.download_url
+
+    sample_zip = (
+        Path.home() / ".cache/qgis-deployment-toolbelt/plugins/qompligis_v1-1-0.zip"
+    )
+    plugin_from_zip: QgisPlugin = QgisPlugin.from_zip(sample_zip)
+    print(plugin_from_zip)
