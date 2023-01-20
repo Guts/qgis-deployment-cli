@@ -42,7 +42,6 @@ steps:
     uses: qplugins-synchronizer
     with:
       action: create_or_restore
-      source: ~/.cache/qgis-deployment-toolbelt/Oslandia/
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager

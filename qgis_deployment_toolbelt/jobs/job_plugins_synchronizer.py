@@ -14,10 +14,13 @@
 # Standard library
 import logging
 from pathlib import Path
+from shutil import unpack_archive
 from sys import platform as opersys
+from typing import List, Tuple
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
+from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 
 # #############################################################################
@@ -88,39 +91,106 @@ class JobPluginsSynchronizer:
 
     def run(self) -> None:
         """Execute job logic."""
-        # parse downloaded profiles
+
+        profile_plugins_to_create: List[Tuple[QdtProfile, QgisPlugin, Path]] = []
+        profile_plugins_to_restore = []
+        profile_plugins_to_upgrade = []
+
+        # parse installed profiles
+        profiles_counter = 0
         for profile_json in self.qgis_profiles_path.glob("**/*/profile.json"):
+            profiles_counter += 1
             qdt_profile: QdtProfile = QdtProfile.from_json(
                 profile_json_path=profile_json,
                 profile_folder=profile_json.parent,
             )
 
-            profile_plugins_to_install = []
-            for plugin in qdt_profile.plugins:
-                # plugin = expected version to be installed into the profile
+            profile_plugins_folder = profile_json.parent / "python/plugins"
+            for expected_plugin in qdt_profile.plugins:
+                # expected_plugin = expected version to be installed into the profile
 
                 # is the plugin downloaded
                 plugin_downloaded_zip_source = (
-                    self.qdt_plugins_folder / f"{plugin.id_with_version}.zip"
+                    self.qdt_plugins_folder / f"{expected_plugin.id_with_version}.zip"
                 )
                 if not plugin_downloaded_zip_source.is_file():
                     logger.warning(
                         f"Profile {qdt_profile.name} - "
-                        f"Plugin {plugin.name} version {plugin.version} should be "
-                        "installed but its downloaded archive is not found: "
-                        f"{plugin_downloaded_zip_source}"
+                        f"Plugin {expected_plugin.name} version "
+                        f"{expected_plugin.version} should be installed but its "
+                        f"archive is not found: {plugin_downloaded_zip_source}"
                     )
                     continue
 
-                profile_plugins_to_install.append(
-                    (
-                        qdt_profile,
-                        plugin,
-                        Path(profile_json.parent, "python/plugins", plugin.name),
+                # check if the plugin is already installed or not
+                plugin_installed_folder = Path(
+                    profile_plugins_folder, expected_plugin.installation_folder_name
+                )
+                if not plugin_installed_folder.is_dir():
+                    logger.debug(
+                        f"Plugin {expected_plugin.name} is not present in {qdt_profile.name}. "
+                        "It will be added."
                     )
+                    profile_plugins_to_create.append(
+                        (
+                            qdt_profile,
+                            expected_plugin,
+                            plugin_downloaded_zip_source,
+                        )
+                    )
+                    continue
+
+                # if the plugin is already present into the profile
+                plugin_installed = QgisPlugin.from_plugin_folder(
+                    input_plugin_folder=plugin_installed_folder
                 )
 
+                # print(plugin_installed.version, expected_plugin.version)
+
+                # profile_plugins_to_create.append(
+                #     (
+                #         qdt_profile,
+                #         plugin,
+                #         Path(profile_json.parent, "python/plugins", plugin.name),
+                #     )
+                # )
+
+        # log parse results
+        if not any(
+            (
+                profile_plugins_to_create,
+                profile_plugins_to_restore,
+                profile_plugins_to_upgrade,
+            )
+        ):
+            logger.info(
+                "Every plugins are up to date in the "
+                f"{profiles_counter} profiles parsed."
+            )
+        else:
+            self.install_plugin_into_profile(profile_plugins_to_create)
+
         logger.debug(f"Job {self.ID} ran successfully.")
+
+    def install_plugin_into_profile(
+        self, list_plugins_to_profiles: List[Tuple[QdtProfile, QgisPlugin, Path]]
+    ):
+        """Unzip downloaded plugins into the matching profiles.
+
+        Args:
+            list_plugins_to_profiles (List[Tuple[QdtProfile, QgisPlugin, Path]]): list \
+                of tuples containing the target profile, the plugin object and the ZIP path.
+        """
+        for profile, plugin, source_path in list_plugins_to_profiles:
+            profile_plugins_folder = profile.folder / "python/plugins"
+            profile_plugins_folder.mkdir(parents=True, exist_ok=True)
+
+            unpack_archive(filename=source_path, extract_dir=profile_plugins_folder)
+
+            logger.info(
+                f"Profile {profile.name} - "
+                f"Plugin {plugin.name} {plugin.version} has been added."
+            )
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def validate_options(self, options: dict) -> bool:

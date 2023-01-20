@@ -22,6 +22,8 @@ from pathlib import Path
 from sys import version_info
 from urllib.parse import quote, urlsplit, urlunsplit
 
+# package
+from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 
 # Imports depending on Python version
@@ -119,6 +121,44 @@ class QgisPlugin:
         return cls(
             **input_dict,
         )
+
+    @classmethod
+    def from_plugin_folder(cls, input_plugin_folder: Path) -> Self:
+        """Create object from a QGIS plugin folder. Must contain a metadata.txt file.
+
+        Args:
+            input_plugin_folder (Path): path to the folder containgin a QGIS plugin
+
+        Returns:
+            Self: instanciated object
+        """
+        # check that input path is a folder
+        check_path(
+            input_path=input_plugin_folder,
+            must_exists=True,
+            must_be_a_folder=True,
+            must_be_a_file=False,
+            must_be_readable=True,
+        )
+        # check if the folder contains a metadata.txt file
+        plugin_metadata_txt = input_plugin_folder / "metadata.txt"
+        check_path(
+            input_path=plugin_metadata_txt,
+            must_be_a_file=True,
+            must_be_readable=True,
+            must_exists=True,
+        )
+
+        # read it
+        with plugin_metadata_txt.open() as config_file:
+            config = configparser.ConfigParser()
+            config.read_file(config_file)
+        plugin_md_as_dict = {k: v for k, v in config.items(section="general")}
+
+        # add folder name
+        plugin_md_as_dict["folder_name"] = input_plugin_folder.name
+
+        return cls.from_dict(plugin_md_as_dict)
 
     @classmethod
     def from_zip(cls, input_zip_path: Path) -> Self:
