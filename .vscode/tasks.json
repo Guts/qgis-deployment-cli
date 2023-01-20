@@ -10,7 +10,6 @@
             "args": [
                 "-m",
                 "black",
-                "--target-version=py38",
                 "./qgis_deployment_toolbelt"
             ],
             "group": "build",
