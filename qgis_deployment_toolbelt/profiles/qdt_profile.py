@@ -234,12 +234,15 @@ class QdtProfile:
         return self._name
 
     @property
-    def plugins(self) -> List[dict]:
+    def plugins(self) -> List[QgisPlugin]:
         """Returns the plugins associated with the profile.
 
-        :return List[dict]: list of plugins
+        :return List[QgisPlugin]: list of plugins
         """
-        return [QgisPlugin.from_dict(p) for p in self._plugins]
+        if self._plugins:
+            return [QgisPlugin.from_dict(p) for p in self._plugins]
+        else:
+            return []
 
     @property
     def splash(self) -> Union[str, Path]:
@@ -263,3 +266,19 @@ class QdtProfile:
         :return str: profile version.
         """
         return self._version
+
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+
+if __name__ == "__main__":
+    """Standalone execution."""
+    profile_good_sample = Path("tests/fixtures/profiles/good_profile_complete.json")
+    assert profile_good_sample.is_file() is True
+
+    qdt_profile = QdtProfile.from_json(
+        profile_json_path=profile_good_sample, profile_folder=profile_good_sample.parent
+    )
+    assert isinstance(qdt_profile, QdtProfile)
+    assert isinstance(qdt_profile.plugins, list)
