@@ -63,6 +63,7 @@ class QgisPlugin:
     OFFICIAL_REPOSITORY_XML = "https://plugins.qgis.org/plugins/plugins.xml"
 
     name: str
+    folder_name: str = None
     location: QgisPluginLocation = "remote"
     official_repository: bool = None
     plugin_id: int = None
@@ -138,11 +139,15 @@ class QgisPlugin:
             # open and read it
             zip_path = zipfile.Path(zf)
             metadata_file = zip_path / i.filename
+            plugin_folder_name = metadata_file.parent.name
             with metadata_file.open() as config_file:
                 config = configparser.ConfigParser()
                 config.read_file(config_file)
 
         plugin_md_as_dict = {k: v for k, v in config.items(section="general")}
+
+        # add folder name
+        plugin_md_as_dict["folder_name"] = plugin_folder_name
 
         return cls.from_dict(plugin_md_as_dict)
 
@@ -173,6 +178,31 @@ class QgisPlugin:
             return f"{self.plugin_id}_{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
         else:
             return f"{sluggy(self.name)}_{sluggy(self.version.replace('.', '-'))}"
+
+    @property
+    def installation_folder_name(self) -> str:
+        """Name of the folder when the plugin is installed into QGIS/profile/python/plugins/. \
+            If not clearly specified intot the profile.json, it tries to extract it from \
+            the download URL. As final fallback, it returns the slufigied plugin name.
+
+        Returns:
+            str: plugin folder name
+        """
+        if self.folder_name:
+            return self.folder_name
+        elif self.download_url:
+            try:
+                folder_name_from_url = urlsplit(self.download_url).path.split("/")[2]
+                self.folder_name = folder_name_from_url
+                return folder_name_from_url
+            except Exception as err:
+                logger.error(
+                    f"Plugin {self.name} - Determine plugin folder name from download"
+                    f"URL failed. Please specify it into profile.json file. Trace: {err}"
+                )
+                return sluggy(self.name)
+        else:
+            return sluggy(self.name)
 
 
 # #############################################################################
@@ -210,8 +240,11 @@ if __name__ == "__main__":
         "repository_url_xml": "https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml",
     }
 
-    plugin_obj_three = QgisPlugin.from_dict(sample_plugin_unofficial)
+    plugin_obj_three: QgisPlugin = QgisPlugin.from_dict(sample_plugin_unofficial)
     print(plugin_obj_three)
+    print(plugin_obj_three.folder_name)
+    print(plugin_obj_three.installation_folder_name)
+    print(plugin_obj_three.download_url)
 
     sample_plugin_different_name = {
         "name": "Layers menu from project",
@@ -223,6 +256,10 @@ if __name__ == "__main__":
 
     plugin_obj_four: QgisPlugin = QgisPlugin.from_dict(sample_plugin_different_name)
     print(plugin_obj_four.url)
+    print(plugin_obj_four.official_repository)
+    print(plugin_obj_four.folder_name)
+    print(plugin_obj_four.installation_folder_name)
+    print(plugin_obj_four.folder_name)
     assert plugin_obj_four.url == plugin_obj_four.download_url
 
     sample_zip = (
