@@ -105,7 +105,7 @@ class QgisPlugin:
         if input_dict.get("official_repository") is True and not input_dict.get("url"):
             input_dict["url"] = (
                 f"{cls.OFFICIAL_REPOSITORY_URL_BASE}"
-                f"plugins/{input_dict.get('name')}/"
+                f"plugins/{input_dict.get('folder_name') or input_dict.get('name')}/"
                 f"version/{input_dict.get('version')}/download/"
             )
             input_dict["repository_url_xml"] = cls.OFFICIAL_REPOSITORY_XML
@@ -200,6 +200,10 @@ class QgisPlugin:
         """
         if self.url:
             return quote(self.url, safe="/:")
+        elif self.repository_url_xml and self.folder_name and self.version:
+            split_url = urlsplit(self.repository_url_xml)
+            new_url = split_url._replace(path=split_url.path.replace("plugins.xml", ""))
+            return f"{urlunsplit(new_url)}{self.folder_name}.{self.version}.zip"
         elif self.repository_url_xml and self.name and self.version:
             split_url = urlsplit(self.repository_url_xml)
             new_url = split_url._replace(path=split_url.path.replace("plugins.xml", ""))
@@ -307,3 +311,12 @@ if __name__ == "__main__":
     )
     plugin_from_zip: QgisPlugin = QgisPlugin.from_zip(sample_zip)
     print(plugin_from_zip)
+
+    sample_plugin_qtribu = {
+        "name": "QTribu",
+        "version": "0.14.2",
+        "official_repository": True,
+        "folder_name": "qtribu",
+    }
+    plugin_obj_five: QgisPlugin = QgisPlugin.from_dict(sample_plugin_qtribu)
+    print(plugin_obj_five.url)
