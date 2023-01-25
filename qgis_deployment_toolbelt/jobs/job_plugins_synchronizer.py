@@ -128,8 +128,8 @@ class JobPluginsSynchronizer:
                 )
                 if not plugin_installed_folder.is_dir():
                     logger.debug(
-                        f"Plugin {expected_plugin.name} is not present in {qdt_profile.name}. "
-                        "It will be added."
+                        f"Profile {qdt_profile.name} - "
+                        f"Plugin {expected_plugin.name} is not present. It will be added."
                     )
                     profile_plugins_to_create.append(
                         (
@@ -148,6 +148,7 @@ class JobPluginsSynchronizer:
                 # if the installed plugin has the same version, don't touch anything
                 if plugin_installed.version == expected_plugin.version:
                     logger.debug(
+                        f"Profile {qdt_profile.name} - "
                         f"Plugin {expected_plugin.name} is already installed "
                         f"with the expected version: {expected_plugin.version}"
                     )
@@ -156,6 +157,7 @@ class JobPluginsSynchronizer:
                 # if verisons are different
                 if plugin_installed.is_older_than(expected_plugin):
                     logger.info(
+                        f"Profile {qdt_profile.name} - "
                         f"Plugin {expected_plugin.name} is already installed "
                         f"but in an older version: {plugin_installed.version} < "
                         f"{expected_plugin.version}. It will be upgraded."
@@ -178,6 +180,7 @@ class JobPluginsSynchronizer:
             )
         else:
             self.install_plugin_into_profile(profile_plugins_to_create)
+            self.install_plugin_into_profile(profile_plugins_to_upgrade)
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
@@ -198,7 +201,8 @@ class JobPluginsSynchronizer:
 
             logger.info(
                 f"Profile {profile.name} - "
-                f"Plugin {plugin.name} {plugin.version} has been added."
+                f"Plugin {plugin.name} {plugin.version} has been added/upgraded from "
+                f"{source_path}"
             )
 
     # -- INTERNAL LOGIC ------------------------------------------------------
