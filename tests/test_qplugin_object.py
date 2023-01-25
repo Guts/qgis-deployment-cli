@@ -121,6 +121,121 @@ class TestQgisPluginObject(unittest.TestCase):
         self.assertEqual(plugin_obj.version, plugin_obj_from_zip.version)
         self.assertEqual(plugin_obj.folder_name, plugin_obj_from_zip.folder_name)
 
+    def test_qplugin_versions_comparison_semver(self):
+        """Test plugin compare versions semver"""
+        plugin_v1: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "1.0.0",
+            }
+        )
+
+        plugin_v2: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "1.1.0",
+            }
+        )
+
+        plugin_v3: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "3.1.0",
+            }
+        )
+
+        self.assertTrue(plugin_v1.is_older_than(plugin_v2.version))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v2))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v3.version))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v3))
+        self.assertTrue(plugin_v2.is_older_than(plugin_v3.version))
+        self.assertTrue(plugin_v2.is_older_than(plugin_v3))
+        self.assertFalse(plugin_v2.is_older_than(plugin_v1))
+
+    def test_qplugin_versions_comparison_semver_prefixed(self):
+        """Test plugin compare versions semver with a prefix"""
+        plugin_v1: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "v1.0.0",
+            }
+        )
+
+        plugin_v2: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "v1.1.0",
+            }
+        )
+
+        plugin_v3: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "v3.1.0",
+            }
+        )
+
+        self.assertTrue(plugin_v1.is_older_than(plugin_v2.version))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v2))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v3.version))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v3))
+        self.assertTrue(plugin_v2.is_older_than(plugin_v3.version))
+        self.assertTrue(plugin_v2.is_older_than(plugin_v3))
+        self.assertFalse(plugin_v2.is_older_than(plugin_v1))
+
+    def test_qplugin_versions_comparison_calver(self):
+        """Test plugin compare versions calver"""
+        plugin_v1: QgisPlugin = QgisPlugin.from_dict(
+            {"name": "Sample plugin", "version": "2021.9.10"}
+        )
+
+        plugin_v2: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "2021.12.10",
+            }
+        )
+
+        plugin_v3: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "2023.2.10",
+            }
+        )
+
+        self.assertTrue(plugin_v1.is_older_than(plugin_v2.version))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v2))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v3.version))
+        self.assertTrue(plugin_v1.is_older_than(plugin_v3))
+        self.assertTrue(plugin_v2.is_older_than(plugin_v3.version))
+        self.assertTrue(plugin_v2.is_older_than(plugin_v3))
+        self.assertFalse(plugin_v2.is_older_than(plugin_v1))
+
+    def test_qplugin_versions_comparison_bad(self):
+        """Test plugin compare versions issues"""
+        plugin_v1: QgisPlugin = QgisPlugin.from_dict(
+            {"name": "Sample plugin", "version": "2021.9.10"}
+        )
+
+        plugin_v2: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin 2",
+                "version": "2021.12.10",
+            }
+        )
+
+        self.assertTrue(plugin_v1.is_older_than(plugin_v2.version))
+        self.assertFalse(plugin_v2.is_older_than(plugin_v1))
+
+        plugin_bad_version: QgisPlugin = QgisPlugin.from_dict(
+            {
+                "name": "Sample plugin",
+                "version": "march 2022",
+            }
+        )
+
+        self.assertIsNone(plugin_v1.is_older_than(plugin_bad_version))
+
 
 # ############################################################################
 # ####### Stand-alone run ########

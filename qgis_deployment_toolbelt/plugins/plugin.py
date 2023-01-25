@@ -20,7 +20,11 @@ from dataclasses import dataclass, fields
 from enum import Enum
 from pathlib import Path
 from sys import version_info
+from typing import Union
 from urllib.parse import quote, urlsplit, urlunsplit
+
+# 3rd party
+from packaging.version import InvalidVersion, Version
 
 # package
 from qgis_deployment_toolbelt.utils.check_path import check_path
@@ -248,6 +252,59 @@ class QgisPlugin:
         else:
             return sluggy(self.name)
 
+    def is_older_than(self, version_to_compare: Union[str, Self]) -> bool:
+        """Determine if the actual object version is older than the given version to \
+            compare.
+
+        Args:
+            version_to_compare (Union[str, Self]): given version to compare with object version
+
+        Returns:
+            bool: True if the given version is newer (more recent)
+        """
+        if not any([self.version, version_to_compare]):
+            logger.error("Object version is not set, so the comparizon is impossible.")
+            return None
+
+        # if a plugin is given
+        if isinstance(version_to_compare, QgisPlugin):
+            # take the opportunity to check the name is the same
+            if not self.name == version_to_compare.name:
+                logger.warning(
+                    "Be careful, the plugin to compare seems to be different: "
+                    f"{self.name} != {version_to_compare.name}"
+                )
+            # store the version string
+            version_to_compare = version_to_compare.version
+
+        # load object version as packaging.Version object
+        try:
+            plugin_version = Version(self.version)
+        except InvalidVersion as err:
+            logger.error(
+                f"Plugin {self.name} uses an incompatible versioning scheme: {self.version}."
+                "It's not Semver (even prefixed by 'v'), nor Calver or any of "
+                "supported specification. See https://peps.python.org/pep-0440/. "
+                f"Trace: {err}"
+            )
+            return None
+
+        # load version to compare as packaging.Version object
+        try:
+            version_to_compare = Version(version_to_compare)
+        except InvalidVersion as err:
+            logger.error(
+                f"Version to compare uses an incompatible versioning scheme: {self.version}."
+                "It's not Semver (even prefixed by 'v'), nor Calver or any of "
+                "supported specification. See https://peps.python.org/pep-0440/. "
+                f"Trace: {err}"
+            )
+            return None
+
+        logger.debug(f"Comparing versions: {plugin_version} and {version_to_compare}")
+
+        return plugin_version < version_to_compare
+
 
 # #############################################################################
 # ##### Stand alone program ########
@@ -320,3 +377,15 @@ if __name__ == "__main__":
     }
     plugin_obj_five: QgisPlugin = QgisPlugin.from_dict(sample_plugin_qtribu)
     print(plugin_obj_five.url)
+
+    sample_plugin_qtribu_newer: QgisPlugin = QgisPlugin.from_dict(
+        {
+            "name": "QTribu",
+            "version": "0.15.0",
+            "official_repository": True,
+            "folder_name": "qtribu",
+        }
+    )
+
+    assert plugin_obj_five.is_older_than(sample_plugin_qtribu_newer) is True
+    assert sample_plugin_qtribu_newer.is_older_than(plugin_obj_five) is False
