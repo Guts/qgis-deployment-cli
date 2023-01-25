@@ -141,19 +141,28 @@ class JobPluginsSynchronizer:
                     continue
 
                 # if the plugin is already present into the profile
-                plugin_installed = QgisPlugin.from_plugin_folder(
+                plugin_installed: QgisPlugin = QgisPlugin.from_plugin_folder(
                     input_plugin_folder=plugin_installed_folder
                 )
 
-                # print(plugin_installed.version, expected_plugin.version)
+                # if the installed plugin has the same version, don't touch anything
+                if plugin_installed.version == expected_plugin.version:
+                    logger.debug(
+                        f"Plugin {expected_plugin.name} is already installed "
+                        f"with the expected version: {expected_plugin.version}"
+                    )
+                    continue
 
-                # profile_plugins_to_create.append(
-                #     (
-                #         qdt_profile,
-                #         plugin,
-                #         Path(profile_json.parent, "python/plugins", plugin.name),
-                #     )
-                # )
+                # if verisons are different
+                if plugin_installed.is_older_than(expected_plugin):
+                    logger.info(
+                        f"Plugin {expected_plugin.name} is already installed "
+                        f"but in an older version: {plugin_installed.version} < "
+                        f"{expected_plugin.version}. It will be upgraded."
+                    )
+                    profile_plugins_to_upgrade.append(
+                        (qdt_profile, expected_plugin, plugin_downloaded_zip_source)
+                    )
 
         # log parse results
         if not any(
