@@ -50,6 +50,13 @@ class JobPluginsSynchronizer:
             "possible_values": ("create", "create_or_restore", "remove"),
             "condition": "in",
         },
+        "profile_ref": {
+            "type": str,
+            "required": False,
+            "default": "installed",
+            "possible_values": ("downloaded", "installed"),
+            "condition": None,
+        },
         "source": {
             "type": str,
             "required": False,
@@ -76,11 +83,6 @@ class JobPluginsSynchronizer:
         logger.info(f"QDT plugins folder: {self.qdt_plugins_folder}")
 
         # destination profiles folder
-        if opersys not in OS_CONFIG:
-            raise OSError(
-                f"Your operating system {opersys} is not supported. "
-                f"Supported platforms: {','.join(OS_CONFIG.keys())}."
-            )
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
         if not self.qgis_profiles_path.exists():
             logger.warning(
@@ -88,6 +90,24 @@ class JobPluginsSynchronizer:
                 "Creating it to properly run the job."
             )
             self.qgis_profiles_path.mkdir(parents=True)
+        logger.debug(
+            "Using plugins listed into profile.json files found into profiles "
+            f"already installed under the QGIS3 user data: {self.qgis_profiles_path.resolve()}"
+        )
+
+        # which profile.json file to use
+        if self.options.get("profile_ref") == "installed":
+            self.profiles_path = self.qgis_profiles_path
+            logger.debug(
+                "Using plugins listed into profile.json files found into profiles "
+                f"already installed under the QGIS3 user data: {self.profiles_path.resolve()}"
+            )
+        else:
+            self.profiles_path = self.qdt_working_folder
+            logger.debug(
+                "Using plugins listed into profile.json files found into profiles "
+                f"downloaded under the QDT local folder: {self.profiles_path.resolve()}"
+            )
 
     def run(self) -> None:
         """Execute job logic."""
@@ -98,14 +118,20 @@ class JobPluginsSynchronizer:
 
         # parse installed profiles
         profiles_counter = 0
-        for profile_json in self.qgis_profiles_path.glob("**/*/profile.json"):
+        for profile_json in self.profiles_path.glob("**/*/profile.json"):
             profiles_counter += 1
             qdt_profile: QdtProfile = QdtProfile.from_json(
                 profile_json_path=profile_json,
                 profile_folder=profile_json.parent,
             )
 
-            profile_plugins_folder = profile_json.parent / "python/plugins"
+            # determine folder
+            if self.options.get("installed"):
+                profile_plugins_folder = qdt_profile.folder / "python/plugins"
+            else:
+                profile_plugins_folder = qdt_profile.path_in_qgis / "python/plugins"
+
+            # parse plugins in profile
             for expected_plugin in qdt_profile.plugins:
                 # expected_plugin = expected version to be installed into the profile
 
@@ -194,15 +220,20 @@ class JobPluginsSynchronizer:
                 of tuples containing the target profile, the plugin object and the ZIP path.
         """
         for profile, plugin, source_path in list_plugins_to_profiles:
-            profile_plugins_folder = profile.folder / "python/plugins"
+            if self.options.get("installed"):
+                profile_plugins_folder = profile.folder / "python/plugins"
+            else:
+                profile_plugins_folder = profile.path_in_qgis / "python/plugins"
+
+            # make sure destination folder exists
             profile_plugins_folder.mkdir(parents=True, exist_ok=True)
 
             unpack_archive(filename=source_path, extract_dir=profile_plugins_folder)
 
             logger.info(
                 f"Profile {profile.name} - "
-                f"Plugin {plugin.name} {plugin.version} has been added/upgraded from "
-                f"{source_path}"
+                f"Plugin {plugin.name} {plugin.version} has been unzipped from "
+                f"{source_path} to {profile_plugins_folder}"
             )
 
     # -- INTERNAL LOGIC ------------------------------------------------------
