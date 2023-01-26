@@ -2,6 +2,7 @@ click>=8,<9
 dulwich>=0.20,<0.20.51
 giturlparse>=0.10,<0.11
 imagesize>=1.4,<1.5
+packaging>=20,<24
 pyyaml>=5.4,<7
 py-setenv>=1.1,<1.2
 pywin32==305 ; sys_platform == 'win32'

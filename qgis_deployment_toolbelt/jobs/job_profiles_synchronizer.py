@@ -13,7 +13,6 @@
 
 # Standard library
 import logging
-from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
@@ -243,7 +242,7 @@ class JobProfilesDownloader:
                     )
 
         else:
-            logger.error(
+            logger.debug(
                 "QGIS Profiles folder already exists, it's not empty: "
                 f"{self.qgis_profiles_path.resolve()}"
             )

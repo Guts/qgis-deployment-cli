@@ -234,6 +234,14 @@ class QdtProfile:
         return self._name
 
     @property
+    def path_in_qgis(self) -> Path:
+        """Returns the path to the folder where the profile is stored in QGIS 3.
+
+        :return Path: profile folder path
+        """
+        return self.os_config.profiles_path / self.name
+
+    @property
     def plugins(self) -> List[QgisPlugin]:
         """Returns the plugins associated with the profile.
 

@@ -29,6 +29,17 @@ Possible_values:
 - `create_or_restore`: add plugins if not present and replace eventual existing one
 - `remove`: remove plugins which are not listed
 
+### profile_ref
+
+Which `profile.json` file to use as reference.
+
+Possible_values:
+
+- `downloaded`: read plugins from the local downloaded (synchronized) profiles before they are copied in to the user QGIS 3 data.
+- `installed`: read plugins from the installed profiles (folders in user data QGIS3). Useful when using a scenario without the `qprofiles-manager` job. Be careful: if the end-user edits the profile.json file located directly into the QGIS profile folder to control the plugins synchronization.
+
+Default: `~/.cache/qgis-deployment-toolbelt/plugins`
+
 ### source
 
 Where to find plugins zip files.
