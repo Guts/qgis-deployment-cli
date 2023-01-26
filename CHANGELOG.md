@@ -16,6 +16,33 @@ Unreleased
 
 -->
 
+## 0.15.0 - 2023-01-26
+
+### Features and enhancements 🎉
+
+* Feature: plugins synchronization part 3 - Upgrade older plugins by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/176>
+
+## 0.14.1 - 2023-01-21
+
+### Bugs fixes 🐛
+
+* Fix: download URL should use folder_name when exists instead of name by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/175>
+
+## 0.14.0 - 2023-01-21
+
+### Features and enhancements 🎉
+
+* Feature: add a subcommand to upgrade the CLI by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/169>
+* Feature: plugins downloader by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/168>
+* Feature: plugins synchronization - part 1 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/172>
+* Feature: plugins synchronization part 2 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/174>
+
+### Tooling 🔧
+
+* CI: build Python wheel using build package by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/170>
+* Use GE to deploy to GH Pages instead of branch gh-pages by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/171>
+* Set minimal Python to 3.10 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/173>
+
 ## 0.13.0 - 2023-01-16
 
 ### Features and enhancements 🎉
