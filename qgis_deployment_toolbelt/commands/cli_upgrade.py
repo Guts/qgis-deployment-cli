@@ -20,7 +20,7 @@ from urllib.request import urlopen
 
 # 3rd party library
 import click
-import semver
+from packaging.version import Version
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import __title__, __uri_repository__
@@ -139,9 +139,7 @@ def upgrade(check_only: bool, where: Path):
 
     # compare it
     latest_version = latest_release.get("tag_name")
-    if semver.VersionInfo.parse(actual_version) < semver.VersionInfo.parse(
-        latest_version
-    ):
+    if Version(actual_version) < Version(latest_version):
         if check_only:
             exit_cli_normal(
                 f"A newer version is available: {latest_version}", abort=True
