@@ -15,14 +15,6 @@ settings:
 
 # Deployment workflow, step by step
 steps:
-  - name: Set environment variables
-    uses: manage-env-vars
-    with:
-      - name: PYQGIS_STARTUP
-        value: "~/scripts/qgis_startup.py"
-        scope: "user"
-        action: "add"
-
   - name: Download profiles from remote git repository
     uses: qprofiles-manager
     with:
@@ -30,7 +22,6 @@ steps:
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
       branch: main
-      local_destination: ~/.cache/qgis-deployment-toolbelt/Oslandia/
 
   - name: Download plugins
     uses: qplugins-downloader
@@ -42,6 +33,8 @@ steps:
     uses: qplugins-synchronizer
     with:
       action: create_or_restore
+      profile_ref: downloaded
+      source: ~/.cache/qgis-deployment-toolbelt/plugins
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
