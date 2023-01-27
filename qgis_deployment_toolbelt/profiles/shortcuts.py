@@ -343,6 +343,8 @@ class ApplicationShortcut:
 
         # desktop shortcut
         if self.desktop:
+            self.desktop_path.mkdir(parents=True, exist_ok=True)
+
             # create shortcut
             shortcut_desktop_path = Path(
                 self.desktop_path,
@@ -359,6 +361,7 @@ class ApplicationShortcut:
 
         # create required shortcut
         if self.start_menu:
+            self.startmenu_path.mkdir(parents=True, exist_ok=True)
             # create shortcut
             shortcut_start_menu_path = Path(
                 self.startmenu_path,
