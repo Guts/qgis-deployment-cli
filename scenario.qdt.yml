@@ -11,6 +11,10 @@ metadata:
 # Toolbelt settings
 settings:
   LOCAL_QDT_WORKDIR: ~/.cache/qgis-deployment-toolbelt/Oslandia/
+  QGIS_EXE_PATH:
+    linux: /usr/bin/qgis
+    mac: /usr/bin/qgis
+    windows: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
   SCENARIO_VALIDATION: true
 
 # Deployment workflow, step by step
@@ -47,14 +51,12 @@ steps:
           desktop: false
           start_menu: true
           icon: "qgis_icon.ico"
-          qgis_path: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
-        - profile: oslandia
+        - profile: Oslandia
           label: "QGIS - Profil Oslandia"
           additional_arguments: "--noversioncheck"
           desktop: true
           start_menu: true
           icon: "qgis_icon_oslandia.ico"
-          qgis_path: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
 
   - name: Set splash screen
     uses: splash-screen-manager
