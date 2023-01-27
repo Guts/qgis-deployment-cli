@@ -21,6 +21,8 @@ from urllib.request import urlopen
 # 3rd party library
 import click
 from packaging.version import Version
+from rich.console import Console
+from rich.markdown import Markdown
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import __title__, __uri_repository__
@@ -127,7 +129,7 @@ def replace_domain(url: str, new_domain: str) -> str:
 )
 def upgrade(check_only: bool, where: Path):
     """Check if a newer version of the cli is available."""
-
+    console = Console()
     # build API URL from repository
     api_url = replace_domain(url=__uri_repository__, new_domain="api.github.com/repos")
 
@@ -140,6 +142,9 @@ def upgrade(check_only: bool, where: Path):
     # compare it
     latest_version = latest_release.get("tag_name")
     if Version(actual_version) < Version(latest_version):
+        console.print(f"A newer version is available: {latest_version}")
+        version_change = Markdown(latest_release.get("body"))
+        console.print(version_change)
         if check_only:
             exit_cli_normal(
                 f"A newer version is available: {latest_version}", abort=True
