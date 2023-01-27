@@ -13,9 +13,12 @@
 # standard
 import logging
 import os
+import re
 from pathlib import Path
 from sys import platform as opersys
 from typing import Iterable, Tuple, Union
+
+# 3rd party
 
 # Imports depending on operating system
 if opersys == "win32":
@@ -23,11 +26,14 @@ if opersys == "win32":
     import pythoncom
     import win32com.client
     from win32comext.shell import shell, shellcon
+elif opersys == "linux":
+    import distro
 else:
     pass
 
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -126,11 +132,13 @@ class ApplicationShortcut:
         if isinstance(desktop, bool):
             self.desktop = desktop
         else:
-            raise TypeError(f"desktop must be a boolean, not {type(desktop)}")
+            raise TypeError(f"'desktop' option must be a boolean, not {type(desktop)}")
         if isinstance(start_menu, bool):
             self.start_menu = start_menu
         else:
-            raise TypeError(f"start_menu must be a boolean, not {type(start_menu)}")
+            raise TypeError(
+                f"'start_menu' option must be a boolean, not {type(start_menu)}"
+            )
 
         if opersys == "win32":
             return self.win32_create()
@@ -161,7 +169,13 @@ class ApplicationShortcut:
         # store as path
         icon_path = Path(icon_path)
         # checks
-        if icon_path.exists():
+        if check_path(
+            input_path=icon_path,
+            must_be_a_file=True,
+            must_be_readable=True,
+            must_exists=True,
+            raise_error=False,
+        ):
             return icon_path.resolve()
         else:
 
@@ -191,10 +205,41 @@ class ApplicationShortcut:
     def desktop_path(self) -> Path:
         """Return the user Desktop folder.
 
-        :return Path: path to the Desktop folder
+        Partly inspired from https://stackoverflow.com/a/13742626/2556577.
+
+        Returns:
+            Path: path to the current user Desktop folder.
         """
+        default_value = Path(Path.home(), "Desktop")
+
         if opersys == "win32":
             return Path(shell.SHGetFolderPath(0, shellcon.CSIDL_DESKTOP, None, 0))
+        elif opersys in ("darwin", "linux"):
+            # have a look to XDG configuration file with user folders
+            config_xdg_user_dirs = Path(self.homedir_path, ".config", "user-dirs.dirs")
+            is_config_file_usable = check_path(
+                input_path=config_xdg_user_dirs,
+                must_be_a_file=True,
+                must_be_readable=True,
+                must_exists=True,
+                raise_error=False,
+            )
+            if is_config_file_usable:
+                with config_xdg_user_dirs.open("r") as bf_config:
+                    data = bf_config.read()
+
+                desktop_paths = re.findall('XDG_DESKTOP_DIR="([^"]*)', data)
+                if len(desktop_paths):
+                    return re.sub(r"\$HOME", os.path.expanduser("~"), desktop_paths[0])
+
+            return default_value
+        else:
+
+            logger.warning(
+                f"Unrecognized operating system ({opersys}) so path to the "
+                f"user desktop is using a fallback value: {default_value}"
+            )
+            return default_value
 
     @property
     def homedir_path(self) -> Path:
@@ -302,3 +347,25 @@ class ApplicationShortcut:
             shortcut_start_menu_path = None
 
         return (shortcut_desktop_path, shortcut_start_menu_path)
+
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+
+if __name__ == "__main__":
+    """Standalone execution."""
+    if opersys == "linux" and distro.name() in ("Ubuntu", "Kubuntu"):
+        qgis_shortcut = ApplicationShortcut(
+            "QDT",
+            exec_path="/home/jmo/.local/bin/qdeploy-toolbelt",
+            exec_arguments=[
+                "-v",
+            ],
+            description="Launch QGIS Deployment Toolbelt with the scenario located "
+            "into the local repository.",
+            work_dir=Path(__file__).parent.parent,
+        )
+
+        print(qgis_shortcut.homedir_path)
+        print(qgis_shortcut.desktop_path)
