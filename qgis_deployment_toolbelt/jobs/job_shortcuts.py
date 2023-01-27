@@ -22,6 +22,7 @@ from typing import Tuple, Union
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.profiles import ApplicationShortcut
+from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -120,6 +121,9 @@ class JobShortcutsManager:
                 f"Supported platforms: {','.join(OS_CONFIG.keys())}."
             )
 
+        self.os_config = OS_CONFIG.get(opersys)
+        self.qgis_profiles_path: Path = Path(self.os_config.profiles_path)
+
     def run(self) -> None:
         """Execute job logic."""
         # check action
@@ -133,7 +137,9 @@ class JobShortcutsManager:
                     exec_arguments=self.get_arguments_ready(
                         p.get("profile"), p.get("additional_arguments")
                     ),
-                    work_dir=Path().home() / "Documents",
+                    work_dir=self.get_profile_folder_path_from_name(
+                        p.get("profile", "default")
+                    ),
                 )
                 shortcut.create(
                     desktop=p.get("desktop", False),
@@ -147,17 +153,50 @@ class JobShortcutsManager:
             raise NotImplementedError
 
     # -- INTERNAL LOGIC ------------------------------------------------------
-    def get_qgis_path(self, qgis: str) -> Union[Path, None]:
+    def get_profile_folder_path_from_name(self, profile_name: str) -> Path:
+        """Determine profile directory folder (once installed in QGIS) from the profile name.
+
+        Args:
+            profile_name (str): profile name
+
+        Returns:
+            Path: path to the profile folder
+        """
+        path_normal_case = Path(self.qgis_profiles_path, profile_name)
+
+        if check_path(
+            input_path=path_normal_case, must_be_a_folder=True, raise_error=False
+        ):
+            return path_normal_case
+        else:
+            path_lower_case = Path(self.qgis_profiles_path, profile_name.lower())
+            if check_path(
+                input_path=path_lower_case, must_be_a_folder=True, raise_error=False
+            ):
+                logger.warning(
+                    f"Path to the profile folder doesn't exist: {path_normal_case}. "
+                    f"But it does lowercasing the profile name: {path_lower_case}."
+                    "Please amend the scenario file."
+                )
+                return path_lower_case
+            else:
+                logger.warning(
+                    f"Path to the profile folder doesn't exist: {path_normal_case}, "
+                    f"nor lowercasing the profile name: {path_lower_case}."
+                )
+                return path_normal_case
+
+    def get_qgis_path(self, qgis_bin_exe_path: str) -> Union[Path, None]:
         """Try to get qgis path.
 
-        :param str qgis: qgis path as mentioned into the scenario file
+        :param str qgis_bin_exe_path: qgis path as mentioned into the scenario file
         :return Union[Path, None]:  qgis path as Path if str or Path, else None
         """
         # try to get the value of the qgis_path key
-        if not qgis:
-            return None
-
-        return Path(expandvars(qgis))
+        if qgis_bin_exe_path:
+            return Path(expandvars(qgis_bin_exe_path))
+        else:
+            return self.os_config.get_qgis_bin_path
 
     def get_icon_path(self, icon: str, profile_name: str) -> Union[Path, None]:
         """Try to get icon path.
