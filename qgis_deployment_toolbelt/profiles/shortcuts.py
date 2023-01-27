@@ -14,7 +14,9 @@
 import logging
 import os
 import re
+import stat
 from pathlib import Path
+from string import Template
 from sys import platform as opersys
 from typing import Iterable, Tuple, Union
 
@@ -34,6 +36,7 @@ else:
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.utils.check_path import check_path
+from qgis_deployment_toolbelt.utils.slugger import sluggy
 
 # #############################################################################
 # ########## Globals ###############
@@ -41,7 +44,6 @@ from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # logs
 logger = logging.getLogger(__name__)
-
 
 # #############################################################################
 # ########## Classes ###############
@@ -63,7 +65,7 @@ class ApplicationShortcut:
         :param Iterable[str] exec_arguments: list of arguments and options to pass to the executable, defaults to None
         :param str description: shortcut description, defaults to None
         :param Union[str, Path] icon_path: path to icon file, defaults to None
-        :param Union[str, Path] work_dir: current folder where to start the executable, defaults to None
+        :param Union[str, Path] work_dir: current folder where to start the executable, defaults to None. In QDT, it's the profile folder.
         """
         # retrieve operating system specific configuration
         if opersys not in OS_CONFIG:
@@ -140,8 +142,19 @@ class ApplicationShortcut:
                 f"'start_menu' option must be a boolean, not {type(start_menu)}"
             )
 
+        if not all([desktop, start_menu]):
+            logger.debug(
+                "Shortcut will not be created because both desktop and start "
+                "menu options are False."
+            )
+            return (None, None)
+
         if opersys == "win32":
             return self.win32_create()
+        elif opersys == "linux":
+            return self.freedesktop_create()
+        else:
+            pass
 
     def check_exec_arguments(
         self, exec_arguments: Union[Iterable[str], None]
@@ -285,12 +298,83 @@ class ApplicationShortcut:
         elif opersys == "linux":
             return self.homedir_path / ".local/share/applications"
         elif opersys == "darwin":
-            return None
+            return self.homedir_path / ".local/share/applications"
         else:
             logger.error(f"Unrecognized operating system: {opersys}.")
             return None
 
     # -- PRIVATE --------------------------------------------------------------
+    def freedesktop_create(self) -> Tuple[Union[Path, None], Union[Path, None]]:
+        """Creates shortcut on distributions using FreeDesktop.
+
+        :return: desktop and startmenu path
+        :rtype: Tuple[Union[Path, None], Union[Path, None]]
+        """
+        # prepare shortcut
+        template_shortcut = Path(__file__).parent / "shortcut_freedesktop.template"
+        check_path(
+            input_path=template_shortcut,
+            must_be_a_file=True,
+            must_be_readable=True,
+            must_exists=True,
+        )
+
+        # load template
+        with template_shortcut.open("r", encoding="UTF-8") as bf_tpl:
+            tpl = Template(bf_tpl.read())
+
+        # handle case where work dir is not defined
+        if isinstance(self.work_dir, Path):
+            profile_name = self.work_dir.name
+        else:
+            profile_name = "default"
+
+        # subsitute with values
+        shortcut_text = tpl.safe_substitute(
+            {
+                "description": self.description,
+                "exec": f"{self.exec_path} {self.exec_arguments}",
+                "icon_path": self.icon_path,
+                "profile_folder": str(self.work_dir),
+                "profile_name": profile_name,
+                "shortcut_name": self.name,
+            }
+        )
+
+        # desktop shortcut
+        if self.desktop:
+            # create shortcut
+            shortcut_desktop_path = Path(
+                self.desktop_path,
+                f"qdt.{sluggy(profile_name, '.')}.qgis.desktop",
+            )
+            shortcut_desktop_path.write_text(shortcut_text, encoding="UTF-8")
+            shortcut_desktop_path.chmod(
+                shortcut_desktop_path.stat().st_mode
+                | (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH),
+                follow_symlinks=True,
+            )
+        else:
+            shortcut_desktop_path = None
+
+        # create required shortcut
+        if self.start_menu:
+            # create shortcut
+            shortcut_start_menu_path = Path(
+                self.startmenu_path,
+                f"qdt.{sluggy(profile_name, '.')}.qgis.desktop",
+            )
+            shortcut_start_menu_path.write_text(shortcut_text, encoding="UTF-8")
+            shortcut_start_menu_path.chmod(
+                shortcut_start_menu_path.stat().st_mode
+                | (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH),
+                follow_symlinks=True,
+            )
+        else:
+            shortcut_start_menu_path = None
+
+        return (shortcut_desktop_path, shortcut_start_menu_path)
+
     def win32_create(self) -> Tuple[Union[Path, None], Union[Path, None]]:
         """Creates shortcut on Windows.
 
@@ -369,3 +453,6 @@ if __name__ == "__main__":
 
         print(qgis_shortcut.homedir_path)
         print(qgis_shortcut.desktop_path)
+        print(qgis_shortcut.startmenu_path)
+
+        qgis_shortcut.create()
