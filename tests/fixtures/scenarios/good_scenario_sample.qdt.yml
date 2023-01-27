@@ -10,13 +10,12 @@ metadata:
 
 settings:
   DEBUG: false
+  LOCAL_QDT_WORKDIR: ~/.cache/qgis-deployment-toolbelt/Oslandia/
+  QGIS_EXE_PATH:
+    linux: /usr/bin/qgis
+    mac: /usr/bin/qgis
+    windows: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
   SCENARIO_VALIDATION: true
-  OFFLINE_MODE: false
-  SSL_VERIFICATION: true
-  HTTP_PROXY: null
-  HTTPS_PROXY: null
-  FIXTURES_DIR: "tests/fixtures"
-  SYNCHRONOUS_MODE: false
 
 steps:
   - name: Set environment variables
@@ -27,14 +26,26 @@ steps:
         scope: "user"
         action: "add"
 
-  - name: Download profiles from remote git repository
+  - name: Synchronize QGIS profiles from remote location
     uses: qprofiles-manager
     with:
       action: download
       source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
       protocol: git
       branch: main
-      local_destination: ~/.cache/qgis-deployment-toolbelt/tests
+
+  - name: Download plugins
+    uses: qplugins-downloader
+    with:
+      force: false
+      threads: 5
+
+  - name: Synchronize plugins
+    uses: qplugins-synchronizers
+    with:
+      action: create_or_restore
+      profile_ref: downloaded
+      source: ~/.cache/qgis-deployment-toolbelt/plugins
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager

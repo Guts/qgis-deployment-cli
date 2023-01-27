@@ -3,7 +3,7 @@
 
 metadata:
   title: "Sample scenario of QGIS Deployment Toolbelt"
-  id: sample-scenario-good
+  id: development-scenario
   description: >-
     This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
     demonstrate capabilities.
