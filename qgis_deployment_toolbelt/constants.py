@@ -103,7 +103,7 @@ class OSConfiguration:
         elif which("qgis"):
             return Path(which("qgis"))
         else:
-            return self.qgis_bin_exe_path
+            return Path(expandvars(expanduser(self.qgis_bin_exe_path)))
 
     def valid_shortcut_name(self, shortcut_name: str) -> bool:
         """Check if a shortcut name is valid.
