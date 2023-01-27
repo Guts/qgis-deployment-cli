@@ -84,7 +84,12 @@ class OSConfiguration:
     shortcut_icon_extensions: Tuple[str] = None
 
     @property
-    def qgis_bin_path(self) -> Path:
+    def get_qgis_bin_path(self) -> Path:
+        """_summary_
+
+        Returns:
+            Path: _description_
+        """
         if getenv("QDT_QGIS_EXE_PATH"):
             qdt_qgis_exe_path = ast.literal_eval(getenv("QDT_QGIS_EXE_PATH"))
             if isinstance(qdt_qgis_exe_path, str):
