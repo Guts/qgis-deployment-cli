@@ -16,6 +16,13 @@ Unreleased
 
 -->
 
+## 0.16.0 - 2023-01-27
+
+### Features and enhancements 🎉
+
+* Dependencies: replace semver by packaging to compare versions by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/177>
+* Feature: improve shortcut manager to create shortcuts on Linux (FreeDesktop) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/178>
+
 ## 0.15.0 - 2023-01-26
 
 ### Features and enhancements 🎉
