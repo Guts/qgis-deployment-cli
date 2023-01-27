@@ -49,9 +49,9 @@ class TestShortcut(unittest.TestCase):
             self.assertTrue(shortcuts_paths[0].exists())
             self.assertTrue(shortcuts_paths[1].exists())
 
-        # clean up
-        shortcuts_paths[0].unlink()
-        shortcuts_paths[1].unlink()
+            # clean up
+            shortcuts_paths[0].unlink()
+            shortcuts_paths[1].unlink()
 
     def test_shortcut_creation_minimal(self):
         """Test creation of shortcut."""
@@ -71,9 +71,9 @@ class TestShortcut(unittest.TestCase):
             self.assertTrue(shortcuts_paths[0].exists())
             self.assertTrue(shortcuts_paths[1].exists())
 
-        # clean up
-        shortcuts_paths[0].unlink()
-        shortcuts_paths[1].unlink()
+            # clean up
+            shortcuts_paths[0].unlink()
+            shortcuts_paths[1].unlink()
 
     def test_shortcut_bad_types(self):
         """Test shortcut TypeError raises."""
