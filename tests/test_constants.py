@@ -38,7 +38,7 @@ class TestConstants(unittest.TestCase):
 
         # Check for forbidden characters in the shortcut name
         os_config_forbidden_chars = constants.OSConfiguration(
-            shortcut_forbidden_chars=(" ", "-")
+            name_python=opersys, shortcut_forbidden_chars=(" ", "-")
         )
         self.assertFalse(
             os_config_forbidden_chars.valid_shortcut_name(shortcut_name="qgis-ltr 3.28")
