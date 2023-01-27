@@ -243,7 +243,9 @@ class ApplicationShortcut:
 
                 desktop_paths = re.findall('XDG_DESKTOP_DIR="([^"]*)', data)
                 if len(desktop_paths):
-                    return re.sub(r"\$HOME", os.path.expanduser("~"), desktop_paths[0])
+                    return Path(
+                        re.sub(r"\$HOME", os.path.expanduser("~"), desktop_paths[0])
+                    )
 
             return default_value
         else:
@@ -455,8 +457,11 @@ if __name__ == "__main__":
             work_dir=Path(__file__).parent.parent,
         )
 
-        print(qgis_shortcut.homedir_path)
-        print(qgis_shortcut.desktop_path)
-        print(qgis_shortcut.startmenu_path)
+        print(
+            type(qgis_shortcut.homedir_path),
+            qgis_shortcut.homedir_path,
+        )
+        print(type(qgis_shortcut.desktop_path), qgis_shortcut.desktop_path)
+        print(type(qgis_shortcut.startmenu_path), qgis_shortcut.startmenu_path)
 
         qgis_shortcut.create()
