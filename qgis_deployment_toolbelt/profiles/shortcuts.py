@@ -142,7 +142,7 @@ class ApplicationShortcut:
                 f"'start_menu' option must be a boolean, not {type(start_menu)}"
             )
 
-        if not all([desktop, start_menu]):
+        if not desktop and not start_menu:
             logger.debug(
                 "Shortcut will not be created because both desktop and start "
                 "menu options are False."
@@ -343,6 +343,7 @@ class ApplicationShortcut:
 
         # desktop shortcut
         if self.desktop:
+
             self.desktop_path.mkdir(parents=True, exist_ok=True)
 
             # create shortcut
