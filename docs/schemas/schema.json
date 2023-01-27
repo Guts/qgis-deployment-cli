@@ -14,6 +14,7 @@
       "description": "The steps to perform.",
       "title": "deployment steps",
       "type": "array",
+      "minItems": 1,
       "$ref": "jobs/generic.json"
     }
   }
