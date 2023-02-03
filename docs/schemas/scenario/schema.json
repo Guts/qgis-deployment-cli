@@ -15,6 +15,7 @@
       "title": "deployment steps",
       "type": "array",
       "minItems": 1,
+      it
       "$ref": "jobs/generic.json"
     }
   }

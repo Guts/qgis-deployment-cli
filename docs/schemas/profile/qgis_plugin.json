@@ -1,0 +1,61 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/qgis_plugin.json",
+    "$comment": "A QGIS profile described in a JSON file.",
+    "type": "object",
+    "properties": {
+        "location": {
+            "description": "Indicates if the plugin is located on a remote server or on local drive/network.",
+            "enum": [
+                "local",
+                "remote"
+            ],
+            "type": "string"
+        },
+        "name": {
+            "description": "Plugin name, as referenced in the source plugins repository.",
+            "type": "string"
+        },
+        "official_repository": {
+            "description": "Indicates if the plugin is referenced on plugins.qgis.org",
+            "type": "boolean"
+        },
+        "plugin_id": {
+            "description": "Plugin ID as referenced into the repository (XML version). Typically for official repository: https://plugins.qgis.org/plugins/plugins.xml?qgis=3.22",
+            "type": "number"
+        },
+        "qgisMaximumVersion": {
+            "description": "Maximum QGIS version where the plugin can be installed.",
+            "maxLength": 14,
+            "minLength": 5,
+            "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
+            "type": "string"
+        },
+        "qgisMinimumVersion": {
+            "description": "Minimum QGIS version where the plugin can be installed.",
+            "maxLength": 14,
+            "minLength": 5,
+            "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
+            "type": "string"
+        },
+        "repository_url_xml": {
+            "description": "URL to the plugin repository file (XML).",
+            "type": "string"
+        },
+        "type": {
+            "enum": [
+                "local",
+                "remote"
+            ],
+            "deprecated": true,
+            "type": "string"
+        },
+        "version": {
+            "description": "Plugin version to install.",
+            "maxLength": 14,
+            "minLength": 5,
+            "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
+            "type": "string"
+        }
+    }
+}

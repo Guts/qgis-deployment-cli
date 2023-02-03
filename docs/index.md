@@ -18,6 +18,7 @@ maxdepth: 1
 usage/installation
 usage/how_it_works
 usage/how_to_use
+usage/profile
 usage/cli
 usage/settings
 jobs/index

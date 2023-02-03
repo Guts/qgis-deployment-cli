@@ -102,7 +102,6 @@ html_theme_options = {
     "repository_url": __about__.__uri_repository__,
     "show_toc_level": 3,
     "use_edit_page_button": True,
-    "use_fullscreen_button": False,
     "use_issues_button": True,
     "use_repository_button": True,
 }
