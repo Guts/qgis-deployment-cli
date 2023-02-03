@@ -4,6 +4,8 @@ QDT is designed to work with QGIS profiles that allow different configurations (
 
 In order to avoid unnecessary duplication of code (typically that of the various plugins) or configuration files and to make deployment reproducible, QDT relies on a profile definition file: `profile.json`.
 
+QDT expects to find this file in the folder of each profile stored in the source of synchronized profiles in the qprofiles-manager job.
+
 ## Publish them
 
 ## Good practices and recomendations
