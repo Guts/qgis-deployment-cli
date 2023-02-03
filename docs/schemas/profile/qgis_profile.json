@@ -12,14 +12,19 @@
             "description": "Name of profile auhor and maintener.",
             "type": "string"
         },
+        "description": {
+            "description": "Profile description.",
+            "type": "string"
+        },
         "email": {
+            "description": "Email of profile's auhor and maintener.",
             "format": "email",
             "maxLength": 127,
             "minLength": 6,
             "type": "string"
         },
         "folder_name": {
-            "description": "",
+            "description": "Name of the plugins's directory once installed in QGIS. Useful when name does not complies with filename conventions.",
             "pattern": "^([a-zA-Z]:)?(\\\\[^<>:\"/\\\\|?*]+)+\\\\?$",
             "type": "string"
         },
@@ -41,12 +46,14 @@
             }
         },
         "qgisMaximumVersion": {
+            "description": "Maximum QGIS version where the profile can be deployed.",
             "maxLength": 14,
             "minLength": 5,
             "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
             "type": "string"
         },
         "qgisMinimumVersion": {
+            "description": "Minimum QGIS version where the profile can be deployed.",
             "maxLength": 14,
             "minLength": 5,
             "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
@@ -57,6 +64,7 @@
             "type": "string"
         },
         "version": {
+            "description": "Profile version. Must complies with SemVer.",
             "maxLength": 14,
             "minLength": 5,
             "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
