@@ -39,7 +39,7 @@
     "autoDocstring.docstringFormat": "google",
     "autoDocstring.generateDocstringOnEnter": false,
     "yaml.schemas": {
-        "docs/schemas/schema.json": [
+        "docs/schemas/scenario/schema.json": [
             "scenario*qdt.yml",
             "tests/fixtures/scenarios/*.qdt.yml",
         ],
