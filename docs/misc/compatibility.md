@@ -2,8 +2,6 @@
 
 ## Windows executable
 
-> TO DOC
-
 The executable has been tested on Windows 10+.
 
 ## Python script
