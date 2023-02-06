@@ -28,7 +28,7 @@ In order to minimize friction and maximize productivity, the project tries to pr
 2. Add the following lines at the top of your scenario file:
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
 ```
 
 #### Visual Studio Code
@@ -39,7 +39,7 @@ In order to minimize friction and maximize productivity, the project tries to pr
 ```json
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json": "*.qdt.yml"
+    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
   }
 }
 ```
