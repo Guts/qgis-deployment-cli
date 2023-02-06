@@ -40,7 +40,6 @@
             "description": "Plugins installed with the profile.",
             "title": "QGIS Plugins",
             "type": "array",
-            "minItems": 1,
             "items": {
                 "$ref": "qgis_plugin.json"
             }
