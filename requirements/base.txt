@@ -1,6 +1,6 @@
 click>=8,<9
 distro==1.8.* ; sys_platform == 'linux'
-dulwich>=0.20,<0.20.51
+dulwich>=0.20,<0.21.3
 giturlparse>=0.10,<0.11
 imagesize>=1.4,<1.5
 packaging>=20,<24
