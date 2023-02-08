@@ -13,14 +13,13 @@
 
 # Standard library
 import logging
-from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
 from typing import Tuple
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.profiles import RemoteGitHandler
 
 # #############################################################################
@@ -64,6 +63,13 @@ class JobProfilesDownloader:
             "possible_values": ("http", "git", "copy"),
             "condition": "in",
         },
+        "branch": {
+            "type": str,
+            "required": False,
+            "default": "master",
+            "possible_values": None,
+            "condition": None,
+        },
         "source": {
             "type": str,
             "required": True,
@@ -95,6 +101,10 @@ class JobProfilesDownloader:
         """
         self.options: dict = self.validate_options(options)
 
+        # local QDT folder
+        self.qdt_working_folder = get_qdt_working_directory()
+        logger.debug(f"Working folder: {self.qdt_working_folder}")
+
         # profile folder
         if opersys not in OS_CONFIG:
             raise OSError(
@@ -119,11 +129,8 @@ class JobProfilesDownloader:
         ]
 
         # prepare local destination
-        self.local_path: Path = Path(
-            expandvars(expanduser(self.options.get("local_destination")))
-        )
-        if not self.local_path.exists():
-            self.local_path.mkdir(parents=True, exist_ok=True)
+        if not self.qdt_working_folder.exists():
+            self.qdt_working_folder.mkdir(parents=True, exist_ok=True)
 
     def run(self) -> None:
         """Execute job logic."""
@@ -133,8 +140,11 @@ class JobProfilesDownloader:
 
         # prepare remote source
         if self.options.get("protocol") == "git":
-            downloader = RemoteGitHandler(url=self.options.get("source"))
-            downloader.clone_or_pull(self.local_path)
+            downloader = RemoteGitHandler(
+                url=self.options.get("source"),
+                branch=self.options.get("branch", "master"),
+            )
+            downloader.download(local_path=self.qdt_working_folder)
         else:
             raise NotImplementedError
 
@@ -163,13 +173,13 @@ class JobProfilesDownloader:
         """
         # first, try to get folders containing a profile.json
         qgis_profiles_folder = [
-            f.parent for f in self.local_path.glob("**/profile.json")
+            f.parent for f in self.qdt_working_folder.glob("**/profile.json")
         ]
         if len(qgis_profiles_folder):
             return tuple(qgis_profiles_folder)
 
         # if empty, try to identify if a folder is a QGIS profile - but unsure
-        for d in self.local_path.glob("**"):
+        for d in self.qdt_working_folder.glob("**"):
             if (
                 d.is_dir()
                 and d.parent.name == "profiles"
@@ -250,7 +260,7 @@ class JobProfilesDownloader:
                     )
 
         else:
-            logger.error(
+            logger.debug(
                 "QGIS Profiles folder already exists, it's not empty: "
                 f"{self.qgis_profiles_path.resolve()}"
             )

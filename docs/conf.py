@@ -40,9 +40,9 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
     # 3rd party
     "myst_parser",
-    "sphinx_autodoc_typehints",
     "sphinx_click",
     "sphinx_copybutton",
     "sphinxext.opengraph",
@@ -94,24 +94,14 @@ pygments_style = "sphinx"
 # Theme
 # html_favicon = "static/img/qgis_deployment_toolbelt_logo_200px.png"
 # html_logo = "static/img/qgis_deployment_toolbelt_logo_200px.png"
-html_theme = "sphinx_book_theme"
-html_theme_options = {
-    "home_page_in_toc": True,
-    "path_to_docs": "docs",
-    "repository_branch": "main",
-    "repository_url": __about__.__uri_repository__,
-    "show_toc_level": 3,
-    "use_edit_page_button": True,
-    "use_fullscreen_button": False,
-    "use_issues_button": True,
-    "use_repository_button": True,
-}
+html_theme = "furo"
+html_theme_options = {}
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["static"]
+# html_static_path = ["static"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -121,9 +111,7 @@ html_static_path = ["static"]
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-html_sidebars = {
-    "**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]
-}
+
 
 # Language to be used for generating the HTML full-text search index.
 # Sphinx supports the following languages:
@@ -148,11 +136,14 @@ myst_enable_extensions = [
     "dollarmath",
     "html_admonition",
     "html_image",
-    "linkify",
+    # "linkify",
     "replacements",
     "smartquotes",
     "substitution",
 ]
+
+myst_heading_anchors = 3
+
 # replacement variables
 myst_substitutions = {
     "author": author,
@@ -163,8 +154,6 @@ myst_substitutions = {
     "version": version,
 }
 
-
-myst_url_schemes = ("http", "https", "mailto")
 
 # OpenGraph
 ogp_image = (

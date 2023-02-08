@@ -36,10 +36,13 @@
     "python.testing.pytestEnabled": true,
     // extensions
     "autoDocstring.guessTypes": true,
-    "autoDocstring.docstringFormat": "one-line-sphinx",
+    "autoDocstring.docstringFormat": "google",
     "autoDocstring.generateDocstringOnEnter": false,
     "yaml.schemas": {
-        "docs/schemas/schema.json": "tests/fixtures/scenarios/*.qdt.yml",
+        "docs/schemas/scenario/schema.json": [
+            "scenario*qdt.yml",
+            "tests/fixtures/scenarios/*.qdt.yml",
+        ],
         "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
     }
 }

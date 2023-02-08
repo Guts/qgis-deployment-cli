@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/qprofiles-manager.json",
+    "description": "QDT job synchronizing local working directory with remote profiles.",
+    "title": "Synchronize QGIS profiles from remote location.",
+    "type": "object",
+    "properties": {
+        "action": {
+            "type": "string"
+        },
+        "branch": {
+            "type": "string"
+        },
+        "protocol": {
+            "type": "string"
+        },
+        "source": {
+            "type": "string"
+        }
+    }
+}

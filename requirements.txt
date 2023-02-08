@@ -1,10 +1,5 @@
 -i https://pypi.org/simple
 
-# Common requirements
-# -------------------
-setuptools
-wheel
-
 # Project requirements
 # --------------------
 -r requirements/base.txt

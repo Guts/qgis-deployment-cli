@@ -41,23 +41,39 @@ class TestShortcut(unittest.TestCase):
             start_menu=True,
         )
 
-        if opersys == "win32":
+        if opersys in ("linux", "win32"):
             self.assertIsInstance(shortcuts_paths, tuple)
+            self.assertIsInstance(shortcuts_paths[0], Path)
+            self.assertIsInstance(shortcuts_paths[1], Path)
+
+            self.assertTrue(shortcuts_paths[0].exists())
+            self.assertTrue(shortcuts_paths[1].exists())
+
+            # clean up
+            shortcuts_paths[0].unlink()
+            shortcuts_paths[1].unlink()
 
     def test_shortcut_creation_minimal(self):
         """Test creation of shortcut."""
         shortcut = ApplicationShortcut(
             name="QDT - Test shortcut minimal",
             exec_path=Path(__file__),
+            work_dir=Path(__file__).parent,
         )
 
-        shortcuts_paths = shortcut.create(
-            desktop=True,
-            start_menu=True,
-        )
+        shortcuts_paths = shortcut.create(desktop=True, start_menu=True)
 
-        if opersys == "win32":
+        if opersys in ("linux", "win32"):
             self.assertIsInstance(shortcuts_paths, tuple)
+            self.assertIsInstance(shortcuts_paths[0], Path)
+            self.assertIsInstance(shortcuts_paths[1], Path)
+
+            self.assertTrue(shortcuts_paths[0].exists())
+            self.assertTrue(shortcuts_paths[1].exists())
+
+            # clean up
+            shortcuts_paths[0].unlink()
+            shortcuts_paths[1].unlink()
 
     def test_shortcut_bad_types(self):
         """Test shortcut TypeError raises."""

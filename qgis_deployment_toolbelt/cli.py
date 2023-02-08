@@ -19,7 +19,8 @@ import click
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import __version__
-from qgis_deployment_toolbelt.commands import cli_check, cli_clean
+from qgis_deployment_toolbelt.commands import cli_check, cli_clean, cli_upgrade
+from qgis_deployment_toolbelt.constants import get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_normal
@@ -30,11 +31,6 @@ from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_norm
 
 # chronometer
 START_TIME = default_timer()
-
-# logs
-logger = logging.getLogger(__name__)
-log_console_handler = logging.StreamHandler()
-logger.addHandler(log_console_handler)
 
 # default CLI context.
 # See: https://click.palletsprojects.com/en/7.x/commands/#context-defaults
@@ -73,6 +69,13 @@ CONTEXT_SETTINGS = dict(obj={})
     help="Scenario file to use.",
     type=click.Path(readable=True, file_okay=True, dir_okay=False, resolve_path=True),
 )
+@click.option(
+    "--disable-validation",
+    "disable_validation",
+    is_flag=True,
+    show_default=True,
+    help="Disable the validation of the scenario",
+)
 @click.version_option(
     version=__version__,
     message="%(version)s",
@@ -82,6 +85,7 @@ CONTEXT_SETTINGS = dict(obj={})
 def qgis_deployment_toolbelt(
     cli_context: click.Context,
     scenario_filepath: Path,
+    disable_validation: bool,
     clear: bool,
     verbose: bool,
 ):
@@ -91,6 +95,7 @@ def qgis_deployment_toolbelt(
     Args:
         cli_context (click.Context): Click context
         scenario_filepath (Path): path to a scenario file to use
+        disable_validation (bool): option to disable the validation of the scenario
         clear (bool): option to clear the terminal berfore any other step
         verbose (bool): option to force the verbose mode
 
@@ -98,19 +103,39 @@ def qgis_deployment_toolbelt(
 
         .. code-block:: powershell
 
-            qgis-deployment-toolbelt -c --verbose check
+            qgis-deployment-toolbelt --disable_validation -c --verbose check
 
     """
-    # let's be clear or not
-    if clear:
-        click.clear()
+    scenario = None
+    result_scenario_validity = None
+
+    # -- LOAD CONFIGURATION FILE ---------------------------------------------------
+    if Path(scenario_filepath).is_file():
+        scenario = ScenarioReader(in_yaml=scenario_filepath)
+        scenario_validity = scenario.validate_scenario()
+        if not scenario_validity[0]:
+            result_scenario_validity = (
+                "Scenario validation failed. Please check the scenario file."
+                "\nValidation report:\n- {}".format("\n- ".join(scenario_validity[1]))
+            )
+
+    # Check the validity of the scenario
+    if not disable_validation and scenario is not None:
+        if result_scenario_validity is not None:
+            exit_cli_error(result_scenario_validity)
 
     # -- LOG/VERBOSITY MANAGEMENT ------------------------------------------------------
     # if verbose, override conf value
     if verbose:
-        logger.setLevel(logging.DEBUG)
-        for h in logger.handlers:
-            h.setLevel(logging.DEBUG)
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.WARNING
+
+    logging.basicConfig(
+        format="[%(levelname)s] %(message)s",
+        level=log_level,
+    )
+    logger = logging.getLogger(__name__)
     logger.info(f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled.")
 
     click.echo(
@@ -120,34 +145,14 @@ def qgis_deployment_toolbelt(
     )
 
     # -- USING DEFAULT SCENARIO OR NOT -------------------------------------------------
-    if cli_context.invoked_subcommand is None and Path(scenario_filepath).is_file():
+    if cli_context.invoked_subcommand is None and scenario is not None:
         logger.debug(
             f"Straight run launched using default scenario file: {scenario_filepath}."
         )
 
-        # -- LOAD CONFIGURATION FILE ---------------------------------------------------
-        scenario = ScenarioReader(in_yaml=scenario_filepath)
-
-        # Apply log level from scenario (only if verbose mode is disabled)
-        if scenario.settings.get("DEBUG") is True and not verbose:
-            logger.setLevel(logging.DEBUG)
-            for h in logger.handlers:
-                h.setLevel(logging.DEBUG)
-            logger.info(
-                f"{logging.getLevelName(logger.getEffectiveLevel())} mode enabled."
-            )
-
-        # Validate scenario
-        if (
-            scenario.settings.get("SCENARIO_VALIDATION", True) is True
-            and not scenario.validate_scenario()[0]
-        ):
-            exit_cli_error(
-                "Scenario validation failed. Please check the scenario file."
-                "\nValidation report:\n- {}".format(
-                    "\n- ".join(scenario.validate_scenario()[1])
-                )
-            )
+        # Check the validity of the scenario
+        if result_scenario_validity is not None:
+            exit_cli_error(result_scenario_validity)
 
         # Use metadata to inform which scenario is running
         click.echo(
@@ -163,6 +168,10 @@ def qgis_deployment_toolbelt(
                 environ[var] = str(value)
             else:
                 logger.debug(f"Ignored None value: {var}.")
+
+        logger.info(
+            f"QDT working folder: {get_qdt_working_directory(specific_value=scenario.settings.get('LOCAL_QDT_WORKDIR'), identifier=scenario.metadata.get('id'))}"
+        )
 
         # -- STEPS JOBS
         steps_ok = []
@@ -193,11 +202,11 @@ def qgis_deployment_toolbelt(
                     exit_cli_error(err)
 
     # -- ERROR -------------------------------------------------------------------------
-    elif cli_context.invoked_subcommand is None and not Path(scenario).is_file():
+    elif cli_context.invoked_subcommand is None and scenario is None:
         exit_cli_error(
             "Straight run launched but no default scenario file found."
             "\nPlease make sure there is a default scenario file `scenario.qdt.yml` "
-            f"here {Path(scenario).parent} or use it as a CLI passing the scenario "
+            f"here {Path(scenario_filepath).parent} or use it as a CLI passing the scenario "
             "filepath as an argument."
         )
     else:
@@ -219,6 +228,7 @@ def qgis_deployment_toolbelt(
 # Add subcommands to the main command group
 qgis_deployment_toolbelt.add_command(cli_check.check)
 qgis_deployment_toolbelt.add_command(cli_clean.clean)
+qgis_deployment_toolbelt.add_command(cli_upgrade.upgrade)
 
 # #############################################################################
 # ##### Stand alone program ########

@@ -20,7 +20,7 @@ For development and test purposes, project provides a [sample scenario](https://
 
 ### Validate scenario using JSON Schema
 
-In order to minimize friction and maximize productivity, the project tries to provide a [schema.json][https://json-schema.org/] for scenarios files. If your editor supports YAML schema validation, it's definitely recommended to set it up.
+In order to minimize friction and maximize productivity, the project tries to provide a [schema.json](https://json-schema.org/) for scenarios files. If your editor supports YAML schema validation, it's definitely recommended to set it up.
 
 #### Generic
 
@@ -28,18 +28,18 @@ In order to minimize friction and maximize productivity, the project tries to pr
 2. Add the following lines at the top of your scenario file:
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
 ```
 
 #### Visual Studio Code
 
-1. Install the [vscode-yaml][https://marketplace.visualstudio.com/items?itemname=redhat.vscode-yaml] extension for YAML language support.
-2. Add the schema under the `yaml.schemas` key in your user or workspace [`settings.json`][https://code.visualstudio.com/docs/getstarted/settings]:
+1. Install the [vscode-yaml](https://marketplace.visualstudio.com/items?itemname=redhat.vscode-yaml) extension for YAML language support.
+2. Add the schema under the `yaml.schemas` key in your user or workspace [`settings.json`](https://code.visualstudio.com/docs/getstarted/settings):
 
 ```json
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/schema.json": "*.qdt.yml"
+    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
   }
 }
 ```

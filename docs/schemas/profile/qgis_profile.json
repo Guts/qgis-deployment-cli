@@ -1,0 +1,79 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/qgis_profile.json",
+    "$comment": "A QGIS profile described in a JSON file.",
+    "type": "object",
+    "properties": {
+        "alias": {
+            "description": "Profile's name in an human readable form, allowing special characters.",
+            "type": "string"
+        },
+        "author": {
+            "description": "Name of profile auhor and maintener.",
+            "type": "string"
+        },
+        "description": {
+            "description": "Profile description.",
+            "type": "string"
+        },
+        "email": {
+            "description": "Email of profile's auhor and maintener.",
+            "format": "email",
+            "maxLength": 127,
+            "minLength": 6,
+            "type": "string"
+        },
+        "folder_name": {
+            "description": "Name of the plugins's directory once installed in QGIS. Useful when name does not complies with filename conventions.",
+            "pattern": "^([a-zA-Z]:)?(\\\\[^<>:\"/\\\\|?*]+)+\\\\?$",
+            "type": "string"
+        },
+        "icon": {
+            "description": "Relative path to the icon used for shortcuts.",
+            "type": "string"
+        },
+        "name": {
+            "description": "Profile name without any special characters.",
+            "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$"
+        },
+        "plugins": {
+            "description": "Plugins installed with the profile.",
+            "title": "QGIS Plugins",
+            "type": "array",
+            "items": {
+                "$ref": "qgis_plugin.json"
+            }
+        },
+        "qgisMaximumVersion": {
+            "description": "Maximum QGIS version where the profile can be deployed.",
+            "maxLength": 14,
+            "minLength": 5,
+            "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
+            "type": "string"
+        },
+        "qgisMinimumVersion": {
+            "description": "Minimum QGIS version where the profile can be deployed.",
+            "maxLength": 14,
+            "minLength": 5,
+            "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
+            "type": "string"
+        },
+        "splash": {
+            "description": "Relative path to the splash image.",
+            "type": "string"
+        },
+        "version": {
+            "description": "Profile version. Must complies with SemVer.",
+            "maxLength": 14,
+            "minLength": 5,
+            "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
+            "type": "string"
+        }
+    },
+    "required": [
+        "author",
+        "email",
+        "name",
+        "version"
+    ]
+}

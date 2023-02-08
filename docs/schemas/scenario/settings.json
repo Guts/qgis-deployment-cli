@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/settings.json",
+  "description": "QGIS Deployment Toolbelt - Environment variables",
+  "title": "Define environment variables for the QGIS Deployment CLI execution. Attention, no confusion: these are the settings for the toolbelt, not for the QGIS installation.",
+  "type": "object",
+  "properties": {
+    "DEBUG": {
+      "default": false,
+      "description": "Enable debug mode. Make the execution more verbose but quite slower too.",
+      "title": "Debug mode",
+      "type": "boolean"
+    },
+    "LOCAL_QDT_WORKDIR": {
+      "default": null,
+      "description": "Where QDT stores locally everything it uses: profiles, plugins, etc.",
+      "title": "Local working folder.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "QGIS_EXE_PATH": {
+      "default": null,
+      "description": "QGIS executable to use for shortcuts and more.",
+      "title": "QGIS binary path.",
+      "type": "object",
+      "properties": {
+        "linux": {
+          "description": "Path to QGIS on Linux.",
+          "examples": [
+            "/usr/bin/qgis"
+          ],
+          "type": "string"
+        },
+        "mac": {
+          "description": "Path to QGIS on MacOS.",
+          "examples": [
+            "/usr/bin/qgis"
+          ],
+          "type": "string"
+        },
+        "windows": {
+          "description": "Path to QGIS on Windows.",
+          "examples": [
+            "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
+          ],
+          "type": "string"
+        }
+      }
+    },
+    "SCENARIO_VALIDATION": {
+      "default": false,
+      "description": "Enable scenario validation. This will check the scenario against the JSON schema.",
+      "title": "Scenario validation",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

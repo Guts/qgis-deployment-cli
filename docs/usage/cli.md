@@ -12,6 +12,9 @@
 ## Sub-commands
 
 ```{eval-rst}
+.. click:: qgis_deployment_toolbelt.commands.cli_upgrade:upgrade
+   :prog: upgrade
+
 .. click:: qgis_deployment_toolbelt.commands.cli_check:check
    :prog: check
 

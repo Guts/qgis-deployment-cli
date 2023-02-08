@@ -20,20 +20,37 @@
           "description": "Job name.",
           "title": "Which job to use.",
           "minLength": 1,
-          "maxLength": 255
+          "maxLength": 255,
+          "enum": [
+            "manage-env-vars",
+            "qplugins-downloader",
+            "qplugins-synchronizer",
+            "qprofiles-manager",
+            "shortcuts-manager",
+            "splash-screen-manager"
+          ]
         },
         "with": {
-          "type": ["array", "object"],
+          "type": [
+            "array",
+            "object"
+          ],
           "description": "Parameters for the job.",
           "title": "Job parameters.",
           "oneOf": [
-              {
-                  "$ref": "manage-env-vars.json"
-              }
+            {
+              "$ref": "manage-env-vars.json"
+            },
+            {
+              "$ref": "qprofiles-manager.json"
+            }
           ]
         }
       },
-      "required": ["name", "uses"]
+      "required": [
+        "name",
+        "uses"
+      ]
     }
   ]
 }

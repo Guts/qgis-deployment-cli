@@ -20,10 +20,15 @@ from typing import List, Tuple
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
     JobEnvironmentVariables,
 )
+from qgis_deployment_toolbelt.jobs.job_plugins_downloader import JobPluginsDownloader
+from qgis_deployment_toolbelt.jobs.job_plugins_synchronizer import (
+    JobPluginsSynchronizer,
+)
 from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
     JobProfilesDownloader,
 )
 from qgis_deployment_toolbelt.jobs.job_shortcuts import JobShortcutsManager
+from qgis_deployment_toolbelt.jobs.job_splash_screen import JobSplashScreenManager
 
 # #############################################################################
 # ########## Globals ###############
@@ -40,7 +45,14 @@ logger = logging.getLogger(__name__)
 class JobsOrchestrator:
     """Orchestrate jobs."""
 
-    JOBS = (JobEnvironmentVariables, JobProfilesDownloader, JobShortcutsManager)
+    JOBS = (
+        JobEnvironmentVariables,
+        JobPluginsDownloader,
+        JobPluginsSynchronizer,
+        JobProfilesDownloader,
+        JobShortcutsManager,
+        JobSplashScreenManager,
+    )
     PACKAGE_NAME: str = "qgis_deployment_toolbelt.jobs"
 
     def __init__(self) -> None:

@@ -33,7 +33,6 @@ else:
 # logs
 logger = logging.getLogger(__name__)
 
-
 # #############################################################################
 # ########## Classes ###############
 # ##################################
@@ -60,12 +59,15 @@ class JobEnvironmentVariables:
         if opersys == "win32":
             for env_var in self.options:
                 if env_var.get("action") == "add":
-                    setenv(
-                        name=env_var.get("name"),
-                        value=self.prepare_value(env_var.get("value")),
-                        user=env_var.get("scope") == "user",
-                        suppress_echo=True,
-                    )
+                    try:
+                        setenv(
+                            name=env_var.get("name"),
+                            value=self.prepare_value(env_var.get("value")),
+                            user=env_var.get("scope") == "user",
+                            suppress_echo=True,
+                        )
+                    except NameError:
+                        logger.debug(f"name 'win32gui' is not defined")
             # force Windows to refresh the environment
             self.win_refresh_environment()
 
@@ -129,9 +131,13 @@ class JobEnvironmentVariables:
         SMTO_ABORTIFHUNG: int = 0x0002
         sParam = "Environment"
 
-        res1, res2 = win32gui.SendMessageTimeout(
-            HWND_BROADCAST, WM_SETTINGCHANGE, 0, sParam, SMTO_ABORTIFHUNG, 100
-        )
+        res1 = res2 = None
+        try:
+            res1, res2 = win32gui.SendMessageTimeout(
+                HWND_BROADCAST, WM_SETTINGCHANGE, 0, sParam, SMTO_ABORTIFHUNG, 100
+            )
+        except NameError:
+            logger.critical(" name 'win32gui' is not defined")
         if not res1:
             logger.warning(
                 f"Refresh environment failed: {bool(res1)}, {res2}, from SendMessageTimeout"
