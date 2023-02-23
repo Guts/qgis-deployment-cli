@@ -85,19 +85,20 @@ class OSConfiguration:
 
     @property
     def get_qgis_bin_path(self) -> Path:
-        """_summary_
+        """Returns the QGIS path determined from QDT_QGIS_EXE_PATH environment variable,
+        or result of which command or fallback to default value passed to the object.
 
         Returns:
-            Path: _description_
+            Path: path to the QGIS bin/exe
         """
         if getenv("QDT_QGIS_EXE_PATH"):
             qdt_qgis_exe_path = ast.literal_eval(getenv("QDT_QGIS_EXE_PATH"))
             if isinstance(qdt_qgis_exe_path, str):
-                return Path(expandvars(expanduser("%APPDATA%/QGIS/QGIS3/profiles")))
+                return Path(expandvars(expanduser(getenv("QDT_QGIS_EXE_PATH"))))
             elif isinstance(qdt_qgis_exe_path, dict):
-                for k, v in qdt_qgis_exe_path:
-                    if k in self.names_alter:
-                        return v
+                for k, v in qdt_qgis_exe_path.items():
+                    if k in self.names_alter + [self.name_python]:
+                        return Path(expandvars(expanduser(v)))
             else:
                 return qdt_qgis_exe_path
         elif which("qgis"):

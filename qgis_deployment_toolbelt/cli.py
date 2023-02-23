@@ -164,8 +164,8 @@ def qgis_deployment_toolbelt(
         # Set environment vars for the scenario
         for var, value in scenario.settings.items():
             if value is not None:
-                logger.debug(f"Setting environment variable {var} = {value}.")
-                environ[var] = str(value)
+                logger.debug(f"Setting environment variable QDT_{var} = {value}.")
+                environ[f"QDT_{var}"] = str(value)
             else:
                 logger.debug(f"Ignored None value: {var}.")
 
