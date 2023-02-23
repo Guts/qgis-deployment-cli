@@ -16,6 +16,31 @@ Unreleased
 
 -->
 
+## 0.16.2 - 2023-02-23
+
+### Bugs fixes 🐛
+
+* Fix QGIS bin path retriever by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/191>
+
+### Features and enhancements 🎉
+
+* Tooling and documentation: JSON schema for profile editing by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/187>
+
+### Documentation 📖
+
+* Documentation: fix build and switch to Furo theme by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/188>
+
+## 0.16.1 - 2023-01-30
+
+### Bugs fixes 🐛
+
+* Embed shortcut template into packages by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/181>
+
+### Features and enhancements 🎉
+
+* Tooling: upgrade JSON schemas by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/180>
+* Feature: upgrade show changelog by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/179>
+
 ## 0.16.0 - 2023-01-27
 
 ### Features and enhancements 🎉
