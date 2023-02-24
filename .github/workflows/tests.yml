@@ -82,8 +82,5 @@ jobs:
       - name: QDT - Echoing version
         run: qdeploy-toolbelt --version
 
-      - name: QDT - Verbose check
-        run: qgis-deployment-toolbelt --verbose check
-
       - name: QDT - Sample scenario
         run: qgis-deployment-toolbelt --verbose
