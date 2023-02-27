@@ -23,7 +23,7 @@ from rich.progress import track
 from qgis_deployment_toolbelt.constants import get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
-from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error
+from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
 from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
@@ -137,3 +137,6 @@ def run(args: argparse.Namespace):
             job.run()
         except Exception as err:
             exit_cli_error(err)
+
+    # exit nicely
+    exit_cli_success("Deployment achieved!")
