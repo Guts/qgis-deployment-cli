@@ -14,7 +14,6 @@
 import argparse
 import json
 import logging
-import sys
 from pathlib import Path
 from sys import platform as opersys
 from urllib.parse import urlsplit, urlunsplit
