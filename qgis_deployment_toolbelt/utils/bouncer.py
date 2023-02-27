@@ -12,9 +12,7 @@
 
 # Standard library
 import logging
-
-# 3rd party
-import click
+import sys
 
 # #############################################################################
 # ########## Globals ###############
@@ -43,11 +41,8 @@ def exit_cli_error(message: str, abort: bool = True):
             message = message.args[0]
         else:
             message = getattr(message, "message", repr(message))
-
-    # echo to terminal
-    click.secho(message=message, err=True, fg="red")
     if abort:
-        click.Context.abort(message)
+        sys.exit(message)
 
 
 def exit_cli_normal(message: str, abort: bool = True):
@@ -57,10 +52,9 @@ def exit_cli_normal(message: str, abort: bool = True):
     :param bool abort: option to abort after displaying . Defaults to: True - optional
     """
     logger.info(message)
-    click.secho(message=message, err=False, fg="magenta")
 
     if abort:
-        click.Context.abort(message)
+        sys.exit(0)
 
 
 def exit_cli_success(message: str, abort: bool = True):
@@ -70,9 +64,9 @@ def exit_cli_success(message: str, abort: bool = True):
     :param bool abort: option to abort after displaying the message. Defaults to: True - optional
     """
     logger.info(message)
-    click.secho(message=message, err=False, fg="green")
+
     if abort:
-        click.Context.abort(message)
+        sys.exit(0)
 
 
 # #############################################################################
