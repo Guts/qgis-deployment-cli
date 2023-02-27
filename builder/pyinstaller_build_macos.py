@@ -24,7 +24,7 @@ from qgis_deployment_toolbelt import __about__  # noqa: E402
 # #############################################################################
 # ########### MAIN #################
 # ##################################
-package_folder = Path("geotribu_cli")
+package_folder = Path("qgis_deployment_toolbelt")
 
 mac_os_version, _, _ = platform.mac_ver()
 mac_os_version = "-".join(mac_os_version.split(".")[:2])
