@@ -11,15 +11,16 @@
 # ##################################
 
 # Standard library
+import argparse
 import json
 import logging
+import sys
 from pathlib import Path
 from sys import platform as opersys
 from urllib.parse import urlsplit, urlunsplit
 from urllib.request import urlopen
 
 # 3rd party library
-import click
 from packaging.version import Version
 from rich.console import Console
 from rich.markdown import Markdown
@@ -38,9 +39,7 @@ from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_
 # ########## Globals ###############
 # ##################################
 
-# logs
 logger = logging.getLogger(__name__)
-
 
 # #############################################################################
 # ####### Functions ###############
@@ -108,28 +107,70 @@ def replace_domain(url: str, new_domain: str) -> str:
     return new_url
 
 
-# #############################################################################
-# ####### Command-line ############
-# #################################
-@click.command()
-@click.option(
-    "-c",
-    "--check-only",
-    help="Only check if a new version is available. No download.",
-    is_flag=True,
-    show_default=True,
-)
-@click.option(
-    "-w",
-    "--where",
-    help="Folder to store the downloaded file.",
-    default="./",
-    show_default=True,
-    type=click.Path(file_okay=False, dir_okay=True, writable=True, resolve_path=True),
-)
-def upgrade(check_only: bool, where: Path):
-    """Check if a newer version of the cli is available."""
+# ############################################################################
+# ########## CLI #################
+# ################################
+
+
+def parser_upgrade(
+    subparser: argparse.ArgumentParser,
+) -> argparse.ArgumentParser:
+    """Set the argument parser subcommand.
+
+    Args:
+        subparser (argparse.ArgumentParser): parser to set up
+
+    Returns:
+        argparse.ArgumentParser: parser ready to use
+    """
+    subparser.add_argument(
+        "-c",
+        "--check-only",
+        help="Only check if a new version is available. No download.",
+        default=False,
+        action="store_true",
+        dest="opt_only_check",
+    )
+
+    subparser.add_argument(
+        "-n",
+        "--dont-show-release-notes",
+        help="Display release notes.",
+        default=True,
+        action="store_false",
+        dest="opt_show_release_notes",
+    )
+
+    subparser.add_argument(
+        "-w",
+        "--where",
+        help="Folder to store the downloaded file.",
+        default="./",
+        type=Path,
+        dest="local_download_folder",
+    )
+
+    subparser.set_defaults(func=run)
+
+    return subparser
+
+
+# ############################################################################
+# ########## MAIN ################
+# ################################
+
+
+def run(args: argparse.Namespace):
+    """Run the sub command logic.
+
+    Check if a new version of the CLI is available and download it if needed.
+
+    Args:
+        args (argparse.Namespace): arguments passed to the subcommand
+    """
+    logger.debug(f"Running {args.command} with {args}")
     console = Console()
+
     # build API URL from repository
     api_url = replace_domain(url=__uri_repository__, new_domain="api.github.com/repos")
 
@@ -143,19 +184,20 @@ def upgrade(check_only: bool, where: Path):
     latest_version = latest_release.get("tag_name")
     if Version(actual_version) < Version(latest_version):
         console.print(f"A newer version is available: {latest_version}")
-        version_change = Markdown(latest_release.get("body"))
-        console.print(version_change)
-        if check_only:
+        if args.opt_show_release_notes:
+            version_change = Markdown(latest_release.get("body"))
+            console.print(version_change)
+        if args.opt_only_check:
             exit_cli_normal(
-                f"A newer version is available: {latest_version}", abort=True
-            )
-        else:
-            exit_cli_normal(
-                f"A newer version is available: {latest_version}",
-                abort=False,
+                f"A newer version is available: {latest_version}. No download because "
+                "of option check-only enabled.",
+                abort=True,
             )
     else:
-        exit_cli_success(f"You are already using the latest version: {latest_version}")
+        exit_cli_normal(
+            f"A newer version is available: {latest_version}.",
+            abort=False,
+        )
 
     # -- DOWNLOAD ------------------------------------------------------------
 
@@ -167,7 +209,9 @@ def upgrade(check_only: bool, where: Path):
         exit_cli_error(f"Unable to identify an appropriate download URL for {opersys}.")
 
     # destination local file
-    dest_filepath = Path(where, Path(urlsplit(remote_url).path).name)
+    dest_filepath = Path(
+        args.local_download_folder, Path(urlsplit(remote_url).path).name
+    )
 
     # download it
     logger.info(
@@ -190,4 +234,4 @@ def upgrade(check_only: bool, where: Path):
 # ##################################
 if __name__ == "__main__":
     """Standalone execution."""
-    upgrade(obj={})
+    pass
