@@ -17,32 +17,34 @@ import unittest
 from pathlib import Path
 
 # 3rd party library
-from click.testing import CliRunner
+import pytest
 
 # module to test
-from qgis_deployment_toolbelt.cli import qgis_deployment_toolbelt
+from qgis_deployment_toolbelt import cli
 
 # #############################################################################
 # ######## Classes #################
 # ##################################
 
 
-def test_upgrade_check():
-    """Test help command"""
-    runner = CliRunner()
-    result = runner.invoke(
-        qgis_deployment_toolbelt,
-        ["upgrade", "-c"],
-    )
+def test_cli_upgrade_check_only(capsys):
+    """Test CLI upgrade check only."""
+    with pytest.raises(SystemExit):
+        cli.main(["upgrade", "-c"])
+
+    out, err = capsys.readouterr()
+
+    assert err == ""
 
 
-def test_upgrade_download():
-    """Test help command"""
-    runner = CliRunner()
-    result = runner.invoke(
-        qgis_deployment_toolbelt,
-        ["upgrade"],
-    )
+def test_cli_upgrade_download(capsys):
+    """Test CLI upgrade ."""
+    with pytest.raises(SystemExit):
+        cli.main(["upgrade", "-n", "-w", "tests/"])
+
+    out, err = capsys.readouterr()
+
+    assert err == ""
 
 
 # #############################################################################

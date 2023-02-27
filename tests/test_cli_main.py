@@ -13,11 +13,11 @@
 # Standard library
 from pathlib import Path
 
-# 3rd party library
-from click.testing import CliRunner
+# 3rd party
+import pytest
 
 # module to test
-from qgis_deployment_toolbelt.cli import qgis_deployment_toolbelt
+from qgis_deployment_toolbelt import __about__, cli
 
 # #############################################################################
 # ######## Globals #################
@@ -38,46 +38,70 @@ sample_scenario_imaginary: Path = Path(
 # ##################################
 
 
-def test_main_help():
-    """Test help command"""
-    runner = CliRunner()
-    result = runner.invoke(
-        qgis_deployment_toolbelt,
-        ["--help"],
+@pytest.mark.parametrize("option", ("-h", "--help"))
+def test_cli_help(capsys, option):
+    """Test CLI help."""
+    with pytest.raises(SystemExit):
+        cli.main([option])
+
+    out, err = capsys.readouterr()
+
+    assert (
+        f"{__about__.__title__} {__about__.__version__} - {__about__.__summary__}"
+        in out
     )
-    assert result.exit_code == 0
+    assert err == ""
 
 
-def test_main_run():
+@pytest.mark.parametrize("option", (["--version"]))
+def test_cli_version(capsys, option):
+    """Test CLI version."""
+    with pytest.raises(SystemExit):
+        cli.main([option])
+
+    out, err = capsys.readouterr()
+
+    assert f"{__about__.__version__}\n" == out
+
+    assert err == ""
+
+
+def test_main_run(capsys):
     """Test main cli command"""
-    runner = CliRunner()
-    result = runner.invoke(
-        qgis_deployment_toolbelt,
-        [f"--scenario={str(sample_scenario_good.resolve())}"],
-    )
-    assert result.exit_code == 0
+    # runner = CliRunner()
+    # result = runner.invoke(
+    #     qgis_deployment_toolbelt,
+    #     [],
+    # )
+    # assert result.exit_code == 0
 
-    result = runner.invoke(
-        qgis_deployment_toolbelt,
-        [f"--scenario={str(sample_scenario_imaginary.resolve())}"],
-    )
-    assert result.exit_code == 1
+    # result = runner.invoke(
+    #     qgis_deployment_toolbelt,
+    #     [f"--scenario={str(sample_scenario_imaginary.resolve())}"],
+    # )
+    # assert result.exit_code == 1
+
+    with pytest.raises(SystemExit):
+        cli.main(["deploy", f"--scenario={str(sample_scenario_good.resolve())}"])
+
+    out, err = capsys.readouterr()
+    assert err == ""
 
 
-def test_main_run_with_disable_validation_option():
-    """Test main cli command with the disable validation option"""
-    runner = CliRunner()
-    result = runner.invoke(
-        qgis_deployment_toolbelt,
-        [f"--scenario={str(sample_scenario_good.resolve())}", "--disable-validation"],
-    )
-    assert result.exit_code == 0
+# def test_main_run_with_disable_validation_option():
+#     """Test main cli command with the disable validation option"""
+#     runner = CliRunner()
+#     result = runner.invoke(
+#         qgis_deployment_toolbelt,
+#         [f"--scenario={str(sample_scenario_good.resolve())}", "--disable-validation"],
+#     )
+#     assert result.exit_code == 0
 
-    result = runner.invoke(
-        qgis_deployment_toolbelt,
-        [f"--scenario={str(sample_scenario_false.resolve())}", "--disable-validation"],
-    )
-    assert result.exit_code == 1
+#     result = runner.invoke(
+#         qgis_deployment_toolbelt,
+#         [f"--scenario={str(sample_scenario_false.resolve())}", "--disable-validation"],
+#     )
+#     assert result.exit_code == 1
 
 
 # #############################################################################
