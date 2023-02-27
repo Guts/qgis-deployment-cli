@@ -23,7 +23,11 @@ from qgis_deployment_toolbelt import __about__
 HERE = Path(__file__).parent
 
 with open(HERE / "requirements/base.txt") as f:
-    requirements = f.read().splitlines()
+    requirements = [
+        line
+        for line in f.read().splitlines()
+        if not line.startswith(("#", "-")) and len(line)
+    ]
 
 # The text of the README file
 README = (HERE / "README.md").read_text()
