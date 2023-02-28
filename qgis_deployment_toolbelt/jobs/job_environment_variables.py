@@ -18,13 +18,11 @@ from pathlib import Path
 from sys import platform as opersys
 from typing import List
 
-# Imports depending on operating system
-if opersys == "win32":
-    """windows"""
-    import win32gui
-    from py_setenv import setenv
-else:
-    pass
+# 3rd party
+from pycrosskit.envariables import SysEnv
+
+# package
+from qgis_deployment_toolbelt.utils.win32utils import refresh_environment
 
 # #############################################################################
 # ########## Globals ###############
@@ -60,16 +58,18 @@ class JobEnvironmentVariables:
             for env_var in self.options:
                 if env_var.get("action") == "add":
                     try:
-                        setenv(
-                            name=env_var.get("name"),
+                        SysEnv().set(
+                            key=env_var.get("name"),
                             value=self.prepare_value(env_var.get("value")),
                             user=env_var.get("scope") == "user",
                             suppress_echo=True,
                         )
                     except NameError:
-                        logger.debug(f"name 'win32gui' is not defined")
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
             # force Windows to refresh the environment
-            self.win_refresh_environment()
+            refresh_environment()
 
         # TODO: for linux, edit ~/.profile or add a .env file and source it from ~./profile
         else:
@@ -115,36 +115,6 @@ class JobEnvironmentVariables:
                 raise TypeError(f"Options must be a dict, not {type(option)}")
 
         return options
-
-    def win_refresh_environment(self) -> bool:
-        """This ensures that changes to Windows registry are immediately propagated.
-        Useful to refresh after have updated the environment variables.
-
-        A method by Geoffrey Faivre-Malloy and Ronny Lipshitz.
-        Source: https://gist.github.com/apetrone/5937002
-
-        :return bool: True if the environment has been refreshed
-        """
-        # broadcast settings change
-        HWND_BROADCAST: int = 0xFFFF
-        WM_SETTINGCHANGE: int = 0x001A
-        SMTO_ABORTIFHUNG: int = 0x0002
-        sParam = "Environment"
-
-        res1 = res2 = None
-        try:
-            res1, res2 = win32gui.SendMessageTimeout(
-                HWND_BROADCAST, WM_SETTINGCHANGE, 0, sParam, SMTO_ABORTIFHUNG, 100
-            )
-        except NameError:
-            logger.critical(" name 'win32gui' is not defined")
-        if not res1:
-            logger.warning(
-                f"Refresh environment failed: {bool(res1)}, {res2}, from SendMessageTimeout"
-            )
-            return False
-        else:
-            return True
 
 
 # #############################################################################

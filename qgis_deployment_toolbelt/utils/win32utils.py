@@ -22,9 +22,13 @@ from typing import Optional
 # Imports depending on operating system
 if opersys == "win32":
     """windows"""
+
     import winreg
+
+    import win32gui
 else:
     pass
+
 
 # #############################################################################
 # ########## Globals ###############
@@ -92,6 +96,38 @@ def normalize_path(input_path: Path, add_trailing_slash_if_dir: bool = True) -> 
         return repr(str(input_path.resolve()) + sep).replace("'", "")
     else:
         return repr(str(input_path.resolve())).replace("'", "")
+
+
+def refresh_environment() -> bool:
+    """This ensures that changes to Windows registry are immediately propagated.
+    Useful to refresh after have updated the environment variables.
+
+    A method by Geoffrey Faivre-Malloy and Ronny Lipshitz.
+    Source: https://gist.github.com/apetrone/5937002
+
+    Returns:
+        bool: True if the environment has been refreshed
+    """
+    # broadcast settings change
+    HWND_BROADCAST: int = 0xFFFF
+    WM_SETTINGCHANGE: int = 0x001A
+    SMTO_ABORTIFHUNG: int = 0x0002
+    sParam = "Environment"
+
+    res1 = res2 = None
+    try:
+        res1, res2 = win32gui.SendMessageTimeout(
+            HWND_BROADCAST, WM_SETTINGCHANGE, 0, sParam, SMTO_ABORTIFHUNG, 100
+        )
+    except NameError:
+        logger.critical(" name 'win32gui' is not defined")
+    if not res1:
+        logger.warning(
+            f"Refresh environment failed: {bool(res1)}, {res2}, from SendMessageTimeout"
+        )
+        return False
+    else:
+        return True
 
 
 def set_environment_variable(
