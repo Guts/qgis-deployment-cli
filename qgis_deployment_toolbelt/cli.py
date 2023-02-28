@@ -149,7 +149,8 @@ def main(in_args: List[str] = None):
     if hasattr(args, "func"):
         args.func(args)
     else:
-        main_parser.print_help()
+        # if no args, run deployment
+        main(["deploy"])
 
 
 # #############################################################################
