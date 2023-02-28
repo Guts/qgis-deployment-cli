@@ -19,7 +19,6 @@ import unittest
 from os.path import expanduser
 from pathlib import Path
 from sys import platform as opersys
-from unittest import mock
 
 # package
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
@@ -121,7 +120,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             )
             self.assertEqual(
                 job_env_vars.prepare_value(value=[]),
-                '"[]"',
+                "[]",
             )
 
     def test_validate_options(self):
