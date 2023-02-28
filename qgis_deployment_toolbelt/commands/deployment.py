@@ -16,9 +16,6 @@ import logging
 from os import environ
 from pathlib import Path
 
-# 3rd party
-from rich.progress import track
-
 # submodules
 from qgis_deployment_toolbelt.constants import get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
@@ -128,7 +125,7 @@ def run(args: argparse.Namespace):
             steps_ok.append(step)
 
     # run job
-    for step in track(steps_ok, description="Running the scenario.."):
+    for step in steps_ok:
         logger.info(f"Running step: {step.get('uses')}")
         try:
             job = orchestrator.init_job_class_from_id(

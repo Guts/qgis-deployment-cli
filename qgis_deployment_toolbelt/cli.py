@@ -13,9 +13,6 @@ import argparse
 import logging
 from typing import List
 
-# 3rd party
-from rich_argparse import RawDescriptionRichHelpFormatter
-
 # submodules
 from qgis_deployment_toolbelt.__about__ import (
     __author__,
@@ -30,9 +27,6 @@ from qgis_deployment_toolbelt.commands import parser_main_deployment, parser_upg
 # #############################################################################
 # ########## Globals ###############
 # ##################################
-
-RawDescriptionRichHelpFormatter.usage_markup = True
-
 
 # ############################################################################
 # ########## FUNCTIONS ###########
@@ -70,7 +64,7 @@ def main(in_args: List[str] = None):
     """
     # create the top-level parser
     main_parser = argparse.ArgumentParser(
-        formatter_class=RawDescriptionRichHelpFormatter,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"Developed by: {__author__}\nDocumentation: {__uri_homepage__}",
         description=f"{__title__} {__version__} - {__summary__}",
     )
