@@ -94,6 +94,39 @@ def normalize_path(input_path: Path, add_trailing_slash_if_dir: bool = True) -> 
         return repr(str(input_path.resolve())).replace("'", "")
 
 
+def set_environment_variable(
+    envvar_name: str, envvar_value: str, scope: str = "user"
+) -> bool:
+    """Creates/replaces environment variable.
+
+    Args:
+        envvar_name (str): name (= key) of environment variable to set or replace.
+        envvar_value (str): value to set for the environment variable
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
+
+    Returns:
+        bool: True is the variable has been successfully set
+    """
+    # user or system
+    if scope == "user":
+        hkey = user_hkey
+    else:
+        system_hkey
+
+    # try to set the value
+    try:
+        with winreg.OpenKey(*hkey, access=winreg.KEY_WRITE) as key:
+            winreg.SetValueEx(key, envvar_name, 0, winreg.REG_SZ, envvar_value)
+        return True
+    except OSError as err:
+        logger.error(
+            f"Set variable '{envvar_name}' with value '{envvar_value}' to "
+            f"scope '{scope}' failed. Trace: {err}"
+        )
+        return False
+
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
