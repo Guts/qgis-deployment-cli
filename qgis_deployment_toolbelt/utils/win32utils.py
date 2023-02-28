@@ -4,6 +4,8 @@
     Utilities specific for Windows.
 
     Author: Julien Moura (https://github.com/guts)
+
+    Inspired from py-setenv: <https://github.com/beliaev-maksim/py_setenv> (MIT)
 """
 
 # #############################################################################
@@ -15,7 +17,7 @@ import logging
 from os import sep  # required since pathlib strips trailing whitespace
 from pathlib import Path
 from sys import platform as opersys
-from typing import Union
+from typing import Optional
 
 # Imports depending on operating system
 if opersys == "win32":
@@ -28,29 +30,34 @@ else:
 # ########## Globals ###############
 # ##################################
 
-# logs
 logger = logging.getLogger(__name__)
-
+system_hkey = (
+    winreg.HKEY_LOCAL_MACHINE,
+    r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment",
+)
+user_hkey = (winreg.HKEY_CURRENT_USER, r"Environment")
 
 # #############################################################################
 # ########## Functions #############
 # ##################################
-def get_environment_variable(envvar_name: str, scope: str = "user") -> Union[str, None]:
+
+
+def get_environment_variable(envvar_name: str, scope: str = "user") -> Optional[str]:
     """Get environment variable from Windows registry.
 
-    :param str envvar_name: environment variable name to retrieve
-    :param str scope: . Must be "user" or "system", defaults to "user".
+    Args:
+        envvar_name (str): environment variable name (= key) to retrieve
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
 
-    :return Union[str, None]: environment variable value or None if not found
+    Returns:
+        Optional[str]: environment variable value or None if not found
     """
     # user or system
     if scope == "user":
-        hkey = (winreg.HKEY_CURRENT_USER, r"Environment")
+        hkey = user_hkey
     else:
-        hkey = (
-            winreg.HKEY_LOCAL_MACHINE,
-            r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment",
-        )
+        system_hkey
     # try to get the value
     try:
         with winreg.OpenKey(*hkey, access=winreg.KEY_READ) as key:
