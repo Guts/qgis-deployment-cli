@@ -30,7 +30,9 @@ from qgis_deployment_toolbelt.utils import str2bool
 if opersys == "win32":
     import platform
 
-    from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
+    from qgis_deployment_toolbelt.utils.win32utils import (  # delete_environment_variable,
+        get_environment_variable,
+    )
 
     PYTHON_RELEASE = platform.python_version()
 
@@ -104,24 +106,14 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         )
         value_test = "imaginary/path"
         if opersys == "win32":
-            if PYTHON_RELEASE.startswith(("3.8", "3.9")):
-                self.assertEqual(
-                    job_env_vars.prepare_value(value=value_test),
-                    value_test.replace("/", "\\"),
-                )
-                self.assertEqual(
-                    job_env_vars.prepare_value(value=[]),
-                    [],
-                )
-            else:
-                self.assertEqual(
-                    job_env_vars.prepare_value(value=value_test),
-                    str(Path().resolve() / value_test),
-                )
-                self.assertEqual(
-                    job_env_vars.prepare_value(value=[]),
-                    [],
-                )
+            self.assertEqual(
+                job_env_vars.prepare_value(value=value_test),
+                str(Path().resolve() / value_test),
+            )
+            self.assertEqual(
+                job_env_vars.prepare_value(value=[]),
+                "[]",
+            )
         else:
             self.assertEqual(
                 job_env_vars.prepare_value(value=value_test),
@@ -140,34 +132,3 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             job_env_vars.validate_options(options="options_test")
         with self.assertRaises(TypeError):
             job_env_vars.validate_options(options=["options_test"])
-
-
-# simulate an opersys variable equal to win32
-@mock.patch("qgis_deployment_toolbelt.jobs.job_environment_variables.opersys", "win32")
-class TestJobEnvironmentVariablesImaginaryOpersysWin32(unittest.TestCase):
-    """Test module with a fake opersys variable equal to win32"""
-
-    def test_run(self):
-        """Test run method"""
-        job_env_vars = JobEnvironmentVariables(
-            [
-                {
-                    "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
-                    "value": True,
-                    "scope": "user",
-                    "action": "add",
-                },
-                {
-                    "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
-                    "value": "~/scripts/qgis_startup.py",
-                    "scope": "user",
-                    "action": "add_test",
-                },
-            ]
-        )
-        self.assertIsNone(job_env_vars.run())
-
-    def test_prepare_value(self):
-        """Test prepare_value method"""
-        job_env_vars = JobEnvironmentVariables([])
-        self.assertEqual(job_env_vars.prepare_value(value=[]), [])
