@@ -20,6 +20,7 @@ from typing import List
 
 # package
 from qgis_deployment_toolbelt.utils.win32utils import (
+    delete_environment_variable,
     refresh_environment,
     set_environment_variable,
 )
@@ -62,6 +63,16 @@ class JobEnvironmentVariables:
                         set_environment_variable(
                             envvar_name=env_var.get("name"),
                             envvar_value=self.prepare_value(env_var.get("value")),
+                            scope=env_var.get("scope"),
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+                elif env_var.get("action") == "remove":
+                    try:
+                        delete_environment_variable(
+                            envvar_name=env_var.get("name"),
                             scope=env_var.get("scope"),
                         )
                     except NameError:
