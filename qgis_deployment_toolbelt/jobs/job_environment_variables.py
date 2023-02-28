@@ -62,7 +62,7 @@ class JobEnvironmentVariables:
                         set_environment_variable(
                             envvar_name=env_var.get("name"),
                             envvar_value=self.prepare_value(env_var.get("value")),
-                            user=env_var.get("scope") == "user",
+                            scope=env_var.get("scope") == "user",
                         )
                     except NameError:
                         logger.debug(
