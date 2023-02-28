@@ -65,7 +65,14 @@ def delete_environment_variable(envvar_name: str, scope: str = "user") -> bool:
         hkey = user_hkey
     else:
         system_hkey
-    # try to get the value
+
+    # get it to check if variable exits
+    try:
+        get_environment_variable(envvar_name=envvar_name, scope=scope)
+    except Exception:
+        return False
+
+    # try to delete the variable
     try:
         with winreg.OpenKey(*hkey, access=winreg.KEY_ALL_ACCESS) as key:
             winreg.DeleteValue(key, envvar_name)
