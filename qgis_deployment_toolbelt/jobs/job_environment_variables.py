@@ -98,7 +98,7 @@ class JobEnvironmentVariables:
             logger.debug(f"Value {value} is not a valid path: {err}")
 
         if opersys == "win32":
-            return value
+            return str(value).strip()
         else:
             return f'"{value}"'
 
