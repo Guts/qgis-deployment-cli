@@ -17,7 +17,7 @@ Clone the repository where you want:
 ```bash
 git clone https://github.com/Guts/qgis-deployment-cli.git
 # or using ssh
-git clone git@github.com:Guts/qgis_deployment_cli.git
+git clone git@github.com:Guts/qgis-deployment-cli.git
 ```
 
 Create and enter virtual environment (change the path at your convenience):
