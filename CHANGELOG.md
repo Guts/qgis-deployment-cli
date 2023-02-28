@@ -16,6 +16,21 @@ Unreleased
 
 -->
 
+## 0.17.0 - 2023-02-28
+
+A version focused on refacto to reduce external dependencies.
+
+### Features and enhancements 🎉
+
+* Refacto: clean up rm unused subcmd by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/192>
+* Refacto: replace click by argparse by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/194>
+* Refacto: remove dependency to py-setenv by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/196>
+* Refacto: remove rich dependency by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/197>
+
+### Tooling 🔧
+
+* Packaging: build and package for MacOS (experimental) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/195>
+
 ## 0.16.2 - 2023-02-23
 
 ### Bugs fixes 🐛
