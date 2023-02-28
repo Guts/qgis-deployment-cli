@@ -46,6 +46,34 @@ user_hkey = (winreg.HKEY_CURRENT_USER, r"Environment")
 # ##################################
 
 
+def delete_environment_variable(envvar_name: str, scope: str = "user") -> bool:
+    """Deletes environment variable.
+
+    Args:
+        envvar_name (str): environment variable name (= key) to delete
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
+
+    Returns:
+        bool: True is the variable has been successfully deleted
+    """
+    # user or system
+    if scope == "user":
+        hkey = user_hkey
+    else:
+        system_hkey
+    # try to get the value
+    try:
+        with winreg.OpenKey(*hkey, access=winreg.KEY_ALL_ACCESS) as key:
+            winreg.DeleteValue(key, envvar_name)
+            return True
+    except OSError as err:
+        logger.error(
+            f"Delete variable '{envvar_name}' from scope '{scope}' failed. Trace: {err}"
+        )
+        return False
+
+
 def get_environment_variable(envvar_name: str, scope: str = "user") -> Optional[str]:
     """Get environment variable from Windows registry.
 
