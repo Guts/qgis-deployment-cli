@@ -18,11 +18,11 @@ from pathlib import Path
 from sys import platform as opersys
 from typing import List
 
-# 3rd party
-from pycrosskit.envariables import SysEnv
-
 # package
-from qgis_deployment_toolbelt.utils.win32utils import refresh_environment
+from qgis_deployment_toolbelt.utils.win32utils import (
+    refresh_environment,
+    set_environment_variable,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -46,7 +46,8 @@ class JobEnvironmentVariables:
     def __init__(self, options: List[dict]) -> None:
         """Instantiate the class.
 
-        :param List[dict] options: dictionary with environment variable name as key and
+        Args:
+            options (List[dict]): dictionary with environment variable name as key and
         some parameters as values (value, scope, action...).
         """
 
@@ -58,11 +59,10 @@ class JobEnvironmentVariables:
             for env_var in self.options:
                 if env_var.get("action") == "add":
                     try:
-                        SysEnv().set(
-                            key=env_var.get("name"),
-                            value=self.prepare_value(env_var.get("value")),
+                        set_environment_variable(
+                            envvar_name=env_var.get("name"),
+                            envvar_value=self.prepare_value(env_var.get("value")),
                             user=env_var.get("scope") == "user",
-                            suppress_echo=True,
                         )
                     except NameError:
                         logger.debug(
