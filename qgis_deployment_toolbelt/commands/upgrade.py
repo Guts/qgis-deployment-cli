@@ -203,7 +203,7 @@ def run(args: argparse.Namespace):
     # select remote download URL
     if release_asset_for_os := get_download_url_for_os(latest_release.get("assets")):
         remote_url, remote_content_type = release_asset_for_os
-    if not remote_url:
+    else:
         exit_cli_error(f"Unable to identify an appropriate download URL for {opersys}.")
 
     # destination local file
