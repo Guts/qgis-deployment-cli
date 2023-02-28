@@ -43,6 +43,29 @@ class JobEnvironmentVariables:
     """
 
     ID: str = "manage-env-vars"
+    OPTIONS_SCHEMA: dict = {
+        "action": {
+            "type": str,
+            "required": False,
+            "default": "add",
+            "possible_values": ("add", "remove"),
+            "condition": "in",
+        },
+        "scope": {
+            "type": str,
+            "required": False,
+            "default": "user",
+            "possible_values": ("system", "user"),
+            "condition": "in",
+        },
+        "value": {
+            "type": str,
+            "required": False,
+            "default": None,
+            "possible_values": None,
+            "condition": None,
+        },
+    }
 
     def __init__(self, options: List[dict]) -> None:
         """Instantiate the class.
