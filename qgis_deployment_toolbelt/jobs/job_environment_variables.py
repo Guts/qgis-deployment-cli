@@ -97,10 +97,7 @@ class JobEnvironmentVariables:
         except Exception as err:
             logger.debug(f"Value {value} is not a valid path: {err}")
 
-        if opersys == "win32":
-            return str(value).strip()
-        else:
-            return f'"{value}"'
+        return str(value).strip()
 
     def validate_options(self, options: List[dict]) -> List[dict]:
         """Validate options.
