@@ -35,11 +35,14 @@ else:
 # ##################################
 
 logger = logging.getLogger(__name__)
-system_hkey = (
-    winreg.HKEY_LOCAL_MACHINE,
-    r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment",
-)
-user_hkey = (winreg.HKEY_CURRENT_USER, r"Environment")
+
+if opersys == "win32":
+    """windows"""
+    system_hkey = (
+        winreg.HKEY_LOCAL_MACHINE,
+        r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment",
+    )
+    user_hkey = (winreg.HKEY_CURRENT_USER, r"Environment")
 
 # #############################################################################
 # ########## Functions #############
