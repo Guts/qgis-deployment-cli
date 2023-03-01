@@ -1,6 +1,6 @@
 # Packaging
 # ---------
 
-pyinstaller>=5,<5.8
+pyinstaller>=5,<5.9
 pyinstaller-hooks-contrib==2022.*
 pypiwin32==223 ; sys_platform == 'win32'
