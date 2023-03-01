@@ -2,7 +2,7 @@
 # -------------
 
 furo==2022.*
-myst-parser[linkify]>=0.18,<0.19
+myst-parser[linkify]>=0.18,<0.20
 pip-licenses>=4,<5
 sphinx-argparse-cli>=1,<2
 sphinx-autobuild==2021.3.14
