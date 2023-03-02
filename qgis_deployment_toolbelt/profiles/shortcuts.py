@@ -219,7 +219,6 @@ class ApplicationShortcut:
         ):
             return icon_path.resolve()
         else:
-
             logger.warning(f"Icon does not exist: {icon_path}")
             return None
 
@@ -277,7 +276,6 @@ class ApplicationShortcut:
 
             return default_value
         else:
-
             logger.warning(
                 f"Unrecognized operating system ({opersys}) so path to the "
                 f"user desktop is using a fallback value: {default_value}"
@@ -373,7 +371,6 @@ class ApplicationShortcut:
 
         # desktop shortcut
         if self.desktop:
-
             self.desktop_path.mkdir(parents=True, exist_ok=True)
 
             # create shortcut

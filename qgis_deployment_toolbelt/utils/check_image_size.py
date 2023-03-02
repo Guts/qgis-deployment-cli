@@ -120,7 +120,9 @@ def check_image_dimensions(
         )
         return None
 
-    return all(d <= l for d, l in zip(image_dimensions, (max_width, max_height)))
+    return all(
+        dim <= limit for dim, limit in zip(image_dimensions, (max_width, max_height))
+    )
 
 
 # #############################################################################

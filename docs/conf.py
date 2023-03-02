@@ -6,10 +6,7 @@
 
 # standard
 import os
-import sys
 from datetime import datetime
-
-sys.path.insert(0, os.path.abspath(r".."))
 
 # project
 from qgis_deployment_toolbelt import __about__
@@ -168,6 +165,7 @@ ogp_custom_meta_tags = [
     '<meta property="twitter:site" content="@geojulien" />',
     f'<meta property="twitter:title" content="{project}" />',
 ]
+
 
 # -- Options for Sphinx API doc ----------------------------------------------
 # run api doc

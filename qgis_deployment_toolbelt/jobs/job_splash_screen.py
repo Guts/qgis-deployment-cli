@@ -95,7 +95,6 @@ class JobSplashScreenManager(GenericJob):
 
         if self.options.get("action") in ("create", "create_or_restore"):
             for profile_dir in li_installed_profiles_path:
-
                 # default absolute splash screen path
                 splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
 
@@ -173,7 +172,6 @@ class JobSplashScreenManager(GenericJob):
                 )
         elif self.options.get("action") == "remove":
             for profile_dir in li_installed_profiles_path:
-
                 # default absolute splash screen path
                 splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
 
