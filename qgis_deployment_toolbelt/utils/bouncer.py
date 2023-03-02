@@ -13,6 +13,7 @@
 # Standard library
 import logging
 import sys
+from typing import Union
 
 # #############################################################################
 # ########## Globals ###############
@@ -26,11 +27,15 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-def exit_cli_error(message: str, abort: bool = True):
-    """Display error message (red) and stop execution.
+def exit_cli_error(message: Union[str, Exception], abort: bool = True):
+    """Display error message and stop execution.
 
-    :param str message: message to log and display in terminal.
-    :param bool abort: option to abort after displaying . Defaults to: True - optional
+    Args:
+        message (Union[str, Exception]): message to log and display in terminal.
+        abort (bool, optional): option to abort after displaying. Defaults to True.
+
+    Raises:
+        SystemExit: when abort is True
     """
     # log
     logger.error(message, exc_info=True)
@@ -45,11 +50,15 @@ def exit_cli_error(message: str, abort: bool = True):
         sys.exit(message)
 
 
-def exit_cli_normal(message: str, abort: bool = True):
-    """Display normal message (magenta) and stop execution.
+def exit_cli_normal(message: Union[str, Exception], abort: bool = True):
+    """Display normal message and stop execution if required.
 
-    :param str message: message to log and display in terminal.
-    :param bool abort: option to abort after displaying . Defaults to: True - optional
+    Args:
+        message (Union[str, Exception]): message to log and display in terminal.
+        abort (bool, optional): option to abort after displaying. Defaults to True.
+
+    Raises:
+        SystemExit: when abort is True
     """
     logger.info(message)
 
@@ -57,11 +66,15 @@ def exit_cli_normal(message: str, abort: bool = True):
         sys.exit(0)
 
 
-def exit_cli_success(message: str, abort: bool = True):
-    """Display success message (green) and stop execution.
+def exit_cli_success(message: Union[str, Exception], abort: bool = True):
+    """Display success message and stop execution ir required.
 
-    :param str message: message to log and display in terminal.
-    :param bool abort: option to abort after displaying the message. Defaults to: True - optional
+    Args:
+        message (Union[str, Exception]): message to log and display in terminal.
+        abort (bool, optional): option to abort after displaying. Defaults to True.
+
+    Raises:
+        SystemExit: when abort is True
     """
     logger.info(message)
 
