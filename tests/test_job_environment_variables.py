@@ -149,8 +149,28 @@ class TestJobEnvironmentVariables(unittest.TestCase):
     def test_validate_options(self):
         """Test validate_options method"""
         job_env_vars = JobEnvironmentVariables([])
-        # Options must be a list of dictionaries
-        with self.assertRaises(Exception):
+        # Options must be a dictionary
+        with self.assertRaises(ValueError):
             job_env_vars.validate_options(options="options_test")
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValueError):
             job_env_vars.validate_options(options=["options_test"])
+
+        bad_options_scope = [
+            {
+                "action": "remove",
+                "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
+                "scope": "imaginary_scope",
+            }
+        ]
+        bad_options_action = [
+            {
+                "action": "update",
+                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                "scope": "user",
+            },
+        ]
+
+        with self.assertRaises(ValueError):
+            JobEnvironmentVariables(bad_options_action)
+        with self.assertRaises(ValueError):
+            JobEnvironmentVariables(bad_options_scope)

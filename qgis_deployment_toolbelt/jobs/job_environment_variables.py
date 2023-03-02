@@ -66,7 +66,7 @@ class JobEnvironmentVariables:
             "condition": "in",
         },
         "value": {
-            "type": str,
+            "type": (bool, int, str, list),
             "required": False,
             "default": None,
             "possible_values": None,
