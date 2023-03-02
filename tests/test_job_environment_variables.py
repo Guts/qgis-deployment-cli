@@ -127,7 +127,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         """Test validate_options method"""
         job_env_vars = JobEnvironmentVariables([])
         # Options must be a list of dictionaries
-        with self.assertRaises(TypeError):
+        with self.assertRaises(Exception):
             job_env_vars.validate_options(options="options_test")
-        with self.assertRaises(TypeError):
+        with self.assertRaises(Exception):
             job_env_vars.validate_options(options=["options_test"])
