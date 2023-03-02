@@ -15,7 +15,9 @@ class SplashScreenBadDimensions(Exception):
     def __init__(self, image_filepath: Path, profile_name: str = None):
         """Initialization method.
 
-        :param Path image_filepath: path to the selected image to be set as splash screen
+        Args:
+            image_filepath (Path): path to the selected image to be set as splash screen
+            profile_name (str, optional): name of profile. Defaults to None.
         """
         self.message = (
             f"Profile {profile_name} -"
