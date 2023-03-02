@@ -6,10 +6,7 @@
 
 # standard
 import os
-import sys
 from datetime import datetime
-
-sys.path.insert(0, os.path.abspath(r".."))
 
 # project
 from qgis_deployment_toolbelt import __about__
