@@ -10,12 +10,13 @@ Sample job configuration in your scenario file:
 
 ```yaml
 - name: Set environment variables
-    uses: manage-env-vars
-    with:
-        - QGIS_GLOBAL_SETTINGS_FILE:  # the name of environment variable
-            action: add
-            scope: user
-            value: "\\SIG\\QGIS\\CONFIG\\qgis_global_settings.ini"
+  uses: manage-env-vars
+  with:
+    - name: QGIS_GLOBAL_SETTINGS_FILE
+      action: "add"
+      value: "~/scripts/qgis_startup.py"
+      value: "\\SIG\\QGIS\\CONFIG\\qgis_global_settings.ini"
+      scope: "user"
 ```
 
 ----
@@ -30,6 +31,10 @@ Possible_values:
 
 - `add`: add environment variable
 - `remove`: remove environment variable
+
+### name
+
+Name of the environment variable.
 
 ### scope
 

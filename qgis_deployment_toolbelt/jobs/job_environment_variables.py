@@ -51,6 +51,13 @@ class JobEnvironmentVariables:
             "possible_values": ("add", "remove"),
             "condition": "in",
         },
+        "name": {
+            "type": str,
+            "required": True,
+            "default": None,
+            "possible_values": None,
+            "condition": None,
+        },
         "scope": {
             "type": str,
             "required": False,
@@ -71,11 +78,10 @@ class JobEnvironmentVariables:
         """Instantiate the class.
 
         Args:
-            options (List[dict]): dictionary with environment variable name as key and
-        some parameters as values (value, scope, action...).
+            options (List[dict]): list of dictionary with environment variables to set
+            or remove.
         """
-
-        self.options: dict = self.validate_options(options)
+        self.options: List[dict] = [self.validate_options(opt) for opt in options]
 
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""
@@ -134,15 +140,22 @@ class JobEnvironmentVariables:
         return str(value).strip()
 
     # -- INTERNAL LOGIC ------------------------------------------------------
-    def validate_options(self, options: dict) -> bool:
+    def validate_options(self, options: dict) -> dict:
         """Validate options.
 
-        :param dict options: options to validate.
-        :return bool: True if options are valid.
+        Args:
+            options (dict): options to validate.
+
+        Raises:
+            ValueError: if option has an invalid name or doesn't comply with condition
+            TypeError: if the option does'nt not comply with expected type
+
+        Returns:
+            dict: options if valid
         """
         for option in options:
             if option not in self.OPTIONS_SCHEMA:
-                raise Exception(
+                raise ValueError(
                     f"Job: {self.ID}. Option '{option}' is not valid."
                     f" Valid options are: {self.OPTIONS_SCHEMA.keys()}"
                 )
@@ -151,7 +164,7 @@ class JobEnvironmentVariables:
             option_def: dict = self.OPTIONS_SCHEMA.get(option)
             # check value type
             if not isinstance(option_in, option_def.get("type")):
-                raise Exception(
+                raise TypeError(
                     f"Job: {self.ID}. Option '{option}' has an invalid value."
                     f"\nExpected {option_def.get('type')}, got {type(option_in)}"
                 )
@@ -159,7 +172,7 @@ class JobEnvironmentVariables:
             if option_def.get("condition") == "startswith" and not option_in.startswith(
                 option_def.get("possible_values")
             ):
-                raise Exception(
+                raise ValueError(
                     f"Job: {self.ID}. Option '{option}' has an invalid value."
                     "\nExpected: starts with one of: "
                     f"{', '.join(option_def.get('possible_values'))}"
@@ -167,7 +180,7 @@ class JobEnvironmentVariables:
             elif option_def.get(
                 "condition"
             ) == "in" and option_in not in option_def.get("possible_values"):
-                raise Exception(
+                raise ValueError(
                     f"Job: {self.ID}. Option '{option}' has an invalid value."
                     f"\nExpected: one of: {', '.join(option_def.get('possible_values'))}"
                 )
