@@ -169,6 +169,7 @@ ogp_custom_meta_tags = [
     f'<meta property="twitter:title" content="{project}" />',
 ]
 
+
 # -- Options for Sphinx API doc ----------------------------------------------
 # run api doc
 def run_apidoc(_):
