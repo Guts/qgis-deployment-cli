@@ -20,6 +20,7 @@ from typing import List
 
 # package
 from qgis_deployment_toolbelt.utils.win32utils import (
+    delete_environment_variable,
     refresh_environment,
     set_environment_variable,
 )
@@ -42,16 +43,45 @@ class JobEnvironmentVariables:
     """
 
     ID: str = "manage-env-vars"
+    OPTIONS_SCHEMA: dict = {
+        "action": {
+            "type": str,
+            "required": False,
+            "default": "add",
+            "possible_values": ("add", "remove"),
+            "condition": "in",
+        },
+        "name": {
+            "type": str,
+            "required": True,
+            "default": None,
+            "possible_values": None,
+            "condition": None,
+        },
+        "scope": {
+            "type": str,
+            "required": False,
+            "default": "user",
+            "possible_values": ("system", "user"),
+            "condition": "in",
+        },
+        "value": {
+            "type": (bool, int, str, list),
+            "required": False,
+            "default": None,
+            "possible_values": None,
+            "condition": None,
+        },
+    }
 
     def __init__(self, options: List[dict]) -> None:
         """Instantiate the class.
 
         Args:
-            options (List[dict]): dictionary with environment variable name as key and
-        some parameters as values (value, scope, action...).
+            options (List[dict]): list of dictionary with environment variables to set
+            or remove.
         """
-
-        self.options: dict = self.validate_options(options)
+        self.options: List[dict] = [self.validate_options(opt) for opt in options]
 
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""
@@ -62,6 +92,16 @@ class JobEnvironmentVariables:
                         set_environment_variable(
                             envvar_name=env_var.get("name"),
                             envvar_value=self.prepare_value(env_var.get("value")),
+                            scope=env_var.get("scope"),
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+                elif env_var.get("action") == "remove":
+                    try:
+                        delete_environment_variable(
+                            envvar_name=env_var.get("name"),
                             scope=env_var.get("scope"),
                         )
                     except NameError:
@@ -99,17 +139,53 @@ class JobEnvironmentVariables:
 
         return str(value).strip()
 
-    def validate_options(self, options: List[dict]) -> List[dict]:
+    # -- INTERNAL LOGIC ------------------------------------------------------
+    def validate_options(self, options: dict) -> dict:
         """Validate options.
 
-        :param List[dict] options: options to validate.
-        :return List[dict]: options if they are valid.
+        Args:
+            options (dict): options to validate.
+
+        Raises:
+            ValueError: if option has an invalid name or doesn't comply with condition
+            TypeError: if the option does'nt not comply with expected type
+
+        Returns:
+            dict: options if valid
         """
-        if not isinstance(options, list):
-            raise TypeError(f"Options must be a list, not {type(options)}")
         for option in options:
-            if not isinstance(option, dict):
-                raise TypeError(f"Options must be a dict, not {type(option)}")
+            if option not in self.OPTIONS_SCHEMA:
+                raise ValueError(
+                    f"Job: {self.ID}. Option '{option}' is not valid."
+                    f" Valid options are: {self.OPTIONS_SCHEMA.keys()}"
+                )
+
+            option_in = options.get(option)
+            option_def: dict = self.OPTIONS_SCHEMA.get(option)
+            # check value type
+            if not isinstance(option_in, option_def.get("type")):
+                raise TypeError(
+                    f"Job: {self.ID}. Option '{option}' has an invalid value."
+                    f"\nExpected {option_def.get('type')}, got {type(option_in)}"
+                )
+            # check value condition
+            if option_def.get("condition") == "startswith" and not option_in.startswith(
+                option_def.get("possible_values")
+            ):
+                raise ValueError(
+                    f"Job: {self.ID}. Option '{option}' has an invalid value."
+                    "\nExpected: starts with one of: "
+                    f"{', '.join(option_def.get('possible_values'))}"
+                )
+            elif option_def.get(
+                "condition"
+            ) == "in" and option_in not in option_def.get("possible_values"):
+                raise ValueError(
+                    f"Job: {self.ID}. Option '{option}' has an invalid value."
+                    f"\nExpected: one of: {', '.join(option_def.get('possible_values'))}"
+                )
+            else:
+                pass
 
         return options
 

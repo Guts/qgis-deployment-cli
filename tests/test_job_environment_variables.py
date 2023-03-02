@@ -63,7 +63,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
 
     # -- TESTS ---------------------------------------------------------
     @unittest.skipIf(opersys != "win32", "Test specific to Windows.")
-    def test_environment_variables_set(self):
+    def test_environment_variables_set_unset(self):
         """Test YAML loader"""
         fake_env_vars = [
             {
@@ -93,6 +93,29 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             self.assertEqual(
                 get_environment_variable("QDT_TEST_FAKE_ENV_VAR_PATH"),
                 str(Path(expanduser("~/scripts/qgis_startup.py")).resolve()),
+            )
+
+            # clean up
+            fake_env_vars = [
+                {
+                    "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
+                    "scope": "user",
+                    "action": "remove",
+                },
+                {
+                    "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                    "scope": "user",
+                    "action": "remove",
+                },
+            ]
+            job_env_vars = JobEnvironmentVariables(fake_env_vars)
+            job_env_vars.run()
+
+            self.assertIsNone(
+                get_environment_variable("QDT_TEST_FAKE_ENV_VAR_BOOL", "user")
+            )
+            self.assertIsNone(
+                get_environment_variable("QDT_TEST_FAKE_ENV_VAR_PATH"),
             )
 
     def test_prepare_value(self):
@@ -126,8 +149,28 @@ class TestJobEnvironmentVariables(unittest.TestCase):
     def test_validate_options(self):
         """Test validate_options method"""
         job_env_vars = JobEnvironmentVariables([])
-        # Options must be a list of dictionaries
-        with self.assertRaises(TypeError):
+        # Options must be a dictionary
+        with self.assertRaises(ValueError):
             job_env_vars.validate_options(options="options_test")
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             job_env_vars.validate_options(options=["options_test"])
+
+        bad_options_scope = [
+            {
+                "action": "remove",
+                "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
+                "scope": "imaginary_scope",
+            }
+        ]
+        bad_options_action = [
+            {
+                "action": "update",
+                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                "scope": "user",
+            },
+        ]
+
+        with self.assertRaises(ValueError):
+            JobEnvironmentVariables(bad_options_action)
+        with self.assertRaises(ValueError):
+            JobEnvironmentVariables(bad_options_scope)
