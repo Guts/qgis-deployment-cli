@@ -39,19 +39,22 @@ class GenericJob:
     ID = ""
     OPTIONS_SCHEMA = dict[dict]
 
-    def validate_options(self, options: dict) -> dict:
+    def validate_options(self, options: dict[dict]) -> dict[dict]:
         """Validate options.
 
         Args:
-            options (dict): options to validate.
+            options (dict[dict]): options to validate.
 
         Raises:
             ValueError: if option has an invalid name or doesn't comply with condition
             TypeError: if the option does'nt not comply with expected type
 
         Returns:
-            dict: options if valid
+            dict[dict]: options if valid
         """
+        if not isinstance(options, dict):
+            raise TypeError(f"Options to validate must be a dict, not {type(options)}.")
+
         for option in options:
             if option not in self.OPTIONS_SCHEMA:
                 raise JobOptionBadName(
