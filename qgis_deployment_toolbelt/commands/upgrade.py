@@ -189,8 +189,10 @@ def run(args: argparse.Namespace):
                 abort=True,
             )
     else:
+        exit_msg = (f"You already have the latest released version: {latest_version}.",)
+        print(exit_msg)
         exit_cli_normal(
-            f"A newer version is available: {latest_version}.",
+            message=exit_msg,
             abort=False,
         )
 
