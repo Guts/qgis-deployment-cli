@@ -14,9 +14,8 @@ Sample job configuration in your scenario file:
   with:
     - name: QGIS_GLOBAL_SETTINGS_FILE
       action: "add"
-      value: "~/scripts/qgis_startup.py"
-      value: "\\SIG\\QGIS\\CONFIG\\qgis_global_settings.ini"
       scope: "user"
+      value: "\\SIG\\QGIS\\CONFIG\\qgis_global_settings.ini"
 ```
 
 ----

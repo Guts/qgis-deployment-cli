@@ -34,12 +34,11 @@ _regex_slugify_hyphenate = re.compile(r"[-\s]+")
 def sluggy(text_to_slugify: str, replacer: str = "-") -> str:
     """Very basic slugifier using only Python Standard Library.
 
-    :param str text_to_slugify: text to slugify
+    Args:
+        text_to_slugify (str): text to slugify
+        replacer (str, optional): char used to replace special chars. Defaults to "-".
 
-    :return: slug
-    :rtype: str
-
-    :example:
+    Example:
 
     .. code-block:: python
 
@@ -47,6 +46,9 @@ def sluggy(text_to_slugify: str, replacer: str = "-") -> str:
         print(sluggy(sample_txt))
         > oye-oye-braves-gens-de-1973-he-oh-sentons-nous-lail
 
+
+    Returns:
+        str: input character string stringified
     """
     slug = (
         unicodedata.normalize("NFKD", text_to_slugify)
