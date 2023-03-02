@@ -38,15 +38,6 @@ class TestJobsLaunch(unittest.TestCase):
             Path("tests/fixtures/").glob("scenarios/good_*.y*ml")
         )
 
-    # standard methods
-    def setUp(self):
-        """Fixtures prepared before each test."""
-        pass
-
-    def tearDown(self):
-        """Executed after each test."""
-        pass
-
     # -- TESTS ---------------------------------------------------------
     def test_jobs_launcher(self):
         """Test YAML loader"""
