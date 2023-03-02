@@ -21,6 +21,7 @@ from typing import Tuple, Union
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles import ApplicationShortcut
 from qgis_deployment_toolbelt.utils.check_path import check_path
 
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-class JobShortcutsManager:
+class JobShortcutsManager(GenericJob):
     """
     Job to create or remove shortcuts on end-user machine.
     """

@@ -20,6 +20,7 @@ from sys import platform as opersys
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.exceptions import SplashScreenBadDimensions
+from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.utils.check_image_size import check_image_dimensions
 from qgis_deployment_toolbelt.utils.win32utils import normalize_path
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-class JobSplashScreenManager:
+class JobSplashScreenManager(GenericJob):
     """
     Job to set-up splash screen for QGIS profile.
     """
