@@ -4,9 +4,87 @@
 
 # standard library
 from pathlib import Path
+from typing import Iterable
 
 # package
 from qgis_deployment_toolbelt.utils.check_image_size import get_image_size
+
+
+class JobOptionBadName(KeyError):
+    """When a job reveives an option which is not part of accepted ones."""
+
+    def __init__(
+        self, job_id: str, bad_option_name: str, expected_options_names: Iterable[str]
+    ):
+        """Initialization method.
+
+        Args:
+            job_id (str): job ID
+            bad_option_name (str): name of bad option passed
+            expected_options_names (Iterable[str]): _description_
+        """
+        self.message = (
+            f"Job: {job_id}. Option '{bad_option_name}' is not valid. "
+            f"Valid options are: {','.join(expected_options_names)}"
+        )
+
+        super().__init__(self.message)
+
+
+class JobOptionBadValue(ValueError):
+    """When a job's option reveives a value which does not complies with condition."""
+
+    def __init__(
+        self,
+        job_id: str,
+        bad_option_name: str,
+        bad_option_value: str,
+        condition: str,
+        expected_option_type: Iterable[str],
+    ):
+        """Initialization method.
+
+        Args:
+            job_id (str): job ID
+            bad_option_name (str): name of bad option passed
+            bad_option_type (str): name of bad option passed
+            condition (str): condition
+            expected_option_type (Iterable[str]): accepted types of values
+        """
+        self.message = (
+            f"Job: {job_id}. Option '{bad_option_name}' 's value '{bad_option_value}' "
+            f"has an invalid type: {type(bad_option_value)}. "
+            f"Valid type/s is/are: {','.join(expected_option_type)}"
+        )
+
+        super().__init__(self.message)
+
+
+class JobOptionBadValueType(TypeError):
+    """When a job reveives an option which is not of the expected type."""
+
+    def __init__(
+        self,
+        job_id: str,
+        bad_option_name: str,
+        bad_option_value: str,
+        expected_option_type: Iterable[str],
+    ):
+        """Initialization method.
+
+        Args:
+            job_id (str): job ID
+            bad_option_name (str): name of bad option passed
+            bad_option_value (str): option's value
+            expected_option_type (Iterable[str]): accepted types of values
+        """
+        self.message = (
+            f"Job: {job_id}. Option '{bad_option_name}' 's value '{bad_option_value}' "
+            f"has an invalid type: {type(bad_option_value)}. "
+            f"Valid type/s is/are: {','.join(expected_option_type)}"
+        )
+
+        super().__init__(self.message)
 
 
 class SplashScreenBadDimensions(Exception):
