@@ -17,7 +17,6 @@ from sys import platform as opersys
 
 # project
 from qgis_deployment_toolbelt.utils import get_proxy_settings, str2bool
-from qgis_deployment_toolbelt.utils.slugger import sluggy
 from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
 
 # ############################################################################

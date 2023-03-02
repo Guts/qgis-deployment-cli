@@ -24,7 +24,6 @@ from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
 from qgis_deployment_toolbelt.utils.check_image_size import (
     check_image_dimensions,
     get_image_size,
-    get_svg_size,
 )
 
 # ############################################################################

@@ -16,9 +16,6 @@
 
 # Standard library
 import unittest
-from os.path import expanduser
-from pathlib import Path
-from sys import platform as opersys
 
 from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadName,

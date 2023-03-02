@@ -10,11 +10,8 @@
 # ########## Libraries #############
 # ##################################
 
-import shutil
 
 # Standard library
-import unittest
-from pathlib import Path
 
 # 3rd party library
 import pytest
