@@ -40,7 +40,7 @@ class JobOptionBadValue(ValueError):
         bad_option_name: str,
         bad_option_value: str,
         condition: str,
-        expected_option_type: Iterable[str],
+        accepted_values: Iterable[str],
     ):
         """Initialization method.
 
@@ -49,12 +49,12 @@ class JobOptionBadValue(ValueError):
             bad_option_name (str): name of bad option passed
             bad_option_type (str): name of bad option passed
             condition (str): condition
-            expected_option_type (Iterable[str]): accepted types of values
+            accepted_values (Iterable[str]): accepted types of values
         """
         self.message = (
             f"Job: {job_id}. Option '{bad_option_name}' 's value '{bad_option_value}' "
-            f"has an invalid type: {type(bad_option_value)}. "
-            f"Valid type/s is/are: {','.join(expected_option_type)}"
+            f"does not comply with condition {condition}. "
+            f"Accepted pattern: {','.join(accepted_values)}"
         )
 
         super().__init__(self.message)
