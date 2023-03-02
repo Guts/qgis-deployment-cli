@@ -65,9 +65,10 @@ class GenericJob:
             # check value type
             if not isinstance(option_in, option_def.get("type")):
                 raise JobOptionBadValueType(
+                    job_id=self.ID,
                     bad_option_name=option,
                     bad_option_value=option_in,
-                    expected_option_type=list(option_def.get("type")),
+                    expected_option_type=option_def.get("type"),
                 )
             # check value condition
             if option_def.get("condition") == "startswith" and not option_in.startswith(
