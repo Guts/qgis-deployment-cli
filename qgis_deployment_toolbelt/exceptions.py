@@ -81,7 +81,7 @@ class JobOptionBadValueType(TypeError):
         self.message = (
             f"Job: {job_id}. Option '{bad_option_name}' 's value '{bad_option_value}' "
             f"has an invalid type: {type(bad_option_value)}. "
-            f"Valid type/s is/are: {','.join(expected_option_type)}"
+            f"Valid type/s is/are: {expected_option_type}"
         )
 
         super().__init__(self.message)
