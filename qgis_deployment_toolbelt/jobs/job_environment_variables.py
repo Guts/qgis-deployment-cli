@@ -19,6 +19,7 @@ from sys import platform as opersys
 from typing import List
 
 # package
+from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.utils.win32utils import (
     delete_environment_variable,
     refresh_environment,
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-class JobEnvironmentVariables:
+class JobEnvironmentVariables(GenericJob):
     """
     Class to manage the environment variables of QGIS installation.
     """
@@ -119,6 +120,7 @@ class JobEnvironmentVariables:
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
+    # -- INTERNAL LOGIC ------------------------------------------------------
     def prepare_value(self, value: str) -> str:
         """Prepare value to be used in the environment variable.
 
@@ -138,56 +140,6 @@ class JobEnvironmentVariables:
             logger.debug(f"Value {value} is not a valid path: {err}")
 
         return str(value).strip()
-
-    # -- INTERNAL LOGIC ------------------------------------------------------
-    def validate_options(self, options: dict) -> dict:
-        """Validate options.
-
-        Args:
-            options (dict): options to validate.
-
-        Raises:
-            ValueError: if option has an invalid name or doesn't comply with condition
-            TypeError: if the option does'nt not comply with expected type
-
-        Returns:
-            dict: options if valid
-        """
-        for option in options:
-            if option not in self.OPTIONS_SCHEMA:
-                raise ValueError(
-                    f"Job: {self.ID}. Option '{option}' is not valid."
-                    f" Valid options are: {self.OPTIONS_SCHEMA.keys()}"
-                )
-
-            option_in = options.get(option)
-            option_def: dict = self.OPTIONS_SCHEMA.get(option)
-            # check value type
-            if not isinstance(option_in, option_def.get("type")):
-                raise TypeError(
-                    f"Job: {self.ID}. Option '{option}' has an invalid value."
-                    f"\nExpected {option_def.get('type')}, got {type(option_in)}"
-                )
-            # check value condition
-            if option_def.get("condition") == "startswith" and not option_in.startswith(
-                option_def.get("possible_values")
-            ):
-                raise ValueError(
-                    f"Job: {self.ID}. Option '{option}' has an invalid value."
-                    "\nExpected: starts with one of: "
-                    f"{', '.join(option_def.get('possible_values'))}"
-                )
-            elif option_def.get(
-                "condition"
-            ) == "in" and option_in not in option_def.get("possible_values"):
-                raise ValueError(
-                    f"Job: {self.ID}. Option '{option}' has an invalid value."
-                    f"\nExpected: one of: {', '.join(option_def.get('possible_values'))}"
-                )
-            else:
-                pass
-
-        return options
 
 
 # #############################################################################
