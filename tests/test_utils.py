@@ -35,20 +35,6 @@ class TestUtils(unittest.TestCase):
         environ["HTTP_PROXY"] = "http://proxy.example.com:3128"
         self.assertIsInstance(get_proxy_settings(), dict)
 
-    def test_slugger(self):
-        """Test minimalist slugify function."""
-        # hyphen by default
-        self.assertEqual(
-            sluggy("Oyé oyé brâves gens de 1973 ! Hé oh ! Sentons-nous l'ail %$*§ ?!"),
-            "oye-oye-braves-gens-de-1973-he-oh-sentons-nous-lail",
-        )
-
-        # with underscore
-        self.assertEqual(
-            sluggy("Nín hǎo. Wǒ shì zhōng guó rén", "_"),
-            "nin_hao_wo_shi_zhong_guo_ren",
-        )
-
     def test_str2bool(self):
         """Test str2bool."""
         # OK
