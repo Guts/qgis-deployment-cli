@@ -16,6 +16,21 @@ Unreleased
 
 -->
 
+## 0.18.0 - 2023-03-02
+
+### Bugs fixes 🐛
+
+* Fix message when there is no newer version by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/205>
+
+### Features and enhancements 🎉
+
+* Add helper to handle common error on exe name by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/206>
+* Feature: job to manage environment variables now handles `remove` action by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/199>
+
+### Documentation 📖
+
+* Add doc page about environment variable job by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/198>
+
 ## 0.17.0 - 2023-02-28
 
 A version focused on refacto to reduce external dependencies.
