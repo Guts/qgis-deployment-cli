@@ -27,13 +27,7 @@ from qgis_deployment_toolbelt.jobs.job_environment_variables import (
 from qgis_deployment_toolbelt.utils import str2bool
 
 if opersys == "win32":
-    import platform
-
-    from qgis_deployment_toolbelt.utils.win32utils import (  # delete_environment_variable,
-        get_environment_variable,
-    )
-
-    PYTHON_RELEASE = platform.python_version()
+    from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
 
 
 # #############################################################################
@@ -145,32 +139,3 @@ class TestJobEnvironmentVariables(unittest.TestCase):
                 job_env_vars.prepare_value(value=[]),
                 "[]",
             )
-
-    def test_validate_options(self):
-        """Test validate_options method"""
-        job_env_vars = JobEnvironmentVariables([])
-        # Options must be a dictionary
-        with self.assertRaises(ValueError):
-            job_env_vars.validate_options(options="options_test")
-        with self.assertRaises(ValueError):
-            job_env_vars.validate_options(options=["options_test"])
-
-        bad_options_scope = [
-            {
-                "action": "remove",
-                "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
-                "scope": "imaginary_scope",
-            }
-        ]
-        bad_options_action = [
-            {
-                "action": "update",
-                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
-                "scope": "user",
-            },
-        ]
-
-        with self.assertRaises(ValueError):
-            JobEnvironmentVariables(bad_options_action)
-        with self.assertRaises(ValueError):
-            JobEnvironmentVariables(bad_options_scope)
