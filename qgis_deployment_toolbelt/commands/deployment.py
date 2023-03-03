@@ -76,7 +76,9 @@ def run(args: argparse.Namespace):
     logger.debug(f"Running {args.command} with {args}")
 
     # check if scenario file is local or remote
-    if args.scenario_filepath.startswith(("http",)):
+    if isinstance(args.scenario_filepath, str) and args.scenario_filepath.startswith(
+        ("http",)
+    ):
         args.scenario_filepath = download_remote_file_to_local(
             remote_url_to_download=args.scenario_filepath,
             local_file_path=Path("./downloaded_scenario.qdt.yml"),
