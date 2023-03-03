@@ -6,10 +6,7 @@
 
 # standard
 import os
-import sys
 from datetime import datetime
-
-sys.path.insert(0, os.path.abspath(r".."))
 
 # project
 from qgis_deployment_toolbelt import __about__
@@ -43,7 +40,7 @@ extensions = [
     "sphinx.ext.napoleon",
     # 3rd party
     "myst_parser",
-    "sphinx_click",
+    "sphinx_argparse_cli",
     "sphinx_copybutton",
     "sphinxext.opengraph",
 ]
@@ -133,12 +130,12 @@ intersphinx_mapping = {
 myst_enable_extensions = [
     "colon_fence",
     "deflist",
-    "dollarmath",
     "html_admonition",
     "html_image",
     # "linkify",
     "replacements",
     "smartquotes",
+    "strikethrough",
     "substitution",
 ]
 
@@ -168,6 +165,7 @@ ogp_custom_meta_tags = [
     '<meta property="twitter:site" content="@geojulien" />',
     f'<meta property="twitter:title" content="{project}" />',
 ]
+
 
 # -- Options for Sphinx API doc ----------------------------------------------
 # run api doc

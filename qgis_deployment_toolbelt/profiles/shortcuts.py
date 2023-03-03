@@ -45,9 +45,12 @@ from qgis_deployment_toolbelt.utils.slugger import sluggy
 # logs
 logger = logging.getLogger(__name__)
 
+
 # #############################################################################
 # ########## Classes ###############
 # ##################################
+
+
 class ApplicationShortcut:
     def __init__(
         self,
@@ -87,7 +90,32 @@ class ApplicationShortcut:
         if isinstance(exec_path, (str, Path)):
             self.exec_path = Path(exec_path)
             if not self.exec_path.exists():
-                logger.warning(f"Executable does not exist: {self.exec_path}")
+                # helper to handle common typo error on executable name on Windows
+                if (
+                    self.exec_path.name.endswith("qgis-bin.exe")
+                    and self.exec_path.with_name("qgis-ltr-bin.exe").exists()
+                ):
+                    logger.warning(
+                        f"Executable set does not exist: {self.exec_path} "
+                        f"but {self.exec_path.with_name('qgis-ltr-bin.exe')} does, so "
+                        "this one will be used instead. Check and fix your scenario."
+                    )
+                    self.exec_path = self.exec_path.with_name("qgis-ltr-bin.exe")
+                elif (
+                    self.exec_path.name.endswith("qgis-ltr-bin.exe")
+                    and self.exec_path.with_name("qgis-bin.exe").exists()
+                ):
+                    logger.warning(
+                        f"Executable set does not exist: {self.exec_path} "
+                        f"but {self.exec_path.with_name('qgis-bin.exe')} does, so "
+                        "this one will be used instead. Check and fix your scenario."
+                    )
+                    self.exec_path = self.exec_path.with_name("qgis-bin.exe")
+                else:
+                    logger.warning(
+                        f"Executable does not exist: {self.exec_path}. "
+                        "Shortcuts might not work. Check and fix your scenario."
+                    )
         else:
             raise TypeError(
                 f"exec_path must be a string or pathlib.Path, not {type(exec_path)}"
@@ -191,7 +219,6 @@ class ApplicationShortcut:
         ):
             return icon_path.resolve()
         else:
-
             logger.warning(f"Icon does not exist: {icon_path}")
             return None
 
@@ -249,7 +276,6 @@ class ApplicationShortcut:
 
             return default_value
         else:
-
             logger.warning(
                 f"Unrecognized operating system ({opersys}) so path to the "
                 f"user desktop is using a fallback value: {default_value}"
@@ -345,7 +371,6 @@ class ApplicationShortcut:
 
         # desktop shortcut
         if self.desktop:
-
             self.desktop_path.mkdir(parents=True, exist_ok=True)
 
             # create shortcut

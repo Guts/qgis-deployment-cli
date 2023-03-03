@@ -16,6 +16,61 @@ Unreleased
 
 -->
 
+## 0.18.0 - 2023-03-02
+
+### Bugs fixes 🐛
+
+* Fix message when there is no newer version by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/205>
+
+### Features and enhancements 🎉
+
+* Add helper to handle common error on exe name by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/206>
+* Feature: job to manage environment variables now handles `remove` action by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/199>
+
+### Documentation 📖
+
+* Add doc page about environment variable job by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/198>
+
+## 0.17.0 - 2023-02-28
+
+A version focused on refacto to reduce external dependencies.
+
+### Features and enhancements 🎉
+
+* Refacto: clean up rm unused subcmd by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/192>
+* Refacto: replace click by argparse by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/194>
+* Refacto: remove dependency to py-setenv by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/196>
+* Refacto: remove rich dependency by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/197>
+
+### Tooling 🔧
+
+* Packaging: build and package for MacOS (experimental) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/195>
+
+## 0.16.2 - 2023-02-23
+
+### Bugs fixes 🐛
+
+* Fix QGIS bin path retriever by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/191>
+
+### Features and enhancements 🎉
+
+* Tooling and documentation: JSON schema for profile editing by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/187>
+
+### Documentation 📖
+
+* Documentation: fix build and switch to Furo theme by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/188>
+
+## 0.16.1 - 2023-01-30
+
+### Bugs fixes 🐛
+
+* Embed shortcut template into packages by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/181>
+
+### Features and enhancements 🎉
+
+* Tooling: upgrade JSON schemas by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/180>
+* Feature: upgrade show changelog by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/179>
+
 ## 0.16.0 - 2023-01-27
 
 ### Features and enhancements 🎉

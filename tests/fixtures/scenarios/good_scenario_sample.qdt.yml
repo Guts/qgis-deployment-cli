@@ -21,10 +21,14 @@ steps:
   - name: Set environment variables
     uses: manage-env-vars
     with:
-      - PYQGIS_STARTUP:
+      - name: PYQGIS_STARTUP
+        action: "add"
         value: "~/scripts/qgis_startup.py"
         scope: "user"
+      - name: QDT_TEST_FAKE_ENV_VAR_BOOL
         action: "add"
+        value: true
+        scope: "user"
 
   - name: Synchronize QGIS profiles from remote location
     uses: qprofiles-manager

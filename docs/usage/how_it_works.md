@@ -1,4 +1,4 @@
-# How it works
+# How does it works
 
 > TO DOC
 

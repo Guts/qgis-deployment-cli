@@ -20,6 +20,7 @@ from sys import platform as opersys
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.exceptions import SplashScreenBadDimensions
+from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.utils.check_image_size import check_image_dimensions
 from qgis_deployment_toolbelt.utils.win32utils import normalize_path
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-class JobSplashScreenManager:
+class JobSplashScreenManager(GenericJob):
     """
     Job to set-up splash screen for QGIS profile.
     """
@@ -94,7 +95,6 @@ class JobSplashScreenManager:
 
         if self.options.get("action") in ("create", "create_or_restore"):
             for profile_dir in li_installed_profiles_path:
-
                 # default absolute splash screen path
                 splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
 
@@ -172,7 +172,6 @@ class JobSplashScreenManager:
                 )
         elif self.options.get("action") == "remove":
             for profile_dir in li_installed_profiles_path:
-
                 # default absolute splash screen path
                 splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
 
@@ -431,48 +430,6 @@ class JobSplashScreenManager:
                 f"{option} is DISABLED in {qgiscustomization3ini_filepath}"
             )
             return False
-
-    def validate_options(self, options: dict) -> bool:
-        """Validate options.
-
-        :param dict options: options to validate.
-        :return bool: True if options are valid.
-        """
-        for option in options:
-            if option not in self.OPTIONS_SCHEMA:
-                raise Exception(
-                    f"Job: {self.ID}. Option '{option}' is not valid."
-                    f" Valid options are: {self.OPTIONS_SCHEMA.keys()}"
-                )
-
-            option_in = options.get(option)
-            option_def: dict = self.OPTIONS_SCHEMA.get(option)
-            # check value type
-            if not isinstance(option_in, option_def.get("type")):
-                raise Exception(
-                    f"Job: {self.ID}. Option '{option}' has an invalid value."
-                    f"\nExpected {option_def.get('type')}, got {type(option_in)}"
-                )
-            # check value condition
-            if option_def.get("condition") == "startswith" and not option_in.startswith(
-                option_def.get("possible_values")
-            ):
-                raise Exception(
-                    f"Job: {self.ID}. Option '{option}' has an invalid value."
-                    "\nExpected: starts with one of: "
-                    f"{', '.join(option_def.get('possible_values'))}"
-                )
-            elif option_def.get(
-                "condition"
-            ) == "in" and option_in not in option_def.get("possible_values"):
-                raise Exception(
-                    f"Job: {self.ID}. Option '{option}' has an invalid value."
-                    f"\nExpected: one of: {', '.join(option_def.get('possible_values'))}"
-                )
-            else:
-                pass
-
-        return options
 
 
 # #############################################################################

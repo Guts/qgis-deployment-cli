@@ -9,7 +9,6 @@
 import logging
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlsplit
 from urllib.request import (
     ProxyHandler,
     Request,

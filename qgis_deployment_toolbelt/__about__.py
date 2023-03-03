@@ -21,7 +21,7 @@ __all__ = [
 __author__ = "Julien Moura (Oslandia), Vincent Bré (Oslandia)"
 __copyright__ = "2021 - {0}, {1}".format(date.today().year, __author__)
 __email__ = "qgis@oslandia.com"
-__executable_name__ = "QGIS_DeploymentCLI.exe"
+__executable_name__ = "qgis-deployment-toolbelt"
 __package_name__ = "qgis-deployment-toolbelt"
 __keywords__ = ["cli, QGIS, deployment, profiles"]
 __license__ = "GNU Lesser General Public License v3.0"
@@ -36,7 +36,7 @@ __uri_repository__ = "https://github.com/Guts/qgis-deployment-cli/"
 __uri_tracker__ = f"{__uri_repository__}issues/"
 __uri__ = __uri_repository__
 
-__version__ = "0.16.1"
+__version__ = "0.18.0"
 __version_info__ = tuple(
     [
         int(num) if num.isdigit() else num
