@@ -13,7 +13,7 @@
 # Standard library
 import argparse
 import logging
-from os import environ
+from os import environ, getenv
 from pathlib import Path
 
 # submodules
@@ -50,7 +50,7 @@ def parser_main_deployment(
         "-s",
         "--scenario",
         help="Emplacement du fichier local.",
-        default=Path("./scenario.qdt.yml"),
+        default=getenv("QDT_SCENARIO_PATH", Path("./scenario.qdt.yml")),
         type=Path,
         dest="scenario_filepath",
     )
@@ -108,9 +108,11 @@ def run(args: argparse.Namespace):
         else:
             logger.debug(f"Ignored None value: {var}.")
 
-    logger.info(
-        f"QDT working folder: {get_qdt_working_directory(specific_value=scenario.settings.get('LOCAL_QDT_WORKDIR'), identifier=scenario.metadata.get('id'))}"
+    qdt_local_working_folder = get_qdt_working_directory(
+        specific_value=scenario.settings.get("LOCAL_QDT_WORKDIR"),
+        identifier=scenario.metadata.get("id"),
     )
+    logger.info(f"QDT working folder: " f"{qdt_local_working_folder}")
 
     # -- STEPS JOBS
     steps_ok = []

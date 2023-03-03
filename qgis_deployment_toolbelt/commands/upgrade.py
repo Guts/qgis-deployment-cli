@@ -14,6 +14,7 @@
 import argparse
 import json
 import logging
+from os import getenv
 from pathlib import Path
 from sys import platform as opersys
 from urllib.parse import urlsplit, urlunsplit
@@ -31,6 +32,7 @@ from qgis_deployment_toolbelt.utils.bouncer import (
     exit_cli_success,
 )
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
+from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # #############################################################################
 # ########## Globals ###############
@@ -124,7 +126,7 @@ def parser_upgrade(
         "-c",
         "--check-only",
         help="Only check if a new version is available. No download.",
-        default=False,
+        default=str2bool(getenv("QDT_UPGRADE_CHECK_ONLY", False)),
         action="store_true",
         dest="opt_only_check",
     )
@@ -133,7 +135,7 @@ def parser_upgrade(
         "-n",
         "--dont-show-release-notes",
         help="Display release notes.",
-        default=True,
+        default=str2bool(getenv("QDT_UPGRADE_DISPLAY_RELEASE_NOTES", True)),
         action="store_false",
         dest="opt_show_release_notes",
     )
@@ -142,7 +144,7 @@ def parser_upgrade(
         "-w",
         "--where",
         help="Folder to store the downloaded file.",
-        default="./",
+        default=getenv("QDT_UPGRADE_DOWNLOAD_FOLDER", "./"),
         type=Path,
         dest="local_download_folder",
     )
@@ -190,10 +192,9 @@ def run(args: argparse.Namespace):
             )
     else:
         exit_msg = (f"You already have the latest released version: {latest_version}.",)
-        print(exit_msg)
         exit_cli_normal(
             message=exit_msg,
-            abort=False,
+            abort=True,
         )
 
     # -- DOWNLOAD ------------------------------------------------------------
