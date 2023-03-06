@@ -21,6 +21,16 @@ Sample job configuration in your scenario file:
 
 ----
 
+## Vocabulary
+
+### Profiles states
+
+- `remote`: a profile stored outside the end-user computer, on a git repository, an HTTP server or a LAN drive. Typically: `https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git`.
+- `downloaded`: a profile downloaded into teh QDT local working folder. Typically: `~/.cache/qgis-deployment-toolbelt/Oslandia/`.
+- `installed`: a profile installed into the QGIS and so accessible to the end-user through the QGIS interface. Typically: `/home/jmo/.local/share/QGIS/QGIS3/profiles/geotribu`
+
+----
+
 ## Options
 
 ### branch
