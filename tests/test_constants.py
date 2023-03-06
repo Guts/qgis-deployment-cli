@@ -59,12 +59,12 @@ class TestConstants(unittest.TestCase):
         )
 
         # using environment variable
-        environ["QDT_LOCAL_QDT_WORKDIR"] = "~/.cache/qdt/unit-tests-env-var/"
+        environ["QDT_LOCAL_WORK_DIR"] = "~/.cache/qdt/unit-tests-env-var/"
         self.assertEqual(
             constants.get_qdt_working_directory(),
             Path(Path.home(), ".cache/qdt/unit-tests-env-var/"),
         )
-        unsetenv("QDT_LOCAL_QDT_WORKDIR")
+        unsetenv("QDT_LOCAL_WORK_DIR")
 
 
 # ############################################################################
