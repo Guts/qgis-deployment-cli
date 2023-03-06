@@ -22,6 +22,7 @@ from typing import Tuple
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles import RemoteGitHandler
+from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 
 # #############################################################################
 # ########## Globals ###############
@@ -284,8 +285,39 @@ class JobProfilesDownloader(GenericJob):
         Args:
             profiles_folder_to_copy (Tuple[Path]): _description_
         """
-        for d in profiles_folder_to_copy:
-            print(d)
+        for downloaded_profile_folder in profiles_folder_to_copy:
+            print(downloaded_profile_folder)
+            installed_profile_folder = Path(
+                self.qgis_profiles_path, downloaded_profile_folder.name
+            )
+            print(installed_profile_folder)
+
+            if Path(downloaded_profile_folder, "profile.json").is_file():
+                profile_downloaded: QdtProfile = QdtProfile.from_json(
+                    profile_json_path=Path(downloaded_profile_folder, "profile.json"),
+                    profile_folder=downloaded_profile_folder,
+                )
+                print(profile_downloaded.version)
+            else:
+                logger.error(
+                    "Unable to load profile.json from downloaded profile "
+                    f"{downloaded_profile_folder}, so it's impossible to compare "
+                    "versions."
+                )
+                continue
+
+            if Path(installed_profile_folder, "profile.json").is_file():
+                profile_installed: QdtProfile = QdtProfile.from_json(
+                    profile_json_path=Path(installed_profile_folder, "profile.json"),
+                    profile_folder=installed_profile_folder,
+                )
+                print(profile_installed.version)
+            else:
+                logger.error(
+                    "Unable to load profile.json from installed profile "
+                    f"{installed_profile_folder}, so it's impossible to compare "
+                    "versions."
+                )
 
     def sync_overwrite_local_profiles(
         self, profiles_folder_to_copy: Tuple[Path]
