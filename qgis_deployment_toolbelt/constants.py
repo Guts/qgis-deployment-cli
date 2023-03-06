@@ -51,8 +51,8 @@ def get_qdt_working_directory(
     """
     if specific_value:
         return Path(expandvars(expanduser(specific_value)))
-    elif getenv("QDT_PROFILES_PATH"):
-        return Path(expandvars(expanduser(getenv("QDT_PROFILES_PATH"))))
+    elif getenv("QDT_LOCAL_QDT_WORKDIR"):
+        return Path(expandvars(expanduser(getenv("QDT_LOCAL_QDT_WORKDIR"))))
     else:
         return Path(
             expandvars(
