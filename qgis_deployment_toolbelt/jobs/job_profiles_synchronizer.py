@@ -97,8 +97,9 @@ class JobProfilesDownloader(GenericJob):
     def __init__(self, options: dict) -> None:
         """Instantiate the class.
 
-        :param dict options: profiles source (remote, can be a local network) and
-        destination (local).
+        Args:
+            options (List[dict]): list of dictionary with environment variables to set
+            or remove.
         """
         self.options: dict = self.validate_options(options)
 
@@ -107,20 +108,13 @@ class JobProfilesDownloader(GenericJob):
         logger.debug(f"Working folder: {self.qdt_working_folder}")
 
         # profile folder
-        if opersys not in OS_CONFIG:
-            raise OSError(
-                f"Your operating system {opersys} is not supported. "
-                f"Supported platforms: {','.join(OS_CONFIG.keys())}."
-            )
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
         if not self.qgis_profiles_path.exists():
             logger.warning(
                 f"QGIS profiles folder not found: {self.qgis_profiles_path}. "
                 "Creating it to properly run the job."
             )
-            self.qgis_profiles_path.mkdir(parents=True)
-
-        # TODO: handle custom profiles folder through QGIS_CUSTOM_CONFIG_PATH
+            self.qgis_profiles_path.mkdir(exist_ok=True, parents=True)
 
         # list installed profiles
         self.PROFILES_NAMES_INSTALLED = [
@@ -163,14 +157,17 @@ class JobProfilesDownloader(GenericJob):
         )
 
         # copy profiles to the QGIS 3
-        self.sync_local_profiles(source_profiles_folder=profiles_folders)
+        self.sync_qgis_profiles_from_downloaded_profiles(
+            source_profiles_folder=profiles_folders
+        )
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
     def filter_profiles_folder(self) -> Tuple[Path] or None:
         """Parse downloaded folder to filter on QGIS profiles folders.
 
-        :return Tuple[Path] or None: tuple of profiles folders paths
+        Returns:
+            Tuple[Path] or None: tuple of profiles folders paths
         """
         # first, try to get folders containing a profile.json
         qgis_profiles_folder = [
@@ -198,25 +195,23 @@ class JobProfilesDownloader(GenericJob):
             logger.error("No QGIS profile found in the downloaded folder.")
             return None
 
-    def sync_local_profiles(self, source_profiles_folder: Tuple[Path]) -> None:
-        """Copy downloaded profiles to QGIS profiles folder.
-        If the QGIS profiles folder doesn't exist, it will be created and every
-        downloaded profile will be copied.
-        If a profile is already installed, it won't be overwritten.
+    def sync_qgis_profiles_from_downloaded_profiles(
+        self, source_profiles_folder: Tuple[Path]
+    ) -> None:
+        """Copy downloaded profiles to QGIS profiles folder. If the QGIS profiles folder
+            doesn't exist, it will be created and every downloaded profile will be
+            copied. If a profile is already installed, it won't be overwritten.
 
-        :param Tuple[Path] source_profiles_folder: list of downloaded profiles folders paths
+        Args:
+            source_profiles_folder (Tuple[Path]): list of downloaded profiles folders paths
         """
         # check if local profiles folder exists or it's empty
-        if not self.qgis_profiles_path.exists() or not any(
-            self.qgis_profiles_path.iterdir()
-        ):
+        if not any(self.qgis_profiles_path.iterdir()):
             logger.info(
                 "The QGIS profiles folder does not exist or is empty: "
                 f"{self.qgis_profiles_path.resolve()}. Probably a fresh install."
                 "Copying downloaded profiles..."
             )
-            # ensure QGIS profiles folder exists
-            self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
 
             # copy all downloaded profiles
             self.sync_overwrite_local_profiles(
@@ -259,7 +254,10 @@ class JobProfilesDownloader(GenericJob):
                         copy_function=copy2,
                         dirs_exist_ok=True,
                     )
-
+        elif self.options.get("sync_mode") == "only_different_version":
+            self.sync_copy_overwrite_only_different_version(
+                profiles_folder_to_copy=source_profiles_folder
+            )
         else:
             logger.debug(
                 "QGIS Profiles folder already exists, it's not empty: "
@@ -278,12 +276,21 @@ class JobProfilesDownloader(GenericJob):
                 dirs_exist_ok=True,
             )
 
+    def sync_copy_overwrite_only_different_version(
+        self, profiles_folder_to_copy: Tuple[Path]
+    ) -> None:
+        """_summary_
+
+        Args:
+            profiles_folder_to_copy (Tuple[Path]): _description_
+        """
+        for d in profiles_folder_to_copy:
+            print(d)
+
     def sync_overwrite_local_profiles(
         self, profiles_folder_to_copy: Tuple[Path]
     ) -> None:
         """Overwrite local profiles with downloaded ones."""
-        # ensure QGIS profiles folder exists
-        self.qgis_profiles_path.mkdir(parents=True, exist_ok=True)
         # copy downloaded profiles into this
         for d in profiles_folder_to_copy:
             copytree(
