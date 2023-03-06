@@ -16,6 +16,22 @@ Unreleased
 
 -->
 
+## 0.19.0 - 2023-03-03
+
+### Features and enhancements 🎉
+
+* Refacto: remove unused modules (dead code) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/207>
+* Improve: test coverage bouncer by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/209>
+* Switch to a generic Job object with inheritance by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/208>
+* Clean up: rm former validations methods by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/210>
+* Tooling: add ruff to git hooks by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/211>
+* Feature: use environment variables to set arguments values by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/215>
+* Feature: support remote scenario path by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/216>
+
+### Documentation 📖
+
+* Documentation: add how to grab a plugin_id by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/214>
+
 ## 0.18.0 - 2023-03-02
 
 ### Bugs fixes 🐛

@@ -13,15 +13,17 @@
 # Standard library
 import argparse
 import logging
-from os import environ
+from os import environ, getenv
 from pathlib import Path
 
-# submodules
 from qgis_deployment_toolbelt.constants import get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
 from qgis_deployment_toolbelt.utils.check_path import check_path
+
+# submodules
+from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 
 # #############################################################################
 # ########## Globals ###############
@@ -50,8 +52,8 @@ def parser_main_deployment(
         "-s",
         "--scenario",
         help="Emplacement du fichier local.",
-        default=Path("./scenario.qdt.yml"),
-        type=Path,
+        default=getenv("QDT_SCENARIO_PATH", Path("./scenario.qdt.yml")),
+        type=str,
         dest="scenario_filepath",
     )
 
@@ -73,6 +75,15 @@ def run(args: argparse.Namespace):
     """
     logger.debug(f"Running {args.command} with {args}")
 
+    # check if scenario file is local or remote
+    if isinstance(args.scenario_filepath, str) and args.scenario_filepath.startswith(
+        ("http",)
+    ):
+        args.scenario_filepath = download_remote_file_to_local(
+            remote_url_to_download=args.scenario_filepath,
+            local_file_path=Path("./downloaded_scenario.qdt.yml"),
+        )
+
     # checks
     check_path(
         input_path=args.scenario_filepath,
@@ -82,7 +93,7 @@ def run(args: argparse.Namespace):
     )
 
     # -- Load and validate scenario --
-    scenario = ScenarioReader(in_yaml=args.scenario_filepath)
+    scenario = ScenarioReader(in_yaml=Path(args.scenario_filepath))
 
     # Check the validity of the scenario
     scenario_validity = scenario.validate_scenario()
@@ -108,9 +119,11 @@ def run(args: argparse.Namespace):
         else:
             logger.debug(f"Ignored None value: {var}.")
 
-    logger.info(
-        f"QDT working folder: {get_qdt_working_directory(specific_value=scenario.settings.get('LOCAL_QDT_WORKDIR'), identifier=scenario.metadata.get('id'))}"
+    qdt_local_working_folder = get_qdt_working_directory(
+        specific_value=scenario.settings.get("LOCAL_QDT_WORKDIR"),
+        identifier=scenario.metadata.get("id"),
     )
+    logger.info(f"QDT working folder: " f"{qdt_local_working_folder}")
 
     # -- STEPS JOBS
     steps_ok = []
