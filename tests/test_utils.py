@@ -16,7 +16,7 @@ from os import environ
 from sys import platform as opersys
 
 # project
-from qgis_deployment_toolbelt.utils import get_proxy_settings, str2bool
+from qgis_deployment_toolbelt.utils import get_proxy_settings
 from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
 
 # ############################################################################
@@ -33,20 +33,6 @@ class TestUtils(unittest.TestCase):
         self.assertIsNone(get_proxy_settings())
         environ["HTTP_PROXY"] = "http://proxy.example.com:3128"
         self.assertIsInstance(get_proxy_settings(), dict)
-
-    def test_str2bool(self):
-        """Test str2bool."""
-        # OK
-        self.assertTrue(str2bool("True"))
-        self.assertFalse(str2bool("False", raise_exc=True))
-        self.assertIsNone(str2bool("faux", raise_exc=False))
-
-        # KO
-        with self.assertRaises(TypeError):
-            str2bool(value=1)
-
-        with self.assertRaises(ValueError):
-            str2bool(value="vrai", raise_exc=True)
 
     @unittest.skipIf(opersys != "win32", "Test specific to Windows.")
     def test_win32_getenv(self):

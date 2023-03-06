@@ -29,6 +29,13 @@ with open(HERE / "requirements/base.txt") as f:
         if not line.startswith(("#", "-")) and len(line)
     ]
 
+with open(HERE / "requirements/development.txt") as f:
+    dev_requirements = [
+        line
+        for line in f.read().splitlines()
+        if not line.startswith(("#", "-")) and len(line)
+    ]
+
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
@@ -66,6 +73,9 @@ setup(
     ),
     include_package_data=True,
     install_requires=requirements,
+    extras_require={
+        "dev": dev_requirements,
+    },
     entry_points={
         "console_scripts": [
             f"{__about__.__executable_name__}=qgis_deployment_toolbelt.cli:main",
