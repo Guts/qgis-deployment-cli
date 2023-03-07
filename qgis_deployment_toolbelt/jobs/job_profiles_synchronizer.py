@@ -210,6 +210,7 @@ class JobProfilesDownloader(GenericJob):
         Args:
             downloaded_profiles (tuple[QdtProfile]): list of downloaded profiles objects
         """
+        logger.debug(f"Sync mode: {self.options.get('sync_mode')}.")
         # if local profiles folder exists or it's empty -> copy downloaded profiles
         if not self.qgis_profiles_path.exists() or not any(
             self.qgis_profiles_path.iterdir()
@@ -264,6 +265,13 @@ class JobProfilesDownloader(GenericJob):
             #     profiles_folder_to_copy=downloaded_profiles
             # )
             pass
+        elif self.options.get("sync_mode") == "overwrite":
+            logger.debug(
+                "Installed profiles are going to be overridden by downloaded ones."
+            )
+            # copy all downloaded profiles
+            self.sync_overwrite_local_profiles(profiles_to_copy=downloaded_profiles)
+
         else:
             logger.debug(
                 "QGIS Profiles folder already exists, it's not empty: "
@@ -352,12 +360,12 @@ class JobProfilesDownloader(GenericJob):
         """Overwrite local profiles with downloaded ones.
 
         Args:
-            profiles_to_copy (tuple[QdtProfile]): _description_
+            profiles_to_copy (tuple[QdtProfile]): tuple of profiles to copy
         """
 
         # copy downloaded profiles into this
         for d in profiles_to_copy:
-            print(d.folder, d.path_in_qgis)
+            logger.info(f"Copying {d.folder} to {d.path_in_qgis}")
             copytree(
                 d.folder,
                 d.path_in_qgis,
