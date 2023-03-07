@@ -16,7 +16,8 @@ import logging
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
-from typing import Iterable, Tuple
+from typing import Tuple
+from collections.abc import Iterable
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
@@ -197,7 +198,7 @@ class JobProfilesDownloader(GenericJob):
             return None
 
     def sync_qgis_profiles_from_downloaded_profiles(
-        self, source_profiles_folder: Tuple[Path]
+        self, source_profiles_folder: tuple[Path]
     ) -> None:
         """Copy downloaded profiles to QGIS profiles folder. If the QGIS profiles folder
             doesn't exist, it will be created and every downloaded profile will be
@@ -266,7 +267,7 @@ class JobProfilesDownloader(GenericJob):
                 f"{self.qgis_profiles_path.resolve()}"
             )
 
-    def sync_copy_only_missing(self, profiles_folder_to_copy: Tuple[Path]) -> None:
+    def sync_copy_only_missing(self, profiles_folder_to_copy: tuple[Path]) -> None:
         """Copy only missing profiles from downloaded ones to QGIS profiles folder to
         local destination."""
         # copy downloaded profiles into this
@@ -343,7 +344,7 @@ class JobProfilesDownloader(GenericJob):
         return li_profiles_outdated, li_profiles_different, li_profiles_equal
 
     def sync_overwrite_local_profiles(
-        self, profiles_folder_to_copy: Tuple[Path]
+        self, profiles_folder_to_copy: tuple[Path]
     ) -> None:
         """Overwrite local profiles with downloaded ones."""
         # copy downloaded profiles into this
