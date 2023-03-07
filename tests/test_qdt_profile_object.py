@@ -71,6 +71,34 @@ class TestQdtProfile(unittest.TestCase):
             # attributes values
             self.assertEqual(i.parent.resolve(), qdt_profile.folder)
 
+    def test_profile_versions_comparison_semver(self):
+        """Test profile compare versions semver"""
+        profile_v1: QdtProfile = QdtProfile(
+            alias="Unit Test lesser",
+            name="unit_test_1",
+            version="1.0.0",
+        )
+
+        profile_v2: QdtProfile = QdtProfile(
+            alias="Unit Test lesser",
+            name="unit_test_1",
+            version="1.1.0",
+        )
+
+        profile_v3: QdtProfile = QdtProfile(
+            alias="Unit Test lesser",
+            name="unit_test_1",
+            version="3.1.0",
+        )
+
+        self.assertTrue(profile_v1.is_older_than(profile_v2.version))
+        self.assertTrue(profile_v1.is_older_than(profile_v2))
+        self.assertTrue(profile_v1.is_older_than(profile_v3.version))
+        self.assertTrue(profile_v1.is_older_than(profile_v3))
+        self.assertTrue(profile_v2.is_older_than(profile_v3.version))
+        self.assertTrue(profile_v2.is_older_than(profile_v3))
+        self.assertFalse(profile_v2.is_older_than(profile_v1))
+
 
 # ############################################################################
 # ####### Stand-alone run ########
