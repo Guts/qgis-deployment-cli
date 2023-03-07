@@ -13,11 +13,10 @@
 
 # Standard library
 import logging
+from collections.abc import Iterable
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
-from typing import Tuple
-from collections.abc import Iterable
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
@@ -52,6 +51,13 @@ class JobProfilesDownloader(GenericJob):
             "possible_values": ("download", "refresh"),
             "condition": "in",
         },
+        "branch": {
+            "type": str,
+            "required": False,
+            "default": "master",
+            "possible_values": None,
+            "condition": None,
+        },
         "local_destination": {
             "type": str,
             "required": False,
@@ -65,13 +71,6 @@ class JobProfilesDownloader(GenericJob):
             "default": "http",
             "possible_values": ("http", "git", "copy"),
             "condition": "in",
-        },
-        "branch": {
-            "type": str,
-            "required": False,
-            "default": "master",
-            "possible_values": None,
-            "condition": None,
         },
         "source": {
             "type": str,
@@ -159,23 +158,27 @@ class JobProfilesDownloader(GenericJob):
         )
 
         # copy profiles to the QGIS 3
-        self.sync_qgis_profiles_from_downloaded_profiles(
-            source_profiles_folder=profiles_folders
+        self.sync_installed_profiles_from_downloaded_profiles(
+            downloaded_profiles=profiles_folders
         )
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
-    def filter_profiles_folder(self) -> tuple[Path] or None:
+    def filter_profiles_folder(self) -> tuple[QdtProfile]:
         """Parse downloaded folder to filter on QGIS profiles folders.
 
         Returns:
-            tuple[Path] or None: tuple of profiles folders paths
+            tuple[QdtProfile]: tuple of profiles objects
         """
         # first, try to get folders containing a profile.json
         qgis_profiles_folder = [
-            f.parent for f in self.qdt_working_folder.glob("**/profile.json")
+            QdtProfile.from_json(profile_json_path=f, profile_folder=f.parent)
+            for f in self.qdt_working_folder.glob("**/profile.json")
         ]
         if len(qgis_profiles_folder):
+            logger.debug(
+                f"{len(qgis_profiles_folder)} profiles found within {self.qdt_working_folder}"
+            )
             return tuple(qgis_profiles_folder)
 
         # if empty, try to identify if a folder is a QGIS profile - but unsure
@@ -185,7 +188,7 @@ class JobProfilesDownloader(GenericJob):
                 and d.parent.name == "profiles"
                 and not d.name.startswith(".")
             ):
-                qgis_profiles_folder.append(d)
+                qgis_profiles_folder.append(QdtProfile(folder=d, name=d.name))
 
         if len(qgis_profiles_folder):
             return tuple(qgis_profiles_folder)
@@ -197,28 +200,28 @@ class JobProfilesDownloader(GenericJob):
             logger.error("No QGIS profile found in the downloaded folder.")
             return None
 
-    def sync_qgis_profiles_from_downloaded_profiles(
-        self, source_profiles_folder: tuple[Path]
+    def sync_installed_profiles_from_downloaded_profiles(
+        self, downloaded_profiles: tuple[QdtProfile]
     ) -> None:
         """Copy downloaded profiles to QGIS profiles folder. If the QGIS profiles folder
             doesn't exist, it will be created and every downloaded profile will be
             copied. If a profile is already installed, it won't be overwritten.
 
         Args:
-            source_profiles_folder (Tuple[Path]): list of downloaded profiles folders paths
+            downloaded_profiles (tuple[QdtProfile]): list of downloaded profiles objects
         """
-        # check if local profiles folder exists or it's empty
-        if not any(self.qgis_profiles_path.iterdir()):
+        # if local profiles folder exists or it's empty -> copy downloaded profiles
+        if not self.qgis_profiles_path.exists() or not any(
+            self.qgis_profiles_path.iterdir()
+        ):
             logger.info(
                 "The QGIS profiles folder does not exist or is empty: "
-                f"{self.qgis_profiles_path.resolve()}. Probably a fresh install."
+                f"{self.qgis_profiles_path.resolve()}. Probably a fresh install. "
                 "Copying downloaded profiles..."
             )
 
             # copy all downloaded profiles
-            self.sync_overwrite_local_profiles(
-                profiles_folder_to_copy=source_profiles_folder
-            )
+            self.sync_overwrite_local_profiles(profiles_to_copy=downloaded_profiles)
 
         elif (
             len(
@@ -243,7 +246,7 @@ class JobProfilesDownloader(GenericJob):
                 f"Not installed: {','.join(not_installed)}."
             )
 
-            for d in source_profiles_folder:
+            for d in downloaded_profiles:
                 if d.name in not_installed:
                     # create destination parent folder
                     to_profile_parent_folderpath = Path(
@@ -258,7 +261,7 @@ class JobProfilesDownloader(GenericJob):
                     )
         elif self.options.get("sync_mode") == "only_different_version":
             # self.sync_copy_overwrite_only_different_version(
-            #     profiles_folder_to_copy=source_profiles_folder
+            #     profiles_folder_to_copy=downloaded_profiles
             # )
             pass
         else:
@@ -344,14 +347,20 @@ class JobProfilesDownloader(GenericJob):
         return li_profiles_outdated, li_profiles_different, li_profiles_equal
 
     def sync_overwrite_local_profiles(
-        self, profiles_folder_to_copy: tuple[Path]
+        self, profiles_to_copy: tuple[QdtProfile]
     ) -> None:
-        """Overwrite local profiles with downloaded ones."""
+        """Overwrite local profiles with downloaded ones.
+
+        Args:
+            profiles_to_copy (tuple[QdtProfile]): _description_
+        """
+
         # copy downloaded profiles into this
-        for d in profiles_folder_to_copy:
+        for d in profiles_to_copy:
+            print(d.folder, d.path_in_qgis)
             copytree(
-                d,
-                self.qgis_profiles_path,
+                d.folder,
+                d.path_in_qgis,
                 copy_function=copy2,
                 dirs_exist_ok=True,
             )
