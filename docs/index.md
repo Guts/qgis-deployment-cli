@@ -48,4 +48,5 @@ maxdepth: 1
 ---
 misc/compatibility
 misc/credits
+misc/funding
 ```

@@ -42,6 +42,7 @@ extensions = [
     "myst_parser",
     "sphinx_argparse_cli",
     "sphinx_copybutton",
+    "sphinx_design",
     "sphinxext.opengraph",
 ]
 
@@ -92,7 +93,11 @@ pygments_style = "sphinx"
 # html_favicon = "static/img/qgis_deployment_toolbelt_logo_200px.png"
 # html_logo = "static/img/qgis_deployment_toolbelt_logo_200px.png"
 html_theme = "furo"
-html_theme_options = {}
+html_theme_options = {
+    "source_repository": __about__.__uri__,
+    "source_branch": "main",
+    "source_directory": "docs/",
+}
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
