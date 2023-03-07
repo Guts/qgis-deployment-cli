@@ -16,6 +16,17 @@ Unreleased
 
 -->
 
+## 0.20.0 - 2023-03-07
+
+### Features and enhancements 🎉
+
+* Tooling: add pyupgrade as git hook by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/218>
+* Profiles synchronization: add sync_mode option by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/97>
+
+### Documentation 📖
+
+* Add funding page by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/217>
+
 ## 0.19.0 - 2023-03-03
 
 ### Features and enhancements 🎉
