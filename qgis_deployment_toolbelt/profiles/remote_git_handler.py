@@ -65,7 +65,7 @@ class RemoteGitHandler:
         """
         return git_parse(self.url)
 
-    def download(self, local_path: Union[str, Path]) -> Repo:
+    def download(self, local_path: str | Path) -> Repo:
         """Generic wrapper around the specific logic of this handler.
 
         :param Union[str, Path] local_path: path to the local folder where to download
@@ -73,11 +73,11 @@ class RemoteGitHandler:
         """
         return self.clone_or_pull(local_path)
 
-    def is_local_path_git_repository(self, local_path: Union[str, Path]) -> bool:
+    def is_local_path_git_repository(self, local_path: str | Path) -> bool:
         """Flag if local folder is a git repository."""
         return Path(local_path / ".git").is_dir()
 
-    def clone_or_pull(self, local_path: Union[str, Path]) -> Repo:
+    def clone_or_pull(self, local_path: str | Path) -> Repo:
         """Clone or pull remote repository to local path. If this one doesn't exist,
         it's created. If fetch or pull action fail, it removes the existing folder and
         clone the remote again.
@@ -132,7 +132,7 @@ class RemoteGitHandler:
             local_path.mkdir(parents=True, exist_ok=True)
             return self.clone_or_pull(local_path)
 
-    def _clone(self, local_path: Union[str, Path]) -> Repo:
+    def _clone(self, local_path: str | Path) -> Repo:
         """Clone the remote repository to local path.
 
         :param Union[str, Path] local_path: path to the folder where to clone
@@ -156,7 +156,7 @@ class RemoteGitHandler:
             )
             return local_repo
 
-    def _fetch(self, local_path: Union[str, Path]) -> Repo:
+    def _fetch(self, local_path: str | Path) -> Repo:
         """Fetch the remote repository from the existing local repository.
 
         :param Union[str, Path] local_path: path to the folder where to fetch
@@ -175,7 +175,7 @@ class RemoteGitHandler:
                 depth=5,
             )
 
-    def _pull(self, local_path: Union[str, Path]) -> Repo:
+    def _pull(self, local_path: str | Path) -> Repo:
         """Pull the remote repository from the existing local repository.
 
         :param Union[str, Path] local_path: path to the folder where to pull

@@ -19,7 +19,7 @@ __all__ = [
 ]
 
 __author__ = "Julien Moura (Oslandia), Vincent Bré (Oslandia)"
-__copyright__ = "2021 - {}, {}".format(date.today().year, __author__)
+__copyright__ = f"2021 - {date.today().year}, {__author__}"
 __email__ = "qgis@oslandia.com"
 __executable_name__ = "qgis-deployment-toolbelt"
 __package_name__ = "qgis-deployment-toolbelt"

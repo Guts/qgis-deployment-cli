@@ -113,7 +113,7 @@ class JobPluginsSynchronizer(GenericJob):
     def run(self) -> None:
         """Execute job logic."""
 
-        profile_plugins_to_create: List[Tuple[QdtProfile, QgisPlugin, Path]] = []
+        profile_plugins_to_create: list[tuple[QdtProfile, QgisPlugin, Path]] = []
         profile_plugins_to_restore = []
         profile_plugins_to_upgrade = []
 
@@ -213,7 +213,7 @@ class JobPluginsSynchronizer(GenericJob):
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def install_plugin_into_profile(
-        self, list_plugins_to_profiles: List[Tuple[QdtProfile, QgisPlugin, Path]]
+        self, list_plugins_to_profiles: list[tuple[QdtProfile, QgisPlugin, Path]]
     ):
         """Unzip downloaded plugins into the matching profiles.
 

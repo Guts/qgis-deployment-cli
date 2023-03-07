@@ -75,14 +75,14 @@ class JobEnvironmentVariables(GenericJob):
         },
     }
 
-    def __init__(self, options: List[dict]) -> None:
+    def __init__(self, options: list[dict]) -> None:
         """Instantiate the class.
 
         Args:
             options (List[dict]): list of dictionary with environment variables to set
             or remove.
         """
-        self.options: List[dict] = [self.validate_options(opt) for opt in options]
+        self.options: list[dict] = [self.validate_options(opt) for opt in options]
 
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""

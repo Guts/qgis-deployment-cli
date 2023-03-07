@@ -59,13 +59,13 @@ class JobsOrchestrator:
         pass
 
     @property
-    def available_jobs(self) -> List[Path]:
+    def available_jobs(self) -> list[Path]:
         """List all available jobs."""
         # job modules
         return list(Path(__file__).parent.glob("job_*.py"))
 
     @property
-    def jobs_ids(self) -> Tuple[str]:
+    def jobs_ids(self) -> tuple[str]:
         """Returns available jobs ID.
 
         :return Tuple[str]: jobs ids

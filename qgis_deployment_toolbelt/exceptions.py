@@ -4,7 +4,7 @@
 
 # standard library
 from pathlib import Path
-from typing import Iterable
+from collections.abc import Iterable
 
 # package
 from qgis_deployment_toolbelt.utils.check_image_size import get_image_size

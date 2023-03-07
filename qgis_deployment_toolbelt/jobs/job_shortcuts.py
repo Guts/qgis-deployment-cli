@@ -187,7 +187,7 @@ class JobShortcutsManager(GenericJob):
                 )
                 return path_normal_case
 
-    def get_qgis_path(self, qgis_bin_exe_path: str) -> Union[Path, None]:
+    def get_qgis_path(self, qgis_bin_exe_path: str) -> Path | None:
         """Try to get qgis path.
 
         :param str qgis_bin_exe_path: qgis path as mentioned into the scenario file
@@ -199,7 +199,7 @@ class JobShortcutsManager(GenericJob):
         else:
             return self.os_config.get_qgis_bin_path
 
-    def get_icon_path(self, icon: str, profile_name: str) -> Union[Path, None]:
+    def get_icon_path(self, icon: str, profile_name: str) -> Path | None:
         """Try to get icon path.
 
         First, check that an icon key has been specified in the scenario file;
@@ -248,7 +248,7 @@ class JobShortcutsManager(GenericJob):
 
         return None
 
-    def get_arguments_ready(self, profile: str, in_arguments: str = None) -> Tuple[str]:
+    def get_arguments_ready(self, profile: str, in_arguments: str = None) -> tuple[str]:
         """Prepare arguments for the executable shortcut.
 
         :param list in_arguments: argument as defined in the scenario file

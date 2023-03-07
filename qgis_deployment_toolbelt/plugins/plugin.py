@@ -252,7 +252,7 @@ class QgisPlugin:
         else:
             return sluggy(self.name)
 
-    def is_older_than(self, version_to_compare: Union[str, Self]) -> bool:
+    def is_older_than(self, version_to_compare: str | Self) -> bool:
         """Determine if the actual object version is older than the given version to \
             compare.
 

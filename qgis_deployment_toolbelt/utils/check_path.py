@@ -53,7 +53,7 @@ def check_var_can_be_path(input_var: str, raise_error: bool = True) -> bool:
             return False
 
 
-def check_path_exists(input_path: Union[str, Path], raise_error: bool = True) -> bool:
+def check_path_exists(input_path: str | Path, raise_error: bool = True) -> bool:
     """Check if the input path (file or folder) exists.
 
     Args:
@@ -154,7 +154,7 @@ def check_path_is_writable(input_path: Path, raise_error: bool = True) -> bool:
 
 
 def check_path(
-    input_path: Union[str, Path],
+    input_path: str | Path,
     must_exists: bool = True,
     must_be_readable: bool = True,
     must_be_writable: bool = False,
