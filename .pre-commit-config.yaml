@@ -44,6 +44,14 @@ repos:
         types: [python]
         args: ["--config=setup.cfg", "--select=E9,F63,F7,F82"]
 
+  -   repo: https://github.com/asottile/pyupgrade
+      rev: v3.3.1
+      hooks:
+      - id: pyupgrade
+        args:
+          - "--py310-plus"
+
+
 ci:
   autoupdate_schedule: quarterly
   skip: []

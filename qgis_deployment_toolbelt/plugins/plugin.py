@@ -20,7 +20,6 @@ from dataclasses import dataclass, fields
 from enum import Enum
 from pathlib import Path
 from sys import version_info
-from typing import Union
 from urllib.parse import quote, urlsplit, urlunsplit
 
 # 3rd party
@@ -252,7 +251,7 @@ class QgisPlugin:
         else:
             return sluggy(self.name)
 
-    def is_older_than(self, version_to_compare: Union[str, Self]) -> bool:
+    def is_older_than(self, version_to_compare: str | Self) -> bool:
         """Determine if the actual object version is older than the given version to \
             compare.
 

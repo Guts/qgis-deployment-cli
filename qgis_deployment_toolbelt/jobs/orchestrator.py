@@ -15,7 +15,6 @@
 import importlib
 import logging
 from pathlib import Path
-from typing import List, Tuple
 
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
     JobEnvironmentVariables,
@@ -59,13 +58,13 @@ class JobsOrchestrator:
         pass
 
     @property
-    def available_jobs(self) -> List[Path]:
+    def available_jobs(self) -> list[Path]:
         """List all available jobs."""
         # job modules
         return list(Path(__file__).parent.glob("job_*.py"))
 
     @property
-    def jobs_ids(self) -> Tuple[str]:
+    def jobs_ids(self) -> tuple[str]:
         """Returns available jobs ID.
 
         :return Tuple[str]: jobs ids

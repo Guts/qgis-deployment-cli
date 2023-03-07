@@ -16,7 +16,6 @@ import logging
 from pathlib import Path
 from shutil import unpack_archive
 from sys import platform as opersys
-from typing import List, Tuple
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
@@ -113,7 +112,7 @@ class JobPluginsSynchronizer(GenericJob):
     def run(self) -> None:
         """Execute job logic."""
 
-        profile_plugins_to_create: List[Tuple[QdtProfile, QgisPlugin, Path]] = []
+        profile_plugins_to_create: list[tuple[QdtProfile, QgisPlugin, Path]] = []
         profile_plugins_to_restore = []
         profile_plugins_to_upgrade = []
 
@@ -213,7 +212,7 @@ class JobPluginsSynchronizer(GenericJob):
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def install_plugin_into_profile(
-        self, list_plugins_to_profiles: List[Tuple[QdtProfile, QgisPlugin, Path]]
+        self, list_plugins_to_profiles: list[tuple[QdtProfile, QgisPlugin, Path]]
     ):
         """Unzip downloaded plugins into the matching profiles.
 

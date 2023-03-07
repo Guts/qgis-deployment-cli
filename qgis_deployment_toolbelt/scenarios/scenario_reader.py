@@ -16,7 +16,6 @@ import logging
 from functools import lru_cache
 from io import BufferedIOBase
 from pathlib import Path
-from typing import List, Tuple, Union
 
 # 3rd party
 import yaml
@@ -42,7 +41,7 @@ class ScenarioReader:
 
     scenario: dict = None
 
-    def __init__(self, in_yaml: Union[str, Path, BufferedIOBase]):
+    def __init__(self, in_yaml: str | Path | BufferedIOBase):
         """Instanciating YAML scenario reader."""
         # check and get YAML path
         if isinstance(in_yaml, (str, Path)):
@@ -58,7 +57,7 @@ class ScenarioReader:
             raise TypeError
 
     # CHECKS
-    def check_yaml_file(self, yaml_path: Union[str, Path]) -> Path:
+    def check_yaml_file(self, yaml_path: str | Path) -> Path:
         """Perform some checks on passed yaml file and load it as Path object.
 
         :param yaml_path: path to the yaml file to check
@@ -80,10 +79,10 @@ class ScenarioReader:
             try:
                 yaml.safe_load_all(in_yaml_file)
             except yaml.YAMLError as exc:
-                logger.error(msg="YAML file is invalid: {}".format(yaml_path.resolve()))
+                logger.error(msg=f"YAML file is invalid: {yaml_path.resolve()}")
                 raise exc
             except Exception as exc:
-                logger.error(msg="Structure of YAML file is incorrect: {}".format(exc))
+                logger.error(msg=f"Structure of YAML file is incorrect: {exc}")
                 raise exc
 
         # return sanitized path
@@ -101,14 +100,14 @@ class ScenarioReader:
         try:
             yaml.safe_load_all(yaml_buffer)
         except yaml.YAMLError as exc:
-            logger.error("Invalid YAML {}. Trace: {}".format(yaml_buffer, exc))
+            logger.error(f"Invalid YAML {yaml_buffer}. Trace: {exc}")
             raise exc
 
         # return sanitized path
         return yaml_buffer
 
     @lru_cache
-    def validate_scenario(self) -> Tuple[bool, List[str]]:
+    def validate_scenario(self) -> tuple[bool, list[str]]:
         """Validate scenario file.
 
         TODO: use json schema to validate scenario file.
@@ -122,7 +121,7 @@ class ScenarioReader:
 
         # outputs
         valid: bool = True
-        report: List[str] = []
+        report: list[str] = []
 
         # check if scenario is a dict
         if not isinstance(self.scenario, dict):
@@ -140,7 +139,7 @@ class ScenarioReader:
 
         # check if metadata is a dict
         if not isinstance(self.metadata, dict):
-            report.append("Metadata is not a dict: {}".format(self.metadata))
+            report.append(f"Metadata is not a dict: {self.metadata}")
             valid = False
 
         return valid, report
@@ -164,7 +163,7 @@ class ScenarioReader:
         return self.scenario.get("settings")
 
     @property
-    def steps(self) -> List[dict]:
+    def steps(self) -> list[dict]:
         """Get steps from scenario.
 
         :returns: steps

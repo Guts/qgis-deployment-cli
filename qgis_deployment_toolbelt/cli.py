@@ -11,7 +11,6 @@
 # Standard library
 import argparse
 import logging
-from typing import List
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import (
@@ -56,7 +55,7 @@ def add_common_arguments(parser_to_update: argparse.ArgumentParser):
 # ############################################################################
 # ########## MAIN ################
 # ################################
-def main(in_args: List[str] = None):
+def main(in_args: list[str] = None):
     """Main CLI entrypoint.
 
     Args:
