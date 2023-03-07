@@ -14,7 +14,6 @@
 import logging
 from os import R_OK, W_OK, access
 from pathlib import Path
-from typing import Union
 
 # #############################################################################
 # ########## Globals ###############
@@ -53,7 +52,7 @@ def check_var_can_be_path(input_var: str, raise_error: bool = True) -> bool:
             return False
 
 
-def check_path_exists(input_path: Union[str, Path], raise_error: bool = True) -> bool:
+def check_path_exists(input_path: str | Path, raise_error: bool = True) -> bool:
     """Check if the input path (file or folder) exists.
 
     Args:
@@ -111,7 +110,7 @@ def check_path_is_readable(input_path: Path, raise_error: bool = True) -> bool:
     if not access(input_path, R_OK):
         error_message = f"{input_path.resolve()} isn't readable."
         if raise_error:
-            raise IOError(error_message)
+            raise OSError(error_message)
         else:
             logger.error(f"{input_path.resolve()} isn't readable.")
             return False
@@ -145,7 +144,7 @@ def check_path_is_writable(input_path: Path, raise_error: bool = True) -> bool:
     if not access(input_path, W_OK):
         error_message = f"{input_path.resolve()} isn't writable."
         if raise_error:
-            raise IOError(error_message)
+            raise OSError(error_message)
         else:
             logger.error(error_message)
             return False
@@ -154,7 +153,7 @@ def check_path_is_writable(input_path: Path, raise_error: bool = True) -> bool:
 
 
 def check_path(
-    input_path: Union[str, Path],
+    input_path: str | Path,
     must_exists: bool = True,
     must_be_readable: bool = True,
     must_be_writable: bool = False,

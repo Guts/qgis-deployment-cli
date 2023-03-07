@@ -17,7 +17,6 @@ import logging
 from os import sep  # required since pathlib strips trailing whitespace
 from pathlib import Path
 from sys import platform as opersys
-from typing import Optional
 
 # Imports depending on operating system
 if opersys == "win32":
@@ -84,7 +83,7 @@ def delete_environment_variable(envvar_name: str, scope: str = "user") -> bool:
         return False
 
 
-def get_environment_variable(envvar_name: str, scope: str = "user") -> Optional[str]:
+def get_environment_variable(envvar_name: str, scope: str = "user") -> str | None:
     """Get environment variable from Windows registry.
 
     Args:

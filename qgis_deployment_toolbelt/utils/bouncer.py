@@ -13,7 +13,6 @@
 # Standard library
 import logging
 import sys
-from typing import Union
 
 # #############################################################################
 # ########## Globals ###############
@@ -27,7 +26,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-def exit_cli_error(message: Union[str, Exception], abort: bool = True):
+def exit_cli_error(message: str | Exception, abort: bool = True):
     """Display error message and stop execution.
 
     Args:
@@ -50,7 +49,7 @@ def exit_cli_error(message: Union[str, Exception], abort: bool = True):
         sys.exit(message)
 
 
-def exit_cli_normal(message: Union[str, Exception], abort: bool = True):
+def exit_cli_normal(message: str | Exception, abort: bool = True):
     """Display normal message and stop execution if required.
 
     Args:
@@ -66,7 +65,7 @@ def exit_cli_normal(message: Union[str, Exception], abort: bool = True):
         sys.exit(0)
 
 
-def exit_cli_success(message: Union[str, Exception], abort: bool = True):
+def exit_cli_success(message: str | Exception, abort: bool = True):
     """Display success message and stop execution ir required.
 
     Args:

@@ -16,7 +16,6 @@ import logging
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
-from typing import Tuple
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
@@ -155,7 +154,7 @@ class JobProfilesDownloader(GenericJob):
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
-    def filter_profiles_folder(self) -> Tuple[Path] or None:
+    def filter_profiles_folder(self) -> tuple[Path] or None:
         """Parse downloaded folder to filter on QGIS profiles folders.
 
         :return Tuple[Path] or None: tuple of profiles folders paths

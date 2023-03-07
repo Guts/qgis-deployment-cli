@@ -17,7 +17,6 @@ import logging
 from pathlib import Path
 from sys import platform as opersys
 from sys import version_info
-from typing import List, Union
 
 # Imports depending on Python version
 if version_info[1] < 11:
@@ -242,7 +241,7 @@ class QdtProfile:
         return self.os_config.profiles_path / self.name
 
     @property
-    def plugins(self) -> List[QgisPlugin]:
+    def plugins(self) -> list[QgisPlugin]:
         """Returns the plugins associated with the profile.
 
         :return List[QgisPlugin]: list of plugins
@@ -253,7 +252,7 @@ class QdtProfile:
             return []
 
     @property
-    def splash(self) -> Union[str, Path]:
+    def splash(self) -> str | Path:
         """Returns the profile splash image as path if can be resolved or as string.
 
         :return str: profile version.

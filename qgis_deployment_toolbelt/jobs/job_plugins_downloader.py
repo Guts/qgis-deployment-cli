@@ -16,7 +16,6 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from sys import platform as opersys
-from typing import List, Tuple
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__
@@ -135,10 +134,10 @@ class JobPluginsDownloader(GenericJob):
 
     def download_plugins(
         self,
-        plugins_to_download: List[QgisPlugin],
+        plugins_to_download: list[QgisPlugin],
         destination_parent_folder: Path,
         threads: int = 5,
-    ) -> Tuple[List[Path], List[Path]]:
+    ) -> tuple[list[Path], list[Path]]:
         """Download listed plugins into the specified folder, using multithreads or not.
 
         Args:
@@ -150,8 +149,8 @@ class JobPluginsDownloader(GenericJob):
         Returns:
             Tuple[List[Path],List[Path]]: tuple of (downloaded plugins, failed downloads)
         """
-        downloaded_plugins: List[QgisPlugin] = []
-        failed_plugins: List[QgisPlugin] = []
+        downloaded_plugins: list[QgisPlugin] = []
+        failed_plugins: list[QgisPlugin] = []
 
         if threads < 2:
             logger.debug(f"Downloading {len(plugins_to_download)} threads.")
@@ -207,7 +206,7 @@ class JobPluginsDownloader(GenericJob):
 
         return downloaded_plugins, failed_plugins
 
-    def list_referenced_plugins(self, parent_folder: Path) -> List[QgisPlugin]:
+    def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin]:
         """Return a list of plugins referenced in profile.json files found within a \
             parent folder and sorted by unique id with version.
 
@@ -218,7 +217,7 @@ class JobPluginsDownloader(GenericJob):
             List[QgisPlugin]: list of plugins referenced within profile.json files
         """
         unique_profiles_identifiers: list = []
-        all_profiles: List[QgisPlugin] = []
+        all_profiles: list[QgisPlugin] = []
 
         profile_json_counter: int = 0
         for profile_json in parent_folder.glob("**/*/profile.json"):
@@ -245,8 +244,8 @@ class JobPluginsDownloader(GenericJob):
         return sorted(all_profiles, key=lambda x: x.id_with_version)
 
     def filter_list_downloadable_plugins(
-        self, input_list: List[QgisPlugin]
-    ) -> List[QgisPlugin]:
+        self, input_list: list[QgisPlugin]
+    ) -> list[QgisPlugin]:
         """Filter input list of plugins keeping only those which are not present within \
             the local QDT plugins folder.
 

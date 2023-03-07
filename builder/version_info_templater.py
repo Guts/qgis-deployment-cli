@@ -106,7 +106,7 @@ def run():
         out_version_file.write_text(template_txt, encoding="UTF8")
 
         # log user
-        print(("Version info written to: {}".format(out_version_file.resolve())))
+        print(f"Version info written to: {out_version_file.resolve()}")
     except KeyboardInterrupt:
         raise SystemExit("Aborted by user request.")
 

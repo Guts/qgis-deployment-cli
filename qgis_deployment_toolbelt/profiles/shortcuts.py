@@ -15,10 +15,10 @@ import logging
 import os
 import re
 import stat
+from collections.abc import Iterable
 from pathlib import Path
 from string import Template
 from sys import platform as opersys
-from typing import Iterable, Tuple, Union
 
 # 3rd party
 
@@ -55,11 +55,11 @@ class ApplicationShortcut:
     def __init__(
         self,
         name: str,
-        exec_path: Union[str, Path],
+        exec_path: str | Path,
         exec_arguments: Iterable[str] = None,
         description: str = None,
-        icon_path: Union[str, Path] = None,
-        work_dir: Union[str, Path] = None,
+        icon_path: str | Path = None,
+        work_dir: str | Path = None,
     ):
         """Initialize a shortcut object.
 
@@ -151,7 +151,7 @@ class ApplicationShortcut:
         self,
         desktop: bool = False,
         start_menu: bool = False,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Creates Shortcut
 
         :param bool desktop: True to generate a Desktop shortcut, defaults to False
@@ -185,8 +185,8 @@ class ApplicationShortcut:
             pass
 
     def check_exec_arguments(
-        self, exec_arguments: Union[Iterable[str], None]
-    ) -> Union[Tuple[str], None]:
+        self, exec_arguments: Iterable[str] | None
+    ) -> tuple[str] | None:
         """Check if exec_arguments are valid.
 
         :param Union[Iterable[str], None] exec_arguments: input executable arguments to check
@@ -198,7 +198,7 @@ class ApplicationShortcut:
         # store as path
         return " ".join(exec_arguments)
 
-    def check_icon_path(self, icon_path: Union[str, Path, None]) -> Union[Path, None]:
+    def check_icon_path(self, icon_path: str | Path | None) -> Path | None:
         """Check icon path and return full path if it exists.
 
         :param Union[str, Path] icon_path: input icon path to check
@@ -222,7 +222,7 @@ class ApplicationShortcut:
             logger.warning(f"Icon does not exist: {icon_path}")
             return None
 
-    def check_work_dir(self, work_dir: Union[str, Path, None]) -> Union[Path, None]:
+    def check_work_dir(self, work_dir: str | Path | None) -> Path | None:
         """Check work dir and return full path if it exists.
 
         :param Union[str, Path] work_dir: input work dir to check
@@ -332,7 +332,7 @@ class ApplicationShortcut:
             return None
 
     # -- PRIVATE --------------------------------------------------------------
-    def freedesktop_create(self) -> Tuple[Union[Path, None], Union[Path, None]]:
+    def freedesktop_create(self) -> tuple[Path | None, Path | None]:
         """Creates shortcut on distributions using FreeDesktop.
 
         :return: desktop and startmenu path
@@ -406,7 +406,7 @@ class ApplicationShortcut:
 
         return (shortcut_desktop_path, shortcut_start_menu_path)
 
-    def win32_create(self) -> Tuple[Union[Path, None], Union[Path, None]]:
+    def win32_create(self) -> tuple[Path | None, Path | None]:
         """Creates shortcut on Windows.
 
         :return: desktop and startmenu path

@@ -20,7 +20,6 @@ from os import PathLike, getenv
 from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import which
-from typing import Tuple
 
 # #############################################################################
 # ########## Globals ###############
@@ -80,8 +79,8 @@ class OSConfiguration:
     profiles_path: Path = getenv("QGIS_CUSTOM_CONFIG_PATH")
     qgis_bin_exe_path: str = None
     shortcut_extension: str = None
-    shortcut_forbidden_chars: Tuple[str] = None
-    shortcut_icon_extensions: Tuple[str] = None
+    shortcut_forbidden_chars: tuple[str] = None
+    shortcut_icon_extensions: tuple[str] = None
 
     @property
     def get_qgis_bin_path(self) -> Path:

@@ -13,7 +13,6 @@
 # Standard library
 import logging
 from os import environ
-from typing import Union
 from urllib.request import getproxies
 
 # #############################################################################
@@ -29,7 +28,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-def get_proxy_settings() -> Union[dict, None]:
+def get_proxy_settings() -> dict | None:
     """Retrieves network proxy settings from operating system configuration or
     environment variables.
 
@@ -47,7 +46,7 @@ def get_proxy_settings() -> Union[dict, None]:
         )
     elif getproxies():
         proxy_settings = getproxies()
-        logger.debug("Proxies settings found in the OS: {}".format(proxy_settings))
+        logger.debug(f"Proxies settings found in the OS: {proxy_settings}")
     else:
         logger.debug("No proxy settings found in environment vars nor OS settings.")
         proxy_settings = None
