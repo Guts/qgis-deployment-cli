@@ -81,7 +81,7 @@ class QgisPlugin:
 
     @classmethod
     def from_dict(cls, input_dict: dict) -> Self:
-        """Create object from a JSON file.
+        """Create object from a dictionary.
 
         Args:
             input_dict (dict): input dictionary
