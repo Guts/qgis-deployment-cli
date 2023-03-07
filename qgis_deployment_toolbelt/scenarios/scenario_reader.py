@@ -16,7 +16,6 @@ import logging
 from functools import lru_cache
 from io import BufferedIOBase
 from pathlib import Path
-from typing import List, Tuple, Union
 
 # 3rd party
 import yaml

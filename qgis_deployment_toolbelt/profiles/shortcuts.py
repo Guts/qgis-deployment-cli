@@ -15,11 +15,10 @@ import logging
 import os
 import re
 import stat
+from collections.abc import Iterable
 from pathlib import Path
 from string import Template
 from sys import platform as opersys
-from typing import Tuple, Union
-from collections.abc import Iterable
 
 # 3rd party
 

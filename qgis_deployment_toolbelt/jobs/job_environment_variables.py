@@ -16,7 +16,6 @@ import logging
 from os.path import expanduser, expandvars
 from pathlib import Path
 from sys import platform as opersys
-from typing import List
 
 # package
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob

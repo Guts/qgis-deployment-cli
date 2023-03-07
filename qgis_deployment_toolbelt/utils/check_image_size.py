@@ -15,7 +15,6 @@ import logging
 import xml.etree.ElementTree as ET
 from decimal import Decimal
 from pathlib import Path
-from typing import Tuple, Union
 
 # 3rd party
 import imagesize

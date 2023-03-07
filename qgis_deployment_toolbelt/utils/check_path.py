@@ -14,7 +14,6 @@
 import logging
 from os import R_OK, W_OK, access
 from pathlib import Path
-from typing import Union
 
 # #############################################################################
 # ########## Globals ###############

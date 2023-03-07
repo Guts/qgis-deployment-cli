@@ -11,7 +11,6 @@
 # Standard library
 import argparse
 import logging
-from typing import List
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import (

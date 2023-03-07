@@ -20,7 +20,6 @@ from dataclasses import dataclass, fields
 from enum import Enum
 from pathlib import Path
 from sys import version_info
-from typing import Union
 from urllib.parse import quote, urlsplit, urlunsplit
 
 # 3rd party

@@ -17,7 +17,6 @@ import logging
 from pathlib import Path
 from sys import platform as opersys
 from sys import version_info
-from typing import List, Union
 
 # Imports depending on Python version
 if version_info[1] < 11:

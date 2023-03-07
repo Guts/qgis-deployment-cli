@@ -10,7 +10,6 @@
 
 # Standard library
 import logging
-from typing import Optional
 
 # #############################################################################
 # ########## Globals ###############

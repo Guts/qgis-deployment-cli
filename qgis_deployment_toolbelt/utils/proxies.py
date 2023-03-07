@@ -13,7 +13,6 @@
 # Standard library
 import logging
 from os import environ
-from typing import Union
 from urllib.request import getproxies
 
 # #############################################################################

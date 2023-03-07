@@ -16,7 +16,6 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from sys import platform as opersys
-from typing import List, Tuple
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__

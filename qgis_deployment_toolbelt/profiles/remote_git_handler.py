@@ -17,7 +17,6 @@
 import logging
 from pathlib import Path
 from shutil import rmtree
-from typing import Union
 
 # 3rd party
 from dulwich import porcelain

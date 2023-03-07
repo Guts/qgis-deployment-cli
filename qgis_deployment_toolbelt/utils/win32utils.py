@@ -17,7 +17,6 @@ import logging
 from os import sep  # required since pathlib strips trailing whitespace
 from pathlib import Path
 from sys import platform as opersys
-from typing import Optional
 
 # Imports depending on operating system
 if opersys == "win32":

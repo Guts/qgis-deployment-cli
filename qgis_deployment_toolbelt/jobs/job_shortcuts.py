@@ -16,7 +16,6 @@ import logging
 from os.path import expandvars
 from pathlib import Path
 from sys import platform as opersys
-from typing import Tuple, Union
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__

@@ -16,7 +16,6 @@ import logging
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
-from typing import Tuple
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
