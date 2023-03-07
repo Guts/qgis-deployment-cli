@@ -111,7 +111,7 @@ def check_path_is_readable(input_path: Path, raise_error: bool = True) -> bool:
     if not access(input_path, R_OK):
         error_message = f"{input_path.resolve()} isn't readable."
         if raise_error:
-            raise IOError(error_message)
+            raise OSError(error_message)
         else:
             logger.error(f"{input_path.resolve()} isn't readable.")
             return False
@@ -145,7 +145,7 @@ def check_path_is_writable(input_path: Path, raise_error: bool = True) -> bool:
     if not access(input_path, W_OK):
         error_message = f"{input_path.resolve()} isn't writable."
         if raise_error:
-            raise IOError(error_message)
+            raise OSError(error_message)
         else:
             logger.error(error_message)
             return False
