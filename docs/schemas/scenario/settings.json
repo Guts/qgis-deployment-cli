@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
   "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/settings.json",
-  "description": "QGIS Deployment Toolbelt - Environment variables",
-  "title": "Define environment variables for the QGIS Deployment CLI execution. Attention, no confusion: these are the settings for the toolbelt, not for the QGIS installation.",
+  "title": "QGIS Deployment Toolbelt - Environment variables",
+  "description": "Define environment variables for the QGIS Deployment CLI execution, prefixing them with 'QDT_'. Attention, no confusion: these are the settings for the toolbelt, not for the QGIS installation.",
   "type": "object",
   "properties": {
     "DEBUG": {
@@ -11,7 +11,7 @@
       "title": "Debug mode",
       "type": "boolean"
     },
-    "LOCAL_QDT_WORKDIR": {
+    "LOCAL_WORK_DIR": {
       "default": null,
       "description": "Where QDT stores locally everything it uses: profiles, plugins, etc.",
       "title": "Local working folder.",

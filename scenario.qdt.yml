@@ -10,7 +10,7 @@ metadata:
 
 # Toolbelt settings
 settings:
-  LOCAL_QDT_WORKDIR: ~/.cache/qgis-deployment-toolbelt/Oslandia/
+  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/Oslandia/
   QGIS_EXE_PATH:
     linux: /usr/bin/qgis
     mac: /usr/bin/qgis
@@ -25,6 +25,8 @@ steps:
       action: download
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
+      local_destination: ~/.cache/qgis-deployment-toolbelt/Oslandia/
+      sync_mode: overwrite
       branch: main
 
   - name: Download plugins
@@ -39,6 +41,7 @@ steps:
       action: create_or_restore
       profile_ref: downloaded
       source: ~/.cache/qgis-deployment-toolbelt/plugins
+
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager

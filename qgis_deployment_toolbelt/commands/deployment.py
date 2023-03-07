@@ -15,8 +15,9 @@ import argparse
 import logging
 from os import environ, getenv
 from pathlib import Path
+from sys import platform as opersys
 
-from qgis_deployment_toolbelt.constants import get_qdt_working_directory
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
@@ -103,6 +104,13 @@ def run(args: argparse.Namespace):
             "\nValidation report:\n- {}".format("\n- ".join(scenario_validity[1]))
         )
         exit_cli_error(result_scenario_validity)
+
+    # check operating system
+    if opersys not in OS_CONFIG:
+        raise OSError(
+            f"Your operating system {opersys} is not supported. "
+            f"Supported platforms: {','.join(OS_CONFIG.keys())}."
+        )
 
     # -- Run --
 

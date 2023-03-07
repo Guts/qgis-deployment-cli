@@ -50,14 +50,14 @@ def get_qdt_working_directory(
     """
     if specific_value:
         return Path(expandvars(expanduser(specific_value)))
-    elif getenv("QDT_PROFILES_PATH"):
-        return Path(expandvars(expanduser(getenv("QDT_PROFILES_PATH"))))
+    elif getenv("QDT_LOCAL_WORK_DIR"):
+        return Path(expandvars(expanduser(getenv("QDT_LOCAL_WORK_DIR"))))
     else:
         return Path(
             expandvars(
                 expanduser(
                     getenv(
-                        "LOCAL_QDT_WORKDIR",
+                        "QDT_LOCAL_WORK_DIR",
                         f"~/.cache/qgis-deployment-toolbelt/{identifier}",
                     ),
                 )

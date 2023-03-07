@@ -47,6 +47,24 @@ class TestConstants(unittest.TestCase):
             os_config_forbidden_chars.valid_shortcut_name(shortcut_name="qgis_ltr_3_28")
         )
 
+    def test_get_qdt_working_folder(self):
+        """Test how QDT working folder is retrieved"""
+        # using specific value
+        self.assertEqual(
+            constants.get_qdt_working_directory(
+                specific_value="~/.cache/qdt/unit-tests/"
+            ),
+            Path(Path.home(), ".cache/qdt/unit-tests/"),
+        )
+
+        # using environment variable
+        # environ["QDT_LOCAL_WORK_DIR"] = "~/.cache/qdt/unit-tests-env-var/"
+        # self.assertEqual(
+        #     constants.get_qdt_working_directory(),
+        #     Path(Path.home(), ".cache/qdt/unit-tests-env-var/"),
+        # )
+        # unsetenv("QDT_LOCAL_WORK_DIR")
+
 
 # ############################################################################
 # ####### Stand-alone run ########
