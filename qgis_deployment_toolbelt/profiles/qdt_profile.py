@@ -25,6 +25,9 @@ if version_info[1] < 11:
 else:
     from typing import Self
 
+# 3rd party
+from packaging.version import InvalidVersion, Version
+
 # Package
 from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
@@ -181,7 +184,7 @@ class QdtProfile:
 
     @property
     def alias(self) -> str:
-        """Returns the alias for the QGIS profile.
+        """Returns the profile's alias.
 
         :return str: profile alias
         """
@@ -227,17 +230,20 @@ class QdtProfile:
 
     @property
     def name(self) -> Path:
-        """Returns the path to the name where the profile is stored.
+        """Returns the profile's name.
 
-        :return Path: profile name path
+        Returns:
+            Path: profile's name
         """
         return self._name
 
     @property
     def path_in_qgis(self) -> Path:
-        """Returns the path to the folder where the profile is stored in QGIS 3.
+        """Returns the path to the folder where the profile is stored in QGIS 3
+            (= installed).
 
-        :return Path: profile folder path
+        Returns:
+            Path: path to the installed (i.e. in QGIS) profile folder
         """
         return self.os_config.profiles_path / self.name
 
@@ -245,7 +251,8 @@ class QdtProfile:
     def plugins(self) -> List[QgisPlugin]:
         """Returns the plugins associated with the profile.
 
-        :return List[QgisPlugin]: list of plugins
+        Returns:
+            List[QgisPlugin]: list of plugins
         """
         if self._plugins:
             return [QgisPlugin.from_dict(p) for p in self._plugins]
@@ -256,7 +263,8 @@ class QdtProfile:
     def splash(self) -> Union[str, Path]:
         """Returns the profile splash image as path if can be resolved or as string.
 
-        :return str: profile version.
+        Returns:
+            Union[str, Path]: path to the profile splash image
         """
         if (
             self._splash
@@ -271,9 +279,64 @@ class QdtProfile:
     def version(self) -> str:
         """Returns the profile version as string.
 
-        :return str: profile version.
+        Returns:
+            str: version
         """
         return self._version
+
+    def is_older_than(self, version_to_compare: Union[str, Self]) -> bool:
+        """Determine if the actual object version is older than the given version to
+            compare.
+
+        Args:
+            version_to_compare (Union[str, Self]): given version to compare with object
+            version
+
+        Returns:
+            bool: True if the given version is newer (more recent)
+        """
+        if not any([self.version, version_to_compare]):
+            logger.error("Object version is not set, so the comparizon is impossible.")
+            return None
+
+        # if a profile is given
+        if isinstance(version_to_compare, QdtProfile):
+            # take the opportunity to check the name is the same
+            if not self.name == version_to_compare.name:
+                logger.warning(
+                    "Be careful, the profile to compare seems to be different: "
+                    f"{self.name} != {version_to_compare.name}"
+                )
+            # store the version string
+            version_to_compare = version_to_compare.version
+
+        # load object version as packaging.Version object
+        try:
+            profile_version = Version(self.version)
+        except InvalidVersion as err:
+            logger.error(
+                f"Profile {self.name} uses an incompatible versioning scheme: {self.version}."
+                "It's not Semver (even prefixed by 'v'), nor Calver or any of "
+                "supported specification. See https://peps.python.org/pep-0440/. "
+                f"Trace: {err}"
+            )
+            return None
+
+        # load version to compare as packaging.Version object
+        try:
+            version_to_compare = Version(version_to_compare)
+        except InvalidVersion as err:
+            logger.error(
+                f"Version to compare uses an incompatible versioning scheme: {self.version}."
+                "It's not Semver (even prefixed by 'v'), nor Calver or any of "
+                "supported specification. See https://peps.python.org/pep-0440/. "
+                f"Trace: {err}"
+            )
+            return None
+
+        logger.debug(f"Comparing versions: {profile_version} and {version_to_compare}")
+
+        return profile_version < version_to_compare
 
 
 # #############################################################################
