@@ -16,7 +16,7 @@ import logging
 from pathlib import Path
 from shutil import copy2, copytree
 from sys import platform as opersys
-from typing import Tuple
+from typing import Iterable, Tuple
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
@@ -164,11 +164,11 @@ class JobProfilesDownloader(GenericJob):
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
-    def filter_profiles_folder(self) -> Tuple[Path] or None:
+    def filter_profiles_folder(self) -> tuple[Path] or None:
         """Parse downloaded folder to filter on QGIS profiles folders.
 
         Returns:
-            Tuple[Path] or None: tuple of profiles folders paths
+            tuple[Path] or None: tuple of profiles folders paths
         """
         # first, try to get folders containing a profile.json
         qgis_profiles_folder = [
@@ -192,7 +192,7 @@ class JobProfilesDownloader(GenericJob):
         # if still empty, raise a warning but returns every folder under a `profiles` folder
         # TODO: try to identify if a folder is a QGIS profile with some approximate criteria
 
-        if len(qgis_profiles_folder):
+        if not len(qgis_profiles_folder):
             logger.error("No QGIS profile found in the downloaded folder.")
             return None
 
@@ -256,9 +256,10 @@ class JobProfilesDownloader(GenericJob):
                         dirs_exist_ok=True,
                     )
         elif self.options.get("sync_mode") == "only_different_version":
-            self.sync_copy_overwrite_only_different_version(
-                profiles_folder_to_copy=source_profiles_folder
-            )
+            # self.sync_copy_overwrite_only_different_version(
+            #     profiles_folder_to_copy=source_profiles_folder
+            # )
+            pass
         else:
             logger.debug(
                 "QGIS Profiles folder already exists, it's not empty: "
@@ -277,27 +278,38 @@ class JobProfilesDownloader(GenericJob):
                 dirs_exist_ok=True,
             )
 
-    def sync_copy_overwrite_only_different_version(
-        self, profiles_folder_to_copy: Tuple[Path]
-    ) -> None:
-        """_summary_
+    def compare_downloaded_with_installed_profiles(
+        self, li_downloaded_profiles_folders: Iterable[Path]
+    ) -> tuple[list[QdtProfile], list[QdtProfile], list[QdtProfile]]:
+        """Compare versions between downloaded (in QDT working folder) and installed
+            (in QGIS) profiles.
 
         Args:
-            profiles_folder_to_copy (Tuple[Path]): _description_
+            li_downloaded_profiles_folders (Iterable[Path]): paths to the folders of
+            downloaded profiles.
+
+        Returns:
+            tuple[list[QdtProfile], list[QdtProfile], list[QdtProfile]]: a tuple with
+            the following structure (
+                list of installed profiles which are outdated (lesser version number),
+                list of installed profiles with a different version (lesser or greater),
+                list of profiles with the same version number in downloaded/installed
+                )
         """
-        for downloaded_profile_folder in profiles_folder_to_copy:
-            print(downloaded_profile_folder)
+        li_profiles_outdated = []
+        li_profiles_different = []
+        li_profiles_equal = []
+
+        for downloaded_profile_folder in li_downloaded_profiles_folders:
             installed_profile_folder = Path(
                 self.qgis_profiles_path, downloaded_profile_folder.name
             )
-            print(installed_profile_folder)
 
             if Path(downloaded_profile_folder, "profile.json").is_file():
                 profile_downloaded: QdtProfile = QdtProfile.from_json(
                     profile_json_path=Path(downloaded_profile_folder, "profile.json"),
                     profile_folder=downloaded_profile_folder,
                 )
-                print(profile_downloaded.version)
             else:
                 logger.error(
                     "Unable to load profile.json from downloaded profile "
@@ -311,13 +323,24 @@ class JobProfilesDownloader(GenericJob):
                     profile_json_path=Path(installed_profile_folder, "profile.json"),
                     profile_folder=installed_profile_folder,
                 )
-                print(profile_installed.version)
             else:
                 logger.error(
                     "Unable to load profile.json from installed profile "
                     f"{installed_profile_folder}, so it's impossible to compare "
                     "versions."
                 )
+
+            # compare
+            if profile_installed.is_older_than(profile_downloaded):
+                li_profiles_outdated.append(profile_downloaded)
+            elif profile_installed.version != profile_downloaded.version:
+                li_profiles_different.append(profile_downloaded)
+            elif profile_installed.version == profile_downloaded.version:
+                li_profiles_equal.append(profile_downloaded)
+            else:
+                continue
+
+        return li_profiles_outdated, li_profiles_different, li_profiles_equal
 
     def sync_overwrite_local_profiles(
         self, profiles_folder_to_copy: Tuple[Path]
