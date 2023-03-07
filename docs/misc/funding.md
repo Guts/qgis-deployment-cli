@@ -18,7 +18,7 @@ Contact us by email {material-regular}`mail;1.5em`
 :::::{grid} 3
 
 ::::{grid-item-card} Oslandia
-:img-top: https://oslandia.com/wp-content/uploads/2019/11/oslandia_logo_v2_164x154.png
+:img-top: /static/logo_oslandia.png
 :link: https://oslandia.com/
 
 * idea, conception and initial development
@@ -26,17 +26,22 @@ Contact us by email {material-regular}`mail;1.5em`
 ::::
 
 ::::{grid-item-card} Syndicat Charente Eaux
-:img-top: https://charente-eaux.fr/wp-content/themes/charente-eaux-2017/img/footer-logo.png
+:img-top: /static/logo_charente_eaux.png
 :link: https://charente-eaux.gitlab.io/ocarhy/documentation/
 
 * initial funding (Proof Of Concept)
 ::::
 
 ::::{grid-item-card} Etablissement Public Loire
-:img-top: https://www.arraa.org/sites/default/files/styles/illustration_custom/public/media/logos_adherents/epl_carre.png
+:img-top: /static/logo_etablissement_public_loire.png
 :link: https://www.eptb-loire.fr/
 
-* initial funding of POC
+* funding first iterations to a complete functional scope
+* splash screen job
+* profile versions comparison
+* plugins downloader
+* documentation
+* JSON schemas
 ::::
 :::::
 
