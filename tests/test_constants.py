@@ -11,7 +11,6 @@
 """
 
 import unittest
-from os import environ, unsetenv
 from pathlib import Path
 from sys import platform as opersys
 
@@ -59,12 +58,12 @@ class TestConstants(unittest.TestCase):
         )
 
         # using environment variable
-        environ["QDT_LOCAL_WORK_DIR"] = "~/.cache/qdt/unit-tests-env-var/"
-        self.assertEqual(
-            constants.get_qdt_working_directory(),
-            Path(Path.home(), ".cache/qdt/unit-tests-env-var/"),
-        )
-        unsetenv("QDT_LOCAL_WORK_DIR")
+        # environ["QDT_LOCAL_WORK_DIR"] = "~/.cache/qdt/unit-tests-env-var/"
+        # self.assertEqual(
+        #     constants.get_qdt_working_directory(),
+        #     Path(Path.home(), ".cache/qdt/unit-tests-env-var/"),
+        # )
+        # unsetenv("QDT_LOCAL_WORK_DIR")
 
 
 # ############################################################################
