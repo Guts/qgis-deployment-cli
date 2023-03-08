@@ -99,7 +99,9 @@ def get_latest_release(api_repo_url: str) -> dict:
         "User-Agent": f"{__title_clean__}/{actual_version}",
     }
     if getenv("GITHUB_TOKEN"):
-        print(f"Using authenticated request to GH API: {getenv('GITHUB_TOKEN')}")
+        logger.debug(
+            f"Using authenticated request to GH API: {getenv('GITHUB_TOKEN')[:9]}****"
+        )
         headers["Authorization"] = f"Bearer {getenv('GITHUB_TOKEN')}"
 
     request = Request(url=request_url, headers=headers)
