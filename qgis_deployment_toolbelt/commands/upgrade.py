@@ -95,7 +95,7 @@ def get_latest_release(api_repo_url: str) -> dict:
 
     # headers
     headers = {
-        "content-type": "application/json",
+        "content-type": "application/vnd.github+json",
         "User-Agent": f"{__title_clean__}/{actual_version}",
     }
     if getenv("GITHUB_TOKEN"):
@@ -221,19 +221,25 @@ def run(args: argparse.Namespace):
                 abort=True,
             )
     else:
-        exit_msg = (f"You already have the latest released version: {latest_version}.",)
+        exit_msg = f"You already have the latest released version: {latest_version}."
+        print(exit_msg)
         exit_cli_normal(
             message=exit_msg,
             abort=True,
         )
 
     # -- DOWNLOAD ------------------------------------------------------------
+    print(f"Downloading newer version of executable for {opersys}: {latest_version}")
 
     # select remote download URL
     if release_asset_for_os := get_download_url_for_os(latest_release.get("assets")):
         remote_url, remote_content_type = release_asset_for_os
     else:
         exit_cli_error(f"Unable to identify an appropriate download URL for {opersys}.")
+
+    # handle empty content-type
+    if remote_content_type is None:
+        remote_content_type = "application/octet-stream"
 
     # destination local file
     dest_filepath = Path(
