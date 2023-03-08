@@ -45,22 +45,31 @@ logger = logging.getLogger(__name__)
 # #################################
 
 
-def get_download_url_for_os(release_assets: list) -> str:
+def get_download_url_for_os(
+    release_assets: list, override_opersys: str = None
+) -> tuple[str, str]:
     """Parse list of a GitHub release assets and return the appropriate download URL \
         for the current operating system.
 
     Args:
         release_assets (list): list of assets
+        override_opersys (str, optional): override current operating system code. Useful
+            to get a download URL for a specific OS. Defaults to None.
 
     Returns:
-        str: asset download URL (browser_download_url)
+        tuple[str, str]: tuple containgin asset download URL (browser_download_url) and
+            content-type (barely defined)
     """
+    opersys_code = opersys
+    if override_opersys is not None:
+        opersys_code = override_opersys
+
     for asset in release_assets:
-        if opersys == "win32" and "Windows" in asset.get("name"):
+        if opersys_code == "win32" and "Windows" in asset.get("name"):
             return asset.get("browser_download_url"), asset.get("content-type")
-        elif opersys == "linux" and "Ubuntu" in asset.get("name"):
+        elif opersys_code == "linux" and "Ubuntu" in asset.get("name"):
             return asset.get("browser_download_url"), asset.get("content-type")
-        elif opersys == "darwin" and "MacOS" in asset.get("name"):
+        elif opersys_code == "darwin" and "MacOS" in asset.get("name"):
             return asset.get("browser_download_url"), asset.get("content-type")
         else:
             continue
@@ -89,13 +98,13 @@ def get_latest_release(api_repo_url: str) -> dict:
         return None
 
 
-def replace_domain(url: str, new_domain: str) -> str:
-    """
-    Replaces the domain of an URL with a new domain.
+def replace_domain(url: str, new_domain: str = "api.github.com/repos") -> str:
+    """Replaces the domain of an URL with a new domain.
 
     Args:
         url (str): The original URL.
-        new_domain (str): The new domain to replace the original domain with.
+        new_domain (str, optional): The new domain to replace the original domain with. Defaults
+            to "api.github.com/repos".
 
     Returns:
         str: The URL with the new domain.
@@ -170,7 +179,7 @@ def run(args: argparse.Namespace):
     logger.debug(f"Running {args.command} with {args}")
 
     # build API URL from repository
-    api_url = replace_domain(url=__uri_repository__, new_domain="api.github.com/repos")
+    api_url = replace_domain(url=__uri_repository__)
 
     # get latest release as dictionary
     latest_release = get_latest_release(api_repo_url=api_url)
@@ -231,4 +240,13 @@ def run(args: argparse.Namespace):
 # ##################################
 if __name__ == "__main__":
     """Standalone execution."""
-    pass
+    latest_release = get_latest_release(
+        replace_domain(url=__uri_repository__, new_domain="api.github.com/repos")
+    )
+    print(latest_release.keys(), latest_release.get("assets_url"))
+
+    dl_link_linux, dl_link_macos, dl_link_windows = (
+        get_download_url_for_os(latest_release.get("assets"), override_opersys=os)[0]
+        for os in ["linux", "darwin", "win32"]
+    )
+    print(dl_link_linux, dl_link_macos, dl_link_windows)
