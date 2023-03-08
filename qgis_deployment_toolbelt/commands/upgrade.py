@@ -18,13 +18,17 @@ from os import getenv
 from pathlib import Path
 from sys import platform as opersys
 from urllib.parse import urlsplit, urlunsplit
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 # 3rd party library
 from packaging.version import Version
 
 # submodules
-from qgis_deployment_toolbelt.__about__ import __title__, __uri_repository__
+from qgis_deployment_toolbelt.__about__ import (
+    __title__,
+    __title_clean__,
+    __uri_repository__,
+)
 from qgis_deployment_toolbelt.__about__ import __version__ as actual_version
 from qgis_deployment_toolbelt.utils.bouncer import (
     exit_cli_error,
@@ -88,13 +92,30 @@ def get_latest_release(api_repo_url: str) -> dict:
     """
 
     request_url = f"{api_repo_url}releases/latest"
+
+    # headers
+    headers = {
+        "content-type": "application/json",
+        "User-Agent": f"{__title_clean__}/{actual_version}",
+    }
+    if getenv("GITHUB_TOKEN"):
+        headers["Authorization"] = f"Bearer {getenv('GITHUB_TOKEN')}"
+
+    request = Request(url=request_url, headers=headers)
+
     try:
-        response = urlopen(request_url)
+        response = urlopen(request)
         if response.status == 200:
             release_info = json.loads(response.read())
             return release_info
     except Exception as err:
         logger.error(err)
+        if "rate limit exceeded" in err:
+            logger.error(
+                "Rate limit of GitHub API exeeded. Try again later (generally "
+                "in 15 minutes) or set GITHUB_TOKEN as environment variable with a "
+                "personal token."
+            )
         return None
 
 
