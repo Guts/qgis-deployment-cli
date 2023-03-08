@@ -1,0 +1,119 @@
+name: "🐛 Bug report"
+description: "Report a bug or a strange behavior."
+labels: ["triage"]
+title: "[BUG]: "
+assignees:
+  - Guts
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: checkboxes
+    id: cb_user_searched
+    attributes:
+      label: Is there an existing issue or a documentation page for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues and within documentation
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ----
+
+        ## Environment
+
+  - type: input
+    id: in_qdt_version
+    attributes:
+      label: Which version of the app are you using?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: dr_operating_system
+    attributes:
+      label: Operating System
+      description: |
+        On which operating systems did you met the bug?
+        Remember: those with a '*' are the officially supported.
+        If you pick `other`, please give more details in comment part at the end of form.
+      multiple: true
+      options:
+        - Linux Ubuntu*
+        - Windows 10+*
+        - MacOS 12
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: dr_packaging_mode
+    attributes:
+      label: Packaging mode
+      description: |
+        With which packaged mode did you encounter the bug.
+      multiple: true
+      options:
+        - Stand-alone executable (.i.e qdt.exe)
+        - Python package
+        - Source code
+    validations:
+      required: true
+
+  - type: textarea
+    id: tx_related_resources
+    attributes:
+      label: Related resources
+      description: |
+        Upload scenario files, give URL to public repository with profiles or profiles.json files directly.
+        Give everything you think it's necessary to describe your environment.
+
+  - type: markdown
+    attributes:
+      value: |
+        ----
+
+        ## Bug details
+
+  - type: textarea
+    id: tx_bug_description
+    attributes:
+      label: Description of the bug
+      description: Tell us what bug you encountered and what should have happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: tx_reproduction_steps
+    attributes:
+      label: Steps to reproduce
+      description: Which steps do we need to take to reproduce this error?
+      placeholder: |
+        1. Open a terminal
+        1. Run QDT in verbose mode: `qdt.exe --verbose`
+        1. ...
+
+  - type: textarea
+    id: tx_logs
+    attributes:
+      label: Relevant log output
+      description: Run in verbose mode and provide log output.
+      render: Shell
+
+  - type: markdown
+    attributes:
+      value: |
+        ----
+
+        ## Miscellaneous
+
+  - type: textarea
+    id: tx_misc_comment
+    attributes:
+      label: Comment
+      description: Give details that you think they matter or just let a message to the team.
