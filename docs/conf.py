@@ -7,9 +7,15 @@
 # standard
 import os
 from datetime import datetime
+from pathlib import Path
 
 # project
 from qgis_deployment_toolbelt import __about__
+from qgis_deployment_toolbelt.commands.upgrade import (
+    get_download_url_for_os,
+    get_latest_release,
+    replace_domain,
+)
 
 # -- Build environment -----------------------------------------------------
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
@@ -105,6 +111,10 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["static"]
 
+html_css_files = [
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+]
+
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
@@ -171,10 +181,50 @@ ogp_custom_meta_tags = [
     f'<meta property="twitter:title" content="{project}" />',
 ]
 
+# -- Functions ------------------------------------------------------------------
 
-# -- Options for Sphinx API doc ----------------------------------------------
+
+def populate_download_page(_):
+    """Generate download section included into installation page."""
+    latest_release = get_latest_release(
+        replace_domain(
+            url=__about__.__uri_repository__, new_domain="api.github.com/repos"
+        )
+    )
+
+    dl_link_linux, dl_link_macos, dl_link_windows = (
+        get_download_url_for_os(latest_release.get("assets"), override_opersys=os)[0]
+        for os in ["linux", "darwin", "win32"]
+    )
+
+    out_download_section = (
+        "::::{grid} 3\n:gutter: 2\n"
+        ":::{grid-item}\n"
+        f"\n```{{button-link}} {dl_link_linux}\n:color: primary\n"
+        ":shadow:\n:tooltip: Generated with PyInstaller on Ubuntu LTS\n"
+        "\n{fab}`linux` Download for Linux\n```\n"
+        ":::\n"
+        ":::{grid-item}\n"
+        f"\n```{{button-link}} {dl_link_macos}\n:color: primary\n"
+        ":shadow:\n:tooltip: Generated with PyInstaller on MacOS 12.6\n"
+        "\n{fab}`apple` Download for MacOS\n```\n"
+        ":::{grid-item}\n"
+        ":::\n"
+        f"\n```{{button-link}} {dl_link_windows}\n:color: primary\n"
+        ":shadow:\n:tooltip: Generated with PyInstaller on Windows 10\n"
+        "\n{fab}`windows` Download for Windows\n```\n"
+        ":::\n"
+        "\n::::"
+    )
+
+    Path("./docs/usage/download_section.md").write_text(
+        data=out_download_section, encoding="UTF-8"
+    )
+
+
 # run api doc
 def run_apidoc(_):
+    """Options for Sphinx API doc."""
     from sphinx.ext.apidoc import main
 
     cur_dir = os.path.normpath(os.path.dirname(__file__))
@@ -187,3 +237,4 @@ def run_apidoc(_):
 # launch setup
 def setup(app):
     app.connect("builder-inited", run_apidoc)
+    app.connect("builder-inited", populate_download_page)
