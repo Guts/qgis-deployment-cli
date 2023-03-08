@@ -105,10 +105,10 @@ def get_latest_release(api_repo_url: str) -> dict:
     request = Request(url=request_url, headers=headers)
 
     try:
-        response = urlopen(request)
-        if response.status == 200:
-            release_info = json.loads(response.read())
-            return release_info
+        with urlopen(request) as response:
+            if response.status == 200:
+                release_info = json.loads(response.read())
+        return release_info
     except Exception as err:
         logger.error(err)
         if "rate limit exceeded" in err:
@@ -118,9 +118,6 @@ def get_latest_release(api_repo_url: str) -> dict:
                 "personal token."
             )
         return None
-    finally:
-        if response is not None:
-            response.close()
 
 
 def replace_domain(url: str, new_domain: str = "api.github.com/repos") -> str:
