@@ -65,7 +65,7 @@ def download_remote_file_to_local(
         logger.warning(f"{local_file_path} already exists. It's about to be replaced.")
         local_file_path.unlink(missing_ok=True)
 
-    # mkae sure parents folder exist
+    # make sure parents folder exist
     local_file_path.parent.mkdir(parents=True, exist_ok=True)
 
     # headers
