@@ -3,7 +3,7 @@ description: "Report a bug or a strange behavior."
 labels: ["triage"]
 title: "[BUG]: "
 assignees:
-  - guts
+  - Guts
 
 body:
   - type: markdown
@@ -12,12 +12,12 @@ body:
         Thanks for taking the time to fill out this bug report!
 
   - type: checkboxes
-    id: new-bug
+    id: cb_user_searched
     attributes:
-      label: Is there an existing issue for this?
+      label: Is there an existing issue or a documentation page for this?
       description: Please search to see if an issue already exists for the bug you encountered.
       options:
-        - label: I have searched the existing issues
+        - label: I have searched the existing issues and within documentation
           required: true
 
   - type: markdown
@@ -27,8 +27,16 @@ body:
 
         ## Environment
 
+  - type: input
+    id: in_qdt_version
+    attributes:
+      label: Which version of the app are you using?
+      description: If this issue is occurring on more than 1 version of the app, select the appropriate versions.
+    validations:
+      required: true
+
   - type: dropdown
-    id: dr-operating-system
+    id: dr_operating_system
     attributes:
       label: Operating System
       description: |
@@ -45,7 +53,7 @@ body:
       required: true
 
   - type: dropdown
-    id: dr-packaging-mode
+    id: dr_packaging_mode
     attributes:
       label: Packaging mode
       description: |
@@ -66,7 +74,7 @@ body:
         ## Bug details
 
   - type: textarea
-    id: bug-description
+    id: tx_bug_description
     attributes:
       label: Description of the bug
       description: Tell us what bug you encountered and what should have happened
@@ -78,8 +86,10 @@ body:
       value: |
         ----
 
+        ## Miscellaneous
+
   - type: textarea
-    id: tx-misc-comment
+    id: tx_misc_comment
     attributes:
       label: Comment
-      description: Give details you thik they matter or just let a message to the team.
+      description: Give details that you think they matter or just let a message to the team.
