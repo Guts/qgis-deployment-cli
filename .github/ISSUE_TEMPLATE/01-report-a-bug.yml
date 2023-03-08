@@ -31,7 +31,6 @@ body:
     id: in_qdt_version
     attributes:
       label: Which version of the app are you using?
-      description: If this issue is occurring on more than 1 version of the app, select the appropriate versions.
     validations:
       required: true
 
@@ -66,6 +65,14 @@ body:
     validations:
       required: true
 
+  - type: textarea
+    id: tx_related_resources
+    attributes:
+      label: Related resources
+      description: |
+        Upload scenario files, give URL to public repository with profiles or profiles.json files directly.
+        Give everything you think it's necessary to describe your environment.
+
   - type: markdown
     attributes:
       value: |
@@ -80,6 +87,19 @@ body:
       description: Tell us what bug you encountered and what should have happened
     validations:
       required: true
+
+  - type: textarea
+    id: tx_reproduction_steps
+    attributes:
+      label: Steps to reproduce
+      description: Which steps do we need to take to reproduce this error?
+
+  - type: textarea
+    id: tx_logs
+    attributes:
+      label: Relevant log output
+      description: Run in verbose mode and provide log output.
+      render: Shell
 
   - type: markdown
     attributes:
