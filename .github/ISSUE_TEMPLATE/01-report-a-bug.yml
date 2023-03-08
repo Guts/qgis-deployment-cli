@@ -93,6 +93,10 @@ body:
     attributes:
       label: Steps to reproduce
       description: Which steps do we need to take to reproduce this error?
+      placeholder: |
+        1. Open a terminal
+        1. Run QDT in verbose mode: `qdt.exe --verbose`
+        1. ...
 
   - type: textarea
     id: tx_logs
