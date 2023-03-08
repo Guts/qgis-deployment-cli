@@ -99,6 +99,7 @@ def get_latest_release(api_repo_url: str) -> dict:
         "User-Agent": f"{__title_clean__}/{actual_version}",
     }
     if getenv("GITHUB_TOKEN"):
+        print(f"Using authenticated request to GH API: {getenv('GITHUB_TOKEN')}")
         headers["Authorization"] = f"Bearer {getenv('GITHUB_TOKEN')}"
 
     request = Request(url=request_url, headers=headers)
@@ -117,6 +118,9 @@ def get_latest_release(api_repo_url: str) -> dict:
                 "personal token."
             )
         return None
+    finally:
+        if response is not None:
+            response.close()
 
 
 def replace_domain(url: str, new_domain: str = "api.github.com/repos") -> str:
