@@ -1,0 +1,85 @@
+name: "🐛 Bug report"
+description: "Report a bug or a strange behavior."
+labels: ["triage"]
+title: "[BUG]: "
+assignees:
+  - guts
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: checkboxes
+    id: new-bug
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ----
+
+        ## Environment
+
+  - type: dropdown
+    id: dr-operating-system
+    attributes:
+      label: Operating System
+      description: |
+        On which operating systems did you met the bug?
+        Remember: those with a '*' are the officially supported.
+        If you pick `other`, please give more details in comment part at the end of form.
+      multiple: true
+      options:
+        - Linux Ubuntu*
+        - Windows 10+*
+        - MacOS 12
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: dr-packaging-mode
+    attributes:
+      label: Packaging mode
+      description: |
+        With which packaged mode did you encounter the bug.
+      multiple: true
+      options:
+        - Stand-alone executable (.i.e qdt.exe)
+        - Python package
+        - Source code
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ----
+
+        ## Bug details
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Description of the bug
+      description: Tell us what bug you encountered and what should have happened
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ----
+
+  - type: textarea
+    id: tx-misc-comment
+    attributes:
+      label: Comment
+      description: Give details you thik they matter or just let a message to the team.
