@@ -65,6 +65,8 @@ jobs:
           python -m pip install -U -r requirements/documentation.txt
 
       - name: Build doc using Sphinx
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required to avoid GH API rate limit
         run: sphinx-build -b html -j auto -d docs/_build/cache -q docs docs/_build/html
 
       - name: Save build doc as artifact
