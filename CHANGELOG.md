@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.21.3 - 2023-03-09
+
+### Bugs fixes 🐛
+
+* Add default subparser to allow direct run of deployment by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/229>
+
 ## 0.21.2 - 2023-03-09
 
 ### Bugs fixes 🐛
