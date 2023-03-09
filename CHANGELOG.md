@@ -16,6 +16,16 @@ Unreleased
 
 -->
 
+## 0.21.2 - 2023-03-09
+
+### Bugs fixes 🐛
+
+* Fix unexpected keyword argument 'profiles_folder_to_copy' by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/227>
+
+### Features and enhancements 🎉
+
+* Improve reliability of profiles sync with only_missing by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/228>
+
 ## 0.21.1 - 2023-03-09
 
 ### Bugs fixes 🐛
