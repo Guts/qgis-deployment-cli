@@ -24,4 +24,4 @@ steps:
       protocol: git
       branch: main
       source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
-      sync_mode: only_different
+      sync_mode: only_different_version
