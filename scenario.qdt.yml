@@ -25,7 +25,7 @@ steps:
       action: download
       source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
       protocol: git
-      sync_mode: overwrite
+      sync_mode: only_new_version
       branch: main
 
   - name: Download plugins
