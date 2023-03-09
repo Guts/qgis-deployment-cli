@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.21.1 - 2023-03-09
+
+### Bugs fixes 🐛
+
+* Hotfix crash when some profiles have a lesser version by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/226>
+
 ## 0.21.0 - 2023-03-09
 
 ### Bugs fixes 🐛
