@@ -1,21 +1,59 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/qprofiles-manager.json",
     "description": "QDT job synchronizing local working directory with remote profiles.",
-    "title": "Synchronize QGIS profiles from remote location.",
+    "title": "QProfiles Synchronizer.",
     "type": "object",
     "properties": {
         "action": {
+            "default": "download",
+            "deprecated": true,
+            "description": "Which action to perform with remote profiles.",
+            "enum": [
+                "download"
+            ],
             "type": "string"
         },
         "branch": {
+            "description": "Name of the branch to use when working with a git repository.",
             "type": "string"
         },
         "protocol": {
+            "description": "Set which protocol to use.",
+            "enum": [
+                "git"
+            ],
             "type": "string"
         },
         "source": {
+            "description": "Location of profiles to use as reference.",
+            "type": "string"
+        },
+        "sync_mode": {
+            "description": "Synchronization mode to apply with profiles.",
+            "enum": [
+                "only_different_version",
+                "only_missing",
+                "only_new_version",
+                "overwrite"
+            ],
             "type": "string"
         }
-    }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "protocol": {
+                        "const": "git"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "branch"
+                ]
+            }
+        }
+    ]
 }
