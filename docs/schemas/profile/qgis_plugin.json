@@ -4,6 +4,11 @@
     "$comment": "A QGIS profile described in a JSON file.",
     "type": "object",
     "properties": {
+        "folder_name": {
+            "description": "Name of the plugins's directory once installed in QGIS. Useful when name does not complies with filename conventions.",
+            "pattern": "^([a-zA-Z]:)?(\\\\[^<>:\"/\\\\|?*]+)+\\\\?$",
+            "type": "string"
+        },
         "location": {
             "description": "Indicates if the plugin is located on a remote server or on local drive/network.",
             "enum": [

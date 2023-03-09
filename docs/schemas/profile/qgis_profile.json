@@ -24,7 +24,7 @@
             "type": "string"
         },
         "folder_name": {
-            "description": "Name of the plugins's directory once installed in QGIS. Useful when name does not complies with filename conventions.",
+            "description": "Name of the profile's directory in QGIS.",
             "pattern": "^([a-zA-Z]:)?(\\\\[^<>:\"/\\\\|?*]+)+\\\\?$",
             "type": "string"
         },
