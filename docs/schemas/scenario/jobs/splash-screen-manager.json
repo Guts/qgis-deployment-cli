@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/splash-screen-manager.json",
+    "description": "Set your custom splash screen image.",
+    "title": "Splash Screen Manager.",
+    "type": "object",
+    "properties": {
+        "action": {
+            "default": "create_or_restore",
+            "description": "Which action to perform with splash screen.",
+            "enum": [
+                "create",
+                "create_or_restore",
+                "remove"
+            ],
+            "type": "string"
+        },
+        "strict": {
+            "default": false,
+            "description": "Check image size against QGIS recomendations: 600x300.",
+            "type": "boolean"
+        }
+    }
+}

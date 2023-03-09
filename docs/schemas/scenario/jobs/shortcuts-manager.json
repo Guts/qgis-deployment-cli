@@ -7,7 +7,6 @@
     "properties": {
         "action": {
             "default": "create_or_restore",
-            "deprecated": true,
             "description": "Which action to perform with shortcuts.",
             "enum": [
                 "create",

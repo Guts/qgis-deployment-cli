@@ -89,6 +89,16 @@
             "$ref": "shortcuts-manager.json"
           }
         }
+      },
+      {
+        "properties": {
+          "uses": {
+            "const": "splash-screen-manager"
+          },
+          "with": {
+            "$ref": "splash-screen-manager.json"
+          }
+        }
       }
     ],
     "required": [

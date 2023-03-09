@@ -57,7 +57,7 @@ If true, create a desktop shortcut.
 
 #### icon
 
-Filename of the icon to use for the shortcut.
+Filename of the icon to use for the shortcut. the path is relative to the profile folder.
 
 #### label
 
@@ -77,21 +77,16 @@ If true, create a desktop in start menu.
 
 ### Specify the file to use in the `profile.json`
 
-Add the image file to the profile folder and specify the relative filepath under the `splash` attribute:
+Add the image file to the profile folder and specify the relative filepath under the `icon` attribute:
 
 ```json
 {
     [...]
     "email": "qgis@oslandia.com",
     "icon": "images/qgis_icon.ico",
-    "splash": "images/splash_qgis-fr_600x287.png",
     [...]
 }
 ```
-
-### Store the image file under the default path
-
-If the path is not specified into the `profile.json`, the job looks for the default filepath `images/splash.png`. If the file exists, it will be used as shortcut image.
 
 ----
 
