@@ -45,7 +45,7 @@ steps:
       threads: 5
 
   - name: Synchronize plugins
-    uses: qplugins-synchronizers
+    uses: qplugins-synchronizer
     with:
       action: create_or_restore
       profile_ref: downloaded

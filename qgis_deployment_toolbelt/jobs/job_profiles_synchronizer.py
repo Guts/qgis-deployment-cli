@@ -273,14 +273,16 @@ class JobProfilesDownloader(GenericJob):
                 profiles_folder_to_copy=outdated
             )
         elif self.options.get("sync_mode") == "only_different_version":
-            different = self.compare_downloaded_with_installed_profiles(
+            outdated, different, same = self.compare_downloaded_with_installed_profiles(
                 li_downloaded_profiles=downloaded_profiles
-            )[1]
-            if not outdated:
-                logger.info("All installed profiles the same as downloaded ones.")
+            )
+            if not different and not outdated:
+                logger.info(
+                    f"All installed profiles are the same as downloaded ones: {len(same)}"
+                )
                 return
             self.sync_copy_overwrite_only_different_version(
-                profiles_folder_to_copy=different
+                profiles_folder_to_copy=different + outdated
             )
         elif self.options.get("sync_mode") == "overwrite":
             logger.debug(
