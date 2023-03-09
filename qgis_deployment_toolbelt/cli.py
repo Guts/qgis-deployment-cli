@@ -11,6 +11,7 @@
 # Standard library
 import argparse
 import logging
+import sys
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import (
@@ -52,6 +53,41 @@ def add_common_arguments(parser_to_update: argparse.ArgumentParser):
     return parser_to_update
 
 
+def set_default_subparser(
+    parser_to_update: argparse.ArgumentParser,
+    default_subparser_name: str,
+    args: list = None,
+):
+    """Set a default subparser to a parent parser. Call after setup and just before
+        parse_args().
+        See: <https://stackoverflow.com/questions/5176691/argparse-how-to-specify-a-default-subcommand>
+
+    Args:
+        parser_to_update (argparse.ArgumentParser): parent parser to add
+        default_subparser_name (str): name of the subparser to call by default
+        args (list, optional): if set is the argument list handed to parse_args().
+        Defaults to None.
+    """
+    subparser_found = False
+    for arg in sys.argv[1:]:
+        if arg in ["-h", "--help"]:  # global help if no subparser
+            break
+    else:
+        for x in parser_to_update._subparsers._actions:
+            if not isinstance(x, argparse._SubParsersAction):
+                continue
+            for sp_name in x._name_parser_map.keys():
+                if sp_name in sys.argv[1:]:
+                    subparser_found = True
+        if not subparser_found:
+            # insert default in first position, this implies no
+            # global options without a sub_parsers specified
+            if args is None:
+                sys.argv.insert(1, default_subparser_name)
+            else:
+                args.insert(0, default_subparser_name)
+
+
 # ############################################################################
 # ########## MAIN ################
 # ################################
@@ -66,6 +102,7 @@ def main(in_args: list[str] = None):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"Developed by: {__author__}\nDocumentation: {__uri_homepage__}",
         description=f"{__title__} {__version__} - {__summary__}",
+        argument_default=argparse.SUPPRESS,
     )
 
     # -- ROOT ARGUMENTS --
@@ -112,6 +149,7 @@ def main(in_args: list[str] = None):
     parser_upgrade(subcmd_upgrade)
 
     # -- PARSE ARGS --
+    set_default_subparser(parser_to_update=main_parser, default_subparser_name="deploy")
 
     # just get passed args
     args = main_parser.parse_args(in_args)
@@ -143,7 +181,7 @@ def main(in_args: list[str] = None):
         args.func(args)
     else:
         # if no args, run deployment
-        main(["deploy"])
+        main(["deploy"] + in_args)
 
 
 # #############################################################################
