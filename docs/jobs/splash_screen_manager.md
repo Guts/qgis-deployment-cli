@@ -59,4 +59,13 @@ Add the image file to the profile folder and specify the relative filepath under
 
 ### Store the image file under the default path
 
-If the path is not specified into the `profile.json`, the job looks for the default filepath `images/splash.png`. If the file exists, it will be used as splash screen image.
+If the path is not specified into the `profile.json`, the job looks for the default filepath `images/splash.png`. If the file exists, it will be used as splash screen image
+
+----
+
+## Schema
+
+```{eval-rst}
+.. literalinclude:: ../schemas/scenario/jobs/splash-screen-manager.json
+  :language: json
+```

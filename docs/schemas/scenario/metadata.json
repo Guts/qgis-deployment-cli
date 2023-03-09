@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/metadata.json",
   "description": "QGIS Deployment Toolbelt - Scenario metadata",
   "title": "Define scenario's metadata.",
@@ -20,7 +20,9 @@
       "type": "string"
     }
   },
-  "required": ["id", "title"],
-
+  "required": [
+    "id",
+    "title"
+  ],
   "additionalProperties": false
 }

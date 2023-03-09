@@ -1,0 +1,55 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/shortcuts-manager.json",
+    "description": "create shortcuts in desktop and/or start menu allowing the end-user opening QGIS with a profile.",
+    "title": "Shortcuts Manager.",
+    "type": "object",
+    "properties": {
+        "action": {
+            "default": "create_or_restore",
+            "description": "Which action to perform with shortcuts.",
+            "enum": [
+                "create",
+                "create_or_restore",
+                "remove"
+            ],
+            "type": "string"
+        },
+        "include": {
+            "description": "Name of the branch to use when working with a git repository.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "additional_arguments": {
+                        "description": "Arguments to pass to QGIS executable.",
+                        "example": "--noversioncheck",
+                        "type": "string"
+                    },
+                    "desktop": {
+                        "default": false,
+                        "description": "If true, create a desktop shortcut.",
+                        "type": "boolean"
+                    },
+                    "icon": {
+                        "description": "Filename of the icon to use for the shortcut.",
+                        "type": "string"
+                    },
+                    "label": {
+                        "description": "Text to display on the shortcut.",
+                        "type": "string"
+                    },
+                    "profile": {
+                        "description": "Name of the profile to associate with the shortcut.",
+                        "type": "string"
+                    },
+                    "start_menu": {
+                        "default": false,
+                        "description": "If true, create a shortcut in start menu.",
+                        "type": "boolean"
+                    }
+                }
+            }
+        }
+    }
+}

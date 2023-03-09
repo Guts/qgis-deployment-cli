@@ -1,10 +1,61 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/manage-env-vars.json",
-  "description": "Job in charge of setting/updating/removing environment variables no the target computer.",
-  "title": "Manage environment variables.",
+  "description": "Job in charge of setting/updating/removing environment variables on target computer.",
+  "title": "Environment variables manager.",
   "type": "array",
   "items": {
-    "type": "object"
+    "type": "object",
+    "properties": {
+      "action": {
+        "default": "add",
+        "description": "Tell the job what to do with the environment variable.",
+        "enum": [
+          "add",
+          "remove"
+        ],
+        "type": "string"
+      },
+      "name": {
+        "description": "Name of the environment variable.",
+        "type": "string"
+      },
+      "scope": {
+        "default": "user",
+        "description": "Level of the environment variable.",
+        "enum": [
+          "user",
+          "system"
+        ],
+        "type": "string"
+      },
+      "value": {
+        "description": "Value to set to the environment variable.",
+        "type": [
+          "boolean",
+          "string"
+        ]
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "const": "add"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "value"
+          ]
+        }
+      }
+    ],
+    "required": [
+      "name"
+    ]
   }
 }

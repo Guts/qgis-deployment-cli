@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/qplugins-synchronizer.json",
+    "description": "synchronize plugins between those stored locally (typically downloaded by the Plugins Downloader job) and the installed plugins.",
+    "title": "QPlugins Synchronizer.",
+    "type": "object",
+    "properties": {
+        "action": {
+            "default": "create_or_restore",
+            "description": "Tell the job what to do with plugins in installed profiles.",
+            "enum": [
+                "create",
+                "create_or_restore",
+                "remove"
+            ],
+            "type": "string"
+        },
+        "profile_ref": {
+            "default": "installed",
+            "description": "Which `profile.json` file to use as reference.",
+            "enum": [
+                "downloaded",
+                "installed"
+            ],
+            "type": "string"
+        },
+        "source": {
+            "description": "Where to find plugins zip files.",
+            "type": "string"
+        }
+    }
+}

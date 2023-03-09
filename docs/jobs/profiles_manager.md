@@ -39,7 +39,7 @@ Name of the branch to use when working with a git repository.
 
 ### protocol
 
-Set wich protocol to use.
+Set which protocol to use.
 
 Possible_values:
 
