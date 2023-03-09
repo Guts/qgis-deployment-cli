@@ -47,7 +47,7 @@ class QdtProfile:
     """Object definition for QGIS Profile handled by QDT."""
 
     # optional mapping on attributes names.
-    # {attribute_name_in_output_object: attribute_name_from_input_file}
+    # {attribute_name_in_output_object: attribute_name_from_input_file}  # noqa: E800
     ATTR_MAP = {
         "qgis_maximum_version": "qgisMaximumVersion",
         "qgis_minimum_version": "qgisMinimumVersion",
