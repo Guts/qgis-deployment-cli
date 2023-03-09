@@ -16,6 +16,25 @@ Unreleased
 
 -->
 
+## 0.21.0 - 2023-03-09
+
+### Bugs fixes 🐛
+
+* Fix: outdated profiles should also be copied when sync_mode=only_different by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/225>
+
+### Features and enhancements 🎉
+
+* Improve upgrade subcommand by handling GitHub Token by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/219>
+* Tooling: complete JSON schemas and job documentation by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/224>
+
+### Tooling 🔧
+
+* Add bug report issue form by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/222>
+
+### Documentation 📖
+
+* Documentation: improve download page by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/220>
+
 ## 0.20.0 - 2023-03-07
 
 ### Features and enhancements 🎉
