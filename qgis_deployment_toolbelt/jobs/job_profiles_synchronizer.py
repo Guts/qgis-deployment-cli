@@ -286,42 +286,53 @@ class JobProfilesDownloader(GenericJob):
             # copy all downloaded profiles
             self.sync_overwrite_local_profiles(profiles_to_copy=downloaded_profiles)
 
-        elif (
-            len(
-                set(self.PROFILES_NAMES_DOWNLOADED) - set(self.PROFILES_NAMES_INSTALLED)
-            )
-            and self.options.get("sync_mode") == "only_missing"
-        ):
-            already_installed = [
-                p
-                for p in self.PROFILES_NAMES_DOWNLOADED
-                if p in self.PROFILES_NAMES_INSTALLED
-            ]
-            not_installed = [
-                p
-                for p in self.PROFILES_NAMES_DOWNLOADED
-                if p not in self.PROFILES_NAMES_INSTALLED
-            ]
+        elif self.options.get("sync_mode") == "only_missing":
+            already_installed = []
+            not_installed = []
+            for dl_profile in downloaded_profiles:
+                if not dl_profile.path_in_qgis.is_dir() or not any(
+                    dl_profile.path_in_qgis.iterdir()
+                ):
+                    not_installed.append(dl_profile)
+                else:
+                    already_installed.append(dl_profile)
 
-            logger.error(
-                "Mixed case. "
-                f"Already installed profiles: {','.join(already_installed)}. "
-                f"Not installed: {','.join(not_installed)}."
-            )
+            if not len(not_installed):
+                logger.info(
+                    f"Each of the {len(downloaded_profiles)} downloaded plugins are "
+                    "already installed."
+                )
+                compare_for_info = self.compare_downloaded_with_installed_profiles(
+                    li_downloaded_profiles=downloaded_profiles
+                )
+                if len(compare_for_info[0]):
+                    logger.info(
+                        f"{compare_for_info[0]} of installed plugins are outdated comparing with"
+                        f" downloaded ones: {','.join([p.name for p in compare_for_info[0]])}."
+                    )
+                elif len(compare_for_info[1]):
+                    logger.info(
+                        f"{compare_for_info[1]} of installed plugins are outdated comparing with"
+                        f" downloaded ones: {','.join([p.name for p in compare_for_info[1]])}."
+                    )
+                else:
+                    logger.info("Everything is up-to-date. Nothing to do!")
+                return
 
-            for d in downloaded_profiles:
-                if d.name in not_installed:
-                    # create destination parent folder
-                    to_profile_parent_folderpath = Path(
-                        self.qgis_profiles_path / d.name
-                    )
-                    to_profile_parent_folderpath.mkdir(parents=True, exist_ok=True)
-                    copytree(
-                        d.folder,
-                        to_profile_parent_folderpath,
-                        copy_function=copy2,
-                        dirs_exist_ok=True,
-                    )
+            info_msg = (
+                f"Mixed case. {len(not_installed)} are not installed: "
+                f"{','.join([p.name for p in not_installed])}."
+            )
+            if len(already_installed):
+                info_msg += (
+                    f" {len(already_installed)} are already installed: "
+                    f"{','.join([p.name for p in already_installed])}."
+                )
+
+            logger.info(info_msg)
+
+            self.sync_overwrite_local_profiles(profiles_to_copy=not_installed)
+
         elif self.options.get("sync_mode") == "only_new_version":
             outdated = self.compare_downloaded_with_installed_profiles(
                 li_downloaded_profiles=downloaded_profiles
