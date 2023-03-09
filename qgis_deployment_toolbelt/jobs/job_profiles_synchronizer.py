@@ -255,7 +255,7 @@ class JobProfilesDownloader(GenericJob):
                     )
                     to_profile_parent_folderpath.mkdir(parents=True, exist_ok=True)
                     copytree(
-                        d,
+                        d.folder,
                         to_profile_parent_folderpath,
                         copy_function=copy2,
                         dirs_exist_ok=True,
