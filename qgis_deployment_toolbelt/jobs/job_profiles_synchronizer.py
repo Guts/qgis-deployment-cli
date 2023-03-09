@@ -353,6 +353,7 @@ class JobProfilesDownloader(GenericJob):
                     f"{downloaded_profile.path_in_qgis}, so it's impossible to compare "
                     "versions."
                 )
+                continue
 
             # compare
             if profile_installed.is_older_than(downloaded_profile):
