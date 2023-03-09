@@ -1,56 +1,89 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/generic.json",
   "description": "Definition of a job, i.e. a logic execution which can be ran during a step.",
   "title": "Steps",
   "type": "array",
-  "items": [
-    {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name to display and use in logs.",
-          "title": "Displayed name",
-          "minLength": 1,
-          "maxLength": 255
-        },
-        "uses": {
-          "type": "string",
-          "description": "Job name.",
-          "title": "Which job to use.",
-          "minLength": 1,
-          "maxLength": 255,
-          "enum": [
-            "manage-env-vars",
-            "qplugins-downloader",
-            "qplugins-synchronizer",
-            "qprofiles-manager",
-            "shortcuts-manager",
-            "splash-screen-manager"
-          ]
-        },
-        "with": {
-          "type": [
-            "array",
-            "object"
-          ],
-          "description": "Parameters for the job.",
-          "title": "Job parameters.",
-          "oneOf": [
-            {
-              "$ref": "manage-env-vars.json"
-            },
-            {
-              "$ref": "qprofiles-manager.json"
-            }
-          ]
+  "uniqueItems": true,
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Name to display and use in logs.",
+        "title": "Job name",
+        "minLength": 1,
+        "maxLength": 255
+      },
+      "uses": {
+        "type": "string",
+        "description": "Which job to use.",
+        "title": "Job identifier",
+        "minLength": 1,
+        "maxLength": 255,
+        "enum": [
+          "manage-env-vars",
+          "qplugins-downloader",
+          "qplugins-synchronizer",
+          "qprofiles-manager",
+          "shortcuts-manager",
+          "splash-screen-manager"
+        ]
+      },
+      "with": {
+        "description": "Parameters",
+        "type": [
+          "array",
+          "object"
+        ]
+      }
+    },
+    "oneOf": [
+      {
+        "properties": {
+          "uses": {
+            "const": "manage-env-vars"
+          },
+          "with": {
+            "$ref": "manage-env-vars.json"
+          }
         }
       },
-      "required": [
-        "name",
-        "uses"
-      ]
-    }
-  ]
+      {
+        "properties": {
+          "uses": {
+            "const": "qplugins-downloader"
+          },
+          "with": {
+            "$ref": "qplugins-downloader.json"
+          }
+        }
+      },
+      {
+        "properties": {
+          "uses": {
+            "const": "qplugins-synchronizer"
+          },
+          "with": {
+            "$ref": "qplugins-synchronizer.json"
+          }
+        }
+      },
+      {
+        "properties": {
+          "uses": {
+            "const": "qprofiles-manager"
+          },
+          "with": {
+            "$ref": "qprofiles-manager.json"
+          }
+        }
+      }
+    ],
+    "required": [
+      "name",
+      "uses"
+    ]
+  }
 }
