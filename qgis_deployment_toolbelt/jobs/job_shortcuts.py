@@ -47,7 +47,7 @@ class JobShortcutsManager(GenericJob):
         "action": {
             "type": str,
             "required": False,
-            "default": "create",
+            "default": "create_or_restore",
             "possible_values": ("create", "create_or_restore", "remove"),
             "condition": "in",
         },

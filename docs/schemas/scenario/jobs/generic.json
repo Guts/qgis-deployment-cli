@@ -79,6 +79,16 @@
             "$ref": "qprofiles-manager.json"
           }
         }
+      },
+      {
+        "properties": {
+          "uses": {
+            "const": "shortcuts-manager"
+          },
+          "with": {
+            "$ref": "shortcuts-manager.json"
+          }
+        }
       }
     ],
     "required": [
