@@ -1,0 +1,27 @@
+# This is a sample of a YAML file for the QGIS Deployment Toolbelt scenario.
+# For now, it's more a roadmap than a real description of what it's implemented.
+
+metadata:
+  title: "Sample scenario of QGIS Deployment Toolbelt"
+  id: sample-scenario-good-only-different
+  description: >-
+    This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
+    demonstrate capabilities.
+
+settings:
+  DEBUG: false
+  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/Oslandia/
+  QGIS_EXE_PATH:
+    linux: /usr/bin/qgis
+    mac: /usr/bin/qgis
+    windows: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
+  SCENARIO_VALIDATION: true
+
+steps:
+  - name: Synchronize QGIS profiles from remote location
+    uses: qprofiles-manager
+    with:
+      protocol: git
+      branch: main
+      source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
+      sync_mode: only_different
