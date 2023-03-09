@@ -269,9 +269,7 @@ class JobProfilesDownloader(GenericJob):
                     "All installed profiles are up-to-date with downloaded ones."
                 )
                 return
-            self.sync_copy_overwrite_only_different_version(
-                profiles_folder_to_copy=outdated
-            )
+            self.sync_overwrite_local_profiles(profiles_folder_to_copy=outdated)
         elif self.options.get("sync_mode") == "only_different_version":
             outdated, different, same = self.compare_downloaded_with_installed_profiles(
                 li_downloaded_profiles=downloaded_profiles
@@ -281,7 +279,7 @@ class JobProfilesDownloader(GenericJob):
                     f"All installed profiles are the same as downloaded ones: {len(same)}"
                 )
                 return
-            self.sync_copy_overwrite_only_different_version(
+            self.sync_overwrite_local_profiles(
                 profiles_folder_to_copy=different + outdated
             )
         elif self.options.get("sync_mode") == "overwrite":
