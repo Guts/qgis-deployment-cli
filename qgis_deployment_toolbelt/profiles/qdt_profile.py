@@ -47,7 +47,7 @@ class QdtProfile:
     """Object definition for QGIS Profile handled by QDT."""
 
     # optional mapping on attributes names.
-    # {attribute_name_in_output_object: attribute_name_from_input_file}
+    # {attribute_name_in_output_object: attribute_name_from_input_file}  # noqa: E800
     ATTR_MAP = {
         "qgis_maximum_version": "qgisMaximumVersion",
         "qgis_minimum_version": "qgisMinimumVersion",
@@ -228,13 +228,18 @@ class QdtProfile:
         return self._json_ref_path.resolve()
 
     @property
-    def name(self) -> Path:
-        """Returns the profile's name.
+    def name(self) -> str:
+        """Returns the profile's name. If not set, the folder name is used.
 
         Returns:
-            Path: profile's name
+            str: profile's name
         """
-        return self._name
+        if self._name:
+            return self._name
+        elif self._folder:
+            return self._folder
+        else:
+            return None
 
     @property
     def path_in_qgis(self) -> Path:

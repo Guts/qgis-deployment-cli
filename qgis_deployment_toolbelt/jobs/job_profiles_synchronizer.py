@@ -164,6 +164,68 @@ class JobProfilesDownloader(GenericJob):
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
+    def compare_downloaded_with_installed_profiles(
+        self, li_downloaded_profiles: Iterable[QdtProfile]
+    ) -> tuple[list[QdtProfile], list[QdtProfile], list[QdtProfile]]:
+        """Compare versions between downloaded (in QDT working folder) and installed
+            (in QGIS) profiles.
+
+        Args:
+            li_downloaded_profiles (Iterable[QdtProfile]): downloaded profiles.
+
+        Returns:
+            tuple[list[QdtProfile], list[QdtProfile], list[QdtProfile]]: a tuple with
+            the following structure (
+                list of installed profiles which are outdated (lesser version number),
+                list of installed profiles with a different version (lesser or greater),
+                list of profiles with the same version number in downloaded/installed
+                )
+        """
+        li_profiles_outdated = []
+        li_profiles_different = []
+        li_profiles_equal = []
+
+        for downloaded_profile in li_downloaded_profiles:
+            if (
+                not downloaded_profile.version
+                or not downloaded_profile.is_loaded_from_json
+            ):
+                logger.error(
+                    "Unable to load profile.json from downloaded profile "
+                    f"{downloaded_profile}, so it's impossible to compare "
+                    "versions."
+                )
+                continue
+
+            if Path(downloaded_profile.path_in_qgis, "profile.json").is_file():
+                profile_installed: QdtProfile = QdtProfile.from_json(
+                    profile_json_path=Path(
+                        downloaded_profile.path_in_qgis, "profile.json"
+                    ),
+                    profile_folder=downloaded_profile.path_in_qgis,
+                )
+            else:
+                logger.error(
+                    "Unable to load profile.json from installed profile "
+                    f"{downloaded_profile.path_in_qgis}, so it's impossible to compare "
+                    "versions."
+                )
+                profile_installed: QdtProfile = QdtProfile(
+                    folder=downloaded_profile.path_in_qgis, version="0.0.0"
+                )
+
+            # compare
+            if profile_installed.is_older_than(downloaded_profile):
+                li_profiles_outdated.append(downloaded_profile)
+            elif profile_installed.version != downloaded_profile.version:
+                li_profiles_different.append(downloaded_profile)
+            elif profile_installed.version == downloaded_profile.version:
+                li_profiles_equal.append(downloaded_profile)
+            else:
+                continue
+
+        return li_profiles_outdated, li_profiles_different, li_profiles_equal
+
     def filter_profiles_folder(self) -> tuple[QdtProfile]:
         """Parse downloaded folder to filter on QGIS profiles folders.
 
@@ -255,7 +317,7 @@ class JobProfilesDownloader(GenericJob):
                     )
                     to_profile_parent_folderpath.mkdir(parents=True, exist_ok=True)
                     copytree(
-                        d,
+                        d.folder,
                         to_profile_parent_folderpath,
                         copy_function=copy2,
                         dirs_exist_ok=True,
@@ -269,7 +331,7 @@ class JobProfilesDownloader(GenericJob):
                     "All installed profiles are up-to-date with downloaded ones."
                 )
                 return
-            self.sync_overwrite_local_profiles(profiles_folder_to_copy=outdated)
+            self.sync_overwrite_local_profiles(profiles_to_copy=outdated)
         elif self.options.get("sync_mode") == "only_different_version":
             outdated, different, same = self.compare_downloaded_with_installed_profiles(
                 li_downloaded_profiles=downloaded_profiles
@@ -279,9 +341,7 @@ class JobProfilesDownloader(GenericJob):
                     f"All installed profiles are the same as downloaded ones: {len(same)}"
                 )
                 return
-            self.sync_overwrite_local_profiles(
-                profiles_folder_to_copy=different + outdated
-            )
+            self.sync_overwrite_local_profiles(profiles_to_copy=different + outdated)
         elif self.options.get("sync_mode") == "overwrite":
             logger.debug(
                 "Installed profiles are going to be overridden by downloaded ones."
@@ -307,65 +367,6 @@ class JobProfilesDownloader(GenericJob):
                 dirs_exist_ok=True,
             )
 
-    def compare_downloaded_with_installed_profiles(
-        self, li_downloaded_profiles: Iterable[QdtProfile]
-    ) -> tuple[list[QdtProfile], list[QdtProfile], list[QdtProfile]]:
-        """Compare versions between downloaded (in QDT working folder) and installed
-            (in QGIS) profiles.
-
-        Args:
-            li_downloaded_profiles (Iterable[QdtProfile]): downloaded profiles.
-
-        Returns:
-            tuple[list[QdtProfile], list[QdtProfile], list[QdtProfile]]: a tuple with
-            the following structure (
-                list of installed profiles which are outdated (lesser version number),
-                list of installed profiles with a different version (lesser or greater),
-                list of profiles with the same version number in downloaded/installed
-                )
-        """
-        li_profiles_outdated = []
-        li_profiles_different = []
-        li_profiles_equal = []
-
-        for downloaded_profile in li_downloaded_profiles:
-            if (
-                not downloaded_profile.version
-                or not downloaded_profile.is_loaded_from_json
-            ):
-                logger.error(
-                    "Unable to load profile.json from downloaded profile "
-                    f"{downloaded_profile}, so it's impossible to compare "
-                    "versions."
-                )
-                continue
-
-            if Path(downloaded_profile.path_in_qgis, "profile.json").is_file():
-                profile_installed: QdtProfile = QdtProfile.from_json(
-                    profile_json_path=Path(
-                        downloaded_profile.path_in_qgis, "profile.json"
-                    ),
-                    profile_folder=downloaded_profile.path_in_qgis,
-                )
-            else:
-                logger.error(
-                    "Unable to load profile.json from installed profile "
-                    f"{downloaded_profile.path_in_qgis}, so it's impossible to compare "
-                    "versions."
-                )
-
-            # compare
-            if profile_installed.is_older_than(downloaded_profile):
-                li_profiles_outdated.append(downloaded_profile)
-            elif profile_installed.version != downloaded_profile.version:
-                li_profiles_different.append(downloaded_profile)
-            elif profile_installed.version == downloaded_profile.version:
-                li_profiles_equal.append(downloaded_profile)
-            else:
-                continue
-
-        return li_profiles_outdated, li_profiles_different, li_profiles_equal
-
     def sync_overwrite_local_profiles(
         self, profiles_to_copy: tuple[QdtProfile]
     ) -> None:
@@ -378,6 +379,7 @@ class JobProfilesDownloader(GenericJob):
         # copy downloaded profiles into this
         for d in profiles_to_copy:
             logger.info(f"Copying {d.folder} to {d.path_in_qgis}")
+            d.path_in_qgis.mkdir(parents=True, exist_ok=True)
             copytree(
                 d.folder,
                 d.path_in_qgis,
