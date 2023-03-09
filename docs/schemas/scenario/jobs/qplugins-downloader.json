@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/qplugins-downloader.json",
+    "description": "Download plugins into QDT local folder.",
+    "title": "QPlugins Downloader.",
+    "type": "object",
+    "properties": {
+        "force": {
+            "default": false,
+            "description": "Controls download mode.",
+            "type": "boolean"
+        },
+        "threads": {
+            "default": 5,
+            "maximum": 5,
+            "minimum": 1,
+            "description": "Number of threads to use for downloading.",
+            "type": "integer"
+        }
+    }
+}
