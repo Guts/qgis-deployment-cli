@@ -94,7 +94,13 @@ def run(args: argparse.Namespace):
     )
 
     # -- Load and validate scenario --
-    scenario = ScenarioReader(in_yaml=Path(args.scenario_filepath))
+    try:
+        scenario = ScenarioReader(in_yaml=Path(args.scenario_filepath))
+    except Exception as err:
+        exit_cli_error(
+            f"Unable to read the scenario: {args.scenario_filepath}. Trace: {err}",
+            abort=True,
+        )
 
     # Check the validity of the scenario
     scenario_validity = scenario.validate_scenario()
