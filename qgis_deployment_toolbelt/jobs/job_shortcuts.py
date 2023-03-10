@@ -22,7 +22,6 @@ from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_direct
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles import ApplicationShortcut
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
-from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -127,24 +126,46 @@ class JobShortcutsManager(GenericJob):
 
     def run(self) -> None:
         """Execute job logic."""
+        # check of there are some profiles folders within the downloaded folder
+        downloaded_profiles = self.filter_profiles_folder()
+        if downloaded_profiles is None:
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return
+
         # check action
         if self.options.get("action") in ("create", "create_or_restore"):
-            for p in self.options.get("include", []):
+            for inc_shortcut in self.options.get("include", []):
+                qdt_profile = self.get_matching_profile_from_name(
+                    li_profiles=downloaded_profiles,
+                    profile_name=inc_shortcut.get("profile"),
+                )
+                if not qdt_profile:
+                    continue
+
+                if qdt_profile.icon:
+                    icon_in_qgis = qdt_profile.path_in_qgis.joinpath(qdt_profile.icon)
+                else:
+                    icon_in_qgis = None
+
+                if qdt_profile.icon_path:
+                    logger.debug(
+                        f"Profile {qdt_profile.name} has an icon set: {qdt_profile.icon_path}"
+                    )
+
                 shortcut = ApplicationShortcut(
-                    name=p.get("label"),
-                    exec_path=self.get_qgis_path(p.get("qgis_path")),
+                    name=inc_shortcut.get("label"),
+                    exec_path=self.os_config.get_qgis_bin_path,
                     description=f"Created with {__title__} {__version__}",
-                    icon_path=self.get_icon_path(p.get("icon"), p.get("profile")),
+                    icon_path=icon_in_qgis,
                     exec_arguments=self.get_arguments_ready(
-                        p.get("profile"), p.get("additional_arguments")
+                        inc_shortcut.get("profile"),
+                        inc_shortcut.get("additional_arguments"),
                     ),
-                    work_dir=self.get_profile_folder_path_from_name(
-                        p.get("profile", "default")
-                    ),
+                    work_dir=qdt_profile.path_in_qgis,
                 )
                 shortcut.create(
-                    desktop=p.get("desktop", False),
-                    start_menu=p.get("start_menu", True),
+                    desktop=inc_shortcut.get("desktop", False),
+                    start_menu=inc_shortcut.get("start_menu", True),
                 )
                 logger.info(f"Created shortcut {shortcut.name}")
                 self.SHORTCUTS_CREATED.append(shortcut)
@@ -191,38 +212,34 @@ class JobShortcutsManager(GenericJob):
             logger.error("No QGIS profile found in the downloaded folder.")
             return None
 
-    def get_profile_folder_path_from_name(self, profile_name: str) -> Path:
-        """Determine profile directory folder (once installed in QGIS) from the profile name.
+    def get_matching_profile_from_name(
+        self, li_profiles: list[QdtProfile], profile_name: str
+    ) -> QdtProfile:
+        """Get a profile from list of profiles using a profile's name to match.
 
         Args:
+            li_profiles (list[QdtProfile]): list of profile to look into
             profile_name (str): profile name
 
         Returns:
-            Path: path to the profile folder
+            QdtProfile: matching profile object
         """
-        path_normal_case = Path(self.qgis_profiles_path, profile_name)
+        # load profile
+        matching_qdt_profile = [
+            pr for pr in li_profiles if profile_name in (pr.name, pr.folder.name)
+        ]
+        if not len(matching_qdt_profile):
+            logger.error(
+                "Unable to get a matching profile among downloaded ones with "
+                f"the name: {profile_name}"
+            )
+            return None
 
-        if check_path(
-            input_path=path_normal_case, must_be_a_folder=True, raise_error=False
-        ):
-            return path_normal_case
-        else:
-            path_lower_case = Path(self.qgis_profiles_path, profile_name.lower())
-            if check_path(
-                input_path=path_lower_case, must_be_a_folder=True, raise_error=False
-            ):
-                logger.warning(
-                    f"Path to the profile folder doesn't exist: {path_normal_case}. "
-                    f"But it does lowercasing the profile name: {path_lower_case}."
-                    "Please amend the scenario file."
-                )
-                return path_lower_case
-            else:
-                logger.warning(
-                    f"Path to the profile folder doesn't exist: {path_normal_case}, "
-                    f"nor lowercasing the profile name: {path_lower_case}."
-                )
-                return path_normal_case
+        qdt_profile = matching_qdt_profile[0]
+        logger.info(
+            f"Downloaded profile matched: {qdt_profile.name} from "
+            f"{qdt_profile.folder}"
+        )
 
     def get_icon_path(self, icon: str, profile_name: str) -> Path:
         """Try to get icon path. First, check that an icon key has been specified in the scenario file;
@@ -231,10 +248,14 @@ class JobShortcutsManager(GenericJob):
         if still not, within the related profile folder.
         None as fallback.
 
-        :param str icon: icon path as mentioned into the scenario file
-        :param str profile_name: QGIS profile name where to look into
-        :return Union[Path, None]: icon path as Path if str or Path, else None
+        Args:
+            icon (str): icon path as mentioned into the scenario file
+            profile_name (str): QGIS profile name where to look into
+
+        Returns:
+            Path: icon path as Path if str or Path, else None
         """
+
         # try to get the value of the icon key
         if not icon:
             return None
