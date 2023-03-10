@@ -23,6 +23,7 @@ from qgis_deployment_toolbelt.__about__ import (
     __version__,
 )
 from qgis_deployment_toolbelt.commands import parser_main_deployment, parser_upgrade
+from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 
 # #############################################################################
 # ########## Globals ###############
@@ -70,10 +71,14 @@ def set_default_subparser(
     """
     subparser_found = False
     for arg in sys.argv[1:]:
-        if arg in ["-h", "--help"]:  # global help if no subparser
+        if arg in [
+            "-h",
+            "--help",
+            "--version",
+            "--no-logfile",
+        ]:  # ignore main parser args
             break
-        elif arg in ["--version"]:  # global version if no subparser
-            break
+
     else:
         for x in parser_to_update._subparsers._actions:
             if not isinstance(x, argparse._SubParsersAction):
@@ -116,7 +121,17 @@ def main(in_args: list[str] = None):
         action="count",
         default=1,
         dest="verbosity",
-        help="Verbosity level. None = WARNING, -v = INFO, -vv = DEBUG",
+        help="Verbosity level. None = WARNING, -v = INFO, -vv = DEBUG. Can be set with "
+        "QDT_LOGS_LEVEL environment variable and logs location with QDT_LOGS_DIR.",
+    )
+
+    main_parser.add_argument(
+        "--no-logfile",
+        default=True,
+        action="store_false",
+        dest="opt_logfile_disabled",
+        help="Disable log file. Log files are usually created, rotated and stored in the"
+        "folder set by QDT_LOGS_DIR.",
     )
 
     main_parser.add_argument(
@@ -156,23 +171,13 @@ def main(in_args: list[str] = None):
     # just get passed args
     args = main_parser.parse_args(in_args)
 
-    # set log level depending on verbosity argument
-    if 0 < args.verbosity < 4:
-        args.verbosity = 40 - (10 * args.verbosity)
-    elif args.verbosity >= 4:
-        # debug is the limit
-        args.verbosity = 40 - (10 * 3)
+    # log configuration
+    if args.opt_logfile_disabled:
+        configure_logger(
+            verbosity=args.verbosity, logfile=f"{__title_clean__}_{__version__}.log"
+        )
     else:
-        args.verbosity = 0
-
-    logging.basicConfig(
-        level=args.verbosity,
-        format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
-    console = logging.StreamHandler()
-    console.setLevel(args.verbosity)
+        configure_logger(verbosity=args.verbosity)
 
     # add the handler to the root logger
     logger = logging.getLogger(__title_clean__)
@@ -181,9 +186,6 @@ def main(in_args: list[str] = None):
     # -- RUN LOGIC --
     if hasattr(args, "func"):
         args.func(args)
-    else:
-        # if no args, run deployment
-        main(["deploy"] + in_args)
 
 
 # #############################################################################

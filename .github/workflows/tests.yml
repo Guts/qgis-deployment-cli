@@ -50,6 +50,7 @@ jobs:
       - name: Unit tests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QDT_LOGS_LEVEL: 4
         run: pytest
 
       - name: Upload coverage to Codecov
@@ -89,3 +90,6 @@ jobs:
 
       - name: QDT - Sample scenario
         run: qgis-deployment-toolbelt --verbose
+
+      - name: QDT - Sample scenario
+        run: qgis-deployment-toolbelt --verbose --no-logfile
