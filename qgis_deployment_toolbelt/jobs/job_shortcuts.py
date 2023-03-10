@@ -13,16 +13,15 @@
 
 # Standard library
 import logging
-from os.path import expandvars
 from pathlib import Path
 from sys import platform as opersys
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
-from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles import ApplicationShortcut
-from qgis_deployment_toolbelt.utils.check_path import check_path
+from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 
 # #############################################################################
 # ########## Globals ###############
@@ -122,28 +121,44 @@ class JobShortcutsManager(GenericJob):
             )
 
         self.os_config = OS_CONFIG.get(opersys)
+        self.qdt_working_folder = get_qdt_working_directory()
         self.qgis_profiles_path: Path = Path(self.os_config.profiles_path)
 
     def run(self) -> None:
         """Execute job logic."""
+        # check of there are some profiles folders within the downloaded folder
+        downloaded_profiles = self.filter_profiles_folder()
+        if downloaded_profiles is None:
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return
+
         # check action
         if self.options.get("action") in ("create", "create_or_restore"):
-            for p in self.options.get("include", []):
+            for inc_shortcut in self.options.get("include", []):
+                qdt_profile = self.get_matching_profile_from_name(
+                    li_profiles=downloaded_profiles,
+                    profile_name=inc_shortcut.get("profile"),
+                )
+                if not qdt_profile:
+                    continue
+
+                # instanciate shortcut
                 shortcut = ApplicationShortcut(
-                    name=p.get("label"),
-                    exec_path=self.get_qgis_path(p.get("qgis_path")),
+                    name=inc_shortcut.get("label"),
+                    exec_path=self.os_config.get_qgis_bin_path,
                     description=f"Created with {__title__} {__version__}",
-                    icon_path=self.get_icon_path(p.get("icon"), p.get("profile")),
+                    icon_path=self.get_icon_path(
+                        profile=qdt_profile, icon_filename=inc_shortcut.get("profile")
+                    ),
                     exec_arguments=self.get_arguments_ready(
-                        p.get("profile"), p.get("additional_arguments")
+                        inc_shortcut.get("profile"),
+                        inc_shortcut.get("additional_arguments"),
                     ),
-                    work_dir=self.get_profile_folder_path_from_name(
-                        p.get("profile", "default")
-                    ),
+                    work_dir=qdt_profile.path_in_qgis,
                 )
                 shortcut.create(
-                    desktop=p.get("desktop", False),
-                    start_menu=p.get("start_menu", True),
+                    desktop=inc_shortcut.get("desktop", False),
+                    start_menu=inc_shortcut.get("start_menu", True),
                 )
                 logger.info(f"Created shortcut {shortcut.name}")
                 self.SHORTCUTS_CREATED.append(shortcut)
@@ -153,99 +168,133 @@ class JobShortcutsManager(GenericJob):
             raise NotImplementedError
 
     # -- INTERNAL LOGIC ------------------------------------------------------
-    def get_profile_folder_path_from_name(self, profile_name: str) -> Path:
-        """Determine profile directory folder (once installed in QGIS) from the profile name.
+
+    def filter_profiles_folder(self) -> tuple[QdtProfile]:
+        """Parse downloaded folder to filter on QGIS profiles folders.
+
+        Returns:
+            tuple[QdtProfile]: tuple of profiles objects
+        """
+        # first, try to get folders containing a profile.json
+        qgis_profiles_folder = [
+            QdtProfile.from_json(profile_json_path=f, profile_folder=f.parent)
+            for f in self.qdt_working_folder.glob("**/profile.json")
+        ]
+        if len(qgis_profiles_folder):
+            logger.debug(
+                f"{len(qgis_profiles_folder)} profiles found within {self.qdt_working_folder}"
+            )
+            return tuple(qgis_profiles_folder)
+
+        # if empty, try to identify if a folder is a QGIS profile - but unsure
+        for d in self.qdt_working_folder.glob("**"):
+            if (
+                d.is_dir()
+                and d.parent.name == "profiles"
+                and not d.name.startswith(".")
+            ):
+                qgis_profiles_folder.append(QdtProfile(folder=d, name=d.name))
+
+        if len(qgis_profiles_folder):
+            return tuple(qgis_profiles_folder)
+
+        # if still empty, raise a warning but returns every folder under a `profiles` folder
+        # TODO: try to identify if a folder is a QGIS profile with some approximate criteria
+
+        if not len(qgis_profiles_folder):
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return None
+
+    def get_matching_profile_from_name(
+        self, li_profiles: list[QdtProfile], profile_name: str
+    ) -> QdtProfile:
+        """Get a profile from list of profiles using a profile's name to match.
 
         Args:
+            li_profiles (list[QdtProfile]): list of profile to look into
             profile_name (str): profile name
 
         Returns:
-            Path: path to the profile folder
+            QdtProfile: matching profile object
         """
-        path_normal_case = Path(self.qgis_profiles_path, profile_name)
-
-        if check_path(
-            input_path=path_normal_case, must_be_a_folder=True, raise_error=False
-        ):
-            return path_normal_case
-        else:
-            path_lower_case = Path(self.qgis_profiles_path, profile_name.lower())
-            if check_path(
-                input_path=path_lower_case, must_be_a_folder=True, raise_error=False
-            ):
-                logger.warning(
-                    f"Path to the profile folder doesn't exist: {path_normal_case}. "
-                    f"But it does lowercasing the profile name: {path_lower_case}."
-                    "Please amend the scenario file."
-                )
-                return path_lower_case
-            else:
-                logger.warning(
-                    f"Path to the profile folder doesn't exist: {path_normal_case}, "
-                    f"nor lowercasing the profile name: {path_lower_case}."
-                )
-                return path_normal_case
-
-    def get_qgis_path(self, qgis_bin_exe_path: str) -> Path | None:
-        """Try to get qgis path.
-
-        :param str qgis_bin_exe_path: qgis path as mentioned into the scenario file
-        :return Union[Path, None]:  qgis path as Path if str or Path, else None
-        """
-        # try to get the value of the qgis_path key
-        if qgis_bin_exe_path:
-            return Path(expandvars(qgis_bin_exe_path))
-        else:
-            return self.os_config.get_qgis_bin_path
-
-    def get_icon_path(self, icon: str, profile_name: str) -> Path | None:
-        """Try to get icon path.
-
-        First, check that an icon key has been specified in the scenario file;
-        then, right next to the toolbelt;
-        then under a subfolder starting from the toolbelt (adn handling pathlib OSError);
-        if still not, within the related profile folder.
-        None as fallback.
-
-        :param str icon: icon path as mentioned into the scenario file
-        :param str profile_name: QGIS profile name where to look into
-        :return Union[Path, None]: icon path as Path if str or Path, else None
-        """
-        # try to get the value of the icon key
-        if not icon:
+        # load profile
+        matching_qdt_profile = [
+            pr for pr in li_profiles if profile_name in (pr.name, pr.folder.name)
+        ]
+        if not len(matching_qdt_profile):
+            logger.error(
+                "Unable to get a matching profile among downloaded ones with "
+                f"the name: {profile_name}"
+            )
             return None
 
-        # try to get icon right aside the toolbelt
-        if Path(icon).is_file():
-            logger.debug(f"Icon found next to the toolbelt: {Path(icon).resolve()}")
-            return Path(icon).resolve()
-
-        # try to get icon within folders under toolbelt
-        try:
-            li_subfolders = list(Path(".").rglob(f"{icon}"))
-            if len(li_subfolders):
-                logger.debug(
-                    f"Icon found under the toolbelt: {li_subfolders[0].resolve()}"
-                )
-                return li_subfolders[0].resolve()
-        except OSError as err:
-            logger.error(
-                "Looking for icon within folders under toolbelt failed. %s" % err
-            )
-
-        # try to get icon within profile folder
-        qgis_profile_path: Path = Path(
-            OS_CONFIG.get(opersys).profiles_path / profile_name
+        qdt_profile = matching_qdt_profile[0]
+        logger.info(
+            f"Downloaded profile matched: {qdt_profile.name} from "
+            f"{qdt_profile.folder}"
         )
-        if qgis_profile_path.is_dir():
-            li_subfolders = list(qgis_profile_path.rglob(f"{icon}"))
-            if len(li_subfolders):
-                logger.debug(
-                    f"Icon found within profile folder: {li_subfolders[0].resolve()}"
-                )
-                return li_subfolders[0].resolve()
 
-        return None
+    def get_icon_path(self, profile: QdtProfile, icon_filename: str) -> Path:
+        """Get icon path to use with the shortcut. Looking for:
+
+            1. checks if an icon key has been specified in the scenario file and if it
+                exists
+            2. checks if an icon has been specified into scenario and if it exists
+                within profile folder (in QGIS)
+            3. checks if an icon has been specified into scenario and if it exists under
+                a subfolder starting from the toolbelt (adn handling pathlib OSError)
+
+        Args:
+            profile (QdtProfile): QGIS profile object
+            icon_filename (str): icon path as mentioned into the scenario file
+
+        Returns:
+            Path: icon path as Path if str or Path, else None
+        """
+        profile_icon_installed = None
+
+        # 1. check icon specified in profile.json
+        if profile.icon:
+            profile_icon_installed = profile.path_in_qgis.joinpath(profile.icon)
+            if profile_icon_installed.is_file():
+                logger.debug(
+                    f"Icon set in profile.json exists so it will be used: "
+                    f"{profile_icon_installed}"
+                )
+                return profile_icon_installed.resolve()
+
+        # if not specified in profile.json nor in scenario --> None
+        if icon_filename is None:
+            logger.debug("No icon found in profile.json nor in scenario.")
+            return None
+
+        # 2. check if icon specified in scenario exists in profile folder
+        try:
+            li_icons_sub_profile_folder = list(
+                profile.path_in_qgis.rglob(f"{icon_filename}")
+            )
+            if len(li_icons_sub_profile_folder):
+                logger.debug(
+                    "Icon found under the installed profile folder: "
+                    f"{li_icons_sub_profile_folder[0].resolve()}"
+                )
+                return li_icons_sub_profile_folder[0].resolve()
+        except OSError as err:
+            logger.error(f"Looking for icon into profile subfolder failed. {err}")
+
+        # 3. check if icon specified in scenario exists under QDT
+        try:
+            li_icons_sub_qdt_folder = list(Path(".").glob(f"{icon_filename}"))
+            if len(li_icons_sub_qdt_folder):
+                logger.debug(
+                    "Icon found under the QDT folder: "
+                    f"{li_icons_sub_qdt_folder[0].resolve()}"
+                )
+                return li_icons_sub_qdt_folder[0].resolve()
+        except OSError as err:
+            logger.error(f"Looking for icon into profile subfolder failed. {err}")
+
+        return profile_icon_installed
 
     def get_arguments_ready(self, profile: str, in_arguments: str = None) -> tuple[str]:
         """Prepare arguments for the executable shortcut.
