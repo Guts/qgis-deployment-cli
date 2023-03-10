@@ -16,6 +16,7 @@ import logging
 from os import environ, getenv
 from pathlib import Path
 from sys import platform as opersys
+from urllib.parse import urlsplit
 
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
@@ -25,6 +26,7 @@ from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # submodules
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
+from qgis_deployment_toolbelt.utils.slugger import sluggy
 
 # #############################################################################
 # ########## Globals ###############
@@ -80,9 +82,30 @@ def run(args: argparse.Namespace):
     if isinstance(args.scenario_filepath, str) and args.scenario_filepath.startswith(
         ("http",)
     ):
+        # try to build file path from URL
+        try:
+            url_splitted = urlsplit(args.scenario_filepath)
+            local_filepath_for_remote_scenario = (
+                "remote_scenarios/"
+                f"{sluggy(url_splitted.netloc)}/"
+                f"{sluggy(str(Path(url_splitted.path).parent))}/"
+                f"{Path(url_splitted.path).name}"
+            )
+        except Exception as err:
+            local_filepath_for_remote_scenario = (
+                "remote_scenarios/default/scenario.qdt.yml"
+            )
+            logger.warning(
+                f"Failed to extract a proper filename from URL: {args.scenario_filepath}."
+                f" Trace: {err}. Fallback to default: {local_filepath_for_remote_scenario}"
+            )
+
         args.scenario_filepath = download_remote_file_to_local(
             remote_url_to_download=args.scenario_filepath,
-            local_file_path=Path("./downloaded_scenario.qdt.yml"),
+            local_file_path=Path(
+                get_qdt_working_directory().parent,
+                local_filepath_for_remote_scenario,
+            ),
         )
 
     # checks
