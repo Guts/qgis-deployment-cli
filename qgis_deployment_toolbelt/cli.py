@@ -23,6 +23,7 @@ from qgis_deployment_toolbelt.__about__ import (
     __version__,
 )
 from qgis_deployment_toolbelt.commands import parser_main_deployment, parser_upgrade
+from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 
 # #############################################################################
 # ########## Globals ###############
@@ -170,23 +171,13 @@ def main(in_args: list[str] = None):
     # just get passed args
     args = main_parser.parse_args(in_args)
 
-    # set log level depending on verbosity argument
-    if 0 < args.verbosity < 4:
-        args.verbosity = 40 - (10 * args.verbosity)
-    elif args.verbosity >= 4:
-        # debug is the limit
-        args.verbosity = 40 - (10 * 3)
+    # log configuration
+    if args.opt_logfile_disabled:
+        configure_logger(
+            verbosity=args.verbosity, logfile=f"{__title_clean__}_{__version__}.log"
+        )
     else:
-        args.verbosity = 0
-
-    logging.basicConfig(
-        level=args.verbosity,
-        format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
-    console = logging.StreamHandler()
-    console.setLevel(args.verbosity)
+        configure_logger(verbosity=args.verbosity)
 
     # add the handler to the root logger
     logger = logging.getLogger(__title_clean__)
@@ -195,9 +186,6 @@ def main(in_args: list[str] = None):
     # -- RUN LOGIC --
     if hasattr(args, "func"):
         args.func(args)
-    else:
-        # if no args, run deployment
-        main(["deploy"] + in_args)
 
 
 # #############################################################################
