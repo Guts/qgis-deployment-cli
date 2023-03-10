@@ -142,21 +142,14 @@ class JobShortcutsManager(GenericJob):
                 if not qdt_profile:
                     continue
 
-                if qdt_profile.icon:
-                    icon_in_qgis = qdt_profile.path_in_qgis.joinpath(qdt_profile.icon)
-                else:
-                    icon_in_qgis = None
-
-                if qdt_profile.icon_path:
-                    logger.debug(
-                        f"Profile {qdt_profile.name} has an icon set: {qdt_profile.icon_path}"
-                    )
-
+                # instanciate shortcut
                 shortcut = ApplicationShortcut(
                     name=inc_shortcut.get("label"),
                     exec_path=self.os_config.get_qgis_bin_path,
                     description=f"Created with {__title__} {__version__}",
-                    icon_path=icon_in_qgis,
+                    icon_path=self.get_icon_path(
+                        profile=qdt_profile, icon_filename=inc_shortcut.get("profile")
+                    ),
                     exec_arguments=self.get_arguments_ready(
                         inc_shortcut.get("profile"),
                         inc_shortcut.get("additional_arguments"),
@@ -241,56 +234,67 @@ class JobShortcutsManager(GenericJob):
             f"{qdt_profile.folder}"
         )
 
-    def get_icon_path(self, icon: str, profile_name: str) -> Path:
-        """Try to get icon path. First, check that an icon key has been specified in the scenario file;
-        then, right next to the toolbelt;
-        then under a subfolder starting from the toolbelt (adn handling pathlib OSError);
-        if still not, within the related profile folder.
-        None as fallback.
+    def get_icon_path(self, profile: QdtProfile, icon_filename: str) -> Path:
+        """Get icon path to use with the shortcut. Looking for:
+
+            1. checks if an icon key has been specified in the scenario file and if it
+                exists
+            2. checks if an icon has been specified into scenario and if it exists
+                within profile folder (in QGIS)
+            3. checks if an icon has been specified into scenario and if it exists under
+                a subfolder starting from the toolbelt (adn handling pathlib OSError)
 
         Args:
-            icon (str): icon path as mentioned into the scenario file
-            profile_name (str): QGIS profile name where to look into
+            profile (QdtProfile): QGIS profile object
+            icon_filename (str): icon path as mentioned into the scenario file
 
         Returns:
             Path: icon path as Path if str or Path, else None
         """
+        profile_icon_installed = None
 
-        # try to get the value of the icon key
-        if not icon:
+        # 1. check icon specified in profile.json
+        if profile.icon:
+            profile_icon_installed = profile.path_in_qgis.joinpath(profile.icon)
+            if profile_icon_installed.is_file():
+                logger.debug(
+                    f"Icon set in profile.json exists so it will be used: "
+                    f"{profile_icon_installed}"
+                )
+                return profile_icon_installed.resolve()
+
+        # if not specified in profile.json nor in scenario --> None
+        if icon_filename is None:
+            logger.debug("No icon found in profile.json nor in scenario.")
             return None
 
-        # try to get icon right aside the toolbelt
-        if Path(icon).is_file():
-            logger.debug(f"Icon found next to the toolbelt: {Path(icon).resolve()}")
-            return Path(icon).resolve()
-
-        # try to get icon within folders under toolbelt
+        # 2. check if icon specified in scenario exists in profile folder
         try:
-            li_subfolders = list(Path(".").rglob(f"{icon}"))
-            if len(li_subfolders):
-                logger.debug(
-                    f"Icon found under the toolbelt: {li_subfolders[0].resolve()}"
-                )
-                return li_subfolders[0].resolve()
-        except OSError as err:
-            logger.error(
-                "Looking for icon within folders under toolbelt failed. %s" % err
+            li_icons_sub_profile_folder = list(
+                profile.path_in_qgis.rglob(f"{icon_filename}")
             )
-
-        # try to get icon within profile folder
-        qgis_profile_path: Path = Path(
-            OS_CONFIG.get(opersys).profiles_path / profile_name
-        )
-        if qgis_profile_path.is_dir():
-            li_subfolders = list(qgis_profile_path.rglob(f"{icon}"))
-            if len(li_subfolders):
+            if len(li_icons_sub_profile_folder):
                 logger.debug(
-                    f"Icon found within profile folder: {li_subfolders[0].resolve()}"
+                    "Icon found under the installed profile folder: "
+                    f"{li_icons_sub_profile_folder[0].resolve()}"
                 )
-                return li_subfolders[0].resolve()
+                return li_icons_sub_profile_folder[0].resolve()
+        except OSError as err:
+            logger.error(f"Looking for icon into profile subfolder failed. {err}")
 
-        return None
+        # 3. check if icon specified in scenario exists under QDT
+        try:
+            li_icons_sub_qdt_folder = list(Path(".").glob(f"{icon_filename}"))
+            if len(li_icons_sub_qdt_folder):
+                logger.debug(
+                    "Icon found under the QDT folder: "
+                    f"{li_icons_sub_qdt_folder[0].resolve()}"
+                )
+                return li_icons_sub_qdt_folder[0].resolve()
+        except OSError as err:
+            logger.error(f"Looking for icon into profile subfolder failed. {err}")
+
+        return profile_icon_installed
 
     def get_arguments_ready(self, profile: str, in_arguments: str = None) -> tuple[str]:
         """Prepare arguments for the executable shortcut.
