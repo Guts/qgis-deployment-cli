@@ -43,12 +43,21 @@
                         "description": "Name of the profile to associate with the shortcut.",
                         "type": "string"
                     },
+                    "qgis_path": {
+                        "deprecated": true,
+                        "description": "Which QGIS bin/exe to use for the shortcut.",
+                        "type": "string"
+                    },
                     "start_menu": {
                         "default": false,
                         "description": "If true, create a shortcut in start menu.",
                         "type": "boolean"
                     }
-                }
+                },
+                "required": [
+                    "label",
+                    "profile"
+                ]
             }
         }
     }
