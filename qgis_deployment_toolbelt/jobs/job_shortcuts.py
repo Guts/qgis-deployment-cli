@@ -13,7 +13,6 @@
 
 # Standard library
 import logging
-from os.path import expandvars
 from pathlib import Path
 from sys import platform as opersys
 
@@ -186,22 +185,8 @@ class JobShortcutsManager(GenericJob):
                 )
                 return path_normal_case
 
-    def get_qgis_path(self, qgis_bin_exe_path: str) -> Path | None:
-        """Try to get qgis path.
-
-        :param str qgis_bin_exe_path: qgis path as mentioned into the scenario file
-        :return Union[Path, None]:  qgis path as Path if str or Path, else None
-        """
-        # try to get the value of the qgis_path key
-        if qgis_bin_exe_path:
-            return Path(expandvars(qgis_bin_exe_path))
-        else:
-            return self.os_config.get_qgis_bin_path
-
-    def get_icon_path(self, icon: str, profile_name: str) -> Path | None:
-        """Try to get icon path.
-
-        First, check that an icon key has been specified in the scenario file;
+    def get_icon_path(self, icon: str, profile_name: str) -> Path:
+        """Try to get icon path. First, check that an icon key has been specified in the scenario file;
         then, right next to the toolbelt;
         then under a subfolder starting from the toolbelt (adn handling pathlib OSError);
         if still not, within the related profile folder.
