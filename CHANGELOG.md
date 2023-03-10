@@ -16,6 +16,16 @@ Unreleased
 
 -->
 
+## 0.22.0 - 2023-03-10
+
+### Features and enhancements 🎉
+
+* Refacto: job shortcuts now use mutualized objects and tools by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/230>
+* Feature: add line number to log to make debug easier by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/231>
+* Feature: better logging by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/233>
+* Improve how invalid YAML files are handled by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/234>
+* Improvement: extract name and path from URL of remote scenario and store it properly in QDT work dir by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/235>
+
 ## 0.21.3 - 2023-03-09
 
 ### Bugs fixes 🐛
