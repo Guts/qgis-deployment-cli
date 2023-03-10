@@ -167,7 +167,7 @@ def main(in_args: list[str] = None):
 
     logging.basicConfig(
         level=args.verbosity,
-        format="%(asctime)s||%(levelname)s||%(module)s||%(message)s",
+        format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 

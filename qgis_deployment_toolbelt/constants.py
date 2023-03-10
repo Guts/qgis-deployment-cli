@@ -93,8 +93,14 @@ class OSConfiguration:
         if getenv("QDT_QGIS_EXE_PATH"):
             qdt_qgis_exe_path = ast.literal_eval(getenv("QDT_QGIS_EXE_PATH"))
             if isinstance(qdt_qgis_exe_path, str):
+                logger.debug(
+                    f"'QDT_QGIS_EXE_PATH' is a simple string: {getenv('QDT_QGIS_EXE_PATH')}"
+                )
                 return Path(expandvars(expanduser(getenv("QDT_QGIS_EXE_PATH"))))
             elif isinstance(qdt_qgis_exe_path, dict):
+                logger.debug(
+                    f"'QDT_QGIS_EXE_PATH' is a dictionary: {getenv('QDT_QGIS_EXE_PATH')}"
+                )
                 for k, v in qdt_qgis_exe_path.items():
                     if k in self.names_alter + [self.name_python]:
                         return Path(expandvars(expanduser(v)))
