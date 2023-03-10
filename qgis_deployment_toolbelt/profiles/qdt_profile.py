@@ -209,15 +209,22 @@ class QdtProfile:
         return self.loaded_from_json
 
     @property
+    def icon(self) -> str:
+        """Returns the icon as specified into the original profile.json.
+
+        :return str: profile icon value
+        """
+        if self._icon:
+            return self._icon
+
+    @property
     def icon_path(self) -> Path:
-        """Returns the path to the profile icon path.
+        """Returns the path to the profile's icon into the profile folder.
 
         :return Path: profile icon path
         """
         if self._folder and self._icon:
             return self._folder.joinpath(self._icon)
-
-        return self.icon_path.resolve()
 
     @property
     def json_ref_path(self) -> Path:
