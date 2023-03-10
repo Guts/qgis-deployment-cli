@@ -70,10 +70,14 @@ def set_default_subparser(
     """
     subparser_found = False
     for arg in sys.argv[1:]:
-        if arg in ["-h", "--help"]:  # global help if no subparser
+        if arg in [
+            "-h",
+            "--help",
+            "--version",
+            "--no-logfile",
+        ]:  # ignore main parser args
             break
-        elif arg in ["--version"]:  # global version if no subparser
-            break
+
     else:
         for x in parser_to_update._subparsers._actions:
             if not isinstance(x, argparse._SubParsersAction):
@@ -116,7 +120,17 @@ def main(in_args: list[str] = None):
         action="count",
         default=1,
         dest="verbosity",
-        help="Verbosity level. None = WARNING, -v = INFO, -vv = DEBUG",
+        help="Verbosity level. None = WARNING, -v = INFO, -vv = DEBUG. Can be set with "
+        "QDT_LOGS_LEVEL environment variable and logs location with QDT_LOGS_DIR.",
+    )
+
+    main_parser.add_argument(
+        "--no-logfile",
+        default=True,
+        action="store_false",
+        dest="opt_logfile_disabled",
+        help="Disable log file. Log files are usually created, rotated and stored in the"
+        "folder set by QDT_LOGS_DIR.",
     )
 
     main_parser.add_argument(
