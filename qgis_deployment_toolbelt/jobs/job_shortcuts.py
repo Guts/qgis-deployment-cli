@@ -18,7 +18,7 @@ from sys import platform as opersys
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
-from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles import ApplicationShortcut
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
@@ -122,6 +122,7 @@ class JobShortcutsManager(GenericJob):
             )
 
         self.os_config = OS_CONFIG.get(opersys)
+        self.qdt_working_folder = get_qdt_working_directory()
         self.qgis_profiles_path: Path = Path(self.os_config.profiles_path)
 
     def run(self) -> None:
