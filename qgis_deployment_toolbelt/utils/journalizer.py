@@ -8,8 +8,9 @@
 
 # standard library
 import logging
+from getpass import getuser
 from logging.handlers import RotatingFileHandler
-from os import getenv, getlogin
+from os import getenv
 from os.path import expanduser, expandvars
 from pathlib import Path
 from platform import architecture
@@ -126,7 +127,7 @@ def headers():
     logger.debug(f"Operating System: {opersys()}")
     logger.debug(f"Architecture: {architecture()[0]}")
     logger.debug(f"Computer: {gethostname()}")
-    logger.debug(f"Launched by user: {getlogin()}")
+    logger.debug(f"Launched by user: {getuser()}")
 
     if getenv("userdomain"):
         logger.debug(f"OS Domain: {getenv('userdomain')}")
