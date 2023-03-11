@@ -87,7 +87,7 @@ class TestConstants(unittest.TestCase):
         d_test = {
             "linux": "/usr/bin/qgis",
             "darwin": "/usr/bin/qgis",
-            "win32": "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe",
+            "win32": "%PROGRAMFILES%/QGIS/3_22/bin/qgis-ltr-bin.exe",
         }
         environ["QDT_QGIS_EXE_PATH"] = str(d_test)
         self.assertEqual(
