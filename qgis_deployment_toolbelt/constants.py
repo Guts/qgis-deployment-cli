@@ -20,6 +20,9 @@ from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import which
 
+# package
+from qgis_deployment_toolbelt.utils.check_path import check_path
+
 # #############################################################################
 # ########## Globals ###############
 # ##################################
@@ -75,7 +78,7 @@ class OSConfiguration:
     name_python: str
     names_alter: list = None
     profiles_path: Path = getenv("QGIS_CUSTOM_CONFIG_PATH")
-    qgis_bin_exe_path: str = None
+    qgis_bin_exe_path: Path = None
     shortcut_extension: str = None
     shortcut_forbidden_chars: tuple[str] = None
     shortcut_icon_extensions: tuple[str] = None
@@ -88,32 +91,61 @@ class OSConfiguration:
         Returns:
             Path: path to the QGIS bin/exe
         """
-        if getenv("QDT_QGIS_EXE_PATH"):
-            qdt_qgis_exe_path = ast.literal_eval(getenv("QDT_QGIS_EXE_PATH"))
-            if isinstance(qdt_qgis_exe_path, str):
+        if envvar := getenv("QDT_QGIS_EXE_PATH"):
+            if envvar.startswith("{") and envvar.endswith("}"):
+                try:
+                    qdt_qgis_exe_path = ast.literal_eval(envvar)
+                    if isinstance(qdt_qgis_exe_path, dict):
+                        logger.debug(
+                            f"'QDT_QGIS_EXE_PATH' is a valid dictionary: {envvar}"
+                        )
+                        for k, v in qdt_qgis_exe_path.items():
+                            if k in self.names_alter + [self.name_python]:
+                                logger.debug(
+                                    f"QGIS path found in 'QDT_QGIS_EXE_PATH' dictionary: {v}"
+                                )
+                                return Path(expandvars(expanduser(v)))
+                except Exception as err:
+                    logger.error(
+                        f"Failed to interpret 'QDT_QGIS_EXE_PATH' value: {envvar}."
+                        f"Trace: {err}"
+                    )
+            elif check_path(
+                input_path=envvar,
+                must_exists=False,
+                must_be_readable=False,
+                raise_error=False,
+            ):
                 logger.debug(
-                    f"'QDT_QGIS_EXE_PATH' is a simple string: {getenv('QDT_QGIS_EXE_PATH')}"
+                    f"'QDT_QGIS_EXE_PATH' is a simple string and a valid path: {envvar}"
                 )
-                return Path(expandvars(expanduser(getenv("QDT_QGIS_EXE_PATH"))))
-            elif isinstance(qdt_qgis_exe_path, dict):
-                logger.debug(
-                    f"'QDT_QGIS_EXE_PATH' is a dictionary: {getenv('QDT_QGIS_EXE_PATH')}"
-                )
-                for k, v in qdt_qgis_exe_path.items():
-                    if k in self.names_alter + [self.name_python]:
-                        return Path(expandvars(expanduser(v)))
-            else:
-                return qdt_qgis_exe_path
-        elif which("qgis"):
-            return Path(which("qgis"))
+                return Path(expandvars(expanduser(envvar)))
+
+            # fallback
+            logger.warning(
+                f"Unrecognised value format for 'QDT_QGIS_EXE_PATH': {envvar}. "
+                "Fallback to default path: "
+                f"{Path(expandvars(expanduser(self.qgis_bin_exe_path)))}"
+            )
+            return Path(expandvars(expanduser(self.qgis_bin_exe_path)))
+        elif which_qgis_path := which("qgis"):
+            logger.debug(f"QGIS path found using which: {which_qgis_path}")
+            return Path(which_qgis_path)
         else:
+            logger.debug(
+                f"QGIS path not found, using default value: {self.qgis_bin_exe_path}"
+            )
             return Path(expandvars(expanduser(self.qgis_bin_exe_path)))
 
     def valid_shortcut_name(self, shortcut_name: str) -> bool:
-        """Check if a shortcut name is valid.
+        """Check if a given string is a valid shortcut name for the current operating
+        system.
 
-        :param str shortcut_name: _description_
-        :return bool: _description_
+        Args:
+            shortcut_name (str): given shortcut name to check
+
+        Returns:
+            bool: True if the givn string can be used as shortcut name
         """
         if self.shortcut_forbidden_chars is None:
             return True
@@ -140,7 +172,7 @@ OS_CONFIG: dict = {
                 Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/",
             )
         ),
-        qgis_bin_exe_path="/usr/bin/qgis",
+        qgis_bin_exe_path=Path("/usr/bin/qgis"),
         shortcut_extension="app",
         shortcut_icon_extensions=("icns",),
     ),
@@ -153,7 +185,7 @@ OS_CONFIG: dict = {
                 Path.home() / ".local/share/QGIS/QGIS3/profiles/",
             )
         ),
-        qgis_bin_exe_path="/usr/bin/qgis",
+        qgis_bin_exe_path=Path("/usr/bin/qgis"),
         shortcut_extension=".desktop",
         shortcut_icon_extensions=("ico", "svg", "png"),
     ),
@@ -165,7 +197,9 @@ OS_CONFIG: dict = {
                 "QGIS_CUSTOM_CONFIG_PATH", expandvars("%APPDATA%/QGIS/QGIS3/profiles")
             )
         ),
-        qgis_bin_exe_path="%PROGRAMFILES%/QGIS/3_22/bin/qgis-ltr-bin.exe",
+        qgis_bin_exe_path=Path(
+            expandvars(expanduser("%PROGRAMFILES%/QGIS/3_22/bin/qgis-ltr-bin.exe"))
+        ),
         shortcut_extension=".lnk",
         shortcut_forbidden_chars=("<", ">", ":", '"', "/", "\\", "|", "?", "*"),
         shortcut_icon_extensions=("ico",),
