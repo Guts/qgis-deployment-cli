@@ -16,6 +16,19 @@ Unreleased
 
 -->
 
+## 0.22.1 - 2023-03-11
+
+### Bugs fixes 🐛
+
+* Fix: env var obfuscated by lru cache by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/236>
+* Fix missing return profile object in shortcut job by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/239>
+* Fix and refactoring get_qgis_path which was failing because of bad type passed to ast.literal_eval by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/241>
+
+### Features and enhancements 🎉
+
+* Improvement: make remote scenario downloaded a separate func by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/238>
+* Feature: check path now try to expand user vars by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/240>
+
 ## 0.22.0 - 2023-03-10
 
 ### Features and enhancements 🎉
