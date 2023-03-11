@@ -233,6 +233,7 @@ class JobShortcutsManager(GenericJob):
             f"Downloaded profile matched: {qdt_profile.name} from "
             f"{qdt_profile.folder}"
         )
+        return qdt_profile
 
     def get_icon_path(self, profile: QdtProfile, icon_filename: str) -> Path:
         """Get icon path to use with the shortcut. Looking for:
