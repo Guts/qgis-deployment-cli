@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Manage application shortcuts on end-user machine.
+    Manage splash screens for QGIS Profiles.
 
     Author: Julien Moura (https://github.com/guts)
 """
@@ -18,7 +18,7 @@ from pathlib import Path
 from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.exceptions import SplashScreenBadDimensions
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
@@ -66,17 +66,13 @@ class JobSplashScreenManager(GenericJob):
     def __init__(self, options: dict) -> None:
         """Instantiate the class.
 
-        :param dict options: profiles source (remote, can be a local network) and
-        destination (local).
+        Args:
+            options (dict): dictionary of options.
         """
         self.options: dict = self.validate_options(options)
 
         # profile folder
-        if opersys not in OS_CONFIG:
-            raise OSError(
-                f"Your operating system {opersys} is not supported. "
-                f"Supported platforms: {','.join(OS_CONFIG.keys())}."
-            )
+        self.qdt_working_folder = get_qdt_working_directory()
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
         if not self.qgis_profiles_path.exists():
             logger.warning(
@@ -87,6 +83,12 @@ class JobSplashScreenManager(GenericJob):
 
     def run(self) -> None:
         """Execute job logic."""
+        # check of there are some profiles folders within the downloaded folder
+        downloaded_profiles = self.filter_profiles_folder()
+        if downloaded_profiles is None:
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return
+
         li_installed_profiles_path = [
             d
             for d in self.qgis_profiles_path.iterdir()
@@ -94,33 +96,37 @@ class JobSplashScreenManager(GenericJob):
         ]
 
         if self.options.get("action") in ("create", "create_or_restore"):
-            for profile_dir in li_installed_profiles_path:
+            for profile_downloaded in downloaded_profiles:
                 # default absolute splash screen path
-                splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
-
+                splash_screen_filepath = (
+                    profile_downloaded.path_in_qgis / self.DEFAULT_SPLASH_FILEPATH
+                )
                 # target QGIS configuration files
-                cfg_qgis_base = profile_dir / "QGIS/QGIS3.ini"
-                cfg_qgis_custom = profile_dir / "QGIS/QGISCUSTOMIZATION3.ini"
+                cfg_qgis_base = profile_downloaded.path_in_qgis / "QGIS/QGIS3.ini"
+                cfg_qgis_custom = (
+                    profile_downloaded.path_in_qgis / "QGIS/QGISCUSTOMIZATION3.ini"
+                )
 
-                # case where splash image is specified into the profile.json
-                if Path(profile_dir / "profile.json").is_file():
-                    qdt_profile = QdtProfile.from_json(
-                        profile_json_path=Path(profile_dir / "profile.json"),
-                        profile_folder=profile_dir.resolve(),
+                if Path(profile_downloaded.path_in_qgis, "profile.json").is_file():
+                    profile_installed: QdtProfile = QdtProfile.from_json(
+                        profile_json_path=Path(
+                            profile_downloaded.path_in_qgis, "profile.json"
+                        ),
+                        profile_folder=profile_downloaded.path_in_qgis,
                     )
 
                     # if the splash image referenced into the profile.json exists, make
                     # sure it complies QGIS splash screen rules
                     if (
-                        isinstance(qdt_profile.splash, Path)
-                        and qdt_profile.splash.is_file()
+                        isinstance(profile_installed.splash, Path)
+                        and profile_installed.splash.is_file()
                     ):
                         # make sure that the filename complies with what QGIS expects
-                        if qdt_profile.splash.name != splash_screen_filepath.name:
-                            splash_filepath = qdt_profile.splash.with_name(
+                        if profile_installed.splash.name != splash_screen_filepath.name:
+                            splash_filepath = profile_installed.splash.with_name(
                                 self.SPLASH_FILENAME
                             )
-                            qdt_profile.splash.replace(splash_filepath)
+                            profile_installed.splash.replace(splash_filepath)
                             logger.debug(
                                 f"Specified splash screen renamed into {splash_filepath}."
                             )
@@ -129,13 +135,16 @@ class JobSplashScreenManager(GenericJob):
                             logger.debug(
                                 f"Splash screen already exists at {splash_screen_filepath}"
                             )
+
                 else:
-                    logger.debug(f"No profile.json found for profile '{profile_dir}")
+                    logger.debug(
+                        f"No profile.json found for profile '{profile_installed.folder}"
+                    )
 
                 # now, splash screen image should be at {profile_dir}/images/splash.png
                 if not splash_screen_filepath.is_file():
                     logger.debug(
-                        f"No splash screen found or defined for profile {profile_dir.name}"
+                        f"No splash screen found or defined for profile: {profile_installed.name}"
                     )
                     continue
 
@@ -149,7 +158,7 @@ class JobSplashScreenManager(GenericJob):
                 if not is_img_compliant:
                     err = SplashScreenBadDimensions(
                         image_filepath=splash_screen_filepath,
-                        profile_name=profile_dir.name,
+                        profile_name=profile_installed.name,
                     )
                     if self.options.get("strict") is True:
                         raise err
