@@ -40,6 +40,10 @@ class TestUtilsCheckPath(unittest.TestCase):
             check_var_can_be_path(input_var="/this/is/an/imaginary/file.imaginary")
         )
 
+        self.assertTrue(
+            check_var_can_be_path(input_var="%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe")
+        )
+
     def test_check_path_as_str_ko(self):
         """Test filepath from int can't be converted into Path."""
         with self.assertRaises(TypeError):
@@ -53,6 +57,8 @@ class TestUtilsCheckPath(unittest.TestCase):
         self.assertTrue(check_path_exists(input_path=Path("setup.py")))
         # str is valid and point to an existing file
         self.assertTrue(check_path_exists(input_path="setup.py"))
+        # str with user expand is valid and point to an existing folder
+        self.assertTrue(check_path_exists(input_path="~"))
 
     def test_check_path_exists_ko(self):
         """Test path exists fail cases."""

@@ -13,6 +13,7 @@
 # Standard library
 import logging
 from os import R_OK, W_OK, access
+from os.path import expanduser, expandvars
 from pathlib import Path
 
 # #############################################################################
@@ -27,11 +28,14 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-def check_var_can_be_path(input_var: str, raise_error: bool = True) -> bool:
+def check_var_can_be_path(
+    input_var: str, attempt: int = 1, raise_error: bool = True
+) -> bool:
     """Check is the path can be converted as pathlib.Path.
 
     Args:
         input_var (str): var to check
+        attempt (int): attempt count. If attempts == 2, it tries expanding user and variables.
         raise_error (bool, optional): if True, it raises an exception. Defaults to True.
 
     Raises:
@@ -41,10 +45,21 @@ def check_var_can_be_path(input_var: str, raise_error: bool = True) -> bool:
         bool: True if the input can be converted to pathlib.Path
     """
     try:
-        input_var = Path(input_var)
+        if attempt == 2:
+            input_var = Path(expandvars(expanduser(input_var)))
+        else:
+            input_var = Path(input_var)
         return True
     except Exception as exc:
         error_message = f"Converting {input_var} into Path failed. Trace: {exc}"
+        if attempt != 2:
+            error_message += " Attempt 1/2. Try again with user and vars expansion."
+            logger.info(error_message)
+            return check_var_can_be_path(
+                input_var=input_var, attempt=2, raise_error=raise_error
+            )
+
+        error_message += " Attempt 2/2. Game over."
         if raise_error:
             raise TypeError(error_message)
         else:
@@ -52,11 +67,14 @@ def check_var_can_be_path(input_var: str, raise_error: bool = True) -> bool:
             return False
 
 
-def check_path_exists(input_path: str | Path, raise_error: bool = True) -> bool:
+def check_path_exists(
+    input_path: str | Path, attempt: int = 1, raise_error: bool = True
+) -> bool:
     """Check if the input path (file or folder) exists.
 
     Args:
         input_path (Union[str, Path]): path to check
+        attempt (int): attempt count. If attempts == 2, it tries expanding user and variables.
         raise_error (bool, optional): if True, it raises an exception. Defaults to True.
 
     Raises:
@@ -73,8 +91,25 @@ def check_path_exists(input_path: str | Path, raise_error: bool = True) -> bool:
             return False
         # if previous check passed, let's convert it safely
         input_path = Path(input_path)
+
+    # if second attempt, try to expand user and vars
+
+    if attempt == 2:
+        input_path = Path(expandvars(expanduser(input_path)))
+    else:
+        input_path = Path(input_path)
+
     if not input_path.exists():
         error_message = f"{input_path.resolve()} doesn't exist."
+        if attempt != 2:
+            error_message += " Attempt 1/2. Try again with user and vars expansion."
+            logger.info(error_message)
+            return check_path_exists(
+                input_path=input_path, attempt=2, raise_error=raise_error
+            )
+
+        error_message += " Attempt 2/2. Game over."
+
         if raise_error:
             raise FileExistsError(error_message)
         else:
@@ -241,4 +276,5 @@ def check_path(
 
 if __name__ == "__main__":
     """Standalone execution."""
-    pass
+    check_var_can_be_path(input_var="~")
+    check_path_exists(input_path="~")
