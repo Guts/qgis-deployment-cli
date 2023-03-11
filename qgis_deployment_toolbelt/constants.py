@@ -15,7 +15,6 @@
 import ast
 import logging
 from dataclasses import dataclass
-from functools import lru_cache
 from os import PathLike, getenv
 from os.path import expanduser, expandvars
 from pathlib import Path
@@ -33,7 +32,6 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-@lru_cache(maxsize=128)
 def get_qdt_working_directory(
     specific_value: PathLike = None, identifier: str = "default"
 ) -> Path:

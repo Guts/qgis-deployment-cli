@@ -13,7 +13,6 @@
 
 # Standard library
 import logging
-from functools import lru_cache
 from io import BufferedIOBase
 from pathlib import Path
 
@@ -106,7 +105,6 @@ class ScenarioReader:
         # return sanitized path
         return yaml_buffer
 
-    @lru_cache
     def validate_scenario(self) -> tuple[bool, list[str]]:
         """Validate scenario file.
 
