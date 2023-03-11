@@ -41,7 +41,7 @@ def get_qdt_working_directory(
         specific_value (PathLike, optional): a specific path to use. If set it's \
             expanded and returned. Defaults to None.
         identifier (str, optional): used to make the folder unique. If not set, \
-            'default' (sure, not so unique...) is used. Defaults to None.
+            'default' (sure, not so unique...) is used. Defaults to "default".
 
     Returns:
         Path: path to the QDT working directory
