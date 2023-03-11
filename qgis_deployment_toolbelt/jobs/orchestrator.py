@@ -14,6 +14,7 @@
 # Standard library
 import importlib
 import logging
+from os import environ
 from pathlib import Path
 
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
@@ -55,7 +56,16 @@ class JobsOrchestrator:
     PACKAGE_NAME: str = "qgis_deployment_toolbelt.jobs"
 
     def __init__(self) -> None:
-        pass
+        # log environment variables prefixed with QDT_
+        qdt_env_vars = {
+            env_var: value
+            for env_var, value in environ.items()
+            if env_var.startswith("QDT_")
+        }
+        if nb_qdt_envvars := len(qdt_env_vars):
+            logger.debug(f"{nb_qdt_envvars} environment variables related to QDT:")
+            for var_name, var_value in qdt_env_vars.items():
+                logger.debug(f"{var_name}={var_value}")
 
     @property
     def available_jobs(self) -> list[Path]:
