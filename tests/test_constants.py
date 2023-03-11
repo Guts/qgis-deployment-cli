@@ -11,6 +11,8 @@
 """
 
 import unittest
+from os import environ, unsetenv
+from os.path import expanduser, expandvars
 from pathlib import Path
 from sys import platform as opersys
 
@@ -64,6 +66,36 @@ class TestConstants(unittest.TestCase):
         #     Path(Path.home(), ".cache/qdt/unit-tests-env-var/"),
         # )
         # unsetenv("QDT_LOCAL_WORK_DIR")
+
+    def test_get_qgis_bin_path(self):
+        """Test get GIS exe path helper property"""
+        os_config: constants.OS_CONFIG = constants.OS_CONFIG.get(opersys)
+
+        # default value
+        self.assertEqual(os_config.get_qgis_bin_path, os_config.qgis_bin_exe_path)
+
+        # with environment var set as str
+        environ["QDT_QGIS_EXE_PATH"] = "/usr/bin/toto"
+        self.assertEqual(os_config.get_qgis_bin_path, Path("/usr/bin/toto"))
+        environ["QDT_QGIS_EXE_PATH"] = "~/qgis-ltr-bin.exe"
+        self.assertEqual(
+            os_config.get_qgis_bin_path,
+            Path(expanduser("~/qgis-ltr-bin.exe")).resolve(),
+        )
+
+        # with environment var set as dict
+        d_test = {
+            "linux": "/usr/bin/qgis",
+            "mac": "/usr/bin/qgis",
+            "win32": "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe",
+        }
+        environ["QDT_QGIS_EXE_PATH"] = str(d_test)
+        self.assertEqual(
+            os_config.get_qgis_bin_path,
+            Path(expandvars(expanduser(d_test.get(opersys)))),
+        )
+
+        unsetenv("QDT_QGIS_EXE_PATH")
 
 
 # ############################################################################
