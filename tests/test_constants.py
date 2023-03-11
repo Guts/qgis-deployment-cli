@@ -70,6 +70,7 @@ class TestConstants(unittest.TestCase):
     def test_get_qgis_bin_path(self):
         """Test get GIS exe path helper property"""
         os_config: constants.OS_CONFIG = constants.OS_CONFIG.get(opersys)
+        unsetenv("QDT_QGIS_EXE_PATH")
 
         # default value
         self.assertEqual(os_config.get_qgis_bin_path, os_config.qgis_bin_exe_path)
