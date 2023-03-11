@@ -94,7 +94,7 @@ class OSConfiguration:
         if envvar := getenv("QDT_QGIS_EXE_PATH"):
             if envvar.startswith("{") and envvar.endswith("}"):
                 try:
-                    qdt_qgis_exe_path = ast.literal_eval(getenv("QDT_QGIS_EXE_PATH"))
+                    qdt_qgis_exe_path = ast.literal_eval(envvar)
                     if isinstance(qdt_qgis_exe_path, dict):
                         logger.debug(
                             f"'QDT_QGIS_EXE_PATH' is a valid dictionary: {envvar}"
