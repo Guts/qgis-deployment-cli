@@ -36,6 +36,45 @@ logger = logging.getLogger(__name__)
 
 
 # ############################################################################
+# ########## FUNCTIONS ###########
+# ################################
+
+
+def get_remote_scenario_from_url(remote_url: str) -> Path:
+    """Download remote scenario and return local file path.
+
+    Args:
+        remote_url (str): URL to remote scenario
+
+    Returns:
+        Path: local path to downloaded scenario.
+    """
+    # try to build file path from URL
+    try:
+        url_splitted = urlsplit(remote_url)
+        local_filepath_for_remote_scenario = (
+            "remote_scenarios/"
+            f"{sluggy(url_splitted.netloc)}/"
+            f"{sluggy(str(Path(url_splitted.path).parent))}/"
+            f"{Path(url_splitted.path).name}"
+        )
+    except Exception as err:
+        local_filepath_for_remote_scenario = "remote_scenarios/default/scenario.qdt.yml"
+        logger.warning(
+            f"Failed to extract a proper filename from URL: {remote_url}."
+            f" Trace: {err}. Fallback to default: {local_filepath_for_remote_scenario}"
+        )
+
+    return download_remote_file_to_local(
+        remote_url_to_download=remote_url,
+        local_file_path=Path(
+            get_qdt_working_directory().parent,
+            local_filepath_for_remote_scenario,
+        ),
+    )
+
+
+# ############################################################################
 # ########## CLI #################
 # ################################
 
@@ -82,30 +121,8 @@ def run(args: argparse.Namespace):
     if isinstance(args.scenario_filepath, str) and args.scenario_filepath.startswith(
         ("http",)
     ):
-        # try to build file path from URL
-        try:
-            url_splitted = urlsplit(args.scenario_filepath)
-            local_filepath_for_remote_scenario = (
-                "remote_scenarios/"
-                f"{sluggy(url_splitted.netloc)}/"
-                f"{sluggy(str(Path(url_splitted.path).parent))}/"
-                f"{Path(url_splitted.path).name}"
-            )
-        except Exception as err:
-            local_filepath_for_remote_scenario = (
-                "remote_scenarios/default/scenario.qdt.yml"
-            )
-            logger.warning(
-                f"Failed to extract a proper filename from URL: {args.scenario_filepath}."
-                f" Trace: {err}. Fallback to default: {local_filepath_for_remote_scenario}"
-            )
-
-        args.scenario_filepath = download_remote_file_to_local(
-            remote_url_to_download=args.scenario_filepath,
-            local_file_path=Path(
-                get_qdt_working_directory().parent,
-                local_filepath_for_remote_scenario,
-            ),
+        args.scenario_filepath = get_remote_scenario_from_url(
+            remote_url=args.scenario_filepath
         )
 
     # checks
