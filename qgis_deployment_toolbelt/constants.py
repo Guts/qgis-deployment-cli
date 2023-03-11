@@ -78,7 +78,7 @@ class OSConfiguration:
     name_python: str
     names_alter: list = None
     profiles_path: Path = getenv("QGIS_CUSTOM_CONFIG_PATH")
-    qgis_bin_exe_path: str = None
+    qgis_bin_exe_path: Path = None
     shortcut_extension: str = None
     shortcut_forbidden_chars: tuple[str] = None
     shortcut_icon_extensions: tuple[str] = None
@@ -172,7 +172,7 @@ OS_CONFIG: dict = {
                 Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/",
             )
         ),
-        qgis_bin_exe_path="/usr/bin/qgis",
+        qgis_bin_exe_path=Path("/usr/bin/qgis"),
         shortcut_extension="app",
         shortcut_icon_extensions=("icns",),
     ),
@@ -185,7 +185,7 @@ OS_CONFIG: dict = {
                 Path.home() / ".local/share/QGIS/QGIS3/profiles/",
             )
         ),
-        qgis_bin_exe_path="/usr/bin/qgis",
+        qgis_bin_exe_path=Path("/usr/bin/qgis"),
         shortcut_extension=".desktop",
         shortcut_icon_extensions=("ico", "svg", "png"),
     ),
@@ -197,7 +197,9 @@ OS_CONFIG: dict = {
                 "QGIS_CUSTOM_CONFIG_PATH", expandvars("%APPDATA%/QGIS/QGIS3/profiles")
             )
         ),
-        qgis_bin_exe_path="%PROGRAMFILES%/QGIS/3_22/bin/qgis-ltr-bin.exe",
+        qgis_bin_exe_path=Path(
+            expandvars(expanduser("%PROGRAMFILES%/QGIS/3_22/bin/qgis-ltr-bin.exe"))
+        ),
         shortcut_extension=".lnk",
         shortcut_forbidden_chars=("<", ">", ":", '"', "/", "\\", "|", "?", "*"),
         shortcut_icon_extensions=("ico",),
