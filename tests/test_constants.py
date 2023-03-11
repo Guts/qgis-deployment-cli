@@ -86,7 +86,7 @@ class TestConstants(unittest.TestCase):
         # with environment var set as dict
         d_test = {
             "linux": "/usr/bin/qgis",
-            "mac": "/usr/bin/qgis",
+            "darwin": "/usr/bin/qgis",
             "win32": "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe",
         }
         environ["QDT_QGIS_EXE_PATH"] = str(d_test)
