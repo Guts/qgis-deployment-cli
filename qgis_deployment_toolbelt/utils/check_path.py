@@ -53,12 +53,13 @@ def check_var_can_be_path(
     except Exception as exc:
         error_message = f"Converting {input_var} into Path failed. Trace: {exc}"
         if attempt != 2:
-            error_message += ". Attempt 1/2. Try again with user and vars expansion."
+            error_message += " Attempt 1/2. Try again with user and vars expansion."
+            logger.info(error_message)
             return check_var_can_be_path(
                 input_var=input_var, attempt=2, raise_error=raise_error
             )
 
-        error_message += ". Attempt 2/2. Game over."
+        error_message += " Attempt 2/2. Game over."
         if raise_error:
             raise TypeError(error_message)
         else:
@@ -92,6 +93,7 @@ def check_path_exists(
         input_path = Path(input_path)
 
     # if second attempt, try to expand user and vars
+
     if attempt == 2:
         input_path = Path(expandvars(expanduser(input_path)))
     else:
@@ -100,12 +102,13 @@ def check_path_exists(
     if not input_path.exists():
         error_message = f"{input_path.resolve()} doesn't exist."
         if attempt != 2:
-            error_message += ". Attempt 1/2. Try again with user and vars expansion."
-            return check_var_can_be_path(
-                input_var=input_path, attempt=2, raise_error=raise_error
+            error_message += " Attempt 1/2. Try again with user and vars expansion."
+            logger.info(error_message)
+            return check_path_exists(
+                input_path=input_path, attempt=2, raise_error=raise_error
             )
 
-        error_message += ". Attempt 2/2. Game over."
+        error_message += " Attempt 2/2. Game over."
 
         if raise_error:
             raise FileExistsError(error_message)
@@ -273,4 +276,5 @@ def check_path(
 
 if __name__ == "__main__":
     """Standalone execution."""
-    pass
+    check_var_can_be_path(input_var="~")
+    check_path_exists(input_path="~")
