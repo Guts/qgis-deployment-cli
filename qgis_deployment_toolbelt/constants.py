@@ -198,7 +198,7 @@ OS_CONFIG: dict = {
             )
         ),
         qgis_bin_exe_path=Path(
-            expandvars(expanduser("%PROGRAMFILES%/QGIS/3_22/bin/qgis-ltr-bin.exe"))
+            expandvars(expanduser("%PROGRAMFILES%/QGIS 3.28.4/bin/qgis-ltr-bin.exe"))
         ),
         shortcut_extension=".lnk",
         shortcut_forbidden_chars=("<", ">", ":", '"', "/", "\\", "|", "?", "*"),
