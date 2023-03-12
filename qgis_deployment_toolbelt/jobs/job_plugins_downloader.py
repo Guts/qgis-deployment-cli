@@ -78,11 +78,6 @@ class JobPluginsDownloader(GenericJob):
         logger.info(f"QDT plugins folder: {self.qdt_plugins_folder}")
 
         # destination profiles folder
-        if opersys not in OS_CONFIG:
-            raise OSError(
-                f"Your operating system {opersys} is not supported. "
-                f"Supported platforms: {','.join(OS_CONFIG.keys())}."
-            )
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
         if not self.qgis_profiles_path.exists():
             logger.warning(

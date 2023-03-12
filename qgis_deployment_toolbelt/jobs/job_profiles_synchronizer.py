@@ -226,42 +226,6 @@ class JobProfilesDownloader(GenericJob):
 
         return li_profiles_outdated, li_profiles_different, li_profiles_equal
 
-    def filter_profiles_folder(self) -> tuple[QdtProfile]:
-        """Parse downloaded folder to filter on QGIS profiles folders.
-
-        Returns:
-            tuple[QdtProfile]: tuple of profiles objects
-        """
-        # first, try to get folders containing a profile.json
-        qgis_profiles_folder = [
-            QdtProfile.from_json(profile_json_path=f, profile_folder=f.parent)
-            for f in self.qdt_working_folder.glob("**/profile.json")
-        ]
-        if len(qgis_profiles_folder):
-            logger.debug(
-                f"{len(qgis_profiles_folder)} profiles found within {self.qdt_working_folder}"
-            )
-            return tuple(qgis_profiles_folder)
-
-        # if empty, try to identify if a folder is a QGIS profile - but unsure
-        for d in self.qdt_working_folder.glob("**"):
-            if (
-                d.is_dir()
-                and d.parent.name == "profiles"
-                and not d.name.startswith(".")
-            ):
-                qgis_profiles_folder.append(QdtProfile(folder=d, name=d.name))
-
-        if len(qgis_profiles_folder):
-            return tuple(qgis_profiles_folder)
-
-        # if still empty, raise a warning but returns every folder under a `profiles` folder
-        # TODO: try to identify if a folder is a QGIS profile with some approximate criteria
-
-        if not len(qgis_profiles_folder):
-            logger.error("No QGIS profile found in the downloaded folder.")
-            return None
-
     def sync_installed_profiles_from_downloaded_profiles(
         self, downloaded_profiles: tuple[QdtProfile]
     ) -> None:
