@@ -206,16 +206,19 @@ class JobSplashScreenManager(GenericJob):
         qgiscustomization3ini_filepath: Path,
         splash_screen_filepath: Path = None,
         switch: bool = True,
-    ):
+    ) -> bool:
         """Add/remove splash screen path to the QGISCUSTOMIZATION3.ini file.
 
-        :param Path qgiscustomization3ini_filepath: path to the QGISCUSTOMIZATION3.ini \
-        configuration file
-        :param Path splash_screen_filepath: path to the folder containing the \
-        splash.png file, defaults to None
-        :param bool switch: True to add, False to remove, defaults to True
+        Args:
+            qgiscustomization3ini_filepath (Path): path to the QGISCUSTOMIZATION3.ini
+                configuration file
+            splash_screen_filepath (Path, optional): path to the folder containing the
+                splash.png file, defaults to None. Defaults to None.
+            switch (bool, optional): True to add, False to remove, defaults to True.
+                Defaults to True.
 
-        :return bool: True is the splash folder is present. False is absent.
+        Returns:
+            bool: True is the splash folder is present. False is absent.
         """
         # vars
         section = "Customization"

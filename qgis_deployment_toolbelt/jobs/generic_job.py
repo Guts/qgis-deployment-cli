@@ -83,13 +83,15 @@ class GenericJob:
     ) -> bool:
         """Enable/disable UI customization in the profile QGIS3.ini file.
 
-        :param Path qgis3ini_filepath: path to the QGIS3.ini configuration file
-        :param str section: section name in ini file
-        :param str option: option name in the section of the ini file
-        :param bool switch: True to enable, False to disable UI customization,
-        defaults to True
+        Args:
+            qgis3ini_filepath (Path): path to the QGIS3.ini configuration file
+            section (str): section name in ini file
+            option (str): option name in the section of the ini file
+            switch (bool, optional): True to enable, False to disable UI customization.
+                Defaults to True.
 
-        :return bool: UI customization state. True is enabled, False is disabled.
+        Returns:
+            bool: UI customization state. True is enabled, False is disabled.
         """
         # boolean syntax for PyQt
         switch_value = "false"
