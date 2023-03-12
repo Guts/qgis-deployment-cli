@@ -16,6 +16,10 @@ Unreleased
 
 -->
 
+## 0.22.3 - 2023-03-12
+
+* Use QGIS LTR 3.28.4 path as default by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/243>
+
 ## 0.22.2 - 2023-03-12
 
 ### Features and enhancements 🎉
