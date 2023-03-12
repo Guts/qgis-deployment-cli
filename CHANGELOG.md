@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.22.2 - 2023-03-12
+
+### Features and enhancements 🎉
+
+* Refacto: jobs splash screen and some mutualized methods by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/242>
+
 ## 0.22.1 - 2023-03-11
 
 ### Bugs fixes 🐛
