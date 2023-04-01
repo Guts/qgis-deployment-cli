@@ -1,7 +1,7 @@
 # Documentation
 # -------------
 
-furo==2022.*
+furo==2023.*
 myst-parser[linkify]>=0.18,<1.1
 pip-licenses>=4,<5
 sphinx-argparse-cli>=1,<2
