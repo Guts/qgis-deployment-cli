@@ -21,7 +21,7 @@ from sys import platform as opersys
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
-from qgis_deployment_toolbelt.profiles import RemoteGitHandler
+from qgis_deployment_toolbelt.profiles import LocalGitHandler, RemoteGitHandler
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 
 # #############################################################################
@@ -136,11 +136,23 @@ class JobProfilesDownloader(GenericJob):
 
         # prepare remote source
         if self.options.get("protocol") == "git":
-            downloader = RemoteGitHandler(
-                url=self.options.get("source"),
-                branch=self.options.get("branch", "master"),
-            )
-            downloader.download(local_path=self.qdt_working_folder)
+            if self.options.get("source").startswith(("git://", "http://", "https://")):
+                downloader = RemoteGitHandler(
+                    uri_or_path=self.options.get("source"),
+                    branch=self.options.get("branch", "master"),
+                )
+                downloader.download(local_path=self.qdt_working_folder)
+            elif self.options.get("source").startswith("file://"):
+                downloader = LocalGitHandler(
+                    uri_or_path=self.options.get("source"),
+                    branch=self.options.get("branch", "master"),
+                )
+                downloader.download(local_path=self.qdt_working_folder)
+            else:
+                logger.error(
+                    f"Source type not implemented yet: {self.options.get('source')}"
+                )
+                raise NotImplementedError
         else:
             raise NotImplementedError
 
