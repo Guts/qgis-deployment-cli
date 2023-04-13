@@ -4,6 +4,7 @@
 ---
 caption: Jobs
 maxdepth: 1
+:glob:
 ---
 environment_variables.md
 plugins_downloader.md
