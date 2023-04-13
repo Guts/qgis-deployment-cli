@@ -105,25 +105,32 @@ class JobPluginsDownloader(GenericJob):
             qdt_plugins_to_download = self.filter_list_downloadable_plugins(
                 input_list=qdt_referenced_plugins
             )
-            if not len(qdt_plugins_to_download):
+            qdt_plugins_to_copy = self.filter_list_copiable_plugins(
+                input_list=qdt_referenced_plugins
+            )
+            if not len(qdt_plugins_to_download + qdt_plugins_to_copy):
                 logger.info(
                     f"All referenced plugins are already present in {self.qdt_plugins_folder}. "
-                    "Skipping download step."
+                    "Skipping download/copy step."
                 )
                 return
 
         # launch download
-        downloaded_plugins, failed_downloads = self.download_plugins(
-            plugins_to_download=qdt_plugins_to_download,
-            destination_parent_folder=self.qdt_plugins_folder,
-            threads=self.options.get("threads", 5),
-        )
-        logger.debug(f"{len(downloaded_plugins)} plugins downloaded.")
-        if len(failed_downloads):
-            logger.error(
-                f"{len(failed_downloads)} failed plugin downloads. "
-                "Check previous log lines."
+        if len(qdt_plugins_to_download):
+            downloaded_plugins, failed_downloads = self.download_plugins(
+                plugins_to_download=qdt_plugins_to_download,
+                destination_parent_folder=self.qdt_plugins_folder,
+                threads=self.options.get("threads", 5),
             )
+            logger.debug(f"{len(downloaded_plugins)} plugins downloaded.")
+            if len(failed_downloads):
+                logger.error(
+                    f"{len(failed_downloads)} failed plugin downloads. "
+                    "Check previous log lines."
+                )
+
+        if len(qdt_plugins_to_copy):
+            print(qdt_plugins_to_copy)
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
@@ -241,8 +248,8 @@ class JobPluginsDownloader(GenericJob):
     def filter_list_downloadable_plugins(
         self, input_list: list[QgisPlugin]
     ) -> list[QgisPlugin]:
-        """Filter input list of plugins keeping only those which are not present within \
-            the local QDT plugins folder.
+        """Filter input list of plugins keeping only those are remotly stored and which
+            are not present within the local QDT plugins folder.
 
         Args:
             input_list (List[QgisPlugin]): list of plugins to filter
@@ -276,6 +283,45 @@ class JobPluginsDownloader(GenericJob):
             plugins_to_download.append(plugin)
 
         return plugins_to_download
+
+    def filter_list_copiable_plugins(
+        self, input_list: list[QgisPlugin]
+    ) -> list[QgisPlugin]:
+        """Filter input list of plugins keeping only those which are stored locally and
+            which are not present within the local QDT plugins folder.
+
+        Args:
+            input_list (List[QgisPlugin]): list of plugins to filter
+
+        Returns:
+            List[QgisPlugin]: list of plugins to copy from local disk or network
+        """
+        plugins_to_copy = []
+
+        for plugin in input_list:
+            # keep only if remote
+            if plugin.location != "local":
+                logger.debug(
+                    f"Ignoring plugin '{plugin.name}' because it's not stored locally."
+                )
+                continue
+
+            # build destination path
+            plugin_destination_path = Path(
+                self.qdt_plugins_folder, f"{plugin.id_with_version}.zip"
+            )
+
+            # check if file already exists
+            if plugin_destination_path.is_file():
+                logger.debug(
+                    f"Plugin already exists at {plugin_destination_path}, so it "
+                    "won't be copied from source."
+                )
+                continue
+
+            plugins_to_copy.append(plugin)
+
+        return plugins_to_copy
 
 
 # #############################################################################
