@@ -98,7 +98,7 @@ class JobPluginsDownloader(GenericJob):
             )
             return
 
-        # filter plugins to download, filtering out those which are not already  present locally
+        # filter plugins to download, filtering out those which are not already present locally
         if self.options.get("force") is True:
             qdt_plugins_to_download = qdt_referenced_plugins
         else:
@@ -253,6 +253,13 @@ class JobPluginsDownloader(GenericJob):
         plugins_to_download = []
 
         for plugin in input_list:
+            # keep only if remote
+            if plugin.location != "remote":
+                logger.debug(
+                    f"Ignoring plugin '{plugin.name}' because it's not stored remotly."
+                )
+                continue
+
             # build destination path
             plugin_download_path = Path(
                 self.qdt_plugins_folder, f"{plugin.id_with_version}.zip"
