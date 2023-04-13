@@ -38,21 +38,28 @@ logger = logging.getLogger(__name__)
 # ########## Classes ###############
 # ##################################
 class RemoteGitHandler:
-    """Handle generic git remote repository."""
+    """Handle remote git repository."""
 
-    def __init__(self, url: str, branch: str = None) -> None:
-        """Constructor."""
+    def __init__(self, uri_or_path: str, branch: str = None) -> None:
+        """Constructor.
+
+        Args:
+            uri_or_path (Union[str, Path]): input URI (http://, https://, git://)
+            branch (str, optional): default branch name. Defaults to None.
+
+        """
         # validation
-        if not git_validate(url):
-            raise ValueError(f"Invalid git URL: {url}")
-        self.url = url
+        if not git_validate(uri_or_path):
+            raise ValueError(f"Invalid git URL: {uri_or_path}")
+        self.url = uri_or_path
         self.branch = branch or self.url_parsed.branch
 
     @property
     def is_url_git_repository(self) -> bool:
         """Flag if a repository is a git repository.
 
-        :return bool: True if the URL is a valid remote git repository.
+        Returns:
+            bool: True if the URL is a valid git repository.
         """
         return git_validate(self.url)
 
@@ -60,20 +67,31 @@ class RemoteGitHandler:
     def url_parsed(self) -> GitUrlParsed:
         """Return URL parsed to extract git information.
 
-        :return GitUrlParsed: parsed URL object
+        Returns:
+            GitUrlParsed: parsed URL object
         """
         return git_parse(self.url)
 
     def download(self, local_path: str | Path) -> Repo:
         """Generic wrapper around the specific logic of this handler.
 
-        :param Union[str, Path] local_path: path to the local folder where to download
-        :return Repo: the local repository object
+        Args:
+            local_path (str | Path): path to the local folder where to download
+
+        Returns:
+            Repo: the local repository object
         """
         return self.clone_or_pull(local_path)
 
     def is_local_path_git_repository(self, local_path: str | Path) -> bool:
-        """Flag if local folder is a git repository."""
+        """Flag if local folder is a git repository.
+
+        Args:
+            local_path (str | Path): path to check
+
+        Returns:
+            bool: True if there is a .git subfolder
+        """
         return Path(local_path / ".git").is_dir()
 
     def clone_or_pull(self, local_path: str | Path) -> Repo:
@@ -81,9 +99,14 @@ class RemoteGitHandler:
         it's created. If fetch or pull action fail, it removes the existing folder and
         clone the remote again.
 
-        :param Union[str, Path] local_path: path to the folder where to clone (or pull)
+        Args:
+            local_path (str | Path): path to the folder where to clone (or pull)
 
-        :return Repo: the local repository object
+        Raises:
+            err: if something fails during clone or pull operations
+
+        Returns:
+            Repo: the local repository object
         """
         # convert to path
         if isinstance(local_path, str):
@@ -134,11 +157,12 @@ class RemoteGitHandler:
     def _clone(self, local_path: str | Path) -> Repo:
         """Clone the remote repository to local path.
 
-        :param Union[str, Path] local_path: path to the folder where to clone
+        Args:
+            local_path (str | Path): path to the folder where to clone
 
-        :return Repo: the local repository object
+        Returns:
+            Repo: the local repository object
         """
-
         # clone
         if local_path.exists() and not self.is_local_path_git_repository(local_path):
             logger.info(f"Cloning repository {self.url} to {local_path}")
@@ -158,9 +182,11 @@ class RemoteGitHandler:
     def _fetch(self, local_path: str | Path) -> Repo:
         """Fetch the remote repository from the existing local repository.
 
-        :param Union[str, Path] local_path: path to the folder where to fetch
+        Args:
+            local_path (str | Path): path to the folder where to fetch
 
-        :return Repo: the local repository object
+        Returns:
+            Repo: the local repository object
         """
         with porcelain.open_repo_closing(str(local_path.resolve())) as local_repo:
             logger.info(
@@ -177,9 +203,11 @@ class RemoteGitHandler:
     def _pull(self, local_path: str | Path) -> Repo:
         """Pull the remote repository from the existing local repository.
 
-        :param Union[str, Path] local_path: path to the folder where to pull
+        Args:
+            local_path (str | Path): path to the folder where to pull
 
-        :return Repo: the local repository object
+        Returns:
+            Repo: the local repository object
         """
         with porcelain.open_repo_closing(str(local_path.resolve())) as local_repo:
             logger.info(f"Pulling repository {self.url} to {local_path}")

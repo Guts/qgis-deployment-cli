@@ -68,7 +68,7 @@ class LocalGitHandler:
         """Flag if a repository is a git repository.
 
         Returns:
-            bool: True if the URL is a valid remote git repository.
+            bool: True if the URL is a valid git repository.
         """
         try:
             Repo(self.url)
@@ -174,7 +174,6 @@ class LocalGitHandler:
         Returns:
             Repo: the local repository object
         """
-
         # clone
         if local_path.exists() and not self.is_local_path_git_repository(local_path):
             logger.info(f"Cloning repository {self.url} to {local_path}")
