@@ -6,7 +6,9 @@ This job synchronize local profiles with remote storage (git for now).
 
 ## Use it
 
-Sample job configuration in your scenario file:
+Sample job configurations.
+
+### Public **remote** git repository in **overwrite** mode
 
 ```yaml
 - name: Synchronize profiles from remote git repository
@@ -15,8 +17,21 @@ Sample job configuration in your scenario file:
     action: download
     branch: main
     protocol: git
-    source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
+    source: https://github.com/geotribu/profils-qgis.git
     sync_mode: overwrite
+```
+
+### **Local** git repository
+
+```yaml
+- name: Synchronize profiles from local git repository
+  uses: qprofiles-manager
+  with:
+    action: download
+    branch: main
+    protocol: git
+    source: file:///home/jmo/Git/Geotribu/profils-qgis
+    sync_mode: only_new_version
 ```
 
 ----
@@ -52,7 +67,7 @@ Location of profiles to use as reference.
 
 Must start with:
 
-- `file://`: for local network
+- `file://`: for local disk or network
 - `git://` (_recomended_): for git repositories
 - `https://`: for profiles downloadable through an HTTP server
 

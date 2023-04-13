@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Handle remote git repository.
+    Handle local git repository.
 
     Author: Julien Moura (https://github.com/guts).
 
@@ -20,11 +20,8 @@ from shutil import rmtree
 
 # 3rd party
 from dulwich import porcelain
-from dulwich.errors import GitProtocolError
+from dulwich.errors import GitProtocolError, NotGitRepository
 from dulwich.repo import Repo
-from giturlparse import GitUrlParsed
-from giturlparse import parse as git_parse
-from giturlparse import validate as git_validate
 
 # #############################################################################
 # ########## Globals ###############
@@ -37,22 +34,34 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-class RemoteGitHandler:
-    """Handle remote git repository."""
+class LocalGitHandler:
+    """Handle local git repository."""
 
-    def __init__(self, uri_or_path: str, branch: str = None) -> None:
+    def __init__(self, uri_or_path: str | Path, branch: str = None) -> None:
         """Constructor.
 
         Args:
-            uri_or_path (Union[str, Path]): input URI (http://, https://, git://)
+            uri_or_path (Union[str, Path]): input URI (file://...) or path (S://)
             branch (str, optional): default branch name. Defaults to None.
 
+        Raises:
+            NotGitRepository: if uri_or_path doesn't point to a valid Git repository
         """
         # validation
-        if not git_validate(uri_or_path):
-            raise ValueError(f"Invalid git URL: {uri_or_path}")
+        if uri_or_path.startswith("file://"):
+            uri_or_path = uri_or_path[7:]
+            logger.debug(
+                f"URI cleaning: 'file://' protocol prefix removed. Result: {uri_or_path}"
+            )
+        if uri_or_path.endswith(".git"):
+            logger.debug(f"URI cleaning: '.git' suffix removed.Result: {uri_or_path}")
+            uri_or_path = uri_or_path[:-4]
+
         self.url = uri_or_path
-        self.branch = branch or self.url_parsed.branch
+        if not self.is_url_git_repository:
+            raise NotGitRepository(f"{uri_or_path} is not a valid Git repository.")
+
+        self.branch = branch
 
     @property
     def is_url_git_repository(self) -> bool:
@@ -61,16 +70,17 @@ class RemoteGitHandler:
         Returns:
             bool: True if the URL is a valid git repository.
         """
-        return git_validate(self.url)
-
-    @property
-    def url_parsed(self) -> GitUrlParsed:
-        """Return URL parsed to extract git information.
-
-        Returns:
-            GitUrlParsed: parsed URL object
-        """
-        return git_parse(self.url)
+        try:
+            Repo(self.url)
+            return True
+        except NotGitRepository as err:
+            logger.error(f"{self.url} is not a valid Git repository. Trace: {err}")
+            return False
+        except Exception as err:
+            logger.error(
+                f"Somehting went wrong when checking if {self.url} is a valid "
+                f"Git repository. Trace: {err}"
+            )
 
     def download(self, local_path: str | Path) -> Repo:
         """Generic wrapper around the specific logic of this handler.
@@ -108,6 +118,7 @@ class RemoteGitHandler:
         Returns:
             Repo: the local repository object
         """
+
         # convert to path
         if isinstance(local_path, str):
             local_path = Path(local_path)
@@ -170,7 +181,6 @@ class RemoteGitHandler:
                 source=self.url,
                 target=str(local_path.resolve()),
                 branch=self.branch,
-                depth=5,
             )
             gobj = local_repo.get_object(local_repo.head())
             logger.debug(
@@ -197,7 +207,6 @@ class RemoteGitHandler:
                 remote_location=self.url,
                 force=True,
                 prune=True,
-                depth=5,
             )
 
     def _pull(self, local_path: str | Path) -> Repo:

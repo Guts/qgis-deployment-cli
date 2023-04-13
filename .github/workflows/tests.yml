@@ -83,7 +83,7 @@ jobs:
         run: python -m pip install -e .
 
       - name: QDT - Echoing help
-        run: qdt --version
+        run: qdt --help
 
       - name: QDT - Echoing version
         run: qdeploy-toolbelt --version
