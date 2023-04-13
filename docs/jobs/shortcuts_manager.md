@@ -1,4 +1,4 @@
-# shortcut manager
+# Shortcuts manager
 
 Use this job to create shortcuts in desktop and/or start menu allowing the end-user opening QGIS with a profile.
 
