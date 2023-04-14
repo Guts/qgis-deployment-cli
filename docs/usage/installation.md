@@ -13,6 +13,10 @@
    - from your favorite shell if you like the CLI - see [the relevant section](/usage/cli)
    - store your scenario as `scenario.qdt.yml` in the same folder and double-click on the executable
 
+:::{warning}
+MacOS version is not tested and is just here to encourage beta-testing and feedback to improve it.
+:::
+
 ## As a Python package
 
 The package is installable with pip:

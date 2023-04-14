@@ -16,6 +16,22 @@ Unreleased
 
 -->
 
+## 0.23.0 - 2023-04-14
+
+### Features and enhancements 🎉
+
+* Quality: extends tests against file downloader util by @florentfgrs in <https://github.com/Guts/qgis-deployment-cli/pull/245>
+* Feature: handle local Git repository by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/255>
+* Feature: handle "local" plugins by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/253>
+
+### Documentation 📖
+
+* Docs: use glob to automatically include jobs docs in toctree by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/254>
+
+### New Contributors
+
+* @florentfgrs made their first contribution in <https://github.com/Guts/qgis-deployment-cli/pull/245>
+
 ## 0.22.3 - 2023-03-12
 
 * Use QGIS LTR 3.28.4 path as default by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/243>
