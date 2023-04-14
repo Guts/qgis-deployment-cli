@@ -105,8 +105,11 @@ class TestQgisPluginObject(unittest.TestCase):
 
         # plugin as object
         plugin_obj: QgisPlugin = QgisPlugin.from_dict(plugin_dict_local)
-
         self.assertIsInstance(plugin_obj.uri_to_zip, Path)
+
+        # using a file:// prefix
+        plugin_dict_local["url"] = f"file://{self.sample_plugin_downloaded}"
+        plugin_obj: QgisPlugin = QgisPlugin.from_dict(plugin_dict_local)
 
     def test_qplugin_load_from_zip(self):
         """Test plugin object loading from a ZIP archive downloaded."""
@@ -159,6 +162,9 @@ class TestQgisPluginObject(unittest.TestCase):
         self.assertEqual(plugin_obj.name, plugin_obj_from_zip.name)
         self.assertEqual(plugin_obj.version, plugin_obj_from_zip.version)
         self.assertEqual(plugin_obj.folder_name, plugin_obj_from_zip.folder_name)
+        self.assertEqual(plugin_obj.url, sample_plugin_complex.get("url"))
+        self.assertEqual(plugin_obj.download_url, sample_plugin_complex.get("url"))
+        self.assertEqual(plugin_obj.uri_to_zip, sample_plugin_complex.get("url"))
 
     def test_qplugin_versions_comparison_semver(self):
         """Test plugin compare versions semver"""
