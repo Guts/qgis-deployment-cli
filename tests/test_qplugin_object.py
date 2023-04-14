@@ -126,7 +126,7 @@ class TestQgisPluginObject(unittest.TestCase):
 
         # prepare local download path
         local_plugin_download = Path(
-            f"{self.sample_plugin_downloaded.parent}/{plugin_obj.installation_folder_name}/"
+            f"{self.sample_plugin_downloaded.parent.parent}/{plugin_obj.installation_folder_name}/"
             f"{plugin_obj.id_with_version}.zip"
         )
 
