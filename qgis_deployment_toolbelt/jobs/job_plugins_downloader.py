@@ -15,6 +15,7 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from shutil import copy2
 from sys import platform as opersys
 
 # package
@@ -23,6 +24,7 @@ from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_direct
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 
 # #############################################################################
@@ -98,36 +100,122 @@ class JobPluginsDownloader(GenericJob):
             )
             return
 
-        # filter plugins to download, filtering out those which are not already  present locally
+        # filter plugins to download, filtering out those which are not already present locally
         if self.options.get("force") is True:
             qdt_plugins_to_download = qdt_referenced_plugins
         else:
             qdt_plugins_to_download = self.filter_list_downloadable_plugins(
                 input_list=qdt_referenced_plugins
             )
-            if not len(qdt_plugins_to_download):
+            qdt_plugins_to_copy = self.filter_list_copiable_plugins(
+                input_list=qdt_referenced_plugins
+            )
+            if not len(qdt_plugins_to_download + qdt_plugins_to_copy):
                 logger.info(
                     f"All referenced plugins are already present in {self.qdt_plugins_folder}. "
-                    "Skipping download step."
+                    "Skipping download/copy step."
                 )
                 return
 
         # launch download
-        downloaded_plugins, failed_downloads = self.download_plugins(
-            plugins_to_download=qdt_plugins_to_download,
-            destination_parent_folder=self.qdt_plugins_folder,
-            threads=self.options.get("threads", 5),
-        )
-        logger.debug(f"{len(downloaded_plugins)} plugins downloaded.")
-        if len(failed_downloads):
-            logger.error(
-                f"{len(failed_downloads)} failed plugin downloads. "
-                "Check previous log lines."
+        if len(qdt_plugins_to_download):
+            downloaded_plugins, failed_downloads = self.download_remote_plugins(
+                plugins_to_download=qdt_plugins_to_download,
+                destination_parent_folder=self.qdt_plugins_folder,
+                threads=self.options.get("threads", 5),
             )
+            logger.debug(f"{len(downloaded_plugins)} plugins downloaded.")
+            if len(failed_downloads):
+                logger.error(
+                    f"{len(failed_downloads)} failed plugin downloads. "
+                    "Check previous log lines."
+                )
+
+        if len(qdt_plugins_to_copy):
+            copied_plugins, failed_copies = self.copy_plugins(
+                plugins_to_copy=qdt_plugins_to_copy,
+                destination_parent_folder=self.qdt_plugins_folder,
+            )
+            logger.debug(f"{len(copied_plugins)} plugins copied.")
+            if len(failed_copies):
+                logger.error(
+                    f"{len(failed_copies)} failed plugin copies. "
+                    "Check previous log lines."
+                )
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
-    def download_plugins(
+    def copy_plugins(
+        self, plugins_to_copy: list[QgisPlugin], destination_parent_folder: Path
+    ) -> tuple[list[Path], list[Path]]:
+        """Copy listed plugins into the specified folder.
+
+        Args:
+            plugins_to_copy (List[QgisPlugin]): list of plugins to copy
+            destination_parent_folder (Path): where to store copied plugins
+
+        Returns:
+            Tuple[List[Path],List[Path]]: tuple of (copied plugins, failed copies)
+        """
+        copied_plugins: list[QgisPlugin] = []
+        failed_plugins: list[QgisPlugin] = []
+
+        logger.debug(
+            f"Copying {len(plugins_to_copy)} plugins into {destination_parent_folder}."
+        )
+        for plugin in plugins_to_copy:
+            # check if source plugin can be accessed
+            try:
+                check_path(
+                    input_path=plugin.url,
+                    must_be_a_file=True,
+                    must_be_readable=True,
+                    must_be_a_folder=False,
+                    must_exists=True,
+                )
+                src_plugin_path = Path(plugin.url)
+            except Exception as err:
+                logger.error(
+                    f"The plugin '{plugin.name}' can't be copied from {plugin.url}. "
+                    f"Trace: {err}."
+                )
+                failed_plugins.append(plugin)
+                continue
+
+            # try to copy
+            try:
+                dst_plugin_path = destination_parent_folder / src_plugin_path.name
+                copy2(src=src_plugin_path, dst=destination_parent_folder)
+                logger.info(
+                    f"Plugin {plugin.name} has been copied from {src_plugin_path} "
+                    f"to {dst_plugin_path}"
+                )
+                check_path(
+                    input_path=dst_plugin_path,
+                    must_be_a_file=True,
+                    must_exists=True,
+                    raise_error=True,
+                )
+
+                dst_plugin_path_final = dst_plugin_path.rename(
+                    dst_plugin_path.with_name(f"{plugin.id_with_version}.zip")
+                )
+                logger.debug(
+                    f"Plugin ZIP archive has been renamed from '{dst_plugin_path}' "
+                    f"into '{dst_plugin_path_final}' to make it consistent with sync."
+                )
+
+                copied_plugins.append(plugin)
+            except Exception as err:
+                logger.error(
+                    f"Copy of plugin {plugin.name} from {plugin.url} failed. Trace: {err}"
+                )
+                failed_plugins.append(plugin)
+                continue
+
+        return copied_plugins, failed_plugins
+
+    def download_remote_plugins(
         self,
         plugins_to_download: list[QgisPlugin],
         destination_parent_folder: Path,
@@ -148,7 +236,9 @@ class JobPluginsDownloader(GenericJob):
         failed_plugins: list[QgisPlugin] = []
 
         if threads < 2:
-            logger.debug(f"Downloading {len(plugins_to_download)} threads.")
+            logger.debug(
+                f"Downloading {len(plugins_to_download)} plugins in a single thread."
+            )
             for plugin in plugins_to_download:
                 # local path
                 plugin_download_path = Path(
@@ -173,7 +263,7 @@ class JobPluginsDownloader(GenericJob):
                     continue
         else:
             logger.debug(
-                f"Downloading {len(plugins_to_download)} using {threads} simultaneously."
+                f"Downloading {len(plugins_to_download)} plugins in {threads} threads."
             )
             with ThreadPoolExecutor(
                 max_workers=threads, thread_name_prefix=f"{__title_clean__}"
@@ -241,8 +331,8 @@ class JobPluginsDownloader(GenericJob):
     def filter_list_downloadable_plugins(
         self, input_list: list[QgisPlugin]
     ) -> list[QgisPlugin]:
-        """Filter input list of plugins keeping only those which are not present within \
-            the local QDT plugins folder.
+        """Filter input list of plugins keeping only those are remotly stored and which
+            are not present within the local QDT plugins folder.
 
         Args:
             input_list (List[QgisPlugin]): list of plugins to filter
@@ -253,6 +343,13 @@ class JobPluginsDownloader(GenericJob):
         plugins_to_download = []
 
         for plugin in input_list:
+            # keep only if remote
+            if plugin.location != "remote":
+                logger.debug(
+                    f"Ignoring plugin '{plugin.name}' because it's not stored remotly."
+                )
+                continue
+
             # build destination path
             plugin_download_path = Path(
                 self.qdt_plugins_folder, f"{plugin.id_with_version}.zip"
@@ -269,6 +366,45 @@ class JobPluginsDownloader(GenericJob):
             plugins_to_download.append(plugin)
 
         return plugins_to_download
+
+    def filter_list_copiable_plugins(
+        self, input_list: list[QgisPlugin]
+    ) -> list[QgisPlugin]:
+        """Filter input list of plugins keeping only those which are stored locally and
+            which are not present within the local QDT plugins folder.
+
+        Args:
+            input_list (List[QgisPlugin]): list of plugins to filter
+
+        Returns:
+            List[QgisPlugin]: list of plugins to copy from local disk or network
+        """
+        plugins_to_copy = []
+
+        for plugin in input_list:
+            # keep only if remote
+            if plugin.location != "local":
+                logger.debug(
+                    f"Ignoring plugin '{plugin.name}' because it's not stored locally."
+                )
+                continue
+
+            # build destination path
+            plugin_destination_path = Path(
+                self.qdt_plugins_folder, f"{plugin.id_with_version}.zip"
+            )
+
+            # check if file already exists
+            if plugin_destination_path.is_file():
+                logger.debug(
+                    f"Plugin already exists at {plugin_destination_path}, so it "
+                    "won't be copied from source."
+                )
+                continue
+
+            plugins_to_copy.append(plugin)
+
+        return plugins_to_copy
 
 
 # #############################################################################

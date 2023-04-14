@@ -55,6 +55,15 @@
             "deprecated": true,
             "type": "string"
         },
+        "url": {
+            "description": "Direct URI (URL or local path) to download the plugin archive (.zip).",
+            "type": "string",
+            "format": "uri",
+            "examples": [
+                "https: //plugins.qgis.org/plugins/QuickOSM/version/2.2.2/download/",
+                "/home/jmo/Git/Oslandia/QGIS/stsi-plugin-qgis-geocoder-locator-filter/stsi_locator_filter.1.0.0.zip"
+            ]
+        },
         "version": {
             "description": "Plugin version to install.",
             "maxLength": 14,

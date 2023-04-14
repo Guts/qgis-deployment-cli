@@ -69,7 +69,7 @@ Must start with:
 
 - `file://`: for local disk or network
 - `git://` (_recomended_): for git repositories
-- `https://`: for profiles downloadable through an HTTP server
+- `https://`: for profiles stored into git repositories accessible through HTTP or profiles downloadable through an HTTP server
 
 ### sync_mode
 

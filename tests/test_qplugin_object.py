@@ -35,6 +35,26 @@ class TestQgisPluginObject(unittest.TestCase):
             Path("tests/fixtures/").glob("profiles/good_*.json")
         )
 
+        # -- Download a plugin to perfom tests
+        # prepare local download path
+        cls.sample_plugin_downloaded = Path(
+            "tests/fixtures/tmp/qtribu/2733_qtribu_0-14-2.zip"
+        )
+        cls.sample_plugin_downloaded.parent.mkdir(parents=True, exist_ok=True)
+
+        # download plugin zip archive (only if it doesn't exist already)
+        if not cls.sample_plugin_downloaded.exists():
+            download_remote_file_to_local(
+                remote_url_to_download="https://github.com/geotribu/qtribu/releases/download/0.14.2/qtribu.0.14.2.zip",
+                local_file_path=cls.sample_plugin_downloaded.resolve(),
+                content_type="application/zip",
+            )
+
+        # check download worked
+        assert (
+            cls.sample_plugin_downloaded.is_file() is True
+        ), "Downloading fixture plugin failed."
+
     def test_qplugin_load_from_profile(self):
         """Test plugin object loading from profile object."""
         for p in self.good_profiles_files:
@@ -57,7 +77,7 @@ class TestQgisPluginObject(unittest.TestCase):
             "type": "remote",
         }
 
-        plugin_obj_one = QgisPlugin.from_dict(sample_plugin_complete)
+        plugin_obj_one: QgisPlugin = QgisPlugin.from_dict(sample_plugin_complete)
 
         sample_plugin_incomplete = {
             "name": "french_locator_filter",
@@ -65,9 +85,31 @@ class TestQgisPluginObject(unittest.TestCase):
             "official_repository": True,
         }
 
-        plugin_obj_two = QgisPlugin.from_dict(sample_plugin_incomplete)
+        plugin_obj_two: QgisPlugin = QgisPlugin.from_dict(sample_plugin_incomplete)
 
         self.assertEqual(plugin_obj_one, plugin_obj_two)
+        self.assertEqual(plugin_obj_one.download_url, plugin_obj_one.uri_to_zip)
+
+    def test_qplugin_load_from_dict_local(self):
+        """Test plugin object loading from dict, pointing to a local plugin."""
+        # plugin as dict
+        plugin_dict_local = {
+            "name": "QTribu",
+            "folder_name": "qtribu",
+            "official_repository": False,
+            "plugin_id": 2733,
+            "location": "local",
+            "url": self.sample_plugin_downloaded,
+            "version": "0.14.2",
+        }
+
+        # plugin as object
+        plugin_obj: QgisPlugin = QgisPlugin.from_dict(plugin_dict_local)
+        self.assertIsInstance(plugin_obj.uri_to_zip, Path)
+
+        # using a file:// prefix
+        plugin_dict_local["url"] = f"file://{self.sample_plugin_downloaded}"
+        plugin_obj: QgisPlugin = QgisPlugin.from_dict(plugin_dict_local)
 
     def test_qplugin_load_from_zip(self):
         """Test plugin object loading from a ZIP archive downloaded."""
@@ -87,7 +129,7 @@ class TestQgisPluginObject(unittest.TestCase):
 
         # prepare local download path
         local_plugin_download = Path(
-            f"tests/fixtures/tmp/{plugin_obj.installation_folder_name}/"
+            f"{self.sample_plugin_downloaded.parent.parent}/{plugin_obj.installation_folder_name}/"
             f"{plugin_obj.id_with_version}.zip"
         )
 
@@ -120,6 +162,9 @@ class TestQgisPluginObject(unittest.TestCase):
         self.assertEqual(plugin_obj.name, plugin_obj_from_zip.name)
         self.assertEqual(plugin_obj.version, plugin_obj_from_zip.version)
         self.assertEqual(plugin_obj.folder_name, plugin_obj_from_zip.folder_name)
+        self.assertEqual(plugin_obj.url, sample_plugin_complex.get("url"))
+        self.assertEqual(plugin_obj.download_url, sample_plugin_complex.get("url"))
+        self.assertEqual(plugin_obj.uri_to_zip, sample_plugin_complex.get("url"))
 
     def test_qplugin_versions_comparison_semver(self):
         """Test plugin compare versions semver"""
