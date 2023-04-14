@@ -18,6 +18,7 @@ import logging
 import zipfile
 from dataclasses import dataclass, fields
 from enum import Enum
+from os.path import expanduser, expandvars
 from pathlib import Path
 from sys import version_info
 from urllib.parse import quote, urlsplit, urlunsplit
@@ -96,8 +97,10 @@ class QgisPlugin:
         # official repository autodetection
         if input_dict.get("repository_url_xml") == cls.OFFICIAL_REPOSITORY_XML:
             input_dict["official_repository"] = True
-        elif input_dict.get("url") and input_dict.get("url").startswith(
-            cls.OFFICIAL_REPOSITORY_URL_BASE
+        elif (
+            input_dict.get("url")
+            and isinstance(input_dict.get("url"), str)
+            and input_dict.get("url").startswith(cls.OFFICIAL_REPOSITORY_URL_BASE)
         ):
             input_dict["official_repository"] = True
             input_dict["repository_url_xml"] = cls.OFFICIAL_REPOSITORY_XML
@@ -304,6 +307,35 @@ class QgisPlugin:
 
         return plugin_version < version_to_compare
 
+    @property
+    def uri_to_zip(self) -> str:
+        """Get the plugin URI. Can be either a local path or remote URL (in that case
+            it's mapped to dowload_url property).
+
+        Returns:
+            str: URI (path or URL) to the plugin ZIP archive
+        """
+        if (
+            self.url
+            and isinstance(self.url, str)
+            and self.url.startswith(("http://", "https://"))
+        ):
+            return self.download_url
+        elif (
+            self.url
+            and isinstance(self.url, str)
+            and (self.url.startswith("file://") or Path(self.url))
+        ):
+            uri_or_path = self.url
+            if self.url.startswith("file://"):
+                uri_or_path = self.url[7:]
+                logger.debug(
+                    f"URI cleaning: 'file://' protocol prefix removed. Result: {uri_or_path}"
+                )
+            return Path(expandvars(expanduser(uri_or_path)))
+        else:
+            return self.url
+
 
 # #############################################################################
 # ##### Stand alone program ########
@@ -388,3 +420,15 @@ if __name__ == "__main__":
 
     assert plugin_obj_five.is_older_than(sample_plugin_qtribu_newer) is True
     assert sample_plugin_qtribu_newer.is_older_than(plugin_obj_five) is False
+
+    plugin_dict_local = {
+        "name": "STSI Locator Filter",
+        "folder_name": "stsi_locator_filter",
+        "official_repository": False,
+        "plugin_id": 202303,
+        "location": "local",
+        "url": "~/Git/Oslandia/QGIS/stsi-plugin-qgis-geocoder-locator-filter/stsi_locator_filter.1.0.0.zip",
+        "version": "1.0.0",
+    }
+    plugin_obj_six = QgisPlugin.from_dict(plugin_dict_local)
+    print(plugin_obj_six.uri_to_zip)
