@@ -184,11 +184,27 @@ class JobPluginsDownloader(GenericJob):
 
             # try to copy
             try:
+                dst_plugin_path = destination_parent_folder / src_plugin_path.name
                 copy2(src=src_plugin_path, dst=destination_parent_folder)
                 logger.info(
                     f"Plugin {plugin.name} has been copied from {src_plugin_path} "
-                    f"to {destination_parent_folder / src_plugin_path.name}"
+                    f"to {dst_plugin_path}"
                 )
+                check_path(
+                    input_path=dst_plugin_path,
+                    must_be_a_file=True,
+                    must_exists=True,
+                    raise_error=True,
+                )
+
+                dst_plugin_path_final = dst_plugin_path.rename(
+                    dst_plugin_path.with_name(f"{plugin.id_with_version}.zip")
+                )
+                logger.debug(
+                    f"Plugin ZIP archive has been renamed from '{dst_plugin_path}' "
+                    f"into '{dst_plugin_path_final}' to make it consistent with sync."
+                )
+
                 copied_plugins.append(plugin)
             except Exception as err:
                 logger.error(
