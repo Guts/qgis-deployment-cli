@@ -173,6 +173,7 @@ class JobPluginsDownloader(GenericJob):
                     must_be_a_folder=False,
                     must_exists=True,
                 )
+                src_plugin_path = Path(plugin.url)
             except Exception as err:
                 logger.error(
                     f"The plugin '{plugin.name}' can't be copied from {plugin.url}. "
@@ -182,13 +183,11 @@ class JobPluginsDownloader(GenericJob):
                 continue
 
             # try to copy
-            plugin_copy_path = Path(destination_parent_folder, f"{plugin.name}.zip")
-
             try:
-                copy2(src=plugin.url, dst=destination_parent_folder)
+                copy2(src=src_plugin_path, dst=destination_parent_folder)
                 logger.info(
-                    f"Plugin {plugin.name} has been copied from {plugin.guess_copy_url} "
-                    f"to {plugin_copy_path}"
+                    f"Plugin {plugin.name} has been copied from {src_plugin_path} "
+                    f"to {destination_parent_folder / src_plugin_path.name}"
                 )
                 copied_plugins.append(plugin)
             except Exception as err:
