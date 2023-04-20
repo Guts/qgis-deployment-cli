@@ -284,9 +284,9 @@ class QgisPlugin:
             plugin_version = Version(self.version)
         except InvalidVersion as err:
             logger.error(
-                f"Plugin {self.name} uses an incompatible versioning scheme: {self.version}."
-                "It's not Semver (even prefixed by 'v'), nor Calver or any of "
-                "supported specification. See https://peps.python.org/pep-0440/. "
+                f"Plugin {self.name} (current) uses an incompatible versioning scheme: "
+                f"{self.version}. It's not Semver (even prefixed by 'v'), nor Calver or "
+                "any of supported specification. See https://peps.python.org/pep-0440/. "
                 f"Trace: {err}"
             )
             return None
@@ -296,9 +296,9 @@ class QgisPlugin:
             version_to_compare = Version(version_to_compare)
         except InvalidVersion as err:
             logger.error(
-                f"Version to compare uses an incompatible versioning scheme: {self.version}."
-                "It's not Semver (even prefixed by 'v'), nor Calver or any of "
-                "supported specification. See https://peps.python.org/pep-0440/. "
+                f"Plugin {self.name} (to compare) uses an incompatible versioning scheme: "
+                f"{self.version}. It's not Semver (even prefixed by 'v'), nor Calver or "
+                "any of supported specification. See https://peps.python.org/pep-0440/. "
                 f"Trace: {err}"
             )
             return None
