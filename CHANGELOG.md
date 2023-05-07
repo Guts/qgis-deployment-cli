@@ -16,6 +16,16 @@ Unreleased
 
 -->
 
+## 0.23.1 - 2023-05-07
+
+### Bugs fixes 🐛
+
+* Set dulwich minimal version to prevent upstream bug (<https://github.com/jelmer/dulwich/pull/1164>) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/263>
+
+### Features and enhancements 🎉
+
+* Improve log message during plugin version comparison by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/257>
+
 ## 0.23.0 - 2023-04-14
 
 ### Features and enhancements 🎉
