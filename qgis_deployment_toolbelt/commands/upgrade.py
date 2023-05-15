@@ -14,6 +14,7 @@
 import argparse
 import json
 import logging
+import sys
 from os import getenv
 from pathlib import Path
 from sys import platform as opersys
@@ -25,6 +26,7 @@ from packaging.version import Version
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import (
+    __package_name__,
     __title__,
     __title_clean__,
     __uri_repository__,
@@ -232,6 +234,15 @@ def run(args: argparse.Namespace):
         )
 
     # -- DOWNLOAD ------------------------------------------------------------
+    # check if we are in frozen mode (typically PyInstaller) or as "normal" Python
+    if not (getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS")):
+        logger.debug("Running in a normal Python process.")
+        print(
+            "\n\nTo get the latest version, run (adapt command to your environment):"
+            f"\n\npython -m pip install -U {__package_name__}"
+        )
+        sys.exit(0)
+
     print(f"Downloading newer version of executable for {opersys}: {latest_version}")
 
     # select remote download URL
