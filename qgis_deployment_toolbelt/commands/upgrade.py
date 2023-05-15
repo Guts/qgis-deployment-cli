@@ -63,7 +63,7 @@ def get_download_url_for_os(
             to get a download URL for a specific OS. Defaults to None.
 
     Returns:
-        tuple[str, str]: tuple containgin asset download URL (browser_download_url) and
+        tuple[str, str]: tuple containing asset download URL (browser_download_url) and
             content-type (barely defined)
     """
     opersys_code = opersys
