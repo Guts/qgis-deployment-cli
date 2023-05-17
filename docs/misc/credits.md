@@ -3,7 +3,7 @@
 - [Python 3](https://www.python.org/)
 - [PyInstaller](https://www.pyinstaller.org/) to generate the Windows executable
 
-## Dépendances
+## Dependencies
 
 > Generated with [pipdeptree](https://pypi.org/project/pipdeptree/).
 
