@@ -3,9 +3,13 @@
 
 furo==2023.*
 myst-parser[linkify]>=0.18,<1.1
-pip-licenses>=4,<5
 sphinx-argparse-cli>=1,<2
 sphinx-autobuild==2021.3.14
 sphinx-copybutton<1
 sphinx-design>=0.3,<0.5
+sphinxcontrib-mermaid<1
 sphinxext-opengraph>=0.4,<1
+
+# -- 'HIDDEN' dependencies, used during CI
+# pip-licenses<5
+# pipdeptree<3

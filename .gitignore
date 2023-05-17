@@ -132,7 +132,9 @@ dmypy.json
 
 version_info.txt
 _logs/
+*.exe
 *.pfx
 docs/misc/licenses.md
+docs/misc/dependencies.md
 QGISDeploymentToolbelt_*Ubuntu*
 tests/fixtures/tmp/*
