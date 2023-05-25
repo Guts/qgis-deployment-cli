@@ -14,9 +14,9 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
 
-Cross-platform (but Windows focused) CLI to perform deployment operations: profiles, plugins, etc.
+Cross-platform (but Windows focused) CLI to perform deployment operations aorund QGIS: profiles, plugins, etc.
 
-**Interested**? For further details, [read the documentation](https://guts.github.io/qgis-deployment-cli//) :books:.
+**Interested**? For further details, [read the documentation](https://guts.github.io/qgis-deployment-cli/) :books:.
 
 ## Contribute
 
