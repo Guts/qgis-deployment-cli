@@ -2,15 +2,25 @@
 
 ## Concepts
 
-To run the workflow properly, you will need 3 items:
+To run the workflow properly, you need 3 items:
 
 | QGIS profiles | A scenario | The QDT executable |
-| -- | -- | -- |
+| ------------- | ---------- | ------------------ |
 | ![icon profiles](/static/icon_profiles.svg) | ![icon scenario](/static/icon_scenario.svg) | ![icon QDT](/static/logo_qdt.png) |
 
 ### QGIS profiles
 
-> TO DOC
+One of the most interesting aspects of QGIS when it comes to deploying it to a large number of users is the ability to provide them with one or more customised experiences via [the profile system](https://docs.qgis.org/latest/en/docs/user_manual/introduction/qgis_configuration.html). A profile contains many settings: interface items, installed and deactivated plugins, variables, network settings, etc.
+
+To facilitate their management and administration, QDT uses a profile definition file in JSON format (`profile.json` stored in the profile folder) which then serves as a "recipe" at the time of installation and especially when updating a profile.
+
+```{button-link} ./profile.html
+:color: primary
+:shadow:
+:expand:
+
+Publish your QGIS profiles
+```
 
 ### Scenarios
 
@@ -60,7 +70,7 @@ flowchart TB
             E1[QDT executable + scenario.qdt.yml]
             E2{RUN<br>cron / manual double-click}
             E3[Read scenario]
-            E3>Set persistent environment variables]
+            E4>Set environment variables]
             E5>Sync local profiles from repo]
             E6>Download and install plugins locally]
             E7>Create shortcuts to profiles]

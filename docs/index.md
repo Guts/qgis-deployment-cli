@@ -74,6 +74,7 @@ caption: Miscellaneous
 maxdepth: 1
 ---
 misc/compatibility
+misc/tip_get_plugin_id
 misc/credits
 misc/funding
 ```
