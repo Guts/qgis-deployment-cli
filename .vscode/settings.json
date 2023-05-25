@@ -18,10 +18,9 @@
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.terminal.activateEnvironment": true,
     // Formatter
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": [
-        "--target-version=py38"
-    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
     // Linter
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
