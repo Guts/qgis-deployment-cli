@@ -93,7 +93,7 @@ def parser_main_deployment(
     subparser.add_argument(
         "-s",
         "--scenario",
-        help="Emplacement du fichier local.",
+        help="Scenario path, local or remote (HTTP/S).",
         default=getenv("QDT_SCENARIO_PATH", Path("./scenario.qdt.yml")),
         type=str,
         dest="scenario_filepath",
