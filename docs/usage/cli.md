@@ -2,6 +2,8 @@
 
 ## Main command
 
+Aliases : `qdt`, `qgis-deployment-toolbelt`, `qdeploy-toolbelt`
+
 ```{sphinx_argparse_cli}
   :module: qgis_deployment_toolbelt.cli
   :hook:
