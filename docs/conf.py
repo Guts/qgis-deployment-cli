@@ -97,8 +97,8 @@ pygments_style = "sphinx"
 # -- Options for HTML output -------------------------------------------------
 
 # Theme
-# html_favicon = "static/img/qgis_deployment_toolbelt_logo_200px.png"
-# html_logo = "static/img/qgis_deployment_toolbelt_logo_200px.png"
+html_favicon = "static/logo_qdt.png"
+html_logo = "static/logo_qdt.png"
 html_theme = "furo"
 html_theme_options = {
     "source_repository": __about__.__uri__,
@@ -146,7 +146,7 @@ mermaid_params = [
     "--theme",
     "forest",
     "--width",
-    "600",
+    "100%",
     "--backgroundColor",
     "transparent",
 ]
@@ -247,4 +247,4 @@ def run_apidoc(_):
 # launch setup
 def setup(app):
     app.connect("builder-inited", run_apidoc)
-    app.connect("builder-inited", populate_download_page)
+    # app.connect("builder-inited", populate_download_page)

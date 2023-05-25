@@ -11,6 +11,8 @@
 
 ```
 
+----
+
 ## Licenses
 
 > Generated with [pip-licenses](https://pypi.org/project/pip-licenses/)
@@ -18,3 +20,10 @@
 ```{include} licenses.md
 
 ```
+
+----
+
+## Images
+
+- film scenario [by Berkah Icon from Noun Project](https://thenounproject.com/browse/icons/term/film-scenario/) under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
+- profiles icon [by Lil Squid from Noun Project](https://thenounproject.com/browse/icons/term/profiles/) under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)

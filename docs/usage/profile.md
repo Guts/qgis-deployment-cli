@@ -8,7 +8,7 @@ QDT expects to find this file in the folder of each profile stored in the source
 
 ## Publish them
 
-> TO DO
+----
 
 ## Good practices and recomendations
 
@@ -16,15 +16,6 @@ QDT expects to find this file in the folder of each profile stored in the source
 - keep only the lines of `*.ini` files which are custom to your profile:
   - QGIS will fill them automatically if needed
   - it reduces the surface of possible conflicts when dealing to upgrade a profile
-
-## How to get a plugin ID
-
-1. Open the repository in your browser. Example for the official set on QGIS 3.28: <https://plugins.qgis.org/plugins/plugins.xml?qgis=3.28>
-1. Open the RAW mode (or source), typing `Ctrl + U` or right-click and  select `View page source`
-1. Use your browser search `Ctrl + F` to look for the plugin you want
-1. Grab the `plugin_id` attribute:
-
-  ![Plugin ID into official repository - Example QuickOSM](/static/repository_plugins_plugin_id.webp)
 
 ----
 
@@ -43,6 +34,10 @@ With a submodel for plugin object:
 .. literalinclude:: ../schemas/profile/qgis_plugin.json
   :language: json
 ```
+
+:::{tip}
+To retrieve the ID of a plugin see [this page](../misc/tip_get_plugin_id.md).
+:::
 
 ----
 
