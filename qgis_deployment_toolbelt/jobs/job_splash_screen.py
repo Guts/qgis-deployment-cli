@@ -93,7 +93,7 @@ class JobSplashScreenManager(GenericJob):
                 )
                 # target QGIS configuration files
                 ini_helper = QgisIniHelper(
-                    qgis3ini_filepath=profile_downloaded.path_in_qgis / "QGIS/QGIS3.ini"
+                    ini_filepath=profile_downloaded.path_in_qgis / "QGIS/QGIS3.ini"
                 )
 
                 if Path(profile_downloaded.path_in_qgis, "profile.json").is_file():
@@ -156,8 +156,6 @@ class JobSplashScreenManager(GenericJob):
 
                 # enable UI customization
                 ini_helper.set_ui_customization_enabled(
-                    section="UI",
-                    option="Customization\\enabled",
                     switch=True,
                 )
 
