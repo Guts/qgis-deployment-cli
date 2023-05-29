@@ -20,6 +20,7 @@ from pathlib import Path
 from qgis_deployment_toolbelt.exceptions import SplashScreenBadDimensions
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.profiles.qgis_ini_handler import QgisIniHelper
 from qgis_deployment_toolbelt.utils.check_image_size import check_image_dimensions
 from qgis_deployment_toolbelt.utils.win32utils import normalize_path
 
@@ -91,9 +92,8 @@ class JobSplashScreenManager(GenericJob):
                     profile_downloaded.path_in_qgis / self.DEFAULT_SPLASH_FILEPATH
                 )
                 # target QGIS configuration files
-                cfg_qgis_base = profile_downloaded.path_in_qgis / "QGIS/QGIS3.ini"
-                cfg_qgis_custom = (
-                    profile_downloaded.path_in_qgis / "QGIS/QGISCUSTOMIZATION3.ini"
+                ini_helper = QgisIniHelper(
+                    qgis3ini_filepath=profile_downloaded.path_in_qgis / "QGIS/QGIS3.ini"
                 )
 
                 if Path(profile_downloaded.path_in_qgis, "profile.json").is_file():
@@ -155,16 +155,15 @@ class JobSplashScreenManager(GenericJob):
                         logger.warning(err.message)
 
                 # enable UI customization
-                self.set_ui_customization_enabled(
-                    qgis3ini_filepath=cfg_qgis_base,
+                ini_helper.set_ui_customization_enabled(
                     section="UI",
                     option="Customization\\enabled",
                     switch=True,
                 )
 
                 # set the splash screen into the customization file
-                self.set_splash_screen(
-                    qgiscustomization3ini_filepath=cfg_qgis_custom,
+                ini_helper.set_splash_screen(
+                    qgiscustomization3ini_filepath=ini_helper.profile_customization_path,
                     splash_screen_filepath=splash_screen_filepath.resolve(),
                     switch=True,
                 )
@@ -174,7 +173,6 @@ class JobSplashScreenManager(GenericJob):
                 splash_screen_filepath = profile_dir / self.DEFAULT_SPLASH_FILEPATH
 
                 # target QGIS configuration files
-                cfg_qgis_base = profile_dir / "QGIS/QGIS3.ini"
                 cfg_qgis_custom = profile_dir / "QGIS/QGISCUSTOMIZATION3.ini"
 
                 # set the splash screen into the customization file
