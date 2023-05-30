@@ -16,6 +16,23 @@ Unreleased
 
 -->
 
+## 0.24.0 - 2023-05-30
+
+### Features and enhancements 🎉
+
+* Upgrade: download new release binary only in frozen mode by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/266>
+
+### Tooling 🔧
+
+* Docs: deploy only on tags or main by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/265>
+* Add feature request issue form by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/272>
+* Packaging: publish QDT as Docker image in GHCR by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/274>
+
+### Documentation 📖
+
+* Add job to generate dependencies graph by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/267>
+* Complete user manual by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/268>
+
 ## 0.23.1 - 2023-05-07
 
 ### Bugs fixes 🐛
