@@ -247,4 +247,4 @@ def run_apidoc(_):
 # launch setup
 def setup(app):
     app.connect("builder-inited", run_apidoc)
-    # app.connect("builder-inited", populate_download_page)
+    app.connect("builder-inited", populate_download_page)
