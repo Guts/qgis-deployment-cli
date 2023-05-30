@@ -8,6 +8,12 @@ QDT expects to find this file in the folder of each profile stored in the source
 
 ## Publish them
 
+3 options:
+
+- on a remote Git repository (github.com, gitlab.com, GitLab instance...)
+- on a local Git repository
+- on a web server through HTTP using a `qdt.json`
+
 ----
 
 ## Good practices and recomendations
