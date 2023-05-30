@@ -17,6 +17,8 @@
 MacOS version is not tested and is just here to encourage beta-testing and feedback to improve it.
 :::
 
+----
+
 ## As a Python package
 
 The package is installable with pip:
@@ -26,3 +28,11 @@ pip install qgis-deployment-toolbelt
 ```
 
 It's then available as a CLI: see [the relevant section](/usage/cli)
+
+----
+
+## Using Docker
+
+```sh
+docker pull ghcr.io/guts/qgis-deployment-toolbelt
+```
