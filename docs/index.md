@@ -70,11 +70,19 @@ development/history
 
 ```{toctree}
 ---
+caption: Guides
+maxdepth: 1
+---
+guides/howto_qgis_get_plugin_id
+guides/howto_windows_sign_executable
+```
+
+```{toctree}
+---
 caption: Miscellaneous
 maxdepth: 1
 ---
 misc/compatibility
-misc/tip_get_plugin_id
 misc/credits
 misc/funding
 ```
