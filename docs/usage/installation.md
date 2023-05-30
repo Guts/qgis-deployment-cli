@@ -33,6 +33,10 @@ It's then available as a CLI: see [the relevant section](/usage/cli)
 
 ## Using Docker
 
+The package is published as container on GitHub Container Registry (GHCR):
+
 ```sh
-docker pull ghcr.io/guts/qgis-deployment-toolbelt
+docker pull ghcr.io/guts/qgis-deployment-cli
 ```
+
+See [container page for additional options and instructions](https://github.com/Guts/qgis-deployment-cli/pkgs/container/qgis-deployment-cli).
