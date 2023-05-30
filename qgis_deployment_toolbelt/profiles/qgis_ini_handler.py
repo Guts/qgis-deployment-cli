@@ -40,7 +40,7 @@ class QgisIniHelper:
         """Instanciation.
 
         Args:
-            qgis3ini_filepath (Path): path to the QGIS3.ini configuration file
+            ini_filepath: path to the QGIS3.ini configuration file
         """
         if ini_filepath.stem == "QGIS3":
             self.INI_TYPE = "profile_qgis3"
@@ -72,6 +72,7 @@ class QgisIniHelper:
         Args:
             ini_file (Union[ConfigParser, Path]): input ini file to check.
                 A warning is raised if the filename is not QGIS3.ini.
+                If None, self.profile_config_path is used.
 
         Returns:
             bool: True if customization is enabled
