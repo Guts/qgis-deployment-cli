@@ -9,7 +9,7 @@ Then, you can use the following commands:
 ```sh
 qgis-deployment-toolbelt --help
 qdeploy-toolbelt --verbose upgrade --check-only
-qdt deploy -vv -s https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022/-/raw/main/qdt_scenarii/scenario.qdt.yml?inline=false
+qdt deploy -vv -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
 ```
 
 See: [Command-line interface usage](./cli.md)
@@ -19,7 +19,7 @@ See: [Command-line interface usage](./cli.md)
 ```sh
 qgis-deployment-toolbelt --help
 qdeploy-toolbelt --verbose upgrade --check-only
-qdt deploy -vv -s https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022/-/raw/main/qdt_scenarii/scenario.qdt.yml?inline=false
+qdt deploy -vv -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
 ```
 
 See: [Command-line interface usage](./cli.md)

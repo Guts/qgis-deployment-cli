@@ -1,20 +1,18 @@
-# This is a sample of a YAML file for the QGIS Deployment Toolbelt scenario.
-# For now, it's more a roadmap than a real description of what it's implemented.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
 
 metadata:
-  title: "Sample scenario of QGIS Deployment Toolbelt"
-  id: development-scenario
+  title: "Demonstration scenario of QGIS Deployment Toolbelt"
+  id: qdt-demo-scenario
   description: >-
-    This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
-    demonstrate capabilities.
+    Demonstration scenario of QGIS Deployment Toolbelt capabilities.
 
 # Toolbelt settings
 settings:
-  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/dev-test/
+  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/demo/
   QGIS_EXE_PATH:
     linux: /usr/bin/qgis
     mac: /usr/bin/qgis
-    windows: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
+    windows: "%PROGRAMFILES%/QGIS/3_28/bin/qgis-ltr-bin.exe"
   SCENARIO_VALIDATION: true
 
 # Deployment workflow, step by step
@@ -22,10 +20,9 @@ steps:
   - name: Download profiles from remote git repository
     uses: qprofiles-manager
     with:
-      action: download
-      source: https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git
+      source: https://github.com/Guts/qgis-deployment-cli.git
       protocol: git
-      sync_mode: only_new_version
+      sync_mode: overwrite
       branch: main
 
   - name: Download plugins
@@ -38,26 +35,16 @@ steps:
     uses: qplugins-synchronizer
     with:
       action: create_or_restore
-      profile_ref: downloaded
-      source: ~/.cache/qgis-deployment-toolbelt/plugins
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
     with:
       action: create_or_restore
       include:
-        - profile: conf_qgis_fr
-          label: "QGIS - Conf QGIS FR"
-          additional_arguments: "--noversioncheck"
-          desktop: false
-          start_menu: true
-          icon: "qgis_icon.ico"
-        - profile: Oslandia
-          label: "QGIS - Profil Oslandia"
-          additional_arguments: "--noversioncheck"
+        - profile: demo
+          label: "QDT - Demo profile"
           desktop: true
           start_menu: true
-          icon: "qgis_icon_oslandia.ico"
 
   - name: Set splash screen
     uses: splash-screen-manager

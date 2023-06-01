@@ -16,6 +16,15 @@
 
 Cross-platform (but Windows focused) CLI to perform deployment operations aorund QGIS: profiles, plugins, etc.
 
+## Try it quickly
+
+```sh
+pip install qgis-deployment-toolbelt
+qdt -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+```
+
+Look for a new start menu or desktop icon!
+
 **Interested**? For further details, [read the documentation](https://guts.github.io/qgis-deployment-cli/) :books:.
 
 ## Contribute
