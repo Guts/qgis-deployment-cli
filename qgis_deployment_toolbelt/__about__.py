@@ -23,7 +23,7 @@ __copyright__ = f"2021 - {date.today().year}, {__author__}"
 __email__ = "qgis@oslandia.com"
 __executable_name__ = "qgis-deployment-toolbelt"
 __package_name__ = "qgis-deployment-toolbelt"
-__keywords__ = ["cli, QGIS, deployment, profiles"]
+__keywords__ = ["cli, QGIS, deployment, profiles", "qdt"]
 __license__ = "GNU Lesser General Public License v3.0"
 __summary__ = (
     "QGIS deployment toolbelt is a CLI (Command Line Interface) to perform "
