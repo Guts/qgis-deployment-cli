@@ -131,7 +131,7 @@ class JobProfilesDownloader(GenericJob):
     def run(self) -> None:
         """Execute job logic."""
         # download or refresh
-        if self.options.get("action") != "download":
+        if self.options.get("action", "download") != "download":
             raise NotImplementedError
 
         # prepare remote source
