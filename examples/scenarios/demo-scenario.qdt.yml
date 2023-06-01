@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
+
+metadata:
+  title: "Demonstration scenario of QGIS Deployment Toolbelt"
+  id: qdt-demo-scenario
+  description: >-
+    Demonstration scenario of QGIS Deployment Toolbelt capabilities.
+
+# Toolbelt settings
+settings:
+  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/demo/
+  QGIS_EXE_PATH:
+    linux: /usr/bin/qgis
+    mac: /usr/bin/qgis
+    windows: "%PROGRAMFILES%/QGIS/3_28/bin/qgis-ltr-bin.exe"
+  SCENARIO_VALIDATION: true
+
+# Deployment workflow, step by step
+steps:
+  - name: Download profiles from remote git repository
+    uses: qprofiles-manager
+    with:
+      source: https://github.com/Guts/qgis-deployment-cli.git
+      protocol: git
+      sync_mode: overwrite
+      branch: main
+
+  - name: Download plugins
+    uses: qplugins-downloader
+    with:
+      force: false
+      threads: 5
+
+  - name: Synchronize plugins
+    uses: qplugins-synchronizer
+    with:
+      action: create_or_restore
+
+  - name: Create shortcuts for profiles
+    uses: shortcuts-manager
+    with:
+      action: create_or_restore
+      include:
+        - profile: qdt_demo
+          label: "QDT - Demo profile"
+          desktop: true
+          start_menu: true
+
+  - name: Set splash screen
+    uses: splash-screen-manager
+    with:
+      action: create_or_restore
+      strict: false
