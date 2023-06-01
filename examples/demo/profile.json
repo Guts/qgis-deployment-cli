@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+  "name": "qdt_demo",
+  "folder_name": "demo",
+  "description": "Demo QGIS profile for QDT.",
+  "author": "Julien Moura",
+  "email": "infos+qdt@oslandia.com",
+  "qgisMinimumVersion": "3.28.0",
+  "qgisMaximumVersion": "3.99.10",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "Profile Manager",
+      "folder_name": "profile-manager",
+      "official_repository": true,
+      "plugin_id": 2515,
+      "version": "0.31"
+    }
+  ]
+}
