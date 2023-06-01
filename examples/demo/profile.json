@@ -5,6 +5,7 @@
   "description": "Demo QGIS profile for QDT.",
   "author": "Julien Moura",
   "email": "infos+qdt@oslandia.com",
+  "icon": "images/logo_qdt.ico",
   "qgisMinimumVersion": "3.28.0",
   "qgisMaximumVersion": "3.99.10",
   "version": "1.0.0",
