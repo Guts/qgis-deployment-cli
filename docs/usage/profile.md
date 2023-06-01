@@ -14,10 +14,49 @@ QDT expects to find this file in the folder of each profile stored in the source
 - on a local Git repository
 - on a web server through HTTP using a `qdt.json`
 
+## Typical structure of a project with profiles
+
+Given 3 profiles to be deployed: `avdanced`, `beginner` and `readonly`. Here comes a typical organization of folders, subfolers and files into your repository:
+
+```sh
+qgis-profiles/
+├── .git/
+├── LICENSE
+├── profiles
+│   ├── advanced
+│   │   ├── images
+│   │   │   ├── profile_advanced.ico
+│   │   │   └── splash.png
+│   │   ├── profile.json
+│   │   └── QGIS
+│   │       ├── QGIS3.ini
+│   ├── beginner
+│   │   ├── images
+│   │   │   ├── profile_beginner.ico
+│   │   │   └── splash.png
+│   │   ├── profile.json
+│   │   └── QGIS
+│   │       ├── QGIS3.ini
+│   │       └── QGISCUSTOMIZATION3.ini
+│   └── readonly
+│       ├── bookmarks.xml
+│       ├── images
+│       │   └── profile_readonly.ico
+│       ├── profile.json
+│       ├── project_default.qgs
+│       └── QGIS
+│           └── QGIS3.ini
+│           └── QGISCUSTOMIZATION3.ini
+├── qdt
+│   └── scenario.qdt.yml
+├── README.md
+```
+
 ----
 
 ## Good practices and recomendations
 
+- if you use a Git repository, store profiles in a subfolder not at the project root and specify the relative path in scenario
 - do not store the entire profile folder, but only files that contans something specific to your profile
 - keep only the lines of `*.ini` files which are custom to your profile:
   - QGIS will fill them automatically if needed
