@@ -41,7 +41,7 @@ steps:
     with:
       action: create_or_restore
       include:
-        - profile: demo
+        - profile: qdt_demo
           label: "QDT - Demo profile"
           desktop: true
           start_menu: true
