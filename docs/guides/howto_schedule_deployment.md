@@ -1,4 +1,4 @@
-# Schedule the deployment
+# How to schedule the deployment
 
 You can schedule the deployment through QGIS Deployment Toolbelt using a task scheduler.
 

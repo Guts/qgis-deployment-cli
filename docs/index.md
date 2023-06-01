@@ -49,7 +49,6 @@ usage/scenario
 jobs/index
 usage/cli
 usage/settings
-usage/schedule_deployment
 ```
 
 ```{toctree}
@@ -74,6 +73,7 @@ caption: Guides
 maxdepth: 1
 ---
 guides/howto_qgis_get_plugin_id
+guides/howto_schedule_deployment
 guides/howto_windows_sign_executable
 ```
 
