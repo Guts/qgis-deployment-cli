@@ -210,7 +210,7 @@ class ApplicationShortcut:
                 f"Shortcut '{self.name}' has no icon specified. Fallback to default "
                 "QGIS icon."
             )
-            return None
+            return self.os_config.shortcut_icon_default_path
 
         # checks
         if check_path(
@@ -335,6 +335,7 @@ class ApplicationShortcut:
             return None
 
     # -- PRIVATE --------------------------------------------------------------
+
     def freedesktop_create(self) -> tuple[Path | None, Path | None]:
         """Creates shortcut on distributions using FreeDesktop.
 

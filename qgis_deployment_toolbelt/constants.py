@@ -82,6 +82,7 @@ class OSConfiguration:
     shortcut_extension: str = None
     shortcut_forbidden_chars: tuple[str] = None
     shortcut_icon_extensions: tuple[str] = None
+    shortcut_icon_default_path: str = None
 
     @property
     def get_qgis_bin_path(self) -> Path:
@@ -188,6 +189,7 @@ OS_CONFIG: dict = {
         qgis_bin_exe_path=Path("/usr/bin/qgis"),
         shortcut_extension=".desktop",
         shortcut_icon_extensions=("ico", "svg", "png"),
+        shortcut_icon_default_path="qgis",
     ),
     "win32": OSConfiguration(
         name_python="win32",
