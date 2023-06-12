@@ -57,7 +57,8 @@ If true, create a desktop shortcut.
 
 #### icon
 
-Filename of the icon to use for the shortcut. the path is relative to the profile folder.
+Filename of the icon to use for the shortcut. The path is relative to the profile folder.
+If not set, the defaut QGIS icon is used instead.
 
 #### label
 
