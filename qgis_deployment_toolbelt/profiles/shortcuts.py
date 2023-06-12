@@ -205,10 +205,13 @@ class ApplicationShortcut:
 
         :return Union[Path, None]: icon path as Path if str or Path, else None
         """
-        if not icon_path:
-            return None
-        # store as path
-        icon_path = Path(icon_path)
+        if icon_path is None:
+            logger.debug(
+                f"Shortcut '{self.name}' has no icon specified. Fallback to default "
+                "QGIS icon."
+            )
+            return self.os_config.shortcut_icon_default_path
+
         # checks
         if check_path(
             input_path=icon_path,
@@ -217,7 +220,7 @@ class ApplicationShortcut:
             must_exists=True,
             raise_error=False,
         ):
-            return icon_path.resolve()
+            return Path(icon_path).resolve()
         else:
             logger.warning(f"Icon does not exist: {icon_path}")
             return None
@@ -332,6 +335,7 @@ class ApplicationShortcut:
             return None
 
     # -- PRIVATE --------------------------------------------------------------
+
     def freedesktop_create(self) -> tuple[Path | None, Path | None]:
         """Creates shortcut on distributions using FreeDesktop.
 
@@ -433,7 +437,14 @@ class ApplicationShortcut:
             else:
                 wscript.Description = f"Created by {__title__} {__version__}"
             if self.icon_path:
-                wscript.IconLocation = str(self.icon_path.resolve())
+                if isinstance(self.icon_path, Path):
+                    wscript.IconLocation = str(self.icon_path.resolve())
+                elif isinstance(self.icon_path, str):
+                    wscript.IconLocation = self.icon_path
+                else:
+                    logger.warning(
+                        f"Bad icon path type: {type(self.icon_path)} != (Path, str)."
+                    )
             wscript.save()
         else:
             shortcut_desktop_path = None
