@@ -205,10 +205,13 @@ class ApplicationShortcut:
 
         :return Union[Path, None]: icon path as Path if str or Path, else None
         """
-        if not icon_path:
+        if icon_path is None:
+            logger.debug(
+                f"Shortcut '{self.name}' has no icon specified. Fallback to default "
+                "QGIS icon."
+            )
             return None
-        # store as path
-        icon_path = Path(icon_path)
+
         # checks
         if check_path(
             input_path=icon_path,
@@ -217,7 +220,7 @@ class ApplicationShortcut:
             must_exists=True,
             raise_error=False,
         ):
-            return icon_path.resolve()
+            return Path(icon_path).resolve()
         else:
             logger.warning(f"Icon does not exist: {icon_path}")
             return None
