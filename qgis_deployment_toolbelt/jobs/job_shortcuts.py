@@ -92,13 +92,6 @@ class JobShortcutsManager(GenericJob):
                     "possible_values": None,
                     "condition": None,
                 },
-                "qgis_contextual_shortcut": {
-                    "type": bool,
-                    "required": False,
-                    "default": True,
-                    "possible_values": None,
-                    "condition": None,
-                },
                 "start_menu": {
                     "type": bool,
                     "required": False,
@@ -228,15 +221,12 @@ class JobShortcutsManager(GenericJob):
                 )
                 return profile_icon_installed.resolve()
 
-        # if not specified in profile.json nor in scenario --> default
+        # if not specified in profile.json nor in scenario --> None
         if icon_filename is None:
-            logger.debug(
-                "No icon found in profile.json nor in scenario. Using default icon:"
-                f"{self.os_config.shortcut_icon_default_path}"
-            )
-            return self.os_config.shortcut_icon_default_path
+            logger.debug("No icon found in profile.json nor in scenario.")
+            return None
 
-        # 2. check if specified icon in scenario exists in profile folder
+        # 2. check if icon specified in scenario exists in profile folder
         try:
             li_icons_sub_profile_folder = list(
                 profile.path_in_qgis.rglob(f"{icon_filename}")
