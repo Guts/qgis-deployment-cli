@@ -30,7 +30,8 @@ PyInstaller.__main__.run(
     [
         "--add-data=LICENSE;.",
         "--add-data=README.md;.",
-        "--clean",
+        # "--clean",
+        f"--icon={package_folder.parent.resolve()}/docs/static/logo_qdt.ico",
         "--log-level={}".format(getenv("PYINSTALLER_LOG_LEVEL", "WARN")),
         "--manifest={}".format((package_folder / "../builder/manifest.xml").resolve()),
         "--name={}_{}_{}{}_Python{}-{}".format(

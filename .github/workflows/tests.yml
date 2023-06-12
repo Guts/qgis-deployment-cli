@@ -13,7 +13,6 @@ on:
       - "**/*.py"
       - ".github/workflows/tests.yml"
       - "requirements/base.txt"
-      - "requirements/packaging.txt"
       - "requirements/testing.txt"
       - tests/fixtures/
 
