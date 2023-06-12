@@ -433,7 +433,14 @@ class ApplicationShortcut:
             else:
                 wscript.Description = f"Created by {__title__} {__version__}"
             if self.icon_path:
-                wscript.IconLocation = str(self.icon_path.resolve())
+                if isinstance(self.icon_path, Path):
+                    wscript.IconLocation = str(self.icon_path.resolve())
+                elif isinstance(self.icon_path, str):
+                    wscript.IconLocation = self.icon_path
+                else:
+                    logger.warning(
+                        f"Bad icon path type: {type(self.icon_path)} != (Path, str)."
+                    )
             wscript.save()
         else:
             shortcut_desktop_path = None
