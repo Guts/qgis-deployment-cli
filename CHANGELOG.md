@@ -16,6 +16,25 @@ Unreleased
 
 -->
 
+## 0.25.0 - 2023-06-13
+
+### Bugs fixes 🐛
+
+* Set download as default action by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/281>
+
+### Features and enhancements 🎉
+
+* Improve: if icon not found, use default QGIS icon (only Linux Free Desktop) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/282>
+
+### Tooling 🔧
+
+* Packaging: add icon to exe by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/285>
+
+### Documentation 📖
+
+* Add demo profile by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/276>
+* Documentation: add typical project structure section by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/280>
+
 ## 0.24.0 - 2023-05-30
 
 ### Features and enhancements 🎉
