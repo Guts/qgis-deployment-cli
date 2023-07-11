@@ -61,6 +61,12 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         """Test YAML loader"""
         fake_env_vars = [
             {
+                "name": "QDT_PROXY_HTTP",
+                "value": "http://proxyhttppronoauth.qdt.com:8080",
+                "scope": "user",
+                "action": "add",
+            },
+            {
                 "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
                 "value": True,
                 "scope": "user",
@@ -88,9 +94,18 @@ class TestJobEnvironmentVariables(unittest.TestCase):
                 get_environment_variable("QDT_TEST_FAKE_ENV_VAR_PATH"),
                 str(Path(expanduser("~/scripts/qgis_startup.py")).resolve()),
             )
+            self.assertEqual(
+                get_environment_variable("QDT_PROXY_HTTP"),
+                "http://proxyhttppronoauth.qdt.com:8080",
+            )
 
             # clean up
             fake_env_vars = [
+                {
+                    "name": "QDT_PROXY_HTTP",
+                    "scope": "user",
+                    "action": "remove",
+                },
                 {
                     "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
                     "scope": "user",

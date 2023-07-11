@@ -19,6 +19,7 @@ from sys import platform as opersys
 
 # package
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
+from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 from qgis_deployment_toolbelt.utils.win32utils import (
     delete_environment_variable,
     refresh_environment,
@@ -127,6 +128,13 @@ class JobEnvironmentVariables(GenericJob):
         :return str: prepared value.
         """
         try:
+            # check if value is a valid URL
+            if check_str_is_url(input_str=value, raise_error=False):
+                logger.info(
+                    f"{value} is a valid URL. Using it as environment variable value."
+                )
+                return value
+
             # test if value is a path
             value_as_path = Path(expanduser(expandvars(value)))
             if not value_as_path.exists():
