@@ -17,7 +17,7 @@ from pathlib import Path
 
 # project
 from qgis_deployment_toolbelt.__about__ import __uri__
-from qgis_deployment_toolbelt.utils.check_path import check_path_is_url
+from qgis_deployment_toolbelt.utils.url_helpers import check_path_is_url
 
 # ############################################################################
 # ########## Classes #############
@@ -25,7 +25,7 @@ from qgis_deployment_toolbelt.utils.check_path import check_path_is_url
 
 
 class TestUtilsUrlHelpers(unittest.TestCase):
-    """Test package metadata."""
+    """Test URL helpers."""
 
     def test_check_str_is_url(self):
         """Test function that determines if a str or Path is a valid URL."""
