@@ -150,22 +150,22 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         job_env_vars = JobEnvironmentVariables([])
         value_test = f"tests/{Path(__file__).name}"
         self.assertEqual(
-            job_env_vars.prepare_value(value=value_test),
+            job_env_vars.prepare_value(value=value_test, value_type="path"),
             str(Path().resolve() / value_test),
         )
         value_test = "imaginary/path"
         if opersys == "win32":
             self.assertEqual(
-                job_env_vars.prepare_value(value=value_test),
+                job_env_vars.prepare_value(value=value_test, value_type="path"),
                 str(Path().resolve() / value_test),
             )
             self.assertEqual(
-                job_env_vars.prepare_value(value=[]),
+                job_env_vars.prepare_value(value=[], value_type="str"),
                 "[]",
             )
         else:
             self.assertEqual(
-                job_env_vars.prepare_value(value=value_test),
+                job_env_vars.prepare_value(value=value_test, value_type="path"),
                 str(Path().resolve() / value_test),
             )
             self.assertEqual(
