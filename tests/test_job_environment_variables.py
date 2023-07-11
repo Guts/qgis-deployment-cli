@@ -61,22 +61,31 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         """Test YAML loader"""
         fake_env_vars = [
             {
+                "action": "add",
+                "name": "QDT_TEST_ENV_VAR",
+                "scope": "user",
+                "value": "this is a custom value",
+            },
+            {
+                "action": "add",
                 "name": "QDT_PROXY_HTTP",
-                "value": "http://proxyhttppronoauth.qdt.com:8080",
                 "scope": "user",
-                "action": "add",
+                "value": "http://proxy.qdt.com:8080",
+                "value_type": "url",
             },
             {
+                "action": "add",
                 "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
-                "value": True,
                 "scope": "user",
-                "action": "add",
+                "value": True,
+                "value_type": "bool",
             },
             {
-                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
-                "value": "~/scripts/qgis_startup.py",
-                "scope": "user",
                 "action": "add",
+                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                "scope": "user",
+                "value": "~/scripts/qgis_startup.py",
+                "value_type": "path",
             },
         ]
         job_env_vars = JobEnvironmentVariables(fake_env_vars)
@@ -96,11 +105,20 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             )
             self.assertEqual(
                 get_environment_variable("QDT_PROXY_HTTP"),
-                "http://proxyhttppronoauth.qdt.com:8080",
+                "http://proxy.qdt.com:8080",
+            )
+            self.assertEqual(
+                get_environment_variable("QDT_TEST_ENV_VAR"),
+                "this is a custom value",
             )
 
             # clean up
             fake_env_vars = [
+                {
+                    "name": "QDT_TEST_ENV_VAR",
+                    "scope": "user",
+                    "action": "remove",
+                },
                 {
                     "name": "QDT_PROXY_HTTP",
                     "scope": "user",

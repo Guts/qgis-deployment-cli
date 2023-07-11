@@ -19,6 +19,10 @@ from sys import platform as opersys
 
 # package
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
+from qgis_deployment_toolbelt.utils.check_path import (
+    check_path_exists,
+    check_var_can_be_path,
+)
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 from qgis_deployment_toolbelt.utils.win32utils import (
     delete_environment_variable,
@@ -73,6 +77,13 @@ class JobEnvironmentVariables(GenericJob):
             "possible_values": None,
             "condition": None,
         },
+        "value_type": {
+            "type": str,
+            "required": False,
+            "default": "str",
+            "possible_values": ("bool", "path", "str", "url"),
+            "condition": "in",
+        },
     }
 
     def __init__(self, options: list[dict]) -> None:
@@ -92,7 +103,10 @@ class JobEnvironmentVariables(GenericJob):
                     try:
                         set_environment_variable(
                             envvar_name=env_var.get("name"),
-                            envvar_value=self.prepare_value(env_var.get("value")),
+                            envvar_value=self.prepare_value(
+                                value=env_var.get("value"),
+                                value_type=env_var.get("value_type"),
+                            ),
                             scope=env_var.get("scope"),
                         )
                     except NameError:
@@ -121,30 +135,46 @@ class JobEnvironmentVariables(GenericJob):
         logger.debug(f"Job {self.ID} ran successfully.")
 
     # -- INTERNAL LOGIC ------------------------------------------------------
-    def prepare_value(self, value: str) -> str:
+    def prepare_value(self, value: str, value_type: str = None) -> str:
         """Prepare value to be used in the environment variable.
 
-        :param str value: value to prepare.
-        :return str: prepared value.
+        It performs some checks or operations depending on value type: user and
+            variable expansion, check if URL is valid, etc.
+
+        Args:
+            value (str): value to prepare.
+            value_type (str, optional): type of input value. Defaults to "str".
+
+        Returns:
+            str: prepared value.
         """
-        try:
-            # check if value is a valid URL
+
+        if value_type == "url":
             if check_str_is_url(input_str=value, raise_error=False):
                 logger.info(
                     f"{value} is a valid URL. Using it as environment variable value."
                 )
-                return value
-
-            # test if value is a path
-            value_as_path = Path(expanduser(expandvars(value)))
-            if not value_as_path.exists():
+            else:
                 logger.warning(
-                    f"{value} seems to be a valid path but does not exist (yet)."
+                    f"{value} seems to be an invalid URL. " "It will be applied anyway."
                 )
 
-            return str(value_as_path.resolve())
-        except Exception as err:
-            logger.debug(f"Value {value} is not a valid path: {err}")
+            return value.strip()
+        elif value_type in ("bool", "str"):
+            return str(value).strip()
+        elif value_type == "path":
+            # test if value is a path
+            if check_var_can_be_path(input_var=value, raise_error=False):
+                value_as_path = Path(expanduser(expandvars(value)))
+                if not check_path_exists(input_path=value_as_path, raise_error=False):
+                    logger.warning(
+                        f"{value} seems to be a valid path but does not exist (yet)."
+                    )
+                return str(Path(value_as_path).resolve())
+            else:
+                logger.debug(
+                    f"Value {value} is not a valid path. The raw string will be used."
+                )
 
         return str(value).strip()
 
