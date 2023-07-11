@@ -47,3 +47,14 @@ Possible_values:
 ### value
 
 Value to set to the environment variable.
+
+### value_type
+
+Value type to avoid ambiguity.
+
+Possible_values:
+
+- `bool`: a boolean (True, true, False, false, 0, 1)
+- `path`: a valid local path (user and variables expansion are supported)
+- `str`: a raw and simple string. Default value.
+- `url`: an HTTP/S URL

@@ -10,10 +10,7 @@
       "action": {
         "default": "add",
         "description": "Tell the job what to do with the environment variable.",
-        "enum": [
-          "add",
-          "remove"
-        ],
+        "enum": ["add", "remove"],
         "type": "string"
       },
       "name": {
@@ -23,18 +20,17 @@
       "scope": {
         "default": "user",
         "description": "Level of the environment variable.",
-        "enum": [
-          "user",
-          "system"
-        ],
+        "enum": ["user", "system"],
         "type": "string"
       },
       "value": {
         "description": "Value to set to the environment variable.",
-        "type": [
-          "boolean",
-          "string"
-        ]
+        "type": ["boolean", "string"]
+      },
+      "value_type": {
+        "description": "Value type to avoid ambiguity when interpreting it.",
+        "enum": ["bool", "path", "str", "url"],
+        "type": "string"
       }
     },
     "allOf": [
@@ -48,14 +44,10 @@
           }
         },
         "then": {
-          "required": [
-            "value"
-          ]
+          "required": ["value"]
         }
       }
     ],
-    "required": [
-      "name"
-    ]
+    "required": ["name"]
   }
 }

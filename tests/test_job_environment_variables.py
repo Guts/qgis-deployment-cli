@@ -56,21 +56,36 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         pass
 
     # -- TESTS ---------------------------------------------------------
-    @unittest.skipIf(opersys != "win32", "Test specific to Windows.")
+    # @unittest.skipIf(opersys != "win32", "Test specific to Windows.")
     def test_environment_variables_set_unset(self):
         """Test YAML loader"""
         fake_env_vars = [
             {
-                "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
-                "value": True,
-                "scope": "user",
                 "action": "add",
+                "name": "QDT_TEST_ENV_VAR",
+                "scope": "user",
+                "value": "this is a custom value",
             },
             {
-                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
-                "value": "~/scripts/qgis_startup.py",
-                "scope": "user",
                 "action": "add",
+                "name": "QDT_PROXY_HTTP",
+                "scope": "user",
+                "value": "http://proxy.qdt.com:8080",
+                "value_type": "url",
+            },
+            {
+                "action": "add",
+                "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
+                "scope": "user",
+                "value": True,
+                "value_type": "bool",
+            },
+            {
+                "action": "add",
+                "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                "scope": "user",
+                "value": "~/scripts/qgis_startup.py",
+                "value_type": "path",
             },
         ]
         job_env_vars = JobEnvironmentVariables(fake_env_vars)
@@ -88,9 +103,27 @@ class TestJobEnvironmentVariables(unittest.TestCase):
                 get_environment_variable("QDT_TEST_FAKE_ENV_VAR_PATH"),
                 str(Path(expanduser("~/scripts/qgis_startup.py")).resolve()),
             )
+            self.assertEqual(
+                get_environment_variable("QDT_PROXY_HTTP"),
+                "http://proxy.qdt.com:8080",
+            )
+            self.assertEqual(
+                get_environment_variable("QDT_TEST_ENV_VAR"),
+                "this is a custom value",
+            )
 
             # clean up
             fake_env_vars = [
+                {
+                    "name": "QDT_TEST_ENV_VAR",
+                    "scope": "user",
+                    "action": "remove",
+                },
+                {
+                    "name": "QDT_PROXY_HTTP",
+                    "scope": "user",
+                    "action": "remove",
+                },
                 {
                     "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
                     "scope": "user",
@@ -117,22 +150,22 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         job_env_vars = JobEnvironmentVariables([])
         value_test = f"tests/{Path(__file__).name}"
         self.assertEqual(
-            job_env_vars.prepare_value(value=value_test),
+            job_env_vars.prepare_value(value=value_test, value_type="path"),
             str(Path().resolve() / value_test),
         )
         value_test = "imaginary/path"
         if opersys == "win32":
             self.assertEqual(
-                job_env_vars.prepare_value(value=value_test),
+                job_env_vars.prepare_value(value=value_test, value_type="path"),
                 str(Path().resolve() / value_test),
             )
             self.assertEqual(
-                job_env_vars.prepare_value(value=[]),
+                job_env_vars.prepare_value(value=[], value_type="str"),
                 "[]",
             )
         else:
             self.assertEqual(
-                job_env_vars.prepare_value(value=value_test),
+                job_env_vars.prepare_value(value=value_test, value_type="path"),
                 str(Path().resolve() / value_test),
             )
             self.assertEqual(
