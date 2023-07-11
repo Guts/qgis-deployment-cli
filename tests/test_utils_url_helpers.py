@@ -17,7 +17,7 @@ from pathlib import Path
 
 # project
 from qgis_deployment_toolbelt.__about__ import __uri__
-from qgis_deployment_toolbelt.utils.url_helpers import check_path_is_url
+from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 
 # ############################################################################
 # ########## Classes #############
@@ -29,19 +29,15 @@ class TestUtilsUrlHelpers(unittest.TestCase):
 
     def test_check_str_is_url(self):
         """Test function that determines if a str or Path is a valid URL."""
-        self.assertTrue(check_path_is_url(input_path=__uri__))
+        self.assertTrue(check_str_is_url(input_str=__uri__))
         self.assertTrue(
-            check_path_is_url(
-                input_path="ftp://fakeftp:21", ref_shemes=("ftp", "http")
-            ),
+            check_str_is_url(input_str="ftp://fakeftp:21", ref_shemes=("ftp", "http")),
         )
-        self.assertFalse(check_path_is_url(input_path=Path(__uri__), raise_error=False))
-        self.assertFalse(
-            check_path_is_url(input_path=Path(__file__), raise_error=False)
-        )
+        self.assertFalse(check_str_is_url(input_str=Path(__uri__), raise_error=False))
+        self.assertFalse(check_str_is_url(input_str=Path(__file__), raise_error=False))
 
         with self.assertRaises((TypeError, ValueError)):
-            check_path_is_url(input_path=Path(__file__), raise_error=True)
+            check_str_is_url(input_str=Path(__file__), raise_error=True)
 
 
 # ############################################################################
