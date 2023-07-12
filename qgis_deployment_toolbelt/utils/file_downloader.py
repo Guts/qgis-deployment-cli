@@ -9,11 +9,11 @@
 import logging
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.request import ProxyHandler, Request, build_opener, install_opener, urlopen
+from urllib.request import Request
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
-from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
+from qgis_deployment_toolbelt.utils.proxies import get_proxy_handler
 
 # ############################################################################
 # ########## GLOBALS #############
@@ -49,10 +49,6 @@ def download_remote_file_to_local(
     Returns:
         Path: path to the local file (should be the same as local_file_path)
     """
-    # Handle network proxy
-    proxy_handler = ProxyHandler(get_proxy_settings())  # Create a proxy handler
-    opener = build_opener(proxy_handler)  # Create an opener that will use the proxy
-    install_opener(opener)  # Install the opener
 
     # check if file exists
     if local_file_path.exists():
@@ -71,7 +67,7 @@ def download_remote_file_to_local(
     custom_request = Request(url=remote_url_to_download, headers=headers)
 
     try:
-        with urlopen(custom_request) as response, local_file_path.open(
+        with get_proxy_handler().open(custom_request) as response, local_file_path.open(
             mode="wb"
         ) as buffile:
             while True:
