@@ -15,11 +15,12 @@ import argparse
 import json
 import logging
 import sys
+from collections.abc import Iterable
 from os import getenv
 from pathlib import Path
 from sys import platform as opersys
 from urllib.parse import urlsplit, urlunsplit
-from urllib.request import Request, urlopen
+from urllib.request import Request
 
 # 3rd party library
 from packaging.version import Version
@@ -38,6 +39,7 @@ from qgis_deployment_toolbelt.utils.bouncer import (
     exit_cli_success,
 )
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
+from qgis_deployment_toolbelt.utils.proxies import get_proxy_handler
 from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # #############################################################################
@@ -110,13 +112,13 @@ def get_latest_release(api_repo_url: str) -> dict | None:
 
     try:
         release_info = None
-        with urlopen(request) as response:
+        with get_proxy_handler().open(request) as response:
             if response.status == 200:
                 release_info = json.loads(response.read())
         return release_info
     except Exception as err:
         logger.error(err)
-        if "rate limit exceeded" in str(err):
+        if isinstance(err, Iterable) and "rate limit exceeded" in str(err):
             logger.error(
                 "Rate limit of GitHub API exeeded. Try again later (generally "
                 "in 15 minutes) or set GITHUB_TOKEN as environment variable with a "
