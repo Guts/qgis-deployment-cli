@@ -14,7 +14,7 @@
 import logging
 from functools import lru_cache
 from os import environ
-from urllib.request import OpenerDirector, ProxyHandler, build_opener, getproxies
+from urllib.request import ProxyHandler, build_opener, getproxies
 
 # package
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
