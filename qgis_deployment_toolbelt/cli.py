@@ -34,23 +34,43 @@ from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 # ################################
 
 
-def add_common_arguments(parser_to_update: argparse.ArgumentParser):
-    """Apply common argument to an existing parser.
+def add_common_arguments(
+    parser_to_update: argparse.ArgumentParser,
+    add_verbosity: bool = True,
+    add_proxy: bool = True,
+):
+    """Apply common arguments to an existing parser.
 
     Args:
         parser_to_update (argparse.ArgumentParser): parser to which arguments need to be added
+        add_verbosity (bool, optional): if enabled, add --verbose. Defaults to True.
+        add_proxy (bool, optional): if enabled, adds --proxy-http. Defaults to True.
 
     Returns:
         argparse.ArgumentParser: parser with added options
     """
-    parser_to_update.add_argument(
-        "-v",
-        "--verbose",
-        action="count",
-        default=1,
-        dest="verbosity",
-        help="Niveau de verbosité : None = WARNING, -v = INFO, -vv = DEBUG",
-    )
+    if add_verbosity:
+        parser_to_update.add_argument(
+            "-v",
+            "--verbose",
+            action="count",
+            default=1,
+            dest="verbosity",
+            help="Verbosity level. None = WARNING, -v = INFO, -vv = DEBUG. Can be set with "
+            "QDT_LOGS_LEVEL environment variable and logs location with QDT_LOGS_DIR.",
+        )
+
+    if add_proxy:
+        parser_to_update.add_argument(
+            "--proxy-http",
+            default=None,
+            dest="proxy_http",
+            help="Option to specify an HTTP proxy in the form: "
+            "scheme://[user:passwd@]proxy.server:port",
+            metavar="QDT_PROXY_HTTP",
+            type=str,
+        )
+
     return parser_to_update
 
 
@@ -113,18 +133,6 @@ def main(in_args: list[str] = None):
     )
 
     # -- ROOT ARGUMENTS --
-
-    # Optional verbosity counter (eg. -v, -vv, -vvv, etc.)
-    main_parser.add_argument(
-        "-v",
-        "--verbose",
-        action="count",
-        default=1,
-        dest="verbosity",
-        help="Verbosity level. None = WARNING, -v = INFO, -vv = DEBUG. Can be set with "
-        "QDT_LOGS_LEVEL environment variable and logs location with QDT_LOGS_DIR.",
-    )
-
     main_parser.add_argument(
         "--no-logfile",
         default=True,
@@ -141,6 +149,7 @@ def main(in_args: list[str] = None):
         help="Display CLI version",
     )
 
+    add_common_arguments(main_parser, add_verbosity=True, add_proxy=True)
     # -- SUB-COMMANDS --
     subparsers = main_parser.add_subparsers(title="Sub-commands", dest="command")
 
