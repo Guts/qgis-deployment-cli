@@ -72,6 +72,7 @@ development/history
 caption: Guides
 maxdepth: 1
 ---
+guides/howto_behind_proxy
 guides/howto_qgis_get_plugin_id
 guides/howto_schedule_deployment
 guides/howto_windows_sign_executable

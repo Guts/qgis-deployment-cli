@@ -9,17 +9,11 @@
 import logging
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.request import (
-    ProxyHandler,
-    Request,
-    build_opener,
-    getproxies,
-    install_opener,
-    urlopen,
-)
+from urllib.request import ProxyHandler, Request, build_opener, install_opener, urlopen
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
+from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 
 # ############################################################################
 # ########## GLOBALS #############
@@ -28,11 +22,6 @@ from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
 # logs
 logger = logging.getLogger(__name__)
 
-# Handle network proxy
-proxies_settings = getproxies()  # Get the system proxy settings
-proxy_handler = ProxyHandler(proxies_settings)  # Create a proxy handler
-opener = build_opener(proxy_handler)  # Create an opener that will use the proxy
-install_opener(opener)  # Install the opener
 
 # ############################################################################
 # ########## FUNCTIONS ###########
@@ -60,6 +49,11 @@ def download_remote_file_to_local(
     Returns:
         Path: path to the local file (should be the same as local_file_path)
     """
+    # Handle network proxy
+    proxy_handler = ProxyHandler(get_proxy_settings())  # Create a proxy handler
+    opener = build_opener(proxy_handler)  # Create an opener that will use the proxy
+    install_opener(opener)  # Install the opener
+
     # check if file exists
     if local_file_path.exists():
         logger.warning(f"{local_file_path} already exists. It's about to be replaced.")

@@ -15,6 +15,9 @@ import logging
 from os import environ
 from urllib.request import getproxies
 
+# package
+from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
+
 # #############################################################################
 # ########## Globals ###############
 # ##################################
@@ -32,24 +35,59 @@ def get_proxy_settings() -> dict | None:
     """Retrieves network proxy settings from operating system configuration or
     environment variables.
 
-    :return Union[dict, None]: system proxy settings or None if no proxy is set
+    Returns:
+        dict | None: system proxy settings or None if no proxy is set
     """
-    if environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
+    if environ.get("QDT_PROXY_HTTP"):
         proxy_settings = {
-            "http": environ.get("HTTP_PROXY"),
-            "https": environ.get("HTTPS_PROXY"),
+            "http": environ.get("QDT_PROXY_HTTP"),
+            "https": environ.get("QDT_PROXY_HTTP"),
         }
-        logger.debug(
-            "Proxies settings found in environment vars (loaded from .env file): {}".format(
-                proxy_settings
-            )
+        logger.info(
+            "Proxies settings from custom QDT in environment vars (QDT_PROXY_HTTP): "
+            f"{proxy_settings}"
         )
+    elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
+        if environ.get("HTTP_PROXY") and environ.get("HTTPS_PROXY"):
+            proxy_settings = {
+                "http": environ.get("HTTP_PROXY"),
+                "https": environ.get("HTTPS_PROXY"),
+            }
+            logger.info(
+                "Proxies settings from generic environment vars (HTTP_PROXY "
+                f"and HTTPS_PROXY): {proxy_settings}"
+            )
+        elif environ.get("HTTP_PROXY") and not environ.get("HTTPS_PROXY"):
+            proxy_settings = {
+                "http": environ.get("HTTP_PROXY"),
+            }
+            logger.info(
+                "Proxies settings from generic environment vars (HTTP_PROXY only): "
+                f"{proxy_settings}"
+            )
+        elif not environ.get("HTTP_PROXY") and environ.get("HTTPS_PROXY"):
+            proxy_settings = {
+                "https": environ.get("HTTPS_PROXY"),
+            }
+            logger.info(
+                "Proxies settings from generic environment vars (HTTPS_PROXY only): "
+                f"{proxy_settings}"
+            )
     elif getproxies():
         proxy_settings = getproxies()
         logger.debug(f"Proxies settings found in the OS: {proxy_settings}")
     else:
         logger.debug("No proxy settings found in environment vars nor OS settings.")
         proxy_settings = None
+
+    # check scheme and URL validity
+    if isinstance(proxy_settings, dict):
+        for scheme, proxy_url in proxy_settings.items():
+            if not check_str_is_url(input_str=proxy_url, raise_error=False):
+                logger.warning(
+                    f"Proxy value for {scheme} is not a valid URL: {proxy_url}. Can "
+                    "lead to troubles."
+                )
 
     return proxy_settings
 

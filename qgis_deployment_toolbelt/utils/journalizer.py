@@ -131,8 +131,10 @@ def headers():
 
     if getenv("userdomain"):
         logger.debug(f"OS Domain: {getenv('userdomain')}")
+    else:
+        logger.debug("No OS domain detected.")
 
-    if get_proxy_settings():
-        logger.debug(f"Network proxies detected: {get_proxy_settings()}")
+    if proxies_settings := get_proxy_settings():
+        logger.debug(f"Network proxies detected: {proxies_settings}")
     else:
         logger.debug("No network proxies detected")
