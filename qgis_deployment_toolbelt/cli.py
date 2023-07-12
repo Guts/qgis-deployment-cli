@@ -12,6 +12,7 @@
 import argparse
 import logging
 import sys
+from os import environ
 
 # submodules
 from qgis_deployment_toolbelt.__about__ import (
@@ -179,6 +180,10 @@ def main(in_args: list[str] = None):
 
     # just get passed args
     args = main_parser.parse_args(in_args)
+
+    # proxy configuration
+    if args.proxy_http:
+        environ["QDT_PROXY_HTTP"] = args.proxy_http
 
     # log configuration
     if args.opt_logfile_disabled:
