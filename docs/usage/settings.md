@@ -6,13 +6,14 @@
 
 Some options and arguments can be set with environment variables.
 
-| Variable name       | Corresponding CLI argument | Default value      |
-| :------------------ | :------------------------: | :----------------: |
-| `QDT_LOGS_LEVEL` | `-v`, `--verbose` | `1` (= `logging.WARNING`). Must be an integer. |
-| `QDT_UPGRADE_CHECK_ONLY` | `-c`, `--check-only` in `upgrade`   | `False` |
+| Variable name                       | Corresponding CLI argument | Default value      |
+| :---------------------------------- | :------------------------: | :----------------: |
+| `QDT_LOGS_LEVEL`                    | `-v`, `--verbose` | `1` (= `logging.WARNING`). Must be an integer. |
+| `QDT_PROXY_HTTP`                    | `--proxy-http` | No proxy. |
+| `QDT_SCENARIO_PATH`                 | `--scenario` in `deploy`   | `scenario.qdt.yml` |
+| `QDT_UPGRADE_CHECK_ONLY`            | `-c`, `--check-only` in `upgrade`   | `False` |
 | `QDT_UPGRADE_DISPLAY_RELEASE_NOTES` | `-n`, `--dont-show-release-notes` in `upgrade`   | `True` |
-| `QDT_UPGRADE_DOWNLOAD_FOLDER` | `-w`, `--where` in `upgrade`   | `./` (current folder) |
-| `QDT_SCENARIO_PATH` | `--scenario` in `deploy`   | `scenario.qdt.yml` |
+| `QDT_UPGRADE_DOWNLOAD_FOLDER`       | `-w`, `--where` in `upgrade`   | `./` (current folder) |
 
 ### Others
 
