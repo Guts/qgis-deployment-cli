@@ -2,9 +2,8 @@
 
 """Custom exceptions."""
 
-from collections.abc import Iterable
-
 # standard library
+from collections.abc import Iterable
 from pathlib import Path
 
 # package
