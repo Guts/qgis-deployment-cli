@@ -170,6 +170,10 @@ class SimpleHttpClient:
             else:
                 conn = http.client.HTTPConnection(host, timeout=self.timeout)
 
+        # prepare response_body
+        response = EnhancedHTTPResponse
+        response_body = None
+
         # make request
         try:
             is_redirected: bool = True
