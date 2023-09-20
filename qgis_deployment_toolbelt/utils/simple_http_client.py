@@ -14,6 +14,7 @@
 import http.client
 import logging
 import socket
+import ssl
 import urllib.parse
 from base64 import b64encode
 from contextlib import contextmanager
@@ -72,6 +73,7 @@ class SimpleHttpClient:
             "User-Agent": f"{__title_clean__}/{__version__}",
         },
         timeout: int | None = 30,
+        ssl_disable_check: bool = False,
     ):
         """
         Initialize the SimpleHttpClient.
@@ -84,9 +86,15 @@ class SimpleHttpClient:
         """
         self.auth = None
         self.default_headers = default_headers
+        self.ssl_check_disabled = ssl_disable_check
         self.timeout = timeout
         self.proxy_settings = get_proxy_settings()
 
+        # prepare SSL context depending on options
+        if self.ssl_check_disabled:
+            self.ssl_context = ssl._create_unverified_context()
+        else:
+            self.ssl_context = None
         # if defined, set timeout to socket module
         if self.timeout is not None:
             socket.setdefaulttimeout(self.timeout)
@@ -148,7 +156,9 @@ class SimpleHttpClient:
         if scheme == "https":
             if isinstance(self.proxy_settings, dict) and "https" in self.proxy_settings:
                 conn = http.client.HTTPSConnection(
-                    self.proxy_settings.get("https"), timeout=self.timeout
+                    self.proxy_settings.get("https"),
+                    timeout=self.timeout,
+                    context=self.ssl_context,
                 )
             else:
                 conn = http.client.HTTPSConnection(host, timeout=self.timeout)
