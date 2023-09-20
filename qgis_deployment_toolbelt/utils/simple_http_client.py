@@ -162,7 +162,8 @@ class SimpleHttpClient:
 
         # make request
         try:
-            while True:
+            is_redirected: bool = True
+            while is_redirected:
                 conn.request(
                     method=method, url=url, body=body, headers=combined_headers
                 )
@@ -182,10 +183,10 @@ class SimpleHttpClient:
                         f"Request {method.upper()} to {url} received a redirection code "
                         f"{response.status} but no new location."
                     )
-                    break
+                    is_redirected = False
                 else:
                     # Exit the loop if no redirection
-                    break
+                    is_redirected = False
 
             logger.info(
                 f"La requête {method} vers {url} a fonctionné. "
