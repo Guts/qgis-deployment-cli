@@ -218,7 +218,7 @@ class SimpleHttpClient:
                 conn = http.client.HTTPConnection(host, timeout=self.timeout)
 
         # prepare response_body
-        response = EnhancedHTTPResponse
+        response = EnhancedHTTPResponse()
         response_body = None
 
         # make request
@@ -228,7 +228,7 @@ class SimpleHttpClient:
                 conn.request(
                     method=method, url=url, body=body, headers=combined_headers
                 )
-                response = conn.getresponse()
+                response = EnhancedHTTPResponse(conn.getresponse())
 
                 # handle redirections
                 if response.status // 100 == 3 and "Location" in response.headers:
@@ -275,7 +275,7 @@ class SimpleHttpClient:
             raise err
 
         finally:
-            conn.close()
+            # conn.close()
             response.content = response_body
 
     def auth_set_basic(self, username: str, password: str) -> None:
