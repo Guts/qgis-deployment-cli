@@ -146,21 +146,23 @@ class SimpleHttpClient:
         if self.timeout is not None:
             socket.setdefaulttimeout(self.timeout)
 
-    def _parse_url(self, url: str) -> tuple[str, str, str]:
+    def _parse_url(self, url: str) -> tuple[str, str, int, str]:
         """
-        Parse the URL and extract scheme, host, and path.
+        Parse the URL and extract scheme, host, port and path.
 
         Args:
             url: The URL to parse.
 
         Returns:
-            A tuple containing scheme, host, and path.
+            A tuple containing scheme, host, port and path.
         """
         parsed_url = urllib.parse.urlparse(url)
         scheme = parsed_url.scheme
         host = parsed_url.netloc
+        port = parsed_url.port or (443 if scheme == "https" else 80)  # default port
         path = parsed_url.path
-        return scheme, host, path
+
+        return scheme, host, port, path
 
     @contextmanager
     def _send_request(
@@ -197,7 +199,7 @@ class SimpleHttpClient:
             headers["Authorization"] = self.auth
 
         # parse URL
-        scheme, host, path = self._parse_url(url)
+        scheme, host, port, path = self._parse_url(url)
 
         # handle different HTTP schemes
         if scheme == "https":
@@ -208,14 +210,18 @@ class SimpleHttpClient:
                     context=self.ssl_context,
                 )
             else:
-                conn = http.client.HTTPSConnection(host, timeout=self.timeout)
+                conn = http.client.HTTPSConnection(
+                    host=host, port=port, timeout=self.timeout
+                )
         else:
             if isinstance(self.proxy_settings, dict) and "http" in self.proxy_settings:
                 conn = http.client.HTTPConnection(
-                    self.proxy_settings.get("http"), timeout=self.timeout
+                    self.proxy_settings.get("http"), port=port, timeout=self.timeout
                 )
             else:
-                conn = http.client.HTTPConnection(host, timeout=self.timeout)
+                conn = http.client.HTTPConnection(
+                    host=host, port=port, timeout=self.timeout
+                )
 
         # prepare response_body
         response = EnhancedHTTPResponse()
@@ -226,7 +232,7 @@ class SimpleHttpClient:
             is_redirected: bool = True
             while is_redirected:
                 conn.request(
-                    method=method, url=url, body=body, headers=combined_headers
+                    method=method, url=path, body=body, headers=combined_headers
                 )
                 response = EnhancedHTTPResponse(conn.getresponse())
 
@@ -420,7 +426,6 @@ class SimpleHttpClient:
                 print(response.content)
         """
         with self._send_request("GET", url, headers=headers) as response:
-            logger.info(response.read())
             return response
 
     def head(
