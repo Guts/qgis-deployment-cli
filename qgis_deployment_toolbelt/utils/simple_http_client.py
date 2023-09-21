@@ -12,6 +12,7 @@
 
 # standard library
 import http.client
+import json
 import logging
 import socket
 import ssl
@@ -20,7 +21,7 @@ from base64 import b64encode
 from contextlib import contextmanager
 from http.client import HTTPResponse
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
@@ -43,8 +44,54 @@ logger = logging.getLogger(__name__)
 class EnhancedHTTPResponse(HTTPResponse):
     """An enhanced HTTP Response object with some helping attributes."""
 
-    # content to fake the behavior of requests package
-    content: bytes = b""
+    def __init__(self, http_response: HTTPResponse | None = None):
+        """Instanciation method.
+
+        Args:
+            http_response (HTTPResponse | None, optional): parent class to extend.
+                Defaults to None.
+        """
+        self._response = http_response
+        # content to fake the behavior of requests package
+        self.content: bytes = b""
+        self.content_json: dict | None = None
+
+    @property
+    def is_content_json(self) -> bool:
+        """Check if the content is a valid JSON object. If so, the content is loaded
+        into the self.content_json attribute.
+
+        Returns:
+            bool: True is the content is a valid JSON. False if not.
+        """
+        if isinstance(self.content, (str, bytes, bytearray)) and len(self.content):
+            try:
+                self.content_json = json.loads(self.content)
+                logger.debug(
+                    "Response content is a valid JSON and has been deserialized into "
+                    "'content_json' attribute."
+                )
+            except ValueError as err:
+                logger.debug(f"Response content is not a valid JSON. Trace: {err}")
+                return False
+            return True
+        else:
+            logger.debug(
+                "Response content is empty or not a valid type (str, bytes, bytearray): "
+                f"{type(self.content), len(self.content)}"
+            )
+            return False
+
+    def __getattr__(self, attr: Any):
+        """Redirect calls to embedded HTTPResponse attribute.
+
+        Args:
+            attr (Any): attribute
+
+        Returns:
+            Any: attribute value
+        """
+        return getattr(self._response, attr)
 
 
 class SimpleHttpClient:
