@@ -16,7 +16,10 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 # package
-from qgis_deployment_toolbelt.utils.simple_http_client import SimpleHttpClient
+from qgis_deployment_toolbelt.utils.simple_http_client import (
+    EnhancedHTTPResponse,
+    SimpleHttpClient,
+)
 
 
 class TestSimpleHttpClient(unittest.TestCase):
@@ -77,6 +80,36 @@ class TestSimpleHttpClient(unittest.TestCase):
             self.assertEqual(response.status, 201)
             self.assertEqual(response.reason, "Created")
             self.assertEqual(response.read(), b"Response data")
+
+    @patch("qgis_deployment_toolbelt.utils.proxies.get_proxy_settings")
+    def test_get_request_with_proxy(self, mock_get_proxy_settings):
+        # Mock the proxy settings
+        mock_proxy_settings = {
+            "http": "http://localhost:8080",
+            "https": "http://localhost:8080",
+        }
+        mock_get_proxy_settings.return_value = mock_proxy_settings
+
+        # Create an instance of your client with mock proxy settings
+        client = SimpleHttpClient()
+
+        # Mock the response from the proxy
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.reason = "OK"
+        mock_response.read.return_value = b"Response Content"
+
+        with patch("http.client.HTTPConnection") as mock_connection:
+            mock_connection.return_value.getresponse.return_value = mock_response
+
+            # Perform the test
+            response = client.get("https://httpbin.org/get")
+
+            # Assertions
+            self.assertEqual(response.status, 200)
+            self.assertIsInstance(response, EnhancedHTTPResponse)
+            # self.assertEqual(response.content, b"Response Content")
+            mock_connection.assert_called_with("localhost:8080", timeout=None)
 
 
 if __name__ == "__main__":
