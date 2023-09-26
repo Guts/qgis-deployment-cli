@@ -209,6 +209,7 @@ class SimpleHttpClient:
                     timeout=self.timeout,
                     context=self.ssl_context,
                 )
+                conn.set_tunnel(host=host, port=port, headers=combined_headers)
             else:
                 conn = http.client.HTTPSConnection(
                     host=host, port=port, timeout=self.timeout
@@ -218,6 +219,7 @@ class SimpleHttpClient:
                 conn = http.client.HTTPConnection(
                     self.proxy_settings.get("http"), port=port, timeout=self.timeout
                 )
+                conn.set_tunnel(host=host, port=port, headers=combined_headers)
             else:
                 conn = http.client.HTTPConnection(
                     host=host, port=port, timeout=self.timeout
@@ -518,23 +520,21 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     pass
 
-    client = SimpleHttpClient(timeout=5)
+    client = SimpleHttpClient(timeout=60)
 
-    response = client.get("http://localhost:9753/get")
-    print(
-        f"{response.status=},\n{response.reason=},\n{response.headers=},\n{response.isclosed()=}\n{response.content=}"
-    )
+    # response = client.get("http://localhost:9753/get")
+    # print(
+    #     f"{response.status=},\n{response.reason=},\n{response.headers=},\n{response.isclosed()=}\n{response.content=}"
+    # )
 
     # print("\n\twith requests")
 
     import json
     import pprint
 
-    import requests
-
-    r = requests.get("http://localhost:9753/get")
-    print(response.content)
-    print(r.content)
+    # r = requests.get("http://localhost:9753/get")
+    # print(response.content)
+    # print(r.content)
 
     token_path = client.download_file(
         url="https://panoramax.ign.fr/api/auth/tokens/generate",
