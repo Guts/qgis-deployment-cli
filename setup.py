@@ -22,22 +22,41 @@ from qgis_deployment_toolbelt import __about__
 # The directory containing this file
 HERE = Path(__file__).parent
 
-with open(HERE / "requirements/base.txt") as f:
-    requirements = [
-        line
-        for line in f.read().splitlines()
-        if not line.startswith(("#", "-")) and len(line)
-    ]
-
-with open(HERE / "requirements/development.txt") as f:
-    dev_requirements = [
-        line
-        for line in f.read().splitlines()
-        if not line.startswith(("#", "-")) and len(line)
-    ]
-
 # The text of the README file
 README = (HERE / "README.md").read_text()
+
+# ############################################################################
+# ########### Functions ############
+# ##################################
+
+
+def load_requirements(requirements_files: Path | list[Path]) -> list:
+    """Helper to load requirements list from a path or a list of paths.
+
+    Args:
+        requirements_files (Path | list[Path]): path or list to paths of requirements
+            file(s)
+
+    Returns:
+        list: list of requirements loaded from file(s)
+    """
+    out_requirements = []
+
+    if isinstance(requirements_files, Path):
+        requirements_files = [
+            requirements_files,
+        ]
+
+    for requirements_file in requirements_files:
+        with requirements_file.open(encoding="UTF-8") as f:
+            out_requirements += [
+                line
+                for line in f.read().splitlines()
+                if not line.startswith(("#", "-")) and len(line)
+            ]
+
+    return out_requirements
+
 
 # ############################################################################
 # ########### Main #################
@@ -72,9 +91,12 @@ setup(
         exclude=["contrib", "docs", "*.tests", "*.tests.*", "tests.*", "tests", ".venv"]
     ),
     include_package_data=True,
-    install_requires=requirements,
+    install_requires=load_requirements(HERE / "requirements/base.txt"),
     extras_require={
-        "dev": dev_requirements,
+        # tooling
+        "dev": load_requirements(HERE / "requirements/development.txt"),
+        "doc": load_requirements(HERE / "requirements/documentation.txt"),
+        "test": load_requirements(HERE / "requirements/testing.txt"),
     },
     entry_points={
         "console_scripts": [
