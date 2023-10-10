@@ -1,4 +1,4 @@
-# How to use behdin a network proxy
+# How to use behind a network proxy
 
 :::{info}
 Only HTTP and HTTPS proxies are supported. Not socks, no PAC.
