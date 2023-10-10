@@ -1,4 +1,6 @@
 #! python3  # noqa: E265
+# Copyright 2023 Julien Moura (Oslandia)
+# SPDX-License-Identifier: Apache-2.0
 
 """
     Main command-line.
