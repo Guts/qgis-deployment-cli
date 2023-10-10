@@ -24,7 +24,7 @@ __email__ = "qgis@oslandia.com"
 __executable_name__ = "qgis-deployment-toolbelt"
 __package_name__ = "qgis-deployment-toolbelt"
 __keywords__ = ["cli", "deployment", "profiles", "qdt", "QGIS"]
-__license__ = "GNU Lesser General Public License v3.0"
+__license__ = "Apache License 2"
 __summary__ = (
     "QGIS deployment toolbelt is a CLI (Command Line Interface) to perform "
     "redundant operations after a QGIS deployment."
