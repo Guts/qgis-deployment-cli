@@ -75,7 +75,7 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Information Technology",
-        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+        "License :: OSI Approved :: Apache Software License 2.0",
         "Operating System :: Microsoft :: Windows :: Windows 10",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
