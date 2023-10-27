@@ -15,3 +15,4 @@
 2. Identify the plugin you want in the search results list
 3. The plugin ID is the number between brackets at the left of the plugin name
 
+  ![Plugin ID into plugin search page - Example Franch Locator Filter](/static/plugin_search.png)
