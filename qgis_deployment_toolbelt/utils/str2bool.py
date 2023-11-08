@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-def str2bool(input_var: str, raise_exc: bool = False) -> bool | None:
+def str2bool(input_var: bool | str, raise_exc: bool = False) -> bool | None:
     """Determine if a string is a bool and, if so, convert it.
 
     Args:

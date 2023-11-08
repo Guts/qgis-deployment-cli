@@ -52,8 +52,8 @@ logger = logging.getLogger(__name__)
 
 
 def get_download_url_for_os(
-    release_assets: list, override_opersys: str = None
-) -> tuple[str, str]:
+    release_assets: list, override_opersys: str | None = None
+) -> tuple[str, str] | None:
     """Parse list of a GitHub release assets and return the appropriate download URL \
         for the current operating system.
 
@@ -83,7 +83,7 @@ def get_download_url_for_os(
     return None
 
 
-def get_latest_release(api_repo_url: str) -> dict:
+def get_latest_release(api_repo_url: str) -> dict | None:
     """Get latest release from GitHub public API.
 
     Args:
@@ -109,13 +109,14 @@ def get_latest_release(api_repo_url: str) -> dict:
     request = Request(url=request_url, headers=headers)
 
     try:
+        release_info = None
         with urlopen(request) as response:
             if response.status == 200:
                 release_info = json.loads(response.read())
         return release_info
     except Exception as err:
         logger.error(err)
-        if "rate limit exceeded" in err:
+        if "rate limit exceeded" in str(err):
             logger.error(
                 "Rate limit of GitHub API exeeded. Try again later (generally "
                 "in 15 minutes) or set GITHUB_TOKEN as environment variable with a "
@@ -208,14 +209,16 @@ def run(args: argparse.Namespace):
     api_url = replace_domain(url=__uri_repository__)
 
     # get latest release as dictionary
-    latest_release = get_latest_release(api_repo_url=api_url)
+    latest_release: dict | None = get_latest_release(api_repo_url=api_url)
 
-    if not latest_release:
-        exit_cli_error(f"Unable to retrieve latest release from {api_url}.")
+    if not isinstance(latest_release, dict):
+        exit_cli_error(
+            f"Unable to retrieve latest release {type(latest_release)} from {api_url}."
+        )
 
     # compare it
-    latest_version = latest_release.get("tag_name")
-    if Version(actual_version) < Version(latest_version):
+    latest_version: str = latest_release.get("tag_name")
+    if Version(version=actual_version) < Version(version=latest_version):
         print(f"A newer version is available: {latest_version}")
         if args.opt_show_release_notes:
             print(latest_release.get("body"))

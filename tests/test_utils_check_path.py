@@ -34,6 +34,12 @@ from qgis_deployment_toolbelt.utils.check_path import (
 class TestUtilsCheckPath(unittest.TestCase):
     """Test package metadata."""
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        Path("tests/fixtures/tmp_file_no_readable.txt").unlink(missing_ok=True)
+        Path("tests/fixtures/tmp_file_no_writable.txt").unlink(missing_ok=True)
+        return super().tearDownClass()
+
     def test_check_path_as_str_ok(self):
         """Test filepath as str is converted into Path."""
         self.assertTrue(
@@ -96,7 +102,7 @@ class TestUtilsCheckPath(unittest.TestCase):
     def test_check_path_readable_ko_specific(self):
         """Test path is readable fail cases."""
         # temporary fixture
-        new_file = Path("tests/tmp_file_no_readable.txt")
+        new_file = Path("tests/fixtures/tmp_file_no_readable.txt")
         new_file.touch(mode=0o333, exist_ok=True)
 
         # str not valid, an existing file but not readable
@@ -129,7 +135,7 @@ class TestUtilsCheckPath(unittest.TestCase):
     def test_check_path_writable_ko_specific(self):
         """Test path is writable fail cases (specific)."""
         # temporary fixture
-        not_writable_file = Path("tests/tmp_file_no_writable.txt")
+        not_writable_file = Path("tests/fixtures/tmp_file_no_writable.txt")
         not_writable_file.touch(mode=0o400, exist_ok=True)
 
         # str not valid, an existing file but not writable
@@ -271,7 +277,7 @@ class TestUtilsCheckPath(unittest.TestCase):
     def test_check_path_meta_ko_specific(self):
         """Test meta check path is readbale / writable fail cases (specific)."""
         # temporary fixture
-        not_writable_file = Path("tests/tmp_file_no_writable.txt")
+        not_writable_file = Path("tests/fixtures/tmp_file_no_writable.txt")
         not_writable_file.touch()
         chmod(not_writable_file, stat.S_IREAD | stat.S_IROTH)
 
