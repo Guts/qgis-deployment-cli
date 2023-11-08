@@ -1,47 +1,42 @@
 {
     // Editor
-    "editor.rulers": [
-        88
-    ],
-    "editor.wordWrapColumn": 88,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": "active",
     "files.associations": {
         "./requirements/*.txt": "pip-requirements"
     },
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": true
-    },
-    // Python environment
-    "python.defaultInterpreterPath": ".venv/bin/python",
+    // Python
+    "python.analysis.autoFormatStrings": true,
+    "python.analysis.typeCheckingMode": "basic",
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.terminal.activateEnvironment": true,
-    // Formatter
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+        "editor.rulers": [
+            88
+        ],
+        "editor.wordWrapColumn": 88,
     },
-    // Linter
-    "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--config=setup.cfg",
-        "--verbose"
-    ],
-    "python.linting.pylintEnabled": false,
     // Tests
-    "python.testing.pytestArgs": [],
     "python.testing.unittestEnabled": true,
     "python.testing.pytestEnabled": true,
     // extensions
     "autoDocstring.guessTypes": true,
     "autoDocstring.docstringFormat": "google",
     "autoDocstring.generateDocstringOnEnter": false,
+    "flake8.args": [
+        "--config=setup.cfg",
+        "--verbose"
+    ],
     "yaml.schemas": {
         "docs/schemas/scenario/schema.json": [
             "scenario*qdt.yml",
             "tests/fixtures/scenarios/*.qdt.yml",
         ],
         "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
-    }
+    },
 }
