@@ -138,3 +138,4 @@ docs/misc/licenses.md
 docs/misc/dependencies.md
 QGISDeploymentToolbelt_*Ubuntu*
 tests/fixtures/tmp/*
+build_environment_report.txt
