@@ -41,7 +41,9 @@ Path("build_environment_report.txt").write_text(data=build_report, encoding="UTF
 
 
 # variables
-output_filename = f"{__about__.__title_clean__}_{__about__.__version__}"
+output_filename = (
+    f"{__about__.__title_clean__}_{__about__.__version__.replace('.', '-')}"
+)
 package_folder = Path("qgis_deployment_toolbelt")
 
 PyInstaller.__main__.run(
