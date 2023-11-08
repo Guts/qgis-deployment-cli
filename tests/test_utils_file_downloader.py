@@ -32,9 +32,10 @@ class TestUtilsFileDownloader(unittest.TestCase):
         # file that already exist locally
         downloaded_file = download_remote_file_to_local(
             remote_url_to_download="https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/README.md",
-            local_file_path=Path("README.md"),
+            local_file_path=Path("README_from_remote.md"),
         )
         self.assertIsInstance(downloaded_file, Path)
+        downloaded_file.unlink(missing_ok=True)
 
     def test_download_file_raise_http_error(self):
         """Test download handling an HTTP error."""
