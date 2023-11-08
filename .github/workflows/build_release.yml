@@ -98,7 +98,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: macos_executable
-          path: dist/*
+          path: |
+              dist/*
+              build_environment_report.txt
           if-no-files-found: error
 
   build-ubuntu:
@@ -131,7 +133,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu_executable
-          path: dist/*
+          path: |
+            dist/*
+            build_environment_report.txt
           if-no-files-found: error
 
   build-windows:
@@ -168,7 +172,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: windows_executable
-          path: dist/*
+          path: |
+            dist/*
+            build_environment_report.txt
           if-no-files-found: error
 
   release:
