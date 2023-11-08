@@ -53,7 +53,7 @@ logger = logging.getLogger(__name__)
 
 def get_download_url_for_os(
     release_assets: list, override_opersys: str | None = None
-) -> tuple[str, str] | None:
+) -> tuple[str | None, str | None]:
     """Parse list of a GitHub release assets and return the appropriate download URL \
         for the current operating system.
 
@@ -80,7 +80,7 @@ def get_download_url_for_os(
         else:
             continue
 
-    return None
+    return None, None
 
 
 def get_latest_release(api_repo_url: str) -> dict | None:
@@ -287,7 +287,11 @@ if __name__ == "__main__":
     latest_release = get_latest_release(
         replace_domain(url=__uri_repository__, new_domain="api.github.com/repos")
     )
-    print(latest_release.keys(), latest_release.get("assets_url"))
+    print(
+        latest_release.keys(),
+        latest_release.get("assets_url"),
+        # latest_release.get("assets"),
+    )
 
     dl_link_linux, dl_link_macos, dl_link_windows = (
         get_download_url_for_os(latest_release.get("assets"), override_opersys=os)[0]
