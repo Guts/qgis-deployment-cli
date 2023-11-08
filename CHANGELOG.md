@@ -16,6 +16,41 @@ Unreleased
 
 -->
 
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## 0.26.0 - 2023-11-08
+
+### Bugs fixes 🐛
+
+* Fix missing shortcut template in packaging by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/319>
+
+### Features and enhancements 🎉
+
+* Support custom HTTP proxy setting: QDT_PROXY_HTTP by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/293>
+* Refacto: move shortcuts related code into specific subpkg by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/324>
+* Quality: global project improvements and clean up by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/325>
+
+### Tooling 🔧
+
+* Improve setup: add extras and factorize requirements loading by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/302>
+* Switch license from LGPL3 to Apache License 2 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/314>
+* Packaging: improve output name and PyInstaller options by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/321>
+* Tooling: update VS Code config by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/323>
+
+### Documentation 📖
+
+* Mise à jour documentation by @sigeal in <https://github.com/Guts/qgis-deployment-cli/pull/315>
+
+### Other Changes
+
+* Update Pillow to fix CVE related to libwebp by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/313>
+
+## New Contributors
+
+* @sigeal made their first contribution in <https://github.com/Guts/qgis-deployment-cli/pull/315>
+
+**Full Changelog**: <https://github.com/Guts/qgis-deployment-cli/compare/0.26.0...0.27.0>
+
 ## 0.26.0 - 2023-06-11
 
 ### Bugs fixes 🐛
