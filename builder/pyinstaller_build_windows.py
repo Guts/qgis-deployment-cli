@@ -47,7 +47,7 @@ PyInstaller.__main__.run(
         ),
         "--noconfirm",
         "--noupx",
-        # "--onefile",
+        "--onefile",
         "--version-file={}".format("version_info.txt"),
         "--console",
         str(package_folder / "cli.py"),

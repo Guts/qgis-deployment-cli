@@ -45,7 +45,7 @@ PyInstaller.__main__.run(
         ).replace(".", "-"),
         "--noconfirm",
         "--noupx",
-        # "--onefile",
+        "--onefile",
         "--console",
         str(package_folder / "cli.py"),
     ]
