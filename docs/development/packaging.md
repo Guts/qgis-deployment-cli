@@ -4,7 +4,7 @@
 
 The project takes advantage of [PyInstaller](https://pyinstaller.readthedocs.io/) to package the application into an executable.
 
-The output binary and all embedded dependencies is located into a subfolder named: `dist/QGISDeploymentToolbelt_{version}`. A file named `build_environment_report.txt` containing build environment information is generated at the project's root.
+The output binary and all embedded dependencies is located into a subfolder named `dist`: `dist/{operating_system}_QGISDeploymentToolbelt_{version}`, where operating system is one of `MacOS`, `Ubuntu`or `Windows`. A file named `build_environment_report.txt` containing build environment information is generated at the project's root.
 
 ### Windows
 
