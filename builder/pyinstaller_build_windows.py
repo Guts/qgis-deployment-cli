@@ -28,8 +28,11 @@ package_folder = Path("qgis_deployment_toolbelt")
 
 PyInstaller.__main__.run(
     [
-        "--add-data=LICENSE;.",
-        "--add-data=README.md;.",
+        "--add-data=LICENSE:.",
+        "--add-data=README.md:.",
+        "--add-data={}:profiles/".format(
+            (package_folder / "profiles/shortcut_freedesktop.template/").resolve()
+        ),
         # "--clean",
         f"--icon={package_folder.parent.resolve()}/docs/static/logo_qdt.ico",
         "--log-level={}".format(getenv("PYINSTALLER_LOG_LEVEL", "WARN")),
@@ -44,7 +47,7 @@ PyInstaller.__main__.run(
         ),
         "--noconfirm",
         "--noupx",
-        "--onefile",
+        # "--onefile",
         "--version-file={}".format("version_info.txt"),
         "--console",
         str(package_folder / "cli.py"),
