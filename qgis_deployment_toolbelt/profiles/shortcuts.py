@@ -15,6 +15,7 @@ import logging
 import os
 import re
 import stat
+import sys
 from collections.abc import Iterable
 from pathlib import Path
 from string import Template
@@ -342,8 +343,19 @@ class ApplicationShortcut:
         :return: desktop and startmenu path
         :rtype: Tuple[Union[Path, None], Union[Path, None]]
         """
-        # prepare shortcut
-        template_shortcut = Path(__file__).parent / "shortcut_freedesktop.template"
+        # grab shortcut template depending if we are in frozen mode
+        # (typically PyInstaller) or as "normal" Python
+        if not (getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS")):
+            template_shortcut = Path(__file__).parent / "shortcut_freedesktop.template"
+            logger.debug(f"Using shortcut template in Python mode: {template_shortcut}")
+        else:
+            template_shortcut = Path(getattr(sys, "_MEIPASS", sys.executable)).joinpath(
+                "profiles/shortcut_freedesktop.template"
+            )
+            logger.debug(
+                f"Using shortcut template in packaged mode: {template_shortcut}"
+            )
+
         check_path(
             input_path=template_shortcut,
             must_be_a_file=True,
