@@ -11,6 +11,7 @@
 # Standard library
 import platform
 import sys
+from datetime import datetime
 from os import getenv
 from pathlib import Path
 
@@ -25,26 +26,34 @@ from qgis_deployment_toolbelt import __about__  # noqa: E402
 # #############################################################################
 # ########### MAIN #################
 # ##################################
+
+# write build report
+build_report = (
+    f"datetime: {datetime.now().astimezone().isoformat()}"
+    f"\nprog_name: {__about__.__title__}"
+    f"\nprog_version: {__about__.__version__}"
+    f"\ndistribution: {distro.name()}"
+    f"\ndistribution_version: {distro.version()}"
+    f"\narchitecture: {platform.architecture()[0]}"
+    f"\npython_version: {platform.python_version()}"
+)
+Path("build_environment_report.txt").write_text(data=build_report, encoding="UTF-8")
+
+
+# variables
+output_filename = (
+    f"{__about__.__title_clean__}_{__about__.__version__.replace('.', '-')}"
+)
 package_folder = Path("qgis_deployment_toolbelt")
 
 PyInstaller.__main__.run(
     [
         "--add-data=LICENSE:.",
         "--add-data=README.md:.",
-        "--add-data={}:profiles/".format(
-            (package_folder / "profiles/shortcut_freedesktop.template/").resolve()
-        ),
-        "--log-level={}".format(getenv("PYINSTALLER_LOG_LEVEL", "WARN")),
-        "--name={}_{}_{}{}_{}_Python{}".format(
-            __about__.__title_clean__,
-            __about__.__version__,
-            distro.name(),
-            distro.version(),
-            platform.architecture()[0],
-            platform.python_version(),
-        ).replace(".", "-"),
+        f"--add-data={package_folder.joinpath('profiles/shortcut_freedesktop.template/').resolve()}:profiles/",
+        f"--log-level={getenv('PYINSTALLER_LOG_LEVEL', 'WARN')}",
+        f"--name={output_filename}",
         "--noconfirm",
-        "--noupx",
         "--onefile",
         "--console",
         str(package_folder / "cli.py"),

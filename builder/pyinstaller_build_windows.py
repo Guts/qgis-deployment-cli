@@ -11,6 +11,7 @@
 # Standard library
 import platform
 import sys
+from datetime import datetime
 from os import getenv
 from pathlib import Path
 
@@ -24,31 +25,38 @@ from qgis_deployment_toolbelt import __about__  # noqa: E402
 # #############################################################################
 # ########### MAIN #################
 # ##################################
+
+# write build report
+build_report = (
+    f"datetime: {datetime.now().astimezone().isoformat()}"
+    f"\nprog_name: {__about__.__title__}"
+    f"\nprog_version: {__about__.__version__}"
+    f"\noperating_system: {platform.system()}"
+    f"\noperating_system_version: {platform.release()}_{platform.version()}"
+    f"\narchitecture: {platform.architecture()[0]}"
+    f"\npython_version: {platform.python_version()}"
+)
+Path("build_environment_report.txt").write_text(data=build_report, encoding="UTF-8")
+
+# variables
+output_filename = (
+    f"{__about__.__title_clean__}_{__about__.__version__.replace('.', '-')}"
+)
 package_folder = Path("qgis_deployment_toolbelt")
 
 PyInstaller.__main__.run(
     [
         "--add-data=LICENSE:.",
         "--add-data=README.md:.",
-        "--add-data={}:profiles/".format(
-            (package_folder / "profiles/shortcut_freedesktop.template/").resolve()
-        ),
         # "--clean",
         f"--icon={package_folder.parent.resolve()}/docs/static/logo_qdt.ico",
-        "--log-level={}".format(getenv("PYINSTALLER_LOG_LEVEL", "WARN")),
-        "--manifest={}".format((package_folder / "../builder/manifest.xml").resolve()),
-        "--name={}_{}_{}{}_Python{}-{}".format(
-            __about__.__title_clean__,
-            __about__.__version__.replace(".", "-"),
-            platform.system(),
-            platform.architecture()[0],
-            platform.python_version_tuple()[0],
-            platform.python_version_tuple()[1],
-        ),
+        f"--log-level={getenv('PYINSTALLER_LOG_LEVEL', 'WARN')}",
+        f"--manifest={Path(__file__).parent.joinpath('manifest.xml')}",
+        f"--name={output_filename}",
         "--noconfirm",
-        "--noupx",
+        # "--noupx",
         "--onefile",
-        "--version-file={}".format("version_info.txt"),
+        "--version-file=version_info.txt",
         "--console",
         str(package_folder / "cli.py"),
     ]
