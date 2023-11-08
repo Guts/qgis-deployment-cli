@@ -31,6 +31,11 @@ mac_os_version = "-".join(mac_os_version.split(".")[:2])
 
 PyInstaller.__main__.run(
     [
+        "--add-data=LICENSE:.",
+        "--add-data=README.md:.",
+        "--add-data={}:profiles/".format(
+            (package_folder / "profiles/shortcut_freedesktop.template/").resolve()
+        ),
         "--log-level={}".format(getenv("PYINSTALLER_LOG_LEVEL", "WARN")),
         "--name={}_{}_MacOS{}_Python{}-{}".format(
             __about__.__title_clean__,
