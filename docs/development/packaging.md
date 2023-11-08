@@ -20,7 +20,7 @@ python -O .\builder\pyinstaller_build_windows.py
 
 ![QGIS Deployment Toolbelt - Executable properties](../static/executable_windows_properties_details.png)
 
-To run it, double-click on the executable file (*.exe).
+To run it, double-click on the executable file (*.exe) loated into `dist` folder.
 
 ### Ubuntu
 
