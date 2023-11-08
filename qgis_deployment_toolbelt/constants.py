@@ -163,7 +163,7 @@ class OSConfiguration:
 # ########## Main ##################
 # ##################################
 
-OS_CONFIG: dict = {
+OS_CONFIG: dict[str, OSConfiguration] = {
     "darwin": OSConfiguration(
         name_python="darwin",
         names_alter=["apple", "mac", "macos"],

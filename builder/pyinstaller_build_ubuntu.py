@@ -50,7 +50,7 @@ PyInstaller.__main__.run(
     [
         "--add-data=LICENSE:.",
         "--add-data=README.md:.",
-        f"--add-data={package_folder.joinpath('profiles/shortcut_freedesktop.template/').resolve()}:profiles/",
+        f"--add-data={package_folder.joinpath('shortcuts/shortcut_freedesktop.template').resolve()}:profiles/",
         f"--log-level={getenv('PYINSTALLER_LOG_LEVEL', 'WARN')}",
         f"--name={output_filename}",
         "--noconfirm",

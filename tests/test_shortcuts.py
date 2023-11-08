@@ -15,7 +15,7 @@ from pathlib import Path
 from sys import platform as opersys
 
 # project
-from qgis_deployment_toolbelt.profiles.shortcuts import ApplicationShortcut
+from qgis_deployment_toolbelt.shortcuts import ApplicationShortcut
 
 # ############################################################################
 # ########## Classes #############

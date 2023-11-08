@@ -20,8 +20,8 @@ from sys import platform as opersys
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
-from qgis_deployment_toolbelt.profiles import ApplicationShortcut
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.shortcuts import ApplicationShortcut
 
 # #############################################################################
 # ########## Globals ###############

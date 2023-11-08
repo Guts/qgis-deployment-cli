@@ -350,7 +350,7 @@ class ApplicationShortcut:
             logger.debug(f"Using shortcut template in Python mode: {template_shortcut}")
         else:
             template_shortcut = Path(getattr(sys, "_MEIPASS", sys.executable)).joinpath(
-                "profiles/shortcut_freedesktop.template"
+                "shortcuts/shortcut_freedesktop.template"
             )
             logger.debug(
                 f"Using shortcut template in packaged mode: {template_shortcut}"
