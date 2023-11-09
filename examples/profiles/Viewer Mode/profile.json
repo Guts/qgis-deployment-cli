@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+  "name": "QDT Viewer Mode",
+  "folder_name": "qdt_viewer_mode",
+  "description": "Demo QGIS profile for QDT customized for end-users which are only viewers.",
+  "author": "Julien Moura",
+  "email": "infos+qdt@oslandia.com",
+  "icon": "images/logo_qdt.ico",
+  "qgisMinimumVersion": "3.28.0",
+  "qgisMaximumVersion": "3.99.10",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "Profile Manager",
+      "folder_name": "profile-manager",
+      "official_repository": true,
+      "plugin_id": 2515,
+      "version": "0.31"
+    }
+  ]
+}
