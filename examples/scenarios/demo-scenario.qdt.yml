@@ -45,6 +45,10 @@ steps:
           label: "QDT - Demo profile"
           desktop: true
           start_menu: true
+        - profile: QDT Viewer Mode
+          label: "QDT - Viewer profile"
+          desktop: true
+          start_menu: true
 
   - name: Set splash screen
     uses: splash-screen-manager
