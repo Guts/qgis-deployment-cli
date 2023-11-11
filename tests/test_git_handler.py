@@ -76,32 +76,33 @@ class TestGitHandler(unittest.TestCase):
         """Test git parsed URL"""
         self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
         git_handler = RemoteGitHandler(self.good_git_url)
+        git_url_parsed = git_handler.url_parsed(self.good_git_url)
 
         # type
-        self.assertIsInstance(git_handler.url_parsed, GitUrlParsed)
+        self.assertIsInstance(git_url_parsed, GitUrlParsed)
 
         # keys
-        self.assertIn("branch", git_handler.url_parsed.data)
-        self.assertIn("domain", git_handler.url_parsed.data)
-        self.assertIn("groups_path", git_handler.url_parsed.data)
-        self.assertIn("owner", git_handler.url_parsed.data)
-        self.assertIn("path", git_handler.url_parsed.data)
-        self.assertIn("path_raw", git_handler.url_parsed.data)
-        self.assertIn("pathname", git_handler.url_parsed.data)
-        self.assertIn("platform", git_handler.url_parsed.data)
-        self.assertIn("port", git_handler.url_parsed.data)
-        self.assertIn("protocol", git_handler.url_parsed.data)
-        self.assertIn("protocols", git_handler.url_parsed.data)
-        self.assertIn("repo", git_handler.url_parsed.data)
-        self.assertIn("url", git_handler.url_parsed.data)
+        self.assertIn("branch", git_url_parsed.data)
+        self.assertIn("domain", git_url_parsed.data)
+        self.assertIn("groups_path", git_url_parsed.data)
+        self.assertIn("owner", git_url_parsed.data)
+        self.assertIn("path", git_url_parsed.data)
+        self.assertIn("path_raw", git_url_parsed.data)
+        self.assertIn("pathname", git_url_parsed.data)
+        self.assertIn("platform", git_url_parsed.data)
+        self.assertIn("port", git_url_parsed.data)
+        self.assertIn("protocol", git_url_parsed.data)
+        self.assertIn("protocols", git_url_parsed.data)
+        self.assertIn("repo", git_url_parsed.data)
+        self.assertIn("url", git_url_parsed.data)
 
         # values
-        self.assertIn("gitlab.com", git_handler.url_parsed.domain)
-        self.assertIn("gitlab.com", git_handler.url_parsed.host)
-        self.assertEqual("qgis", git_handler.url_parsed.groups_path)
-        self.assertEqual("Oslandia", git_handler.url_parsed.owner)
-        self.assertEqual("gitlab", git_handler.url_parsed.platform)
-        self.assertEqual("profils_qgis_fr_2022", git_handler.url_parsed.repo)
+        self.assertIn("gitlab.com", git_url_parsed.domain)
+        self.assertIn("gitlab.com", git_url_parsed.host)
+        self.assertEqual("qgis", git_url_parsed.groups_path)
+        self.assertEqual("Oslandia", git_url_parsed.owner)
+        self.assertEqual("gitlab", git_url_parsed.platform)
+        self.assertEqual("profils_qgis_fr_2022", git_url_parsed.repo)
 
     @unittest.skipUnless(version_info.minor >= 10, "requires python 3.10")
     def test_git_clone_py310(self):

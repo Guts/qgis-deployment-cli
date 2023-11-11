@@ -138,13 +138,13 @@ class JobProfilesDownloader(GenericJob):
         if self.options.get("protocol") == "git":
             if self.options.get("source").startswith(("git://", "http://", "https://")):
                 downloader = RemoteGitHandler(
-                    uri_or_path=self.options.get("source"),
+                    remote_git_uri_or_path=self.options.get("source"),
                     branch=self.options.get("branch", "master"),
                 )
                 downloader.download(local_path=self.qdt_working_folder)
             elif self.options.get("source").startswith("file://"):
                 downloader = LocalGitHandler(
-                    uri_or_path=self.options.get("source"),
+                    remote_git_uri_or_path=self.options.get("source"),
                     branch=self.options.get("branch", "master"),
                 )
                 downloader.download(local_path=self.qdt_working_folder)
