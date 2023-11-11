@@ -111,7 +111,7 @@ class GenericJob:
             return switch
 
         # read configuration file
-        ini_qgis3 = ConfigParser()
+        ini_qgis3 = ConfigParser(strict=False)
         ini_qgis3.optionxform = str
         ini_qgis3.read(qgis3ini_filepath, encoding="UTF8")
 
