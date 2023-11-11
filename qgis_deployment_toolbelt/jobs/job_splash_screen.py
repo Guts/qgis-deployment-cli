@@ -204,7 +204,7 @@ class JobSplashScreenManager(GenericJob):
     def set_splash_screen(
         self,
         qgiscustomization3ini_filepath: Path,
-        splash_screen_filepath: Path = None,
+        splash_screen_filepath: Path | None = None,
         switch: bool = True,
     ) -> bool:
         """Add/remove splash screen path to the QGISCUSTOMIZATION3.ini file.
@@ -223,11 +223,15 @@ class JobSplashScreenManager(GenericJob):
         # vars
         section = "Customization"
         option = "splashpath"
-        if switch:
+        if switch and isinstance(splash_screen_filepath, Path):
             # normalize splash screen folder path
             nrm_splash_screen_folder = normalize_path(
                 splash_screen_filepath.parent, add_trailing_slash_if_dir=True
             )
+        elif switch and splash_screen_filepath is None:
+            logger.warning(f"{switch=} but splash screen filepath not defined")
+        else:
+            pass
 
         # make sure that the file exists
         if not qgiscustomization3ini_filepath.exists() and switch:
@@ -249,7 +253,7 @@ class JobSplashScreenManager(GenericJob):
             return switch
 
         # open
-        ini_qgiscustom3 = ConfigParser()
+        ini_qgiscustom3 = ConfigParser(strict=False)
         ini_qgiscustom3.optionxform = str
         ini_qgiscustom3.read(qgiscustomization3ini_filepath, encoding="UTF8")
 
