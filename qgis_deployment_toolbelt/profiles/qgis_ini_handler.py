@@ -13,14 +13,15 @@
 
 # Standard library
 import logging
-from configparser import ConfigParser
 from pathlib import Path
 from typing import Literal
 
 # package
+from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.ini_interpolation import (
     EnvironmentVariablesInterpolation,
 )
+from qgis_deployment_toolbelt.utils.ini_parser_with_path import CustomConfigParser
 
 # #############################################################################
 # ########## Globals ###############
@@ -37,11 +38,20 @@ logger = logging.getLogger(__name__)
 class QgisIniHelper:
     """Helper to manipulate QGIS configuration files (*.ini)."""
 
-    INI_TYPE: Literal["profile_qgis3", "profile_qgis3customization"] = None
+    SUPPORTED_INI_TYPES: tuple[str, str, str] = (
+        "plugin_metadata",
+        "profile_qgis3",
+        "profile_qgis3customization",
+    )
+
+    ini_type: str | None = None
 
     def __init__(
         self,
         ini_filepath: Path,
+        ini_type: Literal[
+            "profile_qgis3", "profile_qgis3customization", "plugin_metadata", None
+        ] = None,
         strict: bool = False,
         enable_environment_variables_interpolation: bool = True,
     ) -> None:
@@ -50,16 +60,34 @@ class QgisIniHelper:
         Args:
             ini_filepath: path to the QGIS3.ini configuration file
         """
-        if ini_filepath.stem == "QGIS3":
-            self.INI_TYPE = "profile_qgis3"
+
+        if ini_type is not None and ini_type in self.SUPPORTED_INI_TYPES:
+            self.ini_type = ini_type
+            if self.ini_type == "profile_qgis3":
+                self.profile_config_path = ini_filepath
+                self.profile_customization_path = ini_filepath.with_name(
+                    "QGISCUSTOMIZATION3.ini"
+                )
+            elif self.ini_type == "profile_qgis3customization":
+                self.profile_config_path = ini_filepath.with_name("QGIS3.ini")
+                self.profile_customization_path = ini_filepath
+            else:
+                self.profile_config_path = None
+                self.profile_customization_path = None
+        elif ini_filepath.stem == "QGIS3":
+            self.ini_type = "profile_qgis3"
             self.profile_config_path = ini_filepath
             self.profile_customization_path = ini_filepath.with_name(
                 "QGISCUSTOMIZATION3.ini"
             )
         elif ini_filepath.stem == "QGISCUSTOMIZATION3":
-            self.INI_TYPE = "profile_qgis3customization"
+            self.ini_type = "profile_qgis3customization"
             self.profile_config_path = ini_filepath.with_name("QGIS3.ini")
             self.profile_customization_path = ini_filepath
+        elif ini_filepath.name == "metadata.txt":
+            self.ini_type = "plugin_metadata"
+            self.profile_config_path = None
+            self.profile_customization_path = None
         else:
             logger.warning(f"Unrecognized ini type: {ini_filepath}")
 
@@ -69,13 +97,13 @@ class QgisIniHelper:
             enable_environment_variables_interpolation
         )
 
-    def cfg_parser(self) -> ConfigParser:
+    def cfg_parser(self) -> CustomConfigParser:
         """Return config parser with options for QGIS ini files.
 
         Returns:
-            ConfigParser: config parser
+            CustomConfigParser: config parser
         """
-        qgis_cfg_parser = ConfigParser(
+        qgis_cfg_parser = CustomConfigParser(
             strict=self.strict_mode,
             interpolation=EnvironmentVariablesInterpolation()
             if self.enable_environment_variables_interpolation
@@ -85,19 +113,34 @@ class QgisIniHelper:
         return qgis_cfg_parser
 
     # UI customization
-    def is_ui_customization_enabled(self, ini_file: ConfigParser | Path = None) -> bool:
+    def is_ui_customization_enabled(
+        self, ini_file: CustomConfigParser | Path | None = None
+    ) -> bool | None:
         """Determine if UI customization is enabled.
 
         Args:
-            ini_file (Union[ConfigParser, Path]): input ini file to check.
+            ini_file (Union[CustomConfigParser, Path]): input ini file to check.
                 A warning is raised if the filename is not QGIS3.ini.
                 If None, self.profile_config_path is used.
 
         Returns:
             bool: True if customization is enabled
         """
+        if ini_file is None and isinstance(self.profile_config_path, Path):
+            logger.debug(
+                "Using configuration file defined at object level: "
+                f"{self.profile_config_path.resolve()}"
+            )
+            return self.is_ui_customization_enabled(ini_file=self.profile_config_path)
 
-        if isinstance(ini_file, ConfigParser):
+        if self.ini_type not in ("profile_qgis3", "profile_qgis3customization"):
+            logger.debug(
+                f"Invalid ini type: {self.ini_type}. Must a QGIS3.ini or a "
+                "QGIS3CUSTOMIZATION.ini"
+            )
+            return None
+
+        if isinstance(ini_file, CustomConfigParser):
             if ini_file.has_option(section="UI", option="Customization\\enabled"):
                 return ini_file.getboolean(
                     section="UI", option="Customization\\enabled"
@@ -114,10 +157,77 @@ class QgisIniHelper:
             cfg_parser = self.cfg_parser()
             cfg_parser.read(ini_file, encoding="UTF8")
             return self.is_ui_customization_enabled(cfg_parser)
-        elif ini_file is None and self.profile_config_path.exists():
+        elif (
+            ini_file is None
+            and isinstance(self.profile_config_path, Path)
+            and self.profile_config_path.exists()
+        ):
             cfg_parser = self.cfg_parser()
-            cfg_parser.read(self.profile_config_path, encoding="UTF8")
+            cfg_parser.read([self.profile_config_path], encoding="UTF8")
             return self.is_ui_customization_enabled(cfg_parser)
+        else:
+            return False
+
+    def is_splash_screen_set(
+        self, ini_file: CustomConfigParser | Path | None = None
+    ) -> bool | None:
+        """Determine if a custom splash screen is set or not.
+
+        Args:
+            ini_file (Union[CustomConfigParser, Path]): input ini file to check.
+                A warning is raised if the filename is not QGISCUSTOMIZATION3.ini.
+                If None, self.profile_customization_path is used.
+
+        Returns:
+            bool: True if a splash is set
+        """
+        # if ini_file is None but defined at object level, let's use it
+        if ini_file is None and isinstance(self.profile_customization_path, Path):
+            logger.debug(
+                "Using customization file defined at object level: "
+                f"{self.profile_customization_path.resolve()}"
+            )
+            return self.is_splash_screen_set(ini_file=self.profile_customization_path)
+
+        # if self.ini_type not in ("profile_qgis3", "profile_qgis3customization"):
+        #     logger.debug(
+        #         f"Invalid ini type: {self.ini_type}. Must a QGIS3.ini or a "
+        #         "QGIS3CUSTOMIZATION.ini"
+        #     )
+        #     return None
+
+        if isinstance(ini_file, CustomConfigParser):
+            if ini_file.has_option(section="Customization", option="splashpath"):
+                splash_path = ini_file.get(section="Customization", option="splashpath")
+                if isinstance(splash_path, str) and not len(splash_path.strip()):
+                    logger.info(
+                        f"{ini_file.get_initial_file_path().resolve()} has a splashpath "
+                        "set BUT it looks like it's NOT a valid path"
+                    )
+                    return False
+                else:
+                    return True
+            else:
+                logger.debug(
+                    f"{ini_file.get_initial_file_path().resolve()} has no "
+                    "splash path set."
+                )
+                return False
+        elif isinstance(ini_file, Path) and check_path(
+            input_path=ini_file,
+            must_be_a_file=True,
+            must_be_readable=True,
+            must_exists=True,
+        ):
+            cfg_parser = self.cfg_parser()
+            cfg_parser.read(ini_file, encoding="UTF8")
+            logger.debug(
+                f"{ini_file} is an existing file, has been parsed. Let's check if a "
+                "splash path is set."
+            )
+            return self.is_splash_screen_set(cfg_parser)
+        else:
+            return False
 
     def set_ui_customization_enabled(self, switch: bool = True) -> bool:
         """Enable/disable UI customization in the profile QGIS3.ini file.
@@ -239,8 +349,42 @@ class QgisIniHelper:
 
 if __name__ == "__main__":
     """Standalone execution."""
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
     new_config_file = Path("tests/fixtures/qgis_ini/default_no_customization/QGIS3.ini")
     assert new_config_file.exists()
     ini_config = QgisIniHelper(ini_filepath=new_config_file)
 
     print(ini_config.is_ui_customization_enabled())
+    assert ini_config.is_ui_customization_enabled() is False
+    ini_config.set_ui_customization_enabled()
+    assert ini_config.is_ui_customization_enabled() is True
+    ini_config.set_ui_customization_enabled(switch=False)
+    assert ini_config.is_ui_customization_enabled() is False
+
+    qini_helper = QgisIniHelper(
+        ini_filepath=Path(
+            "/home/jmo/Git/Oslandia/QGIS/qgis-deployment-cli/tests/fixtures/tmp/customization_with_splashpath.ini"
+        ),
+        ini_type="profile_qgis3customization",
+    )
+    qini_helper.ini_type = "profile_qgis3customization"
+    print(qini_helper.is_splash_screen_set())
+
+    fake_config = "[Customization]\nsplashpath="
+
+    tmp_ini_customization = Path(
+        "tests/fixtures/tmp/customization_with_splashpath_empty.ini"
+    )
+    tmp_ini_customization.parent.mkdir(parents=True, exist_ok=True)
+    tmp_ini_customization.write_text(fake_config)
+
+    qini_helper = QgisIniHelper(
+        ini_filepath=tmp_ini_customization, ini_type="profile_qgis3customization"
+    )
+    print(qini_helper.is_splash_screen_set())
+    tmp_ini_customization.unlink()
