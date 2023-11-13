@@ -29,3 +29,4 @@ for section in config.sections():
     print(f"Section: {section}")
     for key in config[section]:
         print(f"  {key} = {config[section][key]}")
+print(config.get(section="test", option="qdt_working_directory"))

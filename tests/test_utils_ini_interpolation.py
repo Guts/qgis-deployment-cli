@@ -16,8 +16,6 @@ from configparser import ConfigParser
 from getpass import getuser
 from os import environ, getenv
 
-from qgis_deployment_toolbelt.constants import get_qdt_working_directory
-
 # project
 from qgis_deployment_toolbelt.utils.ini_interpolation import (
     EnvironmentVariablesInterpolation,
@@ -52,7 +50,7 @@ class TestUtilsIniCustomInterpolation(unittest.TestCase):
         )
         self.assertEqual(
             config.get(section="test", option="qdt_working_directory"),
-            f"{get_qdt_working_directory(identifier='').resolve()}",
+            f"{config.get(section='test', option='user_home')}/.cache/qgis-deployment-toolbelt",
         )
 
 
