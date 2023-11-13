@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_qdt_working_directory(
-    specific_value: PathLike = None, identifier: str = "default"
+    specific_value: PathLike | None = None, identifier: str = "default"
 ) -> Path:
     """Get QDT working directory.
 
