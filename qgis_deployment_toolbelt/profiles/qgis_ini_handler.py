@@ -22,6 +22,7 @@ from qgis_deployment_toolbelt.utils.ini_interpolation import (
     EnvironmentVariablesInterpolation,
 )
 from qgis_deployment_toolbelt.utils.ini_parser_with_path import CustomConfigParser
+from qgis_deployment_toolbelt.utils.win32utils import normalize_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -60,8 +61,11 @@ class QgisIniHelper:
         Args:
             ini_filepath: path to the QGIS3.ini configuration file
         """
-
-        if ini_type is not None and ini_type in self.SUPPORTED_INI_TYPES:
+        if (
+            ini_filepath is not None
+            and ini_type is not None
+            and ini_type in self.SUPPORTED_INI_TYPES
+        ):
             self.ini_type = ini_type
             if self.ini_type == "profile_qgis3":
                 self.profile_config_path = ini_filepath
@@ -202,7 +206,7 @@ class QgisIniHelper:
                 if isinstance(splash_path, str) and not len(splash_path.strip()):
                     logger.info(
                         f"{ini_file.get_initial_file_path().resolve()} has a splashpath "
-                        "set BUT it looks like it's NOT a valid path"
+                        "option BUT the value set is NOT a valid path"
                     )
                     return False
                 else:
@@ -218,6 +222,7 @@ class QgisIniHelper:
             must_be_a_file=True,
             must_be_readable=True,
             must_exists=True,
+            raise_error=False,
         ):
             cfg_parser = self.cfg_parser()
             cfg_parser.read(ini_file, encoding="UTF8")
@@ -342,6 +347,175 @@ class QgisIniHelper:
             )
             return False
 
+    def set_splash_screen(
+        self,
+        ini_file: CustomConfigParser | Path | None = None,
+        splash_screen_filepath: Path | None = None,
+        switch: bool = True,
+    ) -> bool:
+        """Add/remove splash screen path to the QGISCUSTOMIZATION3.ini file.
+
+        Args:
+            ini_file (Union[CustomConfigParser, Path]): input ini file to check.
+                A warning is raised if the filename is not QGISCUSTOMIZATION3.ini.
+                If None, self.profile_customization_path is used.
+            splash_screen_filepath (Path, optional): path to the folder containing the
+                splash.png file, defaults to None. Defaults to None.
+            switch (bool, optional): True to add, False to remove, defaults to True.
+                Defaults to True.
+
+        Returns:
+            bool: True is the splash folder is present. False is absent.
+        """
+        # if ini_file is None but defined at object level, let's use it
+        if ini_file is None and isinstance(self.profile_customization_path, Path):
+            logger.debug(
+                "Using customization file defined at object level: "
+                f"{self.profile_customization_path.resolve()}"
+            )
+            return self.set_splash_screen(
+                ini_file=self.profile_customization_path, switch=switch
+            )
+        elif ini_file is None and self.profile_customization_path is None:
+            raise ValueError(
+                "Both passed ini file and the object's defined are not "
+                "defined. Can't process."
+            )
+
+        # SWITCH=False and NOT DEFINED --> EXIT
+        if not switch and not self.is_splash_screen_set(ini_file=ini_file):
+            logger.debug(
+                f"As required ({switch=}, splash screen is not set in {ini_file}"
+            )
+            return False
+
+        # SWITCH=TRUE --> ENABLE
+        if switch and isinstance(splash_screen_filepath, Path):
+            # normalize splash screen folder path
+            nrm_splash_screen_folder = normalize_path(
+                splash_screen_filepath.parent, add_trailing_slash_if_dir=True
+            )
+        elif switch and splash_screen_filepath is None:
+            logger.warning(f"{switch=} but splash screen filepath not defined")
+        else:
+            pass
+
+        # make sure that the file exists
+        if isinstance(ini_file, Path) and ini_file.exists() and switch:
+            # open
+            cfg_parser = self.cfg_parser()
+            cfg_parser.read(ini_file, encoding="UTF8")
+            logger.debug(
+                f"{ini_file} is an existing file, has been parsed. Let's check if a "
+                "splash path is set."
+            )
+            return self.set_splash_screen(cfg_parser)
+        elif isinstance(ini_file, Path) and not ini_file.exists() and switch:
+            logger.warning(
+                f"Configuration file {ini_file} doesn't exist. "
+                "It will be created but maybe it was not the expected behavior."
+            )
+            ini_file.parent.mkdir(parents=True, exist_ok=True)
+            ini_file.touch(exist_ok=True)
+            ini_file.write_text(
+                data=f"[Customization]\nsplashpath={nrm_splash_screen_folder}",
+                encoding="UTF8",
+            )
+            return switch
+        elif isinstance(ini_file, Path) and not ini_file.exists() and not switch:
+            logger.debug(f"'{ini_file} doesn't exist. So, no need to do anything.")
+            return switch
+        else:
+            pass
+
+        # FROM NOW: isinstance(ini_file, CustomConfigParser) is True
+        assert isinstance(ini_file, CustomConfigParser)
+        assert isinstance(ini_file.get_initial_file_path(), Path)
+        assert ini_file.get_initial_file_path().exists()
+
+        qgiscustomization3ini_filepath = ini_file.get_initial_file_path()
+        option = "splashpath"
+        section = "Customization"
+
+        # check existing option value
+        if ini_file.has_option(section=section, option=option):
+            actual_state = ini_file.get(section=section, option=option)
+
+            if not switch:
+                ini_file.remove_option(section=section, option=option)
+                with qgiscustomization3ini_filepath.open(
+                    "w", encoding="UTF8"
+                ) as configfile:
+                    ini_file.write(configfile, space_around_delimiters=False)
+                logger.debug(
+                    f"Splash screen {splash_screen_filepath} has been "
+                    f"DISABLED in {qgiscustomization3ini_filepath}"
+                )
+                return True
+            elif actual_state == nrm_splash_screen_folder and switch:
+                logger.debug(
+                    f"Splash screen {splash_screen_filepath} is already "
+                    f"ENABLED in {qgiscustomization3ini_filepath}"
+                )
+                return True
+            elif actual_state != nrm_splash_screen_folder and switch:
+                ini_file.set(
+                    section=section,
+                    option=option,
+                    value=nrm_splash_screen_folder,
+                )
+                with qgiscustomization3ini_filepath.open(
+                    "w", encoding="UTF8"
+                ) as configfile:
+                    ini_file.write(configfile, space_around_delimiters=False)
+                logger.debug(
+                    f"Splash screen {splash_screen_filepath} has been "
+                    f"ENABLED in {qgiscustomization3ini_filepath}"
+                )
+                return True
+            else:
+                pass
+
+        elif ini_file.has_section(section=section) and switch:
+            # section exist but not the option, so let's add it as required
+            ini_file.set(
+                section=section,
+                option=option,
+                value=nrm_splash_screen_folder,
+            )
+            with qgiscustomization3ini_filepath.open(
+                "w", encoding="UTF8"
+            ) as configfile:
+                ini_file.write(configfile, space_around_delimiters=False)
+            logger.debug(
+                f"'{option}' option was missing in {section}, it's just been added and "
+                f"ENABLED in {qgiscustomization3ini_filepath}"
+            )
+            return True
+        elif not ini_file.has_section(section=section) and switch:
+            # even the section is missing. Let's add everything
+            ini_file.add_section(section)
+            ini_file.set(
+                section=section,
+                option=option,
+                value=nrm_splash_screen_folder,
+            )
+            with qgiscustomization3ini_filepath.open(
+                "w", encoding="UTF8"
+            ) as configfile:
+                ini_file.write(configfile, space_around_delimiters=False)
+            logger.debug(
+                f"'{option}' option was missing in {section}, it's just been added and "
+                f"ENABLED in {qgiscustomization3ini_filepath}"
+            )
+            return True
+        else:
+            logger.debug(
+                f"Section '{section}' is not present so "
+                f"{option} is DISABLED in {qgiscustomization3ini_filepath}"
+            )
+            return False
+
 
 # #############################################################################
 # ##### Stand alone program ########
@@ -387,4 +561,26 @@ if __name__ == "__main__":
         ini_filepath=tmp_ini_customization, ini_type="profile_qgis3customization"
     )
     print(qini_helper.is_splash_screen_set())
+    assert qini_helper.is_splash_screen_set() is False
     tmp_ini_customization.unlink()
+
+    # ENABLE/DISABLE SPLASH SCREEN
+    fake_config = "[Customization]\nsplashpath="
+
+    tmp_ini_customization = Path(
+        "tests/fixtures/tmp/customization_with_splashpath_empty.ini"
+    )
+    tmp_ini_customization.parent.mkdir(parents=True, exist_ok=True)
+    tmp_ini_customization.write_text(fake_config)
+
+    qini_helper = QgisIniHelper(
+        ini_filepath=tmp_ini_customization, ini_type="profile_qgis3customization"
+    )
+    qini_helper.set_splash_screen(switch=False) is False
+    tmp_ini_customization.unlink()
+
+    not_existing_ini = Path("no_existing_file.ini")
+    qini_helper = QgisIniHelper(
+        ini_filepath=not_existing_ini, ini_type="profile_qgis3customization"
+    )
+    qini_helper.set_splash_screen(switch=False) is False
