@@ -18,6 +18,9 @@ from pathlib import Path
 from typing import Literal
 
 # package
+from qgis_deployment_toolbelt.utils.ini_interpolation import (
+    EnvironmentVariablesInterpolation,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -36,7 +39,12 @@ class QgisIniHelper:
 
     INI_TYPE: Literal["profile_qgis3", "profile_qgis3customization"] = None
 
-    def __init__(self, ini_filepath: Path) -> None:
+    def __init__(
+        self,
+        ini_filepath: Path,
+        strict: bool = False,
+        enable_environment_variables_interpolation: bool = True,
+    ) -> None:
         """Instanciation.
 
         Args:
@@ -55,13 +63,24 @@ class QgisIniHelper:
         else:
             logger.warning(f"Unrecognized ini type: {ini_filepath}")
 
+        # store options
+        self.strict_mode = strict
+        self.enable_environment_variables_interpolation = (
+            enable_environment_variables_interpolation
+        )
+
     def cfg_parser(self) -> ConfigParser:
         """Return config parser with options for QGIS ini files.
 
         Returns:
             ConfigParser: config parser
         """
-        qgis_cfg_parser = ConfigParser()
+        qgis_cfg_parser = ConfigParser(
+            strict=self.strict_mode,
+            interpolation=EnvironmentVariablesInterpolation()
+            if self.enable_environment_variables_interpolation
+            else None,
+        )
         qgis_cfg_parser.optionxform = str
         return qgis_cfg_parser
 
