@@ -252,7 +252,7 @@ jobs:
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: builds/wheel/*
+          packages-dir: builds/wheel
 
   release-ghcr:
     name: "🐳 Release as Docker container"
