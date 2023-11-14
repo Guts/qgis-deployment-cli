@@ -13,6 +13,8 @@
 
 # Standard library
 import logging
+from pathlib import Path
+from sys import platform as opersys
 
 # package
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
