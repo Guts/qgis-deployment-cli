@@ -29,7 +29,7 @@
       "folder_name": "quick_map_services",
       "official_repository": true,
       "plugin_id": 666,
-      "version": "2.2.3"
+      "version": "0.19.33"
     },
     {
       "name": "QuickOSM",
