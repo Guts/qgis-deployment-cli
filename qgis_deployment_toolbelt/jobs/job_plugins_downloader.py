@@ -66,6 +66,7 @@ class JobPluginsDownloader(GenericJob):
 
         :param dict options:  job options.
         """
+        super().__init__()
         self.options: dict = self.validate_options(options)
 
         # where QDT downloads plugins

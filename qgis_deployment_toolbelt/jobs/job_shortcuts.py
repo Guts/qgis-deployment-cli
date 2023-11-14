@@ -111,6 +111,7 @@ class JobShortcutsManager(GenericJob):
         :param dict options: profiles source (remote, can be a local network) and
         destination (local).
         """
+        super().__init__()
         self.options: dict = self.validate_options(options)
 
         # profile folder

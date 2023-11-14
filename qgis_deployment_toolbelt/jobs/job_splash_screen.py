@@ -67,6 +67,7 @@ class JobSplashScreenManager(GenericJob):
         Args:
             options (dict): dictionary of options.
         """
+        super().__init__()
         self.options: dict = self.validate_options(options)
 
     def run(self) -> None:
