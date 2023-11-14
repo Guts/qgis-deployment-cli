@@ -100,7 +100,7 @@ jobs:
           name: macos_executable
           path: |
               dist/*
-              build_environment_report.txt
+              build_*.txt
           if-no-files-found: error
 
   build-ubuntu:
@@ -135,7 +135,7 @@ jobs:
           name: ubuntu_executable
           path: |
             dist/*
-            build_environment_report.txt
+            build_*.txt
           if-no-files-found: error
 
   build-windows:
@@ -174,7 +174,7 @@ jobs:
           name: windows_executable
           path: |
             dist/*
-            build_environment_report.txt
+            build_*.txt
           if-no-files-found: error
 
   release:
@@ -192,7 +192,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: python_wheel
-          path: builds/wheel/
+          path: builds/wheel/dist/
 
       - name: Retrieve artifact from MacOS build
         uses: actions/download-artifact@v3
@@ -217,7 +217,7 @@ jobs:
         with:
           discussion_category_name: announcements
           fail_on_unmatched_files: true
-          files: builds/**/*
+          files: builds/*/dist/*
           generate_release_notes: true
 
   release-pypi:
