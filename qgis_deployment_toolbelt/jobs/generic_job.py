@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Base of job.
+    Base of QDT jobs.
 
     Author: Julien Moura (https://github.com/guts)
 """
@@ -15,8 +15,10 @@
 import logging
 from configparser import ConfigParser
 from pathlib import Path
+from sys import platform as opersys
 
 # package
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadName,
     JobOptionBadValue,
@@ -39,11 +41,55 @@ logger = logging.getLogger(__name__)
 class GenericJob:
     """Generic base for QDT jobs."""
 
-    ID = ""
-    OPTIONS_SCHEMA = dict[dict]
+    ID: str = ""
+    OPTIONS_SCHEMA: dict[dict] = dict(dict())
 
-    def filter_profiles_folder(self) -> tuple[QdtProfile]:
-        """Parse downloaded folder to filter on QGIS profiles folders.
+    def __init__(self) -> None:
+        """Object instanciation."""
+        # local QDT folder
+        self.qdt_working_folder = get_qdt_working_directory()
+        if not self.qdt_working_folder.exists():
+            logger.info(
+                f"QDT downloaded folder not found: {self.qdt_working_folder}. "
+                "Creating it to properly run the job."
+            )
+            self.qdt_working_folder.mkdir(parents=True, exist_ok=True)
+        logger.debug(f"Working folder: {self.qdt_working_folder}")
+
+        # destination profiles folder
+        self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
+        if not self.qgis_profiles_path.exists():
+            logger.info(
+                f"Installed QGIS profiles folder not found: {self.qgis_profiles_path}. "
+                "Creating it to properly run the job."
+            )
+            self.qgis_profiles_path.mkdir(parents=True)
+        logger.debug(f"Installed QGIS profiles folder: {self.qgis_profiles_path}")
+
+    def list_downloaded_profiles(self) -> tuple[QdtProfile]:
+        """List downloaded QGIS profiles, i.e. a profile's folder located into the QDT
+            working folder.
+            Typically: `~/.cache/qgis-deployment-toolbelt/geotribu` or
+            `%USERPROFILE%/.cache/qgis-deployment-toolbelt/geotribu`).
+
+        Returns:
+            tuple[QdtProfile]: tuple of profiles objects
+        """
+        return self.filter_profiles_folder(start_parent_folder=self.qdt_working_folder)
+
+    def list_installed_profiles(self) -> tuple[QdtProfile]:
+        """List installed QGIS profiles, i.e. a profile's folder located into the QGIS
+            profiles path and so accessible to the end-user through the QGIS interface.
+            Typically: `~/.local/share/QGIS/QGIS3/profiles/geotribu` or
+            `%APPDATA%/QGIS/QGIS3/profiles/geotribu`).
+
+        Returns:
+            tuple[QdtProfile]: tuple of profiles objects
+        """
+        return self.filter_profiles_folder(start_parent_folder=self.qgis_profiles_path)
+
+    def filter_profiles_folder(self, start_parent_folder: Path) -> tuple[QdtProfile]:
+        """Parse a folder structure to filter on QGIS profiles folders.
 
         Returns:
             tuple[QdtProfile]: tuple of profiles objects
@@ -51,16 +97,16 @@ class GenericJob:
         # first, try to get folders containing a profile.json
         qgis_profiles_folder = [
             QdtProfile.from_json(profile_json_path=f, profile_folder=f.parent)
-            for f in self.qdt_working_folder.glob("**/profile.json")
+            for f in start_parent_folder.glob("**/profile.json")
         ]
         if len(qgis_profiles_folder):
             logger.debug(
-                f"{len(qgis_profiles_folder)} profiles found within {self.qdt_working_folder}"
+                f"{len(qgis_profiles_folder)} profiles found within {start_parent_folder}"
             )
             return tuple(qgis_profiles_folder)
 
         # if empty, try to identify if a folder is a QGIS profile - but unsure
-        for d in self.qdt_working_folder.glob("**"):
+        for d in start_parent_folder.glob("**"):
             if (
                 d.is_dir()
                 and d.parent.name == "profiles"

@@ -16,10 +16,8 @@ import logging
 from collections.abc import Iterable
 from pathlib import Path
 from shutil import copy2, copytree
-from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles import LocalGitHandler, RemoteGitHandler
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
@@ -104,30 +102,6 @@ class JobProfilesDownloader(GenericJob):
         """
         self.options: dict = self.validate_options(options)
 
-        # local QDT folder
-        self.qdt_working_folder = get_qdt_working_directory()
-        logger.debug(f"Working folder: {self.qdt_working_folder}")
-
-        # profile folder
-        self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
-        if not self.qgis_profiles_path.exists():
-            logger.warning(
-                f"QGIS profiles folder not found: {self.qgis_profiles_path}. "
-                "Creating it to properly run the job."
-            )
-            self.qgis_profiles_path.mkdir(exist_ok=True, parents=True)
-
-        # list installed profiles
-        self.PROFILES_NAMES_INSTALLED = [
-            d.name
-            for d in self.qgis_profiles_path.iterdir()
-            if d.is_dir() and not d.name.startswith(".")
-        ]
-
-        # prepare local destination
-        if not self.qdt_working_folder.exists():
-            self.qdt_working_folder.mkdir(parents=True, exist_ok=True)
-
     def run(self) -> None:
         """Execute job logic."""
         # download or refresh
@@ -157,7 +131,7 @@ class JobProfilesDownloader(GenericJob):
             raise NotImplementedError
 
         # check of there are some profiles folders within the downloaded folder
-        profiles_folders = self.filter_profiles_folder()
+        profiles_folders = self.list_downloaded_profiles()
         if profiles_folders is None:
             logger.error("No QGIS profile found in the downloaded folder.")
             return
