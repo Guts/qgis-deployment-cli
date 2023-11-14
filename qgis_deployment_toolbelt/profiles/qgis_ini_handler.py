@@ -395,6 +395,9 @@ class QgisIniHelper:
             nrm_splash_screen_folder = normalize_path(
                 splash_screen_filepath.parent, add_trailing_slash_if_dir=True
             )
+            logger.debug(
+                f"Splash screen path has been normalized: {nrm_splash_screen_folder}"
+            )
         elif switch and splash_screen_filepath is None:
             logger.warning(f"{switch=} but splash screen filepath not defined")
         else:
@@ -409,7 +412,11 @@ class QgisIniHelper:
                 f"{ini_file} is an existing file, has been parsed. Let's check if a "
                 "splash path is set."
             )
-            return self.set_splash_screen(cfg_parser)
+            return self.set_splash_screen(
+                ini_file=cfg_parser,
+                splash_screen_filepath=splash_screen_filepath,
+                switch=switch,
+            )
         elif isinstance(ini_file, Path) and not ini_file.exists() and switch:
             logger.warning(
                 f"Configuration file {ini_file} doesn't exist. "
