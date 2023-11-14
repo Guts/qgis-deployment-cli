@@ -80,7 +80,6 @@ Unreleased
 
 ### Bugs fixes 🐛
 
-* Fix: accept different types (URLs or str) as environment variables values by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/291###> Bugs fixes 🐛
 * Fix: accept different types (URLs or str) as environment variables values by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/291>
 
 ## 0.25.0 - 2023-06-13
