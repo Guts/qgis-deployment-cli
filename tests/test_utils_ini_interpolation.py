@@ -74,7 +74,9 @@ class TestUtilsIniCustomInterpolation(unittest.TestCase):
         config = ConfigParser(interpolation=EnvironmentVariablesInterpolation())
         config.read_string(fixtures_configuration)
         self.assertEqual(config.get(section="test", option="user"), getuser())
-        self.assertEqual(config.get(section="test", option="user_home"), getenv("HOME"))
+        self.assertEqual(
+            config.get(section="test", option="user_home"), getenv("USERPROFILE")
+        )
         self.assertEqual(
             config.get(section="test", option="fake_value_from_environment_variable"),
             getenv("QDT_TEST_ENV_VARIABLE"),
