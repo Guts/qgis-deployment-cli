@@ -15,10 +15,9 @@ Some of customizations to make it recognizable:
 
 ![QGIS UI - QDT demo profile](https://github.com/Guts/qgis-deployment-cli/blob/main/docs/static/examples_profiles_qdt-demo_qgis_ui.png?raw=true)
 
-
 Splash screen:
 
-![QGIS splash screen - QDT demo profile](../demo/images/splash.png)
+![QGIS splash screen - QDT demo profile](./profiles/demo/images/splash.png)
 
 As QDT developer, you might want to launch QGIS with this profile to edit or check it:
 
@@ -30,7 +29,7 @@ qgis --profile "demo" --profiles-path examples/
 
 ## Viewer Mode
 
-![QGIS splash screen - QDT viewer profile](../Viewer%20Mode/images/splash.png)
+![QGIS splash screen - QDT viewer profile](./profiles/Viewer%20Mode/images/splash.png)
 
 As QDT developer, you might want to launch QGIS with this profile to edit or check it:
 
