@@ -15,6 +15,7 @@ import unittest
 from configparser import ConfigParser
 from getpass import getuser
 from os import environ, getenv
+from sys import platform as opersys
 
 # project
 from qgis_deployment_toolbelt.utils.ini_interpolation import (
@@ -40,6 +41,8 @@ class TestUtilsIniCustomInterpolation(unittest.TestCase):
 
         """
         environ["QDT_TEST_ENV_VARIABLE"] = "TEST_VALUE"
+        if opersys == "win32":
+            environ["USER"] = getuser()
         config = ConfigParser(interpolation=EnvironmentVariablesInterpolation())
         config.read_string(fixtures_configuration)
         self.assertEqual(config.get(section="test", option="user"), getuser())
