@@ -18,7 +18,32 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
-## 0.26.0 - 2023-11-08
+## 0.28.0 - 2023-11-14
+
+### Bugs fixes 🐛
+
+* Disable ConfigParser strict mode to better handling of heterogeneity of QGIS config files by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/334>
+
+### Features and enhancements 🎉
+
+* Add util to format octets size into human-readable format by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/331>
+* Refacto: add a Git handler base class to inherit from and avoid duplicate code by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/333>
+* Jobs: make downloaded and installed profiles listing more generic by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/336>
+* Enhancement: add a module to read and write QGIS ini files by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/337>
+
+### Tooling 🔧
+
+* Packaging: renamed license to match Pypi classifier by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/326>
+* Publishing to PyPi: switch to trusted publisher by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/327>
+* Add python 3.12 to tests and supported versions by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/328>
+* Packaging: restore operating system name in final executables by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/329>
+* CI: add discussion category name to link to a GitHub Release by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/330>
+
+### Documentation 📖
+
+* Add demonstration profile viewer mode by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/332>
+
+## 0.27.0 - 2023-11-08
 
 ### Bugs fixes 🐛
 
