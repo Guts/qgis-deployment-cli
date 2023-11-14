@@ -36,7 +36,9 @@ build_report = (
     f"\narchitecture: {platform.architecture()[0]}"
     f"\npython_version: {platform.python_version()}"
 )
-Path("build_environment_report.txt").write_text(data=build_report, encoding="UTF-8")
+Path(
+    f"build_environment_report_Windows_{platform.release()}_{platform.version()}.txt"
+).write_text(data=build_report, encoding="UTF-8")
 
 # variables
 output_filename = (

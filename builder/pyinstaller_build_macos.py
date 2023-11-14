@@ -35,7 +35,9 @@ build_report = (
     f"\narchitecture: {platform.architecture()[0]}"
     f"\npython_version: {platform.python_version()}"
 )
-Path("build_environment_report.txt").write_text(data=build_report, encoding="UTF-8")
+Path("build_environment_report_MacOS.txt").write_text(
+    data=build_report, encoding="UTF-8"
+)
 
 # variables
 output_filename = (
