@@ -15,10 +15,8 @@
 import logging
 from pathlib import Path
 from shutil import unpack_archive
-from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
@@ -71,25 +69,14 @@ class JobPluginsSynchronizer(GenericJob):
 
         :param dict options:  job options.
         """
+        super().__init__()
         self.options: dict = self.validate_options(options)
-
-        # local QDT folder
-        self.qdt_working_folder = get_qdt_working_directory()
-        logger.debug(f"Working folder: {self.qdt_working_folder}")
 
         # where QDT downloads plugins
         self.qdt_plugins_folder = self.qdt_working_folder.parent / "plugins"
         self.qdt_plugins_folder.mkdir(exist_ok=True, parents=True)
         logger.info(f"QDT plugins folder: {self.qdt_plugins_folder}")
 
-        # destination profiles folder
-        self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
-        if not self.qgis_profiles_path.exists():
-            logger.warning(
-                f"QGIS profiles folder not found: {self.qgis_profiles_path}. "
-                "Creating it to properly run the job."
-            )
-            self.qgis_profiles_path.mkdir(parents=True)
         logger.debug(
             "Using plugins listed into profile.json files found into profiles "
             f"already installed under the QGIS3 user data: {self.qgis_profiles_path.resolve()}"

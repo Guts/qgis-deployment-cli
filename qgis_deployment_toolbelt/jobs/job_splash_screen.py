@@ -15,10 +15,8 @@
 import logging
 from configparser import ConfigParser
 from pathlib import Path
-from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.exceptions import SplashScreenBadDimensions
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
@@ -69,22 +67,13 @@ class JobSplashScreenManager(GenericJob):
         Args:
             options (dict): dictionary of options.
         """
+        super().__init__()
         self.options: dict = self.validate_options(options)
-
-        # profile folder
-        self.qdt_working_folder = get_qdt_working_directory()
-        self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
-        if not self.qgis_profiles_path.exists():
-            logger.warning(
-                f"QGIS profiles folder not found: {self.qgis_profiles_path}. "
-                "Creating it to properly run the job."
-            )
-            self.qgis_profiles_path.mkdir(parents=True)
 
     def run(self) -> None:
         """Execute job logic."""
         # check of there are some profiles folders within the downloaded folder
-        downloaded_profiles = self.filter_profiles_folder()
+        downloaded_profiles = self.list_downloaded_profiles()
         if downloaded_profiles is None:
             logger.error("No QGIS profile found in the downloaded folder.")
             return

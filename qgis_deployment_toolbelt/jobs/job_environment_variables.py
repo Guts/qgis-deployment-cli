@@ -93,6 +93,7 @@ class JobEnvironmentVariables(GenericJob):
             options (List[dict]): list of dictionary with environment variables to set
             or remove.
         """
+        super().__init__()
         self.options: list[dict] = [self.validate_options(opt) for opt in options]
 
     def run(self) -> None:

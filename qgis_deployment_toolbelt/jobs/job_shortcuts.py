@@ -18,7 +18,7 @@ from sys import platform as opersys
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
+from qgis_deployment_toolbelt.constants import OS_CONFIG
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.shortcuts import ApplicationShortcut
@@ -111,17 +111,16 @@ class JobShortcutsManager(GenericJob):
         :param dict options: profiles source (remote, can be a local network) and
         destination (local).
         """
+        super().__init__()
         self.options: dict = self.validate_options(options)
 
         # profile folder
         self.os_config = OS_CONFIG.get(opersys)
-        self.qdt_working_folder = get_qdt_working_directory()
-        self.qgis_profiles_path: Path = Path(self.os_config.profiles_path)
 
     def run(self) -> None:
         """Execute job logic."""
         # check of there are some profiles folders within the downloaded folder
-        downloaded_profiles = self.filter_profiles_folder()
+        downloaded_profiles = self.list_downloaded_profiles()
         if downloaded_profiles is None:
             logger.error("No QGIS profile found in the downloaded folder.")
             return
