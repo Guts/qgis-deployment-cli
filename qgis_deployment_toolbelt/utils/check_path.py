@@ -40,10 +40,19 @@ def check_var_can_be_path(
 
     Raises:
         TypeError: if input path can't be converted and raise_error is False
+        ValueError: if input path is an empty string
 
     Returns:
         bool: True if the input can be converted to pathlib.Path
     """
+    if isinstance(input_var, str) and not len(input_var.strip()):
+        error_message = "Input var must have at least one character."
+        if raise_error:
+            raise ValueError(error_message)
+        else:
+            logger.error(error_message)
+            return False
+
     try:
         if attempt == 2:
             input_var = Path(expandvars(expanduser(input_var)))

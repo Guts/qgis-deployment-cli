@@ -7,7 +7,7 @@
         # for whole tests
         python -m unittest tests.test_utils_slugifier
         # for specific test
-        python -m unittest tests.test_utils.TestUtilsSlugify.test_slugger
+        python -m unittest tests.test_utils_slugifier.TestUtilsSlugify.test_slugger
 """
 
 # standard library
