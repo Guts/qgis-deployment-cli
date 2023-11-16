@@ -18,6 +18,27 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.29.0 - 2023-11-16
+
+### Bugs fixes 🐛
+
+* Fix: local Git repository were not recognized anymore as valid git repository <https://github.com/Guts/qgis-deployment-cli/issues/344>
+* Fix: surround profile name with quotes to prevent space by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/348> (<https://github.com/Guts/qgis-deployment-cli/issues/320>)
+
+### Features and enhancements 🎉
+
+* Git synchronization: global improvements by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/346>
+
+### Tooling 🔧
+
+* CI: fix packages-dir path for PyPi upload by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/339>
+* Packaging: add operating system name to build report by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/340>
+* CI: avoid uploading build reports by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/341>
+
+### Documentation 📖
+
+* Docs: how to manually deploy to PyPi by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/342>
+
 ## 0.28.0 - 2023-11-14
 
 ### Bugs fixes 🐛
