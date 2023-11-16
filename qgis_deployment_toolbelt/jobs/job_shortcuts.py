@@ -261,7 +261,7 @@ class JobShortcutsManager(GenericJob):
         :return Tuple[str]: tuple of strings separated by spaces
         """
         # add profile name
-        arguments: list = ["--profile", profile]
+        arguments: list = ["--profile", f'"{profile}"']
 
         # add additional arguments
         if in_arguments:
