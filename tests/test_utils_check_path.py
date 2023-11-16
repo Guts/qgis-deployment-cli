@@ -13,12 +13,14 @@
 
 # standard library
 import stat
+import tempfile
 import unittest
 from os import chmod, getenv
 from pathlib import Path
 
 # project
 from qgis_deployment_toolbelt.utils.check_path import (
+    check_folder_is_empty,
     check_path,
     check_path_exists,
     check_path_is_readable,
@@ -298,6 +300,28 @@ class TestUtilsCheckPath(unittest.TestCase):
         )
 
         not_writable_file.unlink()
+
+    def test_check_folder_is_empty(self):
+        """Test empty folder recognition."""
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_check_path_",
+            ignore_cleanup_errors=True,
+            suffix="_empty_folder",
+        ) as tmpdirname:
+            self.assertTrue(check_folder_is_empty(Path(tmpdirname)))
+
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_check_path_",
+            ignore_cleanup_errors=True,
+            suffix="_not_empty_folder",
+        ) as tmpdirname:
+            Path(tmpdirname).joinpath(".gitkeep").touch()
+            self.assertFalse(check_folder_is_empty(Path(tmpdirname)))
+
+        with self.assertRaises(TypeError):
+            check_folder_is_empty(input_var=1000)
+        # no exception but False
+        self.assertFalse(check_folder_is_empty(input_var=1000, raise_error=False))
 
 
 # ############################################################################
