@@ -251,23 +251,6 @@ class GitHandlerBase:
         else:
             return ("",)
 
-    def _is_url_git_repository(self, remote_git_url: str | None = None) -> bool:
-        """Flag if the remote URL is a git repository.
-
-        Args:
-            remote_git_url (str): URL pointing to a remote git repository.
-
-        Returns:
-            bool: True if the URL is a valid git repository.
-        """
-        # if remote git URL not passed, try to use URL defined at object level
-        if remote_git_url is None and isinstance(
-            self.SOURCE_REPOSITORY_PATH_OR_URL, str
-        ):
-            remote_git_url = self.SOURCE_REPOSITORY_PATH_OR_URL
-
-        return git_validate(remote_git_url)
-
     def download(self, local_path: str | Path) -> Repo:
         """Generic wrapper around the specific logic of this handler.
 
