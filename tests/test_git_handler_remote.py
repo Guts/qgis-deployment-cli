@@ -20,6 +20,7 @@ import unittest
 from pathlib import Path
 
 # 3rd party
+from dulwich.errors import NotGitRepository
 from giturlparse import GitUrlParsed
 
 # package
@@ -47,11 +48,11 @@ class TestGitHandlerRemote(unittest.TestCase):
         remote_git_handler = RemoteGitHandler(self.good_git_url)
 
         self.assertEqual(remote_git_handler.SOURCE_REPOSITORY_TYPE, "remote")
-        self.assertTrue(remote_git_handler._is_url_git_repository())
+        self.assertTrue(remote_git_handler.is_valid_git_repository())
 
         # KO
         bad_git_url = "https://oslandia.com"
-        with self.assertRaises(ValueError):
+        with self.assertRaises(NotGitRepository):
             RemoteGitHandler(bad_git_url)
 
     def test_is_local_git_repo(self):
