@@ -92,7 +92,7 @@ class GitHandlerBase:
 
         # check if URL or path is pointing to a valid git repository
         valid_source = True
-        if self.SOURCE_REPOSITORY_TYPE == "remote" and self._is_url_git_repository(
+        if self.SOURCE_REPOSITORY_TYPE == "remote" and not self._is_url_git_repository(
             remote_git_url=source_repository_path_or_url
         ):
             valid_source = False
