@@ -16,11 +16,11 @@
 # Standard library
 import logging
 
-# 3rd party
-from giturlparse import validate as git_validate
-
 # project
 from qgis_deployment_toolbelt.profiles.git_handler_base import GitHandlerBase
+
+# 3rd party
+
 
 # #############################################################################
 # ########## Globals ###############
@@ -36,28 +36,28 @@ logger = logging.getLogger(__name__)
 class RemoteGitHandler(GitHandlerBase):
     """Handle remote git repository."""
 
-    def __init__(self, remote_git_uri_or_path: str, branch: str | None = None) -> None:
+    def __init__(
+        self,
+        source_repository_url: str,
+        source_repository_type: str = "remote",
+        branch_to_use: str | None = None,
+    ) -> None:
         """Constructor.
 
         Args:
-            remote_git_uri_or_path (Union[str, Path]): input URI (http://, https://, git://)
-            branch (str, optional): default branch name. Defaults to None.
+            source_repository_url (Union[str, Path]): input URI (http://, https://, git://)
 
         """
-        self.distant_git_repository_type = "remote"
+        super().__init__(
+            source_repository_type=source_repository_type, branch_to_use=branch_to_use
+        )
 
         # validation
-        if not git_validate(remote_git_uri_or_path):
-            raise ValueError(f"Invalid git URL: {remote_git_uri_or_path}")
+        self.SOURCE_REPOSITORY_PATH_OR_URL = source_repository_url
+        self.is_valid_git_repository()
 
-        self.distant_git_repository_path_or_url = remote_git_uri_or_path
-
-        if isinstance(branch, (str, bytes)):
-            self.distant_git_repository_branch = branch
-        else:
-            self.distant_git_repository_branch = self.url_parsed(
-                self.distant_git_repository_path_or_url
-            ).branch
+        if isinstance(branch_to_use, str) and len(branch_to_use):
+            self.DESTINATION_BRANCH_TO_USE = branch_to_use
 
 
 # #############################################################################
