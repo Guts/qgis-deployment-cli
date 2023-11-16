@@ -70,7 +70,6 @@ class JobPluginsDownloader(GenericJob):
         self.options: dict = self.validate_options(options)
 
         # where QDT downloads plugins
-        self.qdt_plugins_folder = self.qdt_working_folder.parent / "plugins"
         self.qdt_plugins_folder.mkdir(exist_ok=True, parents=True)
         logger.info(f"QDT plugins folder: {self.qdt_plugins_folder}")
 
@@ -78,7 +77,7 @@ class JobPluginsDownloader(GenericJob):
         """Execute job logic."""
         # list plugins through different profiles
         qdt_referenced_plugins = self.list_referenced_plugins(
-            parent_folder=self.qdt_working_folder
+            parent_folder=self.qdt_downloaded_repositories
         )
         if not len(qdt_referenced_plugins):
             logger.info(

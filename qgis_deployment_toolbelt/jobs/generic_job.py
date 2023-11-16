@@ -45,7 +45,7 @@ class GenericJob:
 
     def __init__(self) -> None:
         """Object instanciation."""
-        # local QDT folder
+        # local QDT folders
         self.qdt_working_folder = get_qdt_working_directory()
         if not self.qdt_working_folder.exists():
             logger.info(
@@ -54,6 +54,11 @@ class GenericJob:
             )
             self.qdt_working_folder.mkdir(parents=True, exist_ok=True)
         logger.debug(f"Working folder: {self.qdt_working_folder}")
+
+        self.qdt_downloaded_repositories = self.qdt_working_folder.joinpath(
+            "repositories"
+        )
+        self.qdt_plugins_folder = self.qdt_working_folder.parent.joinpath("plugins")
 
         # destination profiles folder
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
@@ -74,7 +79,9 @@ class GenericJob:
         Returns:
             tuple[QdtProfile]: tuple of profiles objects
         """
-        return self.filter_profiles_folder(start_parent_folder=self.qdt_working_folder)
+        return self.filter_profiles_folder(
+            start_parent_folder=self.qdt_downloaded_repositories
+        )
 
     def list_installed_profiles(self) -> tuple[QdtProfile]:
         """List installed QGIS profiles, i.e. a profile's folder located into the QGIS

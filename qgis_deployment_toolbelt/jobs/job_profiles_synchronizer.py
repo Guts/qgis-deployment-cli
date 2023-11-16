@@ -104,6 +104,13 @@ class JobProfilesDownloader(GenericJob):
         super().__init__()
         self.options: dict = self.validate_options(options)
 
+        # where QDT downloads remote repositories
+        self.qdt_plugins_folder.mkdir(exist_ok=True, parents=True)
+        logger.info(
+            "QDT folder where remote repositories will be downloaded: "
+            f"{self.qdt_downloaded_repositories}"
+        )
+
     def run(self) -> None:
         """Execute job logic."""
         # download or refresh
@@ -129,15 +136,17 @@ class JobProfilesDownloader(GenericJob):
                     source_repository_url=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
                 )
-                downloader.download(destination_local_path=self.qdt_working_folder)
-            elif self.options.get("protocol") == "git_local" or self.options.get(
-                "source"
-            ).startswith("file://"):
+                downloader.download(
+                    destination_local_path=self.qdt_downloaded_repositories
+                )
+            elif self.options.get("source").startswith("file://"):
                 downloader = LocalGitHandler(
                     source_repository_path_or_uri=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
                 )
-                downloader.download(destination_local_path=self.qdt_working_folder)
+                downloader.download(
+                    destination_local_path=self.qdt_downloaded_repositories
+                )
             else:
                 logger.error(
                     f"Source type is not implemented yet: {self.options.get('source')}"
