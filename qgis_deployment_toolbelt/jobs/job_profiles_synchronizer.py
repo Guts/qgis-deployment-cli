@@ -116,13 +116,13 @@ class JobProfilesDownloader(GenericJob):
                     source_repository_url=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
                 )
-                downloader.download(local_path=self.qdt_working_folder)
+                downloader.download(destination_local_path=self.qdt_working_folder)
             elif self.options.get("source").startswith("file://"):
                 downloader = LocalGitHandler(
                     source_repository_path_or_uri=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
                 )
-                downloader.download(local_path=self.qdt_working_folder)
+                downloader.download(destination_local_path=self.qdt_working_folder)
             else:
                 logger.error(
                     f"Source type not implemented yet: {self.options.get('source')}"

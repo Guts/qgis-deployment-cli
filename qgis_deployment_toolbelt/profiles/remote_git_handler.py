@@ -52,12 +52,28 @@ class RemoteGitHandler(GitHandlerBase):
             source_repository_type=source_repository_type, branch_to_use=branch_to_use
         )
 
-        # validation
         self.SOURCE_REPOSITORY_PATH_OR_URL = source_repository_url
+
+        # validation
         self.is_valid_git_repository()
 
-        if isinstance(branch_to_use, str) and len(branch_to_use):
-            self.DESTINATION_BRANCH_TO_USE = branch_to_use
+        # check if passed branch exist
+        if branch_to_use is None:
+            self.DESTINATION_BRANCH_TO_USE = self.SOURCE_REPOSITORY_ACTIVE_BRANCH
+            logger.info(
+                "No branch specified. The default branch of source repository "
+                f"({self.SOURCE_REPOSITORY_PATH_OR_URL}) will be used."
+            )
+        else:
+            if not self.is_branch_existing_in_repository(branch_name=branch_to_use):
+                logger.error(
+                    f"Specified branch '{branch_to_use}' has not been found in source "
+                    f"repository ({self.SOURCE_REPOSITORY_PATH_OR_URL}). Fallback to "
+                    f"identified active branch: {self.SOURCE_REPOSITORY_ACTIVE_BRANCH}."
+                )
+                self.DESTINATION_BRANCH_TO_USE = self.SOURCE_REPOSITORY_ACTIVE_BRANCH
+            else:
+                self.DESTINATION_BRANCH_TO_USE = branch_to_use
 
 
 # #############################################################################

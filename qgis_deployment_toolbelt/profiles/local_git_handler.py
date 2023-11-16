@@ -97,6 +97,25 @@ class LocalGitHandler(GitHandlerBase):
             self.get_active_branch_from_local_repository()
         )
 
+        # check if passed branch exist
+        if branch_to_use is None:
+            self.DESTINATION_BRANCH_TO_USE = self.SOURCE_REPOSITORY_ACTIVE_BRANCH
+            logger.info(
+                "No branch specified. The active branch "
+                f"({self.SOURCE_REPOSITORY_ACTIVE_BRANCH}) of source repository "
+                f"({self.SOURCE_REPOSITORY_PATH_OR_URL}) will be used."
+            )
+        else:
+            if not self.is_branch_existing_in_repository(branch_name=branch_to_use):
+                logger.error(
+                    f"Specified branch '{branch_to_use}' has not been found in source "
+                    f"repository ({self.SOURCE_REPOSITORY_PATH_OR_URL}). Fallback to "
+                    f"identified active branch: {self.SOURCE_REPOSITORY_ACTIVE_BRANCH}."
+                )
+                self.DESTINATION_BRANCH_TO_USE = self.SOURCE_REPOSITORY_ACTIVE_BRANCH
+            else:
+                self.DESTINATION_BRANCH_TO_USE = branch_to_use
+
 
 # #############################################################################
 # ##### Stand alone program ########

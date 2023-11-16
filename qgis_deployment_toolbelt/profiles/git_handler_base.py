@@ -27,6 +27,9 @@ from giturlparse import GitUrlParsed
 from giturlparse import parse as git_parse
 from giturlparse import validate as git_validate
 
+# project
+from qgis_deployment_toolbelt.utils.check_path import check_folder_is_empty
+
 # #############################################################################
 # ########## Globals ###############
 # ##################################
@@ -82,25 +85,52 @@ class GitHandlerBase:
     def is_valid_git_repository(
         self,
         source_repository_path_or_url: Path | str | None = None,
+        force_type: Literal["local", "remote"] | None = None,
         raise_error: bool = True,
     ) -> bool:
+        """Determine if the given path or URL is a valid repository or not.
+
+        Args:
+            source_repository_path_or_url (Path | str | None, optional): _description_.
+                Defaults to None.
+            force_type (Literal["local", "remote"], optional): force git repository
+                type to check. If None, it uses the SOURCE_REPOSITORY_TYPE attribute.
+                Defaults None.
+            raise_error (bool, optional): if True, it raises an exception. Defaults
+                to True.
+
+        Raises:
+            NotGitRepository: if given path or URL is not a valid Git repository
+
+        Returns:
+            bool: True if the given path or URL is a valid Git repository
+        """
+        valid_source = True
+
         # if no local git repository passed, try to use URL defined at object level
         if source_repository_path_or_url is None and isinstance(
-            self.SOURCE_REPOSITORY_PATH_OR_URL, str
+            self.SOURCE_REPOSITORY_PATH_OR_URL, (Path, str)
         ):
-            source_repository_path_or_url: str = self.SOURCE_REPOSITORY_PATH_OR_URL
+            source_repository_path_or_url: str | Path = (
+                self.SOURCE_REPOSITORY_PATH_OR_URL
+            )
+            logger.info(
+                f"Using source repository set at object's level: {source_repository_path_or_url}"
+            )
 
-        # check if URL or path is pointing to a valid git repository
-        valid_source = True
-        if self.SOURCE_REPOSITORY_TYPE == "remote" and not self._is_url_git_repository(
+        # use the repository type if forced or attribute
+        if force_type is None:
+            repository_type = self.SOURCE_REPOSITORY_TYPE
+        else:
+            repository_type = force_type
+
+        # check according to the repository type
+        if repository_type == "remote" and not self._is_url_git_repository(
             remote_git_url=source_repository_path_or_url
         ):
             valid_source = False
-        elif (
-            self.SOURCE_REPOSITORY_TYPE == "local"
-            and not self._is_local_path_git_repository(
-                local_path=source_repository_path_or_url
-            )
+        elif repository_type == "local" and not self._is_local_path_git_repository(
+            local_path=source_repository_path_or_url
         ):
             valid_source = False
 
@@ -111,7 +141,7 @@ class GitHandlerBase:
                 f"{source_repository_path_or_url} is not a valid repository."
             )
         elif not valid_source:
-            logger.error(err_message)
+            logger.debug(err_message)
         else:
             logger.debug(
                 f"{source_repository_path_or_url} is a valid "
@@ -121,14 +151,14 @@ class GitHandlerBase:
         return valid_source
 
     def _is_local_path_git_repository(
-        self, local_path: Path | None, raise_error: bool = False
+        self, local_path: Path | None, raise_error: bool = True
     ) -> bool:
         """Check if local folder is a git repository.
 
         Args:
             local_path (Path, optional): path to check
-            just_check (bool, optional): if enabled no error message is log but debug.
-                Defaults to False.
+            raise_error (bool, optional): if enabled, log message is an error, debug
+                if not. Defaults to True.
 
         Returns:
             bool: True if there is a .git subfolder
@@ -141,7 +171,7 @@ class GitHandlerBase:
             Repo(root=f"{local_path.resolve()}")
             return True
         except NotGitRepository as err:
-            if raise_error:
+            if not raise_error:
                 logger.debug(f"{local_path} is not a valid Git repository")
                 return False
             logger.error(f"{local_path} is not a valid Git repository. Trace: {err}")
@@ -153,11 +183,15 @@ class GitHandlerBase:
             )
             return False
 
-    def _is_url_git_repository(self, remote_git_url: str | None = None) -> bool:
+    def _is_url_git_repository(
+        self, remote_git_url: str | None = None, raise_error: bool = True
+    ) -> bool:
         """Check if the remote URL is a git repository.
 
         Args:
             remote_git_url (str): URL pointing to a remote git repository.
+            raise_error (bool, optional): if enabled, log message is an error, debug
+                if not. Defaults to True.
 
         Returns:
             bool: True if the URL is a valid git repository.
@@ -168,7 +202,16 @@ class GitHandlerBase:
         ):
             remote_git_url = self.SOURCE_REPOSITORY_PATH_OR_URL
 
-        return git_validate(remote_git_url)
+        try:
+            return git_validate(remote_git_url)
+        except Exception as err:
+            if not raise_error:
+                logger.debug(f"{remote_git_url} is not a valid Git repository")
+                return False
+            logger.error(
+                f"{remote_git_url} is not a valid Git repository. Trace: {err}"
+            )
+            return False
 
     def get_active_branch_from_local_repository(
         self, local_git_repository_path: Path | None = None
@@ -193,15 +236,61 @@ class GitHandlerBase:
         ):
             local_git_repository_path: Path = self.SOURCE_REPOSITORY_PATH_OR_URL
 
-        if not self._is_local_path_git_repository(local_path=local_git_repository_path):
-            raise NotGitRepository(
-                f"Unable to determine active branch since {local_git_repository_path} "
-                "is not a valid Git repository."
-            )
+        self.is_valid_git_repository(
+            source_repository_path_or_url=local_git_repository_path
+        )
 
         return porcelain.active_branch(
             repo=Repo(root=f"{local_git_repository_path.resolve()}")
         ).decode()
+
+    def is_branch_existing_in_repository(
+        self,
+        branch_name: str | bytes,
+        repository_path_or_url: Path | str | None = None,
+    ) -> bool:
+        """Determine if the given branch name is part of the given repository.
+
+        Args:
+            branch_name (str | bytes): _description_
+            repository_path_or_url (Path | str, optional): URL or path pointing to a
+                git repository. If None, it uses the SOURCE_REPOSITORY_PATH_OR_URL
+                object's attribute
+
+        Raises:
+            NotGitRepository: if the path is not a valid Git Repository
+
+        Returns:
+            bool: True is the rbanch is part of given repository existing branches
+        """
+        # make sure this is string
+        if isinstance(branch_name, bytes):
+            branch_name = branch_name.decode()
+
+        # if no local git repository passed, try to use URL defined at object level
+        if repository_path_or_url is None and isinstance(
+            self.SOURCE_REPOSITORY_PATH_OR_URL, (Path, str)
+        ):
+            repository_path_or_url: Path | str = self.SOURCE_REPOSITORY_PATH_OR_URL
+
+        # check if URL or path is pointing to a valid git repository
+        if not self.is_valid_git_repository(
+            source_repository_path_or_url=repository_path_or_url
+        ):
+            raise NotGitRepository(
+                f"{repository_path_or_url} is not a valid repository."
+            )
+
+        # clean branch name
+        refs_heads_prefix = "refs/heads/"
+        branch_name = branch_name.removeprefix(refs_heads_prefix)
+
+        return branch_name in [
+            branch.removeprefix(refs_heads_prefix)
+            for branch in self.list_remote_branches(
+                source_repository_path_or_url=repository_path_or_url
+            )
+        ]
 
     def list_remote_branches(
         self, source_repository_path_or_url: Path | str | None = None
@@ -210,70 +299,80 @@ class GitHandlerBase:
             wrapper around dulwich logic.
 
         Args:
-            source_repository_path_or_url (Path | str, optional): URL or path pointing to a git repository.
+            source_repository_path_or_url (Path | str, optional): URL or path pointing
+                to a git repository.
 
         Raises:
             NotGitRepository: if the path is not a valid Git Repository
 
         Returns:
-            tuple[str]: branch name
+            tuple[str]: tuple of branch complete names \
+                ('refs/heads/profile-for-qgis-3-34', 'refs/heads/main')
         """
         # if no local git repository passed, try to use URL defined at object level
         if source_repository_path_or_url is None and isinstance(
-            self.SOURCE_REPOSITORY_PATH_OR_URL, str
+            self.SOURCE_REPOSITORY_PATH_OR_URL, (Path, str)
         ):
-            source_repository_path_or_url: str = self.SOURCE_REPOSITORY_PATH_OR_URL
+            source_repository_path_or_url: Path | str = (
+                self.SOURCE_REPOSITORY_PATH_OR_URL
+            )
 
         # check if URL or path is pointing to a valid git repository
-        valid_source = True
-        if self.SOURCE_REPOSITORY_TYPE == "remote" and self._is_url_git_repository(
-            remote_git_url=source_repository_path_or_url
+        if not self.is_valid_git_repository(
+            source_repository_path_or_url=source_repository_path_or_url
         ):
-            valid_source = False
-        elif (
-            self.SOURCE_REPOSITORY_TYPE == "local"
-            and not self._is_local_path_git_repository(
-                local_path=source_repository_path_or_url
-            )
-        ):
-            valid_source = False
-        if not valid_source:
             raise NotGitRepository(
                 f"{source_repository_path_or_url} is not a valid repository."
             )
 
-        ls_remote_refs: dict = porcelain.ls_remote(remote=source_repository_path_or_url)
+        ls_remote_refs: dict = porcelain.ls_remote(
+            remote=f"{source_repository_path_or_url}"
+        )
         if isinstance(ls_remote_refs, dict):
             source_repository_branches: list[str] = [
                 ref.decode() for ref in ls_remote_refs if ref.startswith(b"refs/heads/")
             ]
+            logger.debug(
+                f"{len(source_repository_branches)} branche(s) found in repository "
+                f"{source_repository_path_or_url}: "
+                f"{' ; '.join(source_repository_branches)}"
+            )
             return tuple(source_repository_branches)
         else:
             return ("",)
 
-    def download(self, local_path: str | Path) -> Repo:
+    def download(self, destination_local_path: Path) -> Repo:
         """Generic wrapper around the specific logic of this handler.
 
         Args:
-            local_path (str | Path): path to the local folder where to download
+            destination_local_path (Path): path to the local folder where to download
 
         Returns:
             Repo: the local repository object
         """
-        local_git_repository = self.clone_or_pull(local_path)
+        if isinstance(destination_local_path, Path):
+            destination_local_path = destination_local_path.resolve()
+
+        local_git_repository = self.clone_or_pull(
+            to_local_destination_path=destination_local_path
+        )
+
         if isinstance(local_git_repository, Repo):
-            self.SOURCE_REPOSITORY_ACTIVE_BRANCH = porcelain.active_branch(
+            self.DESTINATION_BRANCH_TO_USE = porcelain.active_branch(
                 local_git_repository
             )
+
         return local_git_repository
 
-    def clone_or_pull(self, local_path: str | Path, attempt: int = 1) -> Repo:
-        """Clone or pull remote repository to local path. If this one doesn't exist,
+    def clone_or_pull(self, to_local_destination_path: Path, attempt: int = 1) -> Repo:
+        """Clone or fetch/pull remote repository to local path. If this one doesn't exist,
         it's created. If fetch or pull action fail, it removes the existing folder and
         clone the remote again.
 
         Args:
-            local_path (str | Path): path to the folder where to clone (or pull)
+            to_local_destination_path (Path): path to the folder where to clone (or pull)
+            attempt (int): attempt count. If attempts < 2 and it fails, the destination
+                path is completely removed before cloning again. Defaults to 1.
 
         Raises:
             err: if something fails during clone or pull operations
@@ -281,59 +380,86 @@ class GitHandlerBase:
         Returns:
             Repo: the local repository object
         """
-        # convert to path
-        if isinstance(local_path, str):
-            local_path = Path(local_path).resolve()
-
         # clone
-        if not local_path.exists() and not self._is_local_path_git_repository(
-            local_path
+        if (
+            not to_local_destination_path.exists()
+            or check_folder_is_empty(to_local_destination_path)
+        ) and not self.is_valid_git_repository(
+            source_repository_path_or_url=to_local_destination_path,
+            raise_error=False,
+            force_type="local",
         ):
             try:
-                return self._clone(local_path=local_path)
+                logger.debug("Start cloning operations...")
+                return self._clone(local_path=to_local_destination_path)
             except Exception as err:
                 logger.error(
-                    f"Error cloning the remote repository {self.SOURCE_REPOSITORY_PATH_OR_URL} "
-                    f"(branch {self.SOURCE_REPOSITORY_ACTIVE_BRANCH}) to {local_path}. "
+                    "Error cloning the source repository "
+                    f"{self.SOURCE_REPOSITORY_PATH_OR_URL} "
+                    f"(branch {self.SOURCE_REPOSITORY_ACTIVE_BRANCH}) "
+                    f"to {to_local_destination_path}. "
                     f"Trace: {err}."
                 )
                 if attempt < 2:
                     logger.error(
-                        "Clone failed. Removing target folder and trying again."
+                        "Clone fail 1/2. Removing target folder and trying again..."
                     )
-                    rmtree(path=local_path, ignore_errors=True)
-                    return self.clone_or_pull(local_path=local_path, attempt=2)
+                    rmtree(path=to_local_destination_path, ignore_errors=True)
+                    return self.clone_or_pull(
+                        to_local_destination_path=to_local_destination_path, attempt=2
+                    )
+                logger.critical("Clone fail 2/2. Abort.")
+                rmtree(path=to_local_destination_path, ignore_errors=True)
                 raise err
-        elif local_path.exists() and self._is_local_path_git_repository(local_path):
+        elif to_local_destination_path.exists() and self.is_valid_git_repository(
+            source_repository_path_or_url=to_local_destination_path,
+            raise_error=False,
+            force_type="local",
+        ):
             # FETCH
+            logger.debug("Start fetching operations...")
             try:
-                self._fetch(local_path=local_path)
+                self._fetch(local_path=to_local_destination_path)
             except GitProtocolError as error:
                 logger.error(
-                    f"Error fetching {self.SOURCE_REPOSITORY_PATH_OR_URL} "
-                    f"repository to {local_path.resolve()}. Trace: {error}."
-                    "Trying to remove the local folder and cloning again..."
+                    "Error fetching source repository "
+                    f"{self.SOURCE_REPOSITORY_PATH_OR_URL} "
+                    f"to {to_local_destination_path.resolve()}. Trace: {error}."
                 )
-                rmtree(path=local_path, ignore_errors=True)
-                return self.clone_or_pull(local_path=local_path)
+                rmtree(path=to_local_destination_path, ignore_errors=True)
+                return self.clone_or_pull(
+                    to_local_destination_path=to_local_destination_path
+                )
             # PULL
+            logger.debug("Start pulling operations...")
             try:
-                return self._pull(local_path=local_path)
+                return self._pull(local_path=to_local_destination_path)
             except GitProtocolError as error:
                 logger.error(
                     f"Error pulling {self.SOURCE_REPOSITORY_PATH_OR_URL} "
-                    f"repository to {local_path.resolve()}. Trace: {error}."
+                    f"repository to {to_local_destination_path.resolve()}. Trace: {error}."
                     "Trying to remove the local folder and cloning again..."
                 )
-                rmtree(path=local_path, ignore_errors=True)
-                return self.clone_or_pull(local_path=local_path)
-        elif not local_path.exists():
+                rmtree(path=to_local_destination_path, ignore_errors=True)
+                return self.clone_or_pull(
+                    to_local_destination_path=to_local_destination_path
+                )
+        elif not to_local_destination_path.exists():
             logger.debug(
-                f"Local path does not exists: {local_path.as_uri()}. "
+                f"Local path does not exists: {to_local_destination_path.as_uri()}. "
                 "Creating it and trying again..."
             )
-            local_path.mkdir(parents=True, exist_ok=True)
-            return self.clone_or_pull(local_path=local_path)
+            to_local_destination_path.mkdir(parents=True, exist_ok=True)
+            return self.clone_or_pull(
+                to_local_destination_path=to_local_destination_path
+            )
+        else:
+            logger.critical(
+                f"Case not handle. Context: {to_local_destination_path} "
+                f"(empty={check_folder_is_empty(to_local_destination_path)}) "
+                f"valid repo={self.is_valid_git_repository(source_repository_path_or_url=to_local_destination_path, raise_error=False)}"
+            )
+            return None
 
     def _clone(self, local_path: Path) -> Repo:
         """Clone the remote repository to local path.
@@ -344,26 +470,23 @@ class GitHandlerBase:
         Returns:
             Repo: the local repository object
         """
-        # clone
-        logger.debug(
-            f"Cloning repository {self.SOURCE_REPOSITORY_PATH_OR_URL} to {local_path}"
-        )
-
         # make sure folder and its parents exist
         if not local_path.exists():
             local_path.mkdir(parents=True, exist_ok=True)
 
         # make sure branch is bytes
-        if isinstance(self.SOURCE_REPOSITORY_ACTIVE_BRANCH, str) and len(
-            self.SOURCE_REPOSITORY_ACTIVE_BRANCH
+        if isinstance(self.DESTINATION_BRANCH_TO_USE, str) and len(
+            self.DESTINATION_BRANCH_TO_USE
         ):
-            branch = self.SOURCE_REPOSITORY_ACTIVE_BRANCH.encode()
-        elif isinstance(self.SOURCE_REPOSITORY_ACTIVE_BRANCH, bytes):
-            branch = self.SOURCE_REPOSITORY_ACTIVE_BRANCH
+            branch = self.DESTINATION_BRANCH_TO_USE.encode()
+        elif isinstance(self.DESTINATION_BRANCH_TO_USE, bytes):
+            branch = self.DESTINATION_BRANCH_TO_USE
         else:
             branch = None
 
-        logger.debug(f"Cloning {branch=}")
+        logger.debug(
+            f"Cloning repository {self.SOURCE_REPOSITORY_PATH_OR_URL} ({branch=}) to {local_path}"
+        )
 
         if self.SOURCE_REPOSITORY_TYPE == "local":
             with porcelain.open_repo_closing(
@@ -402,24 +525,34 @@ class GitHandlerBase:
         Returns:
             Repo: the local repository object
         """
+        # if source repository is a local path, let's convert it into str
+        if isinstance(self.SOURCE_REPOSITORY_PATH_OR_URL, Path):
+            source_repository = f"{self.SOURCE_REPOSITORY_PATH_OR_URL.resolve()}"
+        else:
+            source_repository = str(self.SOURCE_REPOSITORY_PATH_OR_URL)
+
         # with porcelain.open_repo_closing(str(local_path.resolve())) as local_repo:
         logger.info(
-            f"Fetching repository {self.SOURCE_REPOSITORY_PATH_OR_URL} to {local_path}",
+            f"Fetching repository {source_repository} to {local_path}",
         )
-        local_repo = Repo(root=f"{local_path.resolve()}")
+
+        destination_local_repository = Repo(root=f"{local_path.resolve()}")
         porcelain.fetch(
-            repo=f"{local_path.resolve()}",
-            remote_location=self.SOURCE_REPOSITORY_PATH_OR_URL,
+            repo=destination_local_repository,
+            remote_location=source_repository,
             force=True,
             prune=True,
             prune_tags=True,
-            depth=0,
         )
+        destination_local_repository.close()
+
         logger.debug(
             f"Repository {local_path.resolve()} has been fetched from "
-            f"remote {self.SOURCE_REPOSITORY_PATH_OR_URL}. "
-            f"Local active branch: {porcelain.active_branch(local_repo)}."
+            f"remote {source_repository}. "
+            f"Local active branch: {porcelain.active_branch(destination_local_repository)}."
         )
+
+        return destination_local_repository
 
     def _pull(self, local_path: Path) -> Repo:
         """Pull the remote repository from the existing local repository.
@@ -430,23 +563,32 @@ class GitHandlerBase:
         Returns:
             Repo: the local repository object
         """
-        local_repo = Repo(root=f"{local_path.resolve()}")
-        logger.info(
-            f"Pulling repository {self.SOURCE_REPOSITORY_PATH_OR_URL} to {local_path}"
-        )
+        # if source repository is a local path, let's convert it into str
+        if isinstance(self.SOURCE_REPOSITORY_PATH_OR_URL, Path):
+            source_repository = f"{self.SOURCE_REPOSITORY_PATH_OR_URL.resolve()}"
+        else:
+            source_repository = str(self.SOURCE_REPOSITORY_PATH_OR_URL)
+
+        logger.info(f"Pulling repository {source_repository} to {local_path}")
+
+        destination_local_repository = Repo(root=f"{local_path.resolve()}")
         porcelain.pull(
             repo=local_path,
-            remote_location=self.SOURCE_REPOSITORY_PATH_OR_URL,
+            remote_location=source_repository,
             force=True,
         )
-        gobj = local_repo.get_object(local_repo.head())
+        gobj = destination_local_repository.get_object(
+            destination_local_repository.head()
+        )
         logger.debug(
             f"Repository {local_path.resolve()} has been pulled. "
-            f"Local active branch: {porcelain.active_branch(local_repo)}. "
+            f"Local active branch: {porcelain.active_branch(destination_local_repository)}. "
             f"Latest commit cloned: {gobj.sha().hexdigest()} by {gobj.author}"
             f" at {gobj.commit_time}"
         )
-        return local_repo
+
+        destination_local_repository.close()
+        return destination_local_repository
 
 
 # #############################################################################

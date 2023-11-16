@@ -105,9 +105,9 @@ class TestGitHandlerRemote(unittest.TestCase):
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             local_dest = Path(tmpdirname) / "test_git_clone"
             # clone
-            git_handler.download(local_path=local_dest)
+            git_handler.download(destination_local_path=local_dest)
             # check if clone worked and new folder is a local git repo
             self.assertTrue(git_handler._is_local_path_git_repository(local_dest))
 
             # check pull is working
-            git_handler.clone_or_pull(local_path=local_dest)
+            git_handler.clone_or_pull(to_local_destination_path=local_dest)

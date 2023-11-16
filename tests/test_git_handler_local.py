@@ -20,9 +20,8 @@ import unittest
 from pathlib import Path
 from shutil import rmtree
 
-from dulwich.errors import NotGitRepository
-
 # 3rd party
+from dulwich.errors import NotGitRepository
 from dulwich.repo import Repo
 from git import Repo as GitPythonRepo
 
@@ -50,6 +49,7 @@ class TestGitHandlerLocal(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
+        """Executed before module is shutdown after every test."""
         cls.source_local_repository_obj.git.clear_cache()
         cls.source_local_repository_obj.git = None
         rmtree(path=cls.source_git_path_source, ignore_errors=True)
@@ -101,7 +101,7 @@ class TestGitHandlerLocal(unittest.TestCase):
             with self.assertRaises(NotGitRepository):
                 LocalGitHandler(source_repository_path_or_uri=tmpdirname)
 
-    def test_clone_with_specified_branch(self):
+    def test_clone_with_specified_branch_existing(self):
         """Test clone with specified branch."""
         local_git_handler = LocalGitHandler(
             source_repository_path_or_uri=self.source_git_path_source,
@@ -110,7 +110,62 @@ class TestGitHandlerLocal(unittest.TestCase):
 
         self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "local")
 
-        target_repo = local_git_handler.download(
-            local_path=self.local_git_path_target.resolve()
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_local_git_",
+            ignore_cleanup_errors=True,
+            suffix="_specified_branch_existing",
+        ) as tmpdirname:
+            target_repo = local_git_handler.download(
+                destination_local_path=Path(tmpdirname)
+            )
+            self.assertIsInstance(target_repo, Repo)
+
+    def test_clone_with_specified_branch_not_existing(self):
+        """Test clone with specified branch."""
+        local_git_handler = LocalGitHandler(
+            source_repository_path_or_uri=self.source_git_path_source,
+            branch_to_use="no_existing_branch",
         )
-        self.assertIsInstance(target_repo, Repo)
+
+        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "local")
+        self.assertEqual(local_git_handler.DESTINATION_BRANCH_TO_USE, "main")
+
+        local_git_handler.download(
+            destination_local_path=self.local_git_path_target.resolve()
+        )
+
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_local_git_",
+            ignore_cleanup_errors=True,
+            suffix="_specified_branch_not_existing",
+        ) as tmpdirname:
+            target_repo = local_git_handler.download(
+                destination_local_path=Path(tmpdirname)
+            )
+            self.assertIsInstance(target_repo, Repo)
+
+    def test_clone_then_fetch_pull(self):
+        """Test clone with specified branch."""
+        local_git_handler = LocalGitHandler(
+            source_repository_path_or_uri=self.source_git_path_source,
+            branch_to_use="main",
+        )
+
+        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "local")
+
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_local_git_",
+            ignore_cleanup_errors=True,
+            suffix="_clone_the_pull",
+        ) as tmpdirname:
+            repo_in_temporary_folder = Path(tmpdirname)
+
+            target_repo = local_git_handler.download(
+                destination_local_path=repo_in_temporary_folder
+            )
+            self.assertIsInstance(target_repo, Repo)
+            self.assertTrue(repo_in_temporary_folder.joinpath(".git").is_dir())
+
+            target_repo = local_git_handler.download(
+                destination_local_path=repo_in_temporary_folder
+            )
