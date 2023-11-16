@@ -63,6 +63,6 @@ dul_local_repo.close()
 # -- WITH QDT --
 print("\n\n-- WORKING WITH QDT --")
 git_repository_local_dulwich = git_repository_local.joinpath("dulwich")
-remote_git_handler = RemoteGitHandler(remote_git_uri_or_path=git_repository_remote_url)
+remote_git_handler = RemoteGitHandler(source_repository_url=git_repository_remote_url)
 
 remote_git_handler.clone_or_pull(local_path=git_repository_local_dulwich)
