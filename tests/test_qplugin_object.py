@@ -13,6 +13,7 @@
 # standard
 import unittest
 from pathlib import Path
+from shutil import rmtree
 
 # project
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
@@ -54,6 +55,10 @@ class TestQgisPluginObject(unittest.TestCase):
         assert (
             cls.sample_plugin_downloaded.is_file() is True
         ), "Downloading fixture plugin failed."
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        rmtree(path=cls.sample_plugin_downloaded.parent, ignore_errors=True)
 
     def test_qplugin_load_from_profile(self):
         """Test plugin object loading from profile object."""
@@ -165,6 +170,9 @@ class TestQgisPluginObject(unittest.TestCase):
         self.assertEqual(plugin_obj.url, sample_plugin_complex.get("url"))
         self.assertEqual(plugin_obj.download_url, sample_plugin_complex.get("url"))
         self.assertEqual(plugin_obj.uri_to_zip, sample_plugin_complex.get("url"))
+
+        # clean up
+        rmtree(path=local_plugin_download.parent, ignore_errors=True)
 
     def test_qplugin_versions_comparison_semver(self):
         """Test plugin compare versions semver"""

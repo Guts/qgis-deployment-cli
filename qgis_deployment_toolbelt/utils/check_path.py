@@ -28,6 +28,26 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
+def check_folder_is_empty(input_var: Path, raise_error: bool = True) -> bool:
+    """Check if a variable is valid path, exists, is a folder and is empty.
+
+    Args:
+        input_var (Path): path to check
+        raise_error (bool, optional): if True, it raises an exception. Defaults to True.
+
+    Returns:
+        bool: True if the path is pointing to an empty folder
+    """
+    return check_path(
+        input_path=input_var,
+        must_be_a_file=False,
+        must_be_a_folder=True,
+        must_be_readable=True,
+        must_exists=True,
+        raise_error=raise_error,
+    ) and not any(input_var.iterdir())
+
+
 def check_var_can_be_path(
     input_var: str, attempt: int = 1, raise_error: bool = True
 ) -> bool:
