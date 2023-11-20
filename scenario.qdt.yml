@@ -35,14 +35,19 @@ steps:
     uses: qplugins-synchronizer
     with:
       action: create_or_restore
+      profile_ref: installed
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
     with:
       action: create_or_restore
       include:
-        - profile: demo
+        - profile: qdt_demo
           label: "QDT - Demo profile"
+          desktop: true
+          start_menu: true
+        - profile: QDT Viewer Mode
+          label: "QDT - Viewer profile"
           desktop: true
           start_menu: true
 
