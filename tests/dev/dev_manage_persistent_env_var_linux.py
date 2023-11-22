@@ -156,4 +156,147 @@ def add_to_user_profile(env_key: str, env_value: str | bool | int) -> bool:
         return False
 
 
-add_to_user_profile("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", True)
+def update_in_user_profile(env_key: str, env_value: str | bool | int) -> bool:
+    if isinstance(env_value, bool):
+        env_value = str(bool(env_value)).lower()
+
+    shell: tuple[str, str] | None = get_shell_to_use()
+    if shell is None:
+        logger.error("Shell to use is not recognized.")
+        return False
+
+    if shell[0] == "bash":
+        bash_profile = Path.home().joinpath(".profile")
+        if not is_dot_profile_file():
+            logger.error(
+                f"Shell profile does not exist {bash_profile}"
+            )
+            return False
+
+        logger.debug(f"parsing {bash_profile}")
+
+        line_before: str = ""
+        line_begin = f"{env_key}="
+        line_begin_line: int = 0
+
+        # Lire le contenu du fichier
+        with bash_profile.open(mode="r", encoding="UTF-8") as file:
+            lines = file.readlines()
+
+        # look for block and export line
+        line_number: int = 0
+        for line in lines:
+            if line_begin in line.strip():
+                line_before = line.strip()
+                line_found = True
+                line_begin_line = line_number
+            # line counter
+            line_number += 1
+
+        if line_found:
+            lines[line_begin_line] = f"{env_key}={env_value}\n"
+            logger.debug(
+                f"Environment variable and key {line_before} is present "
+                f"It will be updated to {env_key}={env_value}."
+            )
+        else:
+            logger.debug(
+                f"Environment variable and key {env_key} has not been found."
+            )
+            return False
+
+        with bash_profile.open(mode="w", encoding="UTF-8") as file:
+            file.writelines(lines)
+        logger.info(
+            f"environment variable {env_key} has been updated."
+            "Shell profile updated."
+        )
+        return True
+    else:
+        logger.error(f"Shell {shell[0]} is not supported")
+        return False
+
+
+def del_from_user_profile(env_key: str) -> bool:
+    shell: tuple[str, str] | None = get_shell_to_use()
+    if shell is None:
+        logger.error("Shell to use is not recognized.")
+        return False
+
+    if shell[0] == "bash":
+        bash_profile = Path.home().joinpath(".profile")
+        if not is_dot_profile_file():
+            logger.error(
+                f"Shell profile does not exist {bash_profile}"
+            )
+            return False
+
+        logger.debug(f"parsing {bash_profile}")
+
+        line_begin = f"{env_key}="
+        block_start_found = False
+        block_start_line: int = 0
+        block_end_found = False
+        block_end_line: int = 0
+        line_found = False
+        line_begin_line: int = 0
+
+        # Lire le contenu du fichier
+        with bash_profile.open(mode="r", encoding="UTF-8") as file:
+            lines = file.readlines()
+
+        # look for block and beginning of line
+        line_number: int = 0
+        for line in lines:
+            if line.strip() == qdt_block_comment_start:
+                block_start_found = True
+                block_start_line = line_number
+            elif line.strip() == qdt_block_comment_end:
+                block_end_found = True
+                block_end_line = line_number
+            elif line_begin in line.strip():
+                line_found = True
+                line_begin_line = line_number
+            # line counter
+            line_number += 1
+
+        # check if block exist
+        block_found = all([block_start_found, block_end_found])
+
+        pos = []
+        if line_found:
+            pos.append(line_begin_line)
+            logger.debug(
+                f"Environment variable and key {env_key} was found. "
+                "It will be removed"
+            )
+        if block_start_found:
+            pos.append(block_start_line)
+            logger.debug(
+                f"QDT block start was found for '{env_key}'. "
+                "Block start will be removed."
+            )
+        if block_end_found:
+            pos.append(block_end_line)
+            logger.info(
+                f"QDT block end was found for: '{env_key}'. "
+                "Block end will be removed."
+            )
+
+        pos = [block_start_line, line_begin_line, block_end_line]
+        new_lines = [lines[i] for i, e in enumerate(lines) if i not in pos]
+        with bash_profile.open(mode="w", encoding="UTF-8") as file:
+            file.writelines(new_lines)
+        logger.info(
+            f"QDT block for environment variable '{env_key}' has been removed. "
+            "Shell profile updated."
+        )
+        return True
+
+    else:
+        logger.error(f"Shell {shell[0]} is not supported")
+        return False
+
+#add_to_user_profile("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", true)
+update_in_user_profile("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", false)
+#del_from_user_profile("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
