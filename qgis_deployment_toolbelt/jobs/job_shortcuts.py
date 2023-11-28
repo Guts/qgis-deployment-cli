@@ -253,12 +253,17 @@ class JobShortcutsManager(GenericJob):
 
         return profile_icon_installed
 
-    def get_arguments_ready(self, profile: str, in_arguments: str = None) -> tuple[str]:
+    def get_arguments_ready(
+        self, profile: str, in_arguments: str | None = None
+    ) -> list[str]:
         """Prepare arguments for the executable shortcut.
 
-        :param list in_arguments: argument as defined in the scenario file
+        Args:
+            profile (str): profile's name
+            in_arguments (str, optional): argument as defined in the scenario file. Defaults to None.
 
-        :return Tuple[str]: tuple of strings separated by spaces
+        Returns:
+            list[str]: tuple of strings separated by spaces
         """
         # add profile name
         arguments: list = ["--profile", f'"{profile}"']
