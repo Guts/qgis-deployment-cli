@@ -18,7 +18,9 @@ import logging
 from pathlib import Path
 
 # project
-from qgis_deployment_toolbelt.profiles.git_handler_base import GitHandlerBase
+from qgis_deployment_toolbelt.profiles.profiles_handler_base import (
+    RemoteProfilesHandlerBase,
+)
 from qgis_deployment_toolbelt.utils.check_path import check_path, check_var_can_be_path
 
 # 3rd party
@@ -35,13 +37,13 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-class LocalGitHandler(GitHandlerBase):
+class LocalGitHandler(RemoteProfilesHandlerBase):
     """Handle local git repository."""
 
     def __init__(
         self,
         source_repository_path_or_uri: str | Path,
-        source_repository_type: str = "local",
+        source_repository_type: str = "git_local",
         branch_to_use: str | None = None,
     ) -> None:
         """Constructor.
