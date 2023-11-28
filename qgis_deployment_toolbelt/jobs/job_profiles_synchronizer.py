@@ -21,6 +21,7 @@ from shutil import copy2, copytree
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles import LocalGitHandler, RemoteGitHandler
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.profiles.remote_http_handler import HttpHandler
 
 # #############################################################################
 # ########## Globals ###############
@@ -66,8 +67,8 @@ class JobProfilesDownloader(GenericJob):
         "protocol": {
             "type": str,
             "required": True,
-            "default": "http",
-            "possible_values": ("http", "git", "copy"),
+            "default": "git_remote",
+            "possible_values": ("git", "git_local", "git_remote", "http"),
             "condition": "in",
         },
         "source": {
@@ -111,13 +112,22 @@ class JobProfilesDownloader(GenericJob):
 
         # prepare remote source
         if self.options.get("protocol") == "git":
-            if self.options.get("source").startswith(("git://", "http://", "https://")):
+            logger.warning(
+                DeprecationWarning(
+                    "'git' protocol has been split into 2 more explicit: 'git_local' and 'git_protocol'. Please update your scenario consequently."
+                )
+            )
+            if self.options.get("protocol") == "git_remote" or self.options.get(
+                "source"
+            ).startswith(("git://", "http://", "https://")):
                 downloader = RemoteGitHandler(
                     source_repository_url=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
                 )
                 downloader.download(destination_local_path=self.qdt_working_folder)
-            elif self.options.get("source").startswith("file://"):
+            elif self.options.get("protocol") == "git_local" or self.options.get(
+                "source"
+            ).startswith("file://"):
                 downloader = LocalGitHandler(
                     source_repository_path_or_uri=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
@@ -126,8 +136,22 @@ class JobProfilesDownloader(GenericJob):
             else:
                 logger.error(
                     f"Source type not implemented yet: {self.options.get('source')}"
+                    f"for '{self.options.get('protocol')}' protocol"
                 )
                 raise NotImplementedError
+        if self.options.get("protocol") == "http":
+            if not self.options.get("source").startswith(("http://", "https://")):
+                logger.error(
+                    f"Source type not implemented yet: {self.options.get('source')} "
+                    f"for '{self.options.get('protocol')}' protocol"
+                )
+                raise NotImplementedError
+            downloader = HttpHandler(
+                source_repository_path_or_uri=self.options.get("source"),
+                branch_to_use=self.options.get("branch", "master"),
+                source_repository_type="",
+            )
+            downloader.download(destination_local_path=self.qdt_working_folder)
         else:
             raise NotImplementedError
 
