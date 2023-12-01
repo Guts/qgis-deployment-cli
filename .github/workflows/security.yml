@@ -48,10 +48,4 @@ jobs:
         run: python -m pip install -U safety
 
       - name: Run Safety check
-        run: safety check --output text --short-report -r requirements/base.txt > safety_report.txt
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: safety_report
-          path: safety_report.txt
-          if-no-files-found: warning
+        run: safety check --output text --short-report -r requirements/base.txt
