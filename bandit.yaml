@@ -1,0 +1,10 @@
+exclude_dirs:
+  - tests
+targets:
+  - "qgis_deployment_toolbelt"
+tests:
+  - B201
+  - B301
+skips:
+  - B101
+  - B601
