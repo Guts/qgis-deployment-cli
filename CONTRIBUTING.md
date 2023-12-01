@@ -24,6 +24,16 @@ Make sure your code *roughly* follows [PEP-8](https://www.python.org/dev/peps/pe
 - sorted imports: [isort](https://pycqa.github.io/isort/) is used to sort imports
 - static analisis: [flake8](https://flake8.pycqa.org/en/latest/) is used to catch some dizziness and keep the source code healthy.
 
+## Security
+
+As the aim of this project is to be carried out on large-scale IT infrastructures, security is one of the development challenges. It's enforced through automated checks, which are mainly executed in CI. But there are a few best practices to bear in mind:
+
+- give preference to the standard Python library, even it's longer to develop
+- or consider adding an additional third-party dependency (interest, consequences, linked dependencies, etc.)
+- take security alerts into account
+
+Read the [security](docs/misc/security.md) section in documentation.
+
 ## IDE
 
 Feel free to use the IDE you love. Here come configurations for some popular IDEs to fit those guidelines.
