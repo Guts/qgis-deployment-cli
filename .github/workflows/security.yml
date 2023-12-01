@@ -1,0 +1,55 @@
+name: "🛃 Security checks"
+
+# Triggers
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/security.yml"
+      - "qgis_deployment_toolbelt"
+      - "requirements/base.txt"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/security.yml"
+      - "qgis_deployment_toolbelt"
+      - "requirements/base.txt"
+
+# Globals
+env:
+  PROJECT_FOLDER: "qgis_deployment_toolbelt"
+  PYTHON_VERSION: "3.11"
+
+  # Jobs definition
+jobs:
+  check-safety:
+    name: "🛡 Safety PyUp"
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: "requirements/base.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U -r requirements.txt
+
+      - name: Install project as a package
+        run: python -m pip install .
+
+      - name: Install project as a package
+        run: python -m pip -U safety
+
+      - name: Run Safety check
+        run: safety check --output text --short-report > safety_report.txt
