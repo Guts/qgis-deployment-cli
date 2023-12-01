@@ -53,3 +53,9 @@ jobs:
 
       - name: Run Safety check
         run: safety check --output text --short-report > safety_report.txt
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: safety_report
+          path: safety_report.txt
+          if-no-files-found: warning
