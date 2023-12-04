@@ -135,11 +135,11 @@ class JobProfilesDownloader(GenericJob):
                 downloader.download(destination_local_path=self.qdt_working_folder)
             else:
                 logger.error(
-                    f"Source type not implemented yet: {self.options.get('source')}"
+                    f"Source type is not implemented yet: {self.options.get('source')}"
                     f"for '{self.options.get('protocol')}' protocol"
                 )
                 raise NotImplementedError
-        if self.options.get("protocol") == "http":
+        elif self.options.get("protocol") == "http":
             if not self.options.get("source").startswith(("http://", "https://")):
                 logger.error(
                     f"Source type not implemented yet: {self.options.get('source')} "
