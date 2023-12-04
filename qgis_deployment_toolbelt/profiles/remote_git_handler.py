@@ -38,7 +38,7 @@ class RemoteGitHandler(RemoteProfilesHandlerBase):
     def __init__(
         self,
         source_repository_url: str,
-        source_repository_type: str = "remote",
+        source_repository_type: str = "git_remote",
         branch_to_use: str | None = None,
     ) -> None:
         """Constructor.

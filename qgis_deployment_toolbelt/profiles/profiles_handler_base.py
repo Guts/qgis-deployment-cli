@@ -509,7 +509,7 @@ class RemoteProfilesHandlerBase:
                     checkout=True,
                     progress=None,
                 )
-        elif self.SOURCE_REPOSITORY_TYPE == "remote":
+        elif self.SOURCE_REPOSITORY_TYPE in ("git_remote", "remote"):
             repo_obj = porcelain.clone(
                 source=self.SOURCE_REPOSITORY_PATH_OR_URL,
                 target=f"{local_path.resolve()}",

@@ -47,7 +47,7 @@ class TestGitHandlerRemote(unittest.TestCase):
         self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
         remote_git_handler = RemoteGitHandler(self.good_git_url)
 
-        self.assertEqual(remote_git_handler.SOURCE_REPOSITORY_TYPE, "remote")
+        self.assertEqual(remote_git_handler.SOURCE_REPOSITORY_TYPE, "git_remote")
         self.assertTrue(remote_git_handler.is_valid_git_repository())
 
         # KO
