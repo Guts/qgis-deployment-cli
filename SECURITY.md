@@ -24,7 +24,7 @@ For now, no vulnerability has been found.
 
 ## Reporting a Vulnerability
 
-Please report (suspected) security vulnerabilities to **[qgis+security@oslandia.com](mailto:security@ory.sh)**. You will receive a response from us within 48 hours. If the issue is confirmed, we will release a patch as soon as possible depending on complexity but historically within a few days.
+Please report (suspected) security vulnerabilities to **[qgis+security@oslandia.com](mailto:qgis+security@oslandia.com)**. You will receive a response from us within 48 hours. If the issue is confirmed, we will release a patch as soon as possible depending on complexity but historically within a few days.
 
 ----
 
