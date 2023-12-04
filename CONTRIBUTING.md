@@ -32,7 +32,7 @@ As the aim of this project is to be carried out on large-scale IT infrastructure
 - or consider adding an additional third-party dependency (interest, consequences, linked dependencies, etc.)
 - take security alerts into account
 
-Read the [security](docs/misc/security.md) section in documentation.
+Read the [security](SECURITY.md) section in documentation.
 
 ## IDE
 
