@@ -25,7 +25,6 @@ import shellingham
 # project
 from qgis_deployment_toolbelt.utils.check_path import check_path
 
-
 # #############################################################################
 # ########## Globals ###############
 # ##################################
@@ -49,7 +48,8 @@ shell_path_to_names = {
 # ########## Functions #############
 # ##################################
 
-@lru_cache()
+
+@lru_cache
 def find_key_from_values(value_to_find: str) -> str | None:
     """Finds the key corresponding to a given value in a dictionary where values are
     tuples.
@@ -101,7 +101,6 @@ def is_dot_profile_file() -> bool:
     )
 
 
-
 def get_environment_variable(envvar_name: str, scope: str = "user") -> str | None:
     """Get environment variable from Linux profile file
     Args:
@@ -117,7 +116,9 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
     pass
 
 
-def set_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
+def set_environment_variable(
+    env_key: str, env_value: str | bool | int, scope: str = "user"
+) -> bool:
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
@@ -195,7 +196,9 @@ def set_environment_variable(env_key: str, env_value: str | bool | int, scope: s
         return False
 
 
-def update_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
+def update_environment_variable(
+    env_key: str, env_value: str | bool | int, scope: str = "user"
+) -> bool:
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
@@ -207,9 +210,7 @@ def update_environment_variable(env_key: str, env_value: str | bool | int, scope
     if shell[0] == "bash":
         bash_profile = Path.home().joinpath(".profile")
         if not is_dot_profile_file():
-            logger.error(
-                f"Shell profile does not exist {bash_profile}"
-            )
+            logger.error(f"Shell profile does not exist {bash_profile}")
             return False
 
         logger.debug(f"parsing {bash_profile}")
@@ -239,16 +240,13 @@ def update_environment_variable(env_key: str, env_value: str | bool | int, scope
                 f"It will be updated to {env_key}={env_value}."
             )
         else:
-            logger.debug(
-                f"Environment variable and key {env_key} has not been found."
-            )
+            logger.debug(f"Environment variable and key {env_key} has not been found.")
             return False
 
         with bash_profile.open(mode="w", encoding="UTF-8") as file:
             file.writelines(lines)
         logger.info(
-            f"environment variable {env_key} has been updated."
-            "Shell profile updated."
+            f"environment variable {env_key} has been updated." "Shell profile updated."
         )
         return True
     else:
@@ -265,9 +263,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
     if shell[0] == "bash":
         bash_profile = Path.home().joinpath(".profile")
         if not is_dot_profile_file():
-            logger.error(
-                f"Shell profile does not exist {bash_profile}"
-            )
+            logger.error(f"Shell profile does not exist {bash_profile}")
             return False
 
         logger.debug(f"parsing {bash_profile}")
@@ -300,7 +296,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
             line_number += 1
 
         # check if block exist
-        block_found = all([block_start_found, block_end_found])
+        all([block_start_found, block_end_found])
 
         pos = []
         if line_found:
@@ -336,8 +332,8 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         logger.error(f"Shell {shell[0]} is not supported")
         return False
 
-def check_profile(profile_name):
 
+def check_profile(profile_name):
     return check_path(
         input_path=Path.home().joinpath(profile_name),
         must_be_a_file=True,
@@ -357,7 +353,6 @@ if __name__ == "__main__":
     print(".bash_login", check_profile(".bash_login"))
     print(".profile", check_profile(".profile"))
 
-    #set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", true)
-    #update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", false)
-    #delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
-
+    # set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", true)
+    # update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", false)
+    # delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
