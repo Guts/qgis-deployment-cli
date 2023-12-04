@@ -78,7 +78,23 @@ def is_dot_profile_file() -> bool:
     )
 
 
-def add_to_user_profile(env_key: str, env_value: str | bool | int) -> bool:
+
+def get_environment_variable(envvar_name: str, scope: str = "user") -> str | None:
+    """Get environment variable from Linux profile file
+    Args:
+
+        envvar_name (str): environment variable name (= key) to retrieve
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
+
+    Returns:
+        Optional[str]: environment variable value or None if not found
+    """
+
+    pass
+
+
+def set_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
@@ -156,7 +172,7 @@ def add_to_user_profile(env_key: str, env_value: str | bool | int) -> bool:
         return False
 
 
-def update_in_user_profile(env_key: str, env_value: str | bool | int) -> bool:
+def update_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
@@ -176,7 +192,7 @@ def update_in_user_profile(env_key: str, env_value: str | bool | int) -> bool:
         logger.debug(f"parsing {bash_profile}")
 
         line_before: str = ""
-        line_begin = f"{env_key}="
+        line_begin = f"export {env_key}="
         line_begin_line: int = 0
 
         # Lire le contenu du fichier
@@ -194,7 +210,7 @@ def update_in_user_profile(env_key: str, env_value: str | bool | int) -> bool:
             line_number += 1
 
         if line_found:
-            lines[line_begin_line] = f"{env_key}={env_value}\n"
+            lines[line_begin_line] = f"export {env_key}={env_value}\n"
             logger.debug(
                 f"Environment variable and key {line_before} is present "
                 f"It will be updated to {env_key}={env_value}."
@@ -217,7 +233,7 @@ def update_in_user_profile(env_key: str, env_value: str | bool | int) -> bool:
         return False
 
 
-def del_from_user_profile(env_key: str) -> bool:
+def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
     shell: tuple[str, str] | None = get_shell_to_use()
     if shell is None:
         logger.error("Shell to use is not recognized.")
@@ -297,6 +313,20 @@ def del_from_user_profile(env_key: str) -> bool:
         logger.error(f"Shell {shell[0]} is not supported")
         return False
 
-#add_to_user_profile("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", true)
-update_in_user_profile("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", false)
-#del_from_user_profile("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
+def check_profile(profile_name):
+
+    return check_path(
+        input_path=Path.home().joinpath(profile_name),
+        must_be_a_file=True,
+        must_exists=True,
+        raise_error=False,
+    )
+
+print(".bash_profile", check_profile(".bash_profile"))
+print(".bash_login", check_profile(".bash_login"))
+print(".profile", check_profile(".profile"))
+
+#set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", true)
+#update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", false)
+#delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
+
