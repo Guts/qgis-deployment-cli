@@ -111,7 +111,7 @@ class JobProfilesDownloader(GenericJob):
             raise NotImplementedError
 
         # prepare remote source
-        if self.options.get("protocol") == "git":
+        if self.options.get("protocol") in ("git", "git_local", "git_remote"):
             logger.warning(
                 DeprecationWarning(
                     "'git' protocol has been split into 2 more explicit: 'git_local' and 'git_protocol'. Please update your scenario consequently."
@@ -153,6 +153,10 @@ class JobProfilesDownloader(GenericJob):
             )
             downloader.download(destination_local_path=self.qdt_working_folder)
         else:
+            logger.critical(
+                f"Protocol '{self.options.get('protocol')}' is not part of supported ones: "
+                f"{self.OPTIONS_SCHEMA.get('protocol').get('possible_values')}"
+            )
             raise NotImplementedError
 
         # check of there are some profiles folders within the downloaded folder
