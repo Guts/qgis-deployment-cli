@@ -21,7 +21,7 @@ steps:
     uses: qprofiles-manager
     with:
       source: https://github.com/Guts/qgis-deployment-cli.git
-      protocol: git
+      protocol: git_remote
       sync_mode: overwrite
       branch: main
 
