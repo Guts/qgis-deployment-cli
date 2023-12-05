@@ -5,6 +5,7 @@
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Guts/qgis-deployment-cli/main.svg)](https://results.pre-commit.ci/latest/github/Guts/qgis-deployment-cli/main)
+[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 
 [![🎳 Tester](https://github.com/Guts/qgis-deployment-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/Guts/qgis-deployment-cli/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/Guts/qgis-deployment-cli/branch/main/graph/badge.svg?token=ZHGRNMA7TV)](https://codecov.io/gh/Guts/qgis-deployment-cli)

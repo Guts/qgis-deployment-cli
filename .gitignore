@@ -139,3 +139,5 @@ docs/misc/dependencies.md
 QGISDeploymentToolbelt_*Ubuntu*
 tests/fixtures/tmp/*
 build_environment_report.txt
+safety_report.txt
+bandit_report.csv

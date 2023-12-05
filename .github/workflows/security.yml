@@ -1,0 +1,78 @@
+name: "🛃 Security checks"
+
+# Triggers
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/security.yml"
+      - "qgis_deployment_toolbelt"
+      - "requirements/base.txt"
+      - "requirements/security.txt"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/security.yml"
+      - "qgis_deployment_toolbelt"
+      - "requirements/base.txt"
+      - "requirements/security.txt"
+
+# Globals
+env:
+  PROJECT_FOLDER: "qgis_deployment_toolbelt"
+  PYTHON_VERSION: "3.11"
+
+  # Jobs definition
+jobs:
+  check-bandit:
+    name: "🦹‍♂️ Bandit"
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: "requirements/security.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+
+      - name: Install security dependencies
+        run: python -m pip install -U -r requirements/security.txt
+
+      - name: Run Bandit check
+        run: bandit --configfile bandit.yaml --format screen -r qgis_deployment_toolbelt
+
+  check-safety:
+    name: "🛡 Safety PyUp"
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: "requirements/security.txt"
+
+      - name: Install project requirements
+        run: |
+          python -m pip install -U pip setuptools wheel
+
+      - name: Install security dependencies
+        run: python -m pip install -U -r requirements/security.txt
+
+      - name: Run Safety check
+        run: safety check --output text --short-report -r requirements/base.txt

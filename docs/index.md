@@ -83,6 +83,7 @@ guides/howto_windows_sign_executable
 caption: Miscellaneous
 maxdepth: 1
 ---
+misc/security
 misc/compatibility
 misc/credits
 misc/funding
