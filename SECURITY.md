@@ -38,7 +38,7 @@ Some checks can be executed on the developer side.
 python -m pip install -U -r requirements/security.txt
 ```
 
-### Run bandit chekcs
+### Run Bandit check
 
 In a terminal:
 
@@ -54,7 +54,7 @@ bandit --configfile bandit.yaml --format csv --output bandit_report.csv -r qgis_
 
 Then open the `bandit_report.csv` file.
 
-## Run Safety
+### Run Safety check
 
 In a terminal:
 
