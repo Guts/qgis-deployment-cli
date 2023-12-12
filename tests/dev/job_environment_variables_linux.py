@@ -29,15 +29,39 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-options: [dict] = [
-    {
-        'name': 'TEST_PERSISTENT_ENVIRONMENT_VARIABLE',
-        'action': 'add',
-        'scope': 'user',
-        'value': 'True',
-        'value_type': 'bool',
-    }
-]
+cas = "update" # add remove update
+
+if cas == "add":
+    options: [dict] = [
+        {
+            'name': 'TEST_PERSISTENT_ENVIRONMENT_VARIABLE',
+            'action': 'add',
+            'scope': 'user',
+            'value': 'true',
+            'value_type': 'bool',
+        }
+    ]
+elif cas == "remove":
+    options: [dict] = [
+        {
+            'name': 'TEST_PERSISTENT_ENVIRONMENT_VARIABLE',
+            'action': 'remove',
+            'scope': 'user',
+        }
+    ]
+elif cas == "update":
+    options: [dict] = [
+        {
+            'name': 'TEST_PERSISTENT_ENVIRONMENT_VARIABLE',
+            'action': 'update',
+            'scope': 'user',
+            'value': 'false',
+            'value_type': 'bool',
+        }
+    ]
+else:
+    exit()
+
 
 def prepare_value(value: str, value_type: str = None) -> str:
     """Prepare value to be used in the environment variable.
@@ -140,7 +164,7 @@ elif opersys == "linux":
         elif env_var.get("action") == "remove":
             try:
                 delete_environment_variable(
-                    envvar_name=env_var.get("name"),
+                    env_key=env_var.get("name"),
                     scope=env_var.get("scope")
                 )
             except NameError:
@@ -150,8 +174,8 @@ elif opersys == "linux":
         elif env_var.get("action") == "update":
             try:
                 update_environment_variable(
-                    envvar_name=env_var.get("name"),
-                    envvar_value=self.prepare_value(
+                    env_key=env_var.get("name"),
+                    env_value=prepare_value(
                         value=env_var.get("value"),
                         value_type=env_var.get("value_type"),
                     ),
