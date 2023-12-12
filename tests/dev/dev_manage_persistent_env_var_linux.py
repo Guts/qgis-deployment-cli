@@ -1,6 +1,7 @@
 # standard
 import logging
 import os
+import re
 from functools import lru_cache
 from os import getenv
 from pathlib import Path
@@ -78,7 +79,6 @@ def is_dot_profile_file() -> bool:
     )
 
 
-
 def get_environment_variable(envvar_name: str, scope: str = "user") -> str | None:
     """Get environment variable from Linux profile file
     Args:
@@ -91,8 +91,24 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
         Optional[str]: environment variable value or None if not found
     """
 
-    pass
+    profile_file = get_profile_file(scope)
 
+    logger.debug(f"parsing {profile_file}")
+
+    # Read file content
+    with profile_file.open(mode="r", encoding="UTF-8") as file:
+        lines = file.readlines()
+
+    # look for export line
+    line_number: int = 0
+    env_value = None
+    for line in lines:
+        if envvar_name in line.strip():
+            env_value = [item.strip() for item in re.split("=", line)][-1]
+
+    logger.debug(f"Value for environment variable {envvar_name}: {env_value}")
+
+    return env_value
 
 def set_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
     if isinstance(env_value, bool):
@@ -119,7 +135,7 @@ def set_environment_variable(env_key: str, env_value: str | bool | int, scope: s
         block_end_line: int = 0
         line_found = False
 
-        # Lire le contenu du fichier
+        # Read file content
         with bash_profile.open(mode="r", encoding="UTF-8") as file:
             lines = file.readlines()
 
@@ -158,7 +174,7 @@ def set_environment_variable(env_key: str, env_value: str | bool | int, scope: s
             new_lines = (
                 f"\n{qdt_block_comment_start}\n",
                 f"{export_line}\n",
-                f"{qdt_block_comment_end}\n",
+                f"{qdt_block_comment_end}",
             )
             with open(bash_profile, "a") as file:
                 file.writelines(new_lines)
@@ -174,12 +190,14 @@ def set_environment_variable(env_key: str, env_value: str | bool | int, scope: s
 
 def update_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
     # TODO don't add an extra line
-    delete_environment_variable(env_key, scope)
-    set_environment_variable(env_key, env_value, scope)
+    resdel: bool = delete_environment_variable(env_key, scope)
+    resadd: bool = set_environment_variable(env_key, env_value, scope)
     logger.info(
         f"Environment variable {env_key} has been updated to {env_value}\n"
         "Shell profile updated"
     )
+
+    return resdel and resadd
 
 def update_environment_variablekk(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
     if isinstance(env_value, bool):
@@ -270,6 +288,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         with bash_profile.open(mode="r", encoding="UTF-8") as file:
             lines = file.readlines()
 
+        print(lines)
         # look for block and beginning of line
         line_number: int = 0
         for line in lines:
@@ -307,11 +326,12 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
                 f"QDT block end was found for: '{env_key}'. "
                 "Block end will be removed."
             )
-
-        pos = [block_start_line, line_begin_line, block_end_line]
+        #pos = [block_start_line, line_begin_line, block_end_line]
+        print(pos)
         new_lines = [lines[i] for i, e in enumerate(lines) if i not in pos]
+        print(new_lines)
         with bash_profile.open(mode="w", encoding="UTF-8") as file:
-            file.writelines(new_lines)
+            file.writelines(new_lines[:-1])
         logger.info(
             f"QDT block for environment variable '{env_key}' has been removed. "
             "Shell profile updated."
@@ -322,51 +342,76 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         logger.error(f"Shell {shell[0]} is not supported")
         return False
 
-def get_profile_file() -> str:
-    if check_path(
-            input_path=Path.home().joinpath('.bash_profile'),
-            must_be_a_file=True,
-            must_exists=True,
-            raise_error=False,
-        ):
-        logger.error(
-            ".bash_profile was found and will be used"
-        )
-        return Path.home().joinpath('.bash_profile')
-    elif check_path(
-            input_path=Path.home().joinpath('.login_profile'),
-            must_be_a_file=True,
-            must_exists=True,
-            raise_error=False,
-        ):
-        logger.error(
-            ".login_profile was found and will be used"
-        )
-        return Path.home().joinpath('.login_profile')
-    elif check_path(
-            input_path=Path.home().joinpath('.profile'),
-            must_be_a_file=True,
-            must_exists=True,
-            raise_error=False,
-        ):
-        logger.error(
-            ".profile was found and will be used"
-        )
-        return Path.home().joinpath('.profile'),
+def get_profile_file(scope: str = 'user') -> str:
+    if scope == 'system':
+        if check_path(
+                input_path=Path('/etc').joinpath('profile'),
+                must_be_a_file=True,
+                must_exists=True,
+                raise_error=False,
+            ):
+            logger.info(
+                "/etc/profile was found and will be used"
+            )
+            return Path('/etc').joinpath('profile')
+        else:
+            logger.info(
+                "/etc/profile was not found, it will be created and used"
+            )
+            #Path('/etc').joinpath('profile').touch()
+            return Path('/etc').joinpath('profile')
+
+    elif scope == 'user':
+        if check_path(
+                input_path=Path.home().joinpath('.bash_profile'),
+                must_be_a_file=True,
+                must_exists=True,
+                raise_error=False,
+            ):
+            logger.info(
+                "~/.bash_profile was found and will be used"
+            )
+            return Path.home().joinpath('.bash_profile')
+        elif check_path(
+                input_path=Path.home().joinpath('.login_profile'),
+                must_be_a_file=True,
+                must_exists=True,
+                raise_error=False,
+            ):
+            logger.info(
+                "~/.login_profile was found and will be used"
+            )
+            return Path.home().joinpath('.login_profile')
+        elif check_path(
+                input_path=Path.home().joinpath('.profile'),
+                must_be_a_file=True,
+                must_exists=True,
+                raise_error=False,
+            ):
+            logger.info(
+                "~/.profile was found and will be used"
+            )
+            return Path.home().joinpath('.profile')
+        else:
+            logger.info(
+                "Neither .bash_profile nor .login_profile nor .profile was found, "
+                "~/.profile will be created and used"
+            )
+            bash_profile.touch()
+            return Path.home().joinpath('.profile')
     else:
         logger.error(
-            "Neither .bash_profile nor .login_profile nor .profile were found"
-            ".profile will be created and used"
+            f"Scope {scope} not handled."
         )
-        bash_profile.touch()
-        return Path.home().joinpath('.profile'),
+        return None
 
-
-profile_file = get_profile_file()
-print("Fichier de profil : ", profile_file)
-
+profile_file = get_profile_file("user")
+print("Fichier de profil user : ", profile_file)
+profile_file = get_profile_file("system")
+print("Fichier de profil system : ", profile_file)
+print(get_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE"))
 
 #set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", True)
-update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", False)
+#update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", False)
 #delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
 
