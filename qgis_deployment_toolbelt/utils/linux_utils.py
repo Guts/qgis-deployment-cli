@@ -1,3 +1,17 @@
+#! python3  # noqa: E265
+
+"""
+    Utilities specific for Linux.
+
+    Author: Julien Moura (https://github.com/guts)
+    Contributor: Christophe Damour (https://github.com/sigeal)
+
+"""
+
+# #############################################################################
+# ########## Libraries #############
+# ##################################
+
 # standard
 import logging
 import os
@@ -10,6 +24,10 @@ import shellingham
 
 # project
 from qgis_deployment_toolbelt.utils.check_path import check_path
+
+# #############################################################################
+# ########## Globals ###############
+# ##################################
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -26,7 +44,12 @@ shell_path_to_names = {
 }
 
 
-@lru_cache()
+# #############################################################################
+# ########## Functions #############
+# ##################################
+
+
+@lru_cache
 def find_key_from_values(value_to_find: str) -> str | None:
     """Finds the key corresponding to a given value in a dictionary where values are
     tuples.
@@ -78,7 +101,6 @@ def is_dot_profile_file() -> bool:
     )
 
 
-
 def get_environment_variable(envvar_name: str, scope: str = "user") -> str | None:
     """Get environment variable from Linux profile file
     Args:
@@ -94,7 +116,9 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
     pass
 
 
-def set_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
+def set_environment_variable(
+    env_key: str, env_value: str | bool | int, scope: str = "user"
+) -> bool:
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
@@ -172,30 +196,21 @@ def set_environment_variable(env_key: str, env_value: str | bool | int, scope: s
         return False
 
 
-def update_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
-    # TODO don't add an extra line
-    delete_environment_variable(env_key, scope)
-    set_environment_variable(env_key, env_value, scope)
-    logger.info(
-        f"Environment variable {env_key} has been updated to {env_value}\n"
-        "Shell profile updated"
-    )
-
-def update_environment_variablekk(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
+def update_environment_variable(
+    env_key: str, env_value: str | bool | int, scope: str = "user"
+) -> bool:
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
     shell: tuple[str, str] | None = get_shell_to_use()
     if shell is None:
-        logger.error("Shell to use is not recognized")
+        logger.error("Shell to use is not recognized.")
         return False
 
     if shell[0] == "bash":
         bash_profile = Path.home().joinpath(".profile")
         if not is_dot_profile_file():
-            logger.error(
-                f"Shell profile does not exist {bash_profile}"
-            )
+            logger.error(f"Shell profile does not exist {bash_profile}")
             return False
 
         logger.debug(f"parsing {bash_profile}")
@@ -225,16 +240,13 @@ def update_environment_variablekk(env_key: str, env_value: str | bool | int, sco
                 f"It will be updated to {env_key}={env_value}."
             )
         else:
-            logger.debug(
-                f"Environment variable and key {env_key} has not been found."
-            )
+            logger.debug(f"Environment variable and key {env_key} has not been found.")
             return False
 
         with bash_profile.open(mode="w", encoding="UTF-8") as file:
             file.writelines(lines)
         logger.info(
-            f"environment variable {env_key} has been updated."
-            "Shell profile updated."
+            f"environment variable {env_key} has been updated." "Shell profile updated."
         )
         return True
     else:
@@ -251,14 +263,12 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
     if shell[0] == "bash":
         bash_profile = Path.home().joinpath(".profile")
         if not is_dot_profile_file():
-            logger.error(
-                f"Shell profile does not exist {bash_profile}"
-            )
+            logger.error(f"Shell profile does not exist {bash_profile}")
             return False
 
         logger.debug(f"parsing {bash_profile}")
 
-        line_begin = f"export {env_key}="
+        line_begin = f"{env_key}="
         block_start_found = False
         block_start_line: int = 0
         block_end_found = False
@@ -286,7 +296,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
             line_number += 1
 
         # check if block exist
-        block_found = all([block_start_found, block_end_found])
+        all([block_start_found, block_end_found])
 
         pos = []
         if line_found:
@@ -322,51 +332,27 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         logger.error(f"Shell {shell[0]} is not supported")
         return False
 
-def get_profile_file() -> str:
-    if check_path(
-            input_path=Path.home().joinpath('.bash_profile'),
-            must_be_a_file=True,
-            must_exists=True,
-            raise_error=False,
-        ):
-        logger.error(
-            ".bash_profile was found and will be used"
-        )
-        return Path.home().joinpath('.bash_profile')
-    elif check_path(
-            input_path=Path.home().joinpath('.login_profile'),
-            must_be_a_file=True,
-            must_exists=True,
-            raise_error=False,
-        ):
-        logger.error(
-            ".login_profile was found and will be used"
-        )
-        return Path.home().joinpath('.login_profile')
-    elif check_path(
-            input_path=Path.home().joinpath('.profile'),
-            must_be_a_file=True,
-            must_exists=True,
-            raise_error=False,
-        ):
-        logger.error(
-            ".profile was found and will be used"
-        )
-        return Path.home().joinpath('.profile'),
-    else:
-        logger.error(
-            "Neither .bash_profile nor .login_profile nor .profile were found"
-            ".profile will be created and used"
-        )
-        bash_profile.touch()
-        return Path.home().joinpath('.profile'),
+
+def check_profile(profile_name):
+    return check_path(
+        input_path=Path.home().joinpath(profile_name),
+        must_be_a_file=True,
+        must_exists=True,
+        raise_error=False,
+    )
 
 
-profile_file = get_profile_file()
-print("Fichier de profil : ", profile_file)
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
 
+if __name__ == "__main__":
+    """Standalone execution."""
 
-#set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", True)
-update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", False)
-#delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
+    print(".bash_profile", check_profile(".bash_profile"))
+    print(".bash_login", check_profile(".bash_login"))
+    print(".profile", check_profile(".profile"))
 
+    # set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", true)
+    # update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", false)
+    # delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
