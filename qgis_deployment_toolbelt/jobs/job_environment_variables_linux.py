@@ -157,13 +157,13 @@ class JobEnvironmentVariables(GenericJob):
             logger.debug(
                 f"OS : {opersys}"
             )
-            for env_var in options:
+            for env_var in self.options:
                 print(f'ACTION {env_var.get("action")}', f'NAME {env_var.get("name")}', f'VALUE {env_var.get("value")}')
                 if env_var.get("action") == "add":
                     try:
                         set_environment_variable(
                             env_key=env_var.get("name"),
-                            env_value=prepare_value(
+                            env_value=self.prepare_value(
                                 value=env_var.get("value"),
                                 value_type=env_var.get("value_type"),
                             ),
@@ -187,7 +187,7 @@ class JobEnvironmentVariables(GenericJob):
                     try:
                         update_environment_variable(
                             env_key=env_var.get("name"),
-                            env_value=prepare_value(
+                            env_value=self.prepare_value(
                                 value=env_var.get("value"),
                                 value_type=env_var.get("value_type"),
                             ),

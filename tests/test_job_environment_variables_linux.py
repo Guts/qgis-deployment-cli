@@ -21,13 +21,13 @@ from pathlib import Path
 from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.jobs.job_environment_variables import (
+from qgis_deployment_toolbelt.jobs.job_environment_variables_linux import (
     JobEnvironmentVariables,
 )
 from qgis_deployment_toolbelt.utils import str2bool
 
-if opersys == "win32":
-    from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
+if opersys == "linux":
+    from qgis_deployment_toolbelt.utils.linux_utils import get_environment_variable
 
 
 # #############################################################################
@@ -92,7 +92,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         job_env_vars.run()
 
         # check if environment variables have been set
-        if opersys == "win32":
+        if opersys == "linux":
             self.assertTrue(
                 str2bool(
                     get_environment_variable("QDT_TEST_FAKE_ENV_VAR_BOOL", "user")
