@@ -133,21 +133,49 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
 
 
 def set_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
+    """Set environment variable in Linux profile file
+    Args:
+
+        env_key (str): environment variable name (= key) to set
+        env_value (str): environment variable value to set
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
+
+    Returns:
+        Optional[str]: environment variable value or None if not found
+    """
+
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
+    '''
     shell: tuple[str, str] | None = get_shell_to_use()
     if shell is None:
         logger.error("Shell to use is not recognized.")
         return False
+    '''
 
-    if shell[0] == "bash":
+    if get_environment_variable(env_key, scope) is not None:
+        logger.info(f"Environment variable {env_key} already there")
+        if get_environment_variable(env_key, scope) != env_value:
+            logger.info(f"Environment variable value to be changed")
+            delete_environment_variable(env_key)
+        else:
+            logger.info(f"Environment variable already set to {env_value}")
+            return True
+
+    bash_profile = get_profile_file(scope)
+
+    #if shell[0] == "bash":
+    if bash_profile is not None:
+        '''
         bash_profile = Path.home().joinpath(".profile")
         if not is_dot_profile_file():
             logger.error(
                 f"Shell profile does not exist and will be created {bash_profile}"
             )
             bash_profile.touch()
+        '''
 
         logger.debug(f"parsing {bash_profile}")
 
@@ -209,9 +237,10 @@ def set_environment_variable(env_key: str, env_value: str | bool | int, scope: s
         logger.error(f"Shell {shell[0]} is not supported")
         return False
 
-
+'''
 def update_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
     # TODO don't add an extra line
+    # TODO integrate in set_environment_variable : delete if exists
     resdel: bool = delete_environment_variable(env_key, scope)
     resadd: bool = set_environment_variable(env_key, env_value, scope)
     logger.info(
@@ -220,21 +249,41 @@ def update_environment_variable(env_key: str, env_value: str | bool | int, scope
     )
 
     return resdel and resadd
-
+'''
 
 def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
+    """Remove environment variable from Linux profile file
+    Args:
+
+        env_key (str): environment variable name (= key) to remove
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
+
+    Returns:
+        [bool]: true if environment variable was successfully removed
+                false if not
+    """
+
+    '''
     shell: tuple[str, str] | None = get_shell_to_use()
+
     if shell is None:
         logger.error("Shell to use is not recognized.")
         return False
+    '''
 
-    if shell[0] == "bash":
+    bash_profile = get_profile_file(scope)
+
+    #if shell[0] == "bash":
+    if bash_profile is not None:
+        '''
         bash_profile = Path.home().joinpath(".profile")
         if not is_dot_profile_file():
             logger.error(
                 f"Shell profile does not exist {bash_profile}"
             )
             return False
+        '''
 
         logger.debug(f"parsing {bash_profile}")
 
@@ -250,7 +299,6 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         with bash_profile.open(mode="r", encoding="UTF-8") as file:
             lines = file.readlines()
 
-        print(lines)
         # look for block and beginning of line
         line_number: int = 0
         for line in lines:
@@ -289,11 +337,9 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
                 "Block end will be removed."
             )
         #pos = [block_start_line, line_begin_line, block_end_line]
-        print(pos)
         new_lines = [lines[i] for i, e in enumerate(lines) if i not in pos]
-        print(new_lines)
         with bash_profile.open(mode="w", encoding="UTF-8") as file:
-            file.writelines(new_lines[:-1])
+            file.writelines(new_lines)
         logger.info(
             f"QDT block for environment variable '{env_key}' has been removed. "
             "Shell profile updated."
@@ -306,6 +352,17 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
 
 
 def get_profile_file(scope: str = 'user') -> str:
+    """Get Linux profile file depending on shell and scope
+    Args:
+
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
+
+    Returns:
+        Optional[str]: profile file path or None if not found
+    """
+
+    # TODO : Add shell checking ?
     if scope == 'system':
         if check_path(
                 input_path=Path('/etc').joinpath('profile'),
@@ -376,10 +433,9 @@ def get_profile_file(scope: str = 'user') -> str:
 if __name__ == "__main__":
     """Standalone execution."""
 
-    print(".bash_profile", check_profile(".bash_profile"))
-    print(".bash_login", check_profile(".bash_login"))
-    print(".profile", check_profile(".profile"))
+    print("User profile file :", get_profile_file("user"))
+    print("System profile file :", get_profile_file("system"))
 
-    # set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", true)
-    # update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", false)
-    # delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
+    set_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", False)
+    #update_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE", False)
+    #delete_environment_variable("TEST_PERSISTENT_ENVIRONMENT_VARIABLE")
