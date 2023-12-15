@@ -6,10 +6,17 @@
     Author: Julien Moura (https://github.com/guts)
 """
 
-
 # #############################################################################
 # ########## Libraries #############
 # ##################################
+
+
+# Standard library
+import logging
+from os.path import expanduser, expandvars
+from pathlib import Path
+from sys import platform as opersys
+
 
 # Standard library
 import logging
@@ -24,22 +31,40 @@ from qgis_deployment_toolbelt.utils.check_path import (
     check_var_can_be_path,
 )
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
-from qgis_deployment_toolbelt.utils.win32utils import (
-    delete_environment_variable,
-    refresh_environment,
-    set_environment_variable,
-)
+if opersys == 'linux':
+    from qgis_deployment_toolbelt.utils.linux_utils import (
+        delete_environment_variable,
+        set_environment_variable,
+    )
+elif opersys == 'win32':
+    from qgis_deployment_toolbelt.utils.win32utils import (
+        delete_environment_variable,
+        refresh_environment,
+        set_environment_variable,
+    )
+else:
+    logger.debug(
+        "Unsupported operating system."
+    )
+    exit()
+
 
 # #############################################################################
 # ########## Globals ###############
 # ##################################
 
 # logs
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 logger = logging.getLogger(__name__)
 
 # #############################################################################
 # ########## Classes ###############
 # ##################################
+
 
 
 class JobEnvironmentVariables(GenericJob):
@@ -127,7 +152,54 @@ class JobEnvironmentVariables(GenericJob):
             # force Windows to refresh the environment
             refresh_environment()
 
-        # TODO: for linux, edit ~/.profile or add a .env file and source it from ~./profile
+        elif opersys == "linux":
+            logger.debug(
+                f"OS : {opersys}"
+            )
+            for env_var in self.options:
+                print(f'ACTION {env_var.get("action")}', f'NAME {env_var.get("name")}', f'VALUE {env_var.get("value")}')
+                if env_var.get("action") == "add":
+                    try:
+                        set_environment_variable(
+                            env_key=env_var.get("name"),
+                            env_value=self.prepare_value(
+                                value=env_var.get("value"),
+                                value_type=env_var.get("value_type"),
+                            ),
+                            scope=env_var.get("scope")
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+                elif env_var.get("action") == "remove":
+                    try:
+                        delete_environment_variable(
+                            env_key=env_var.get("name"),
+                            scope=env_var.get("scope")
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+                '''
+                elif env_var.get("action") == "update":
+                    try:
+                        update_environment_variable(
+                            env_key=env_var.get("name"),
+                            env_value=self.prepare_value(
+                                value=env_var.get("value"),
+                                value_type=env_var.get("value_type"),
+                            ),
+                            scope=env_var.get("scope")
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+                '''
+            # force Linux to refresh the environment ?
+
         else:
             logger.debug(
                 f"Setting persistent environment variables is not supported on {opersys}"
@@ -187,3 +259,4 @@ class JobEnvironmentVariables(GenericJob):
 if __name__ == "__main__":
     """Standalone execution."""
     pass
+

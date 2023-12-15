@@ -56,7 +56,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         pass
 
     # -- TESTS ---------------------------------------------------------
-    # @unittest.skipIf(opersys != "win32", "Test specific to Windows.")
+
     def test_environment_variables_set_unset(self):
         """Test YAML loader"""
         fake_env_vars = [

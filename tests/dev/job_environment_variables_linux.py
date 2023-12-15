@@ -34,7 +34,6 @@ from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 if opersys == 'linux':
     from qgis_deployment_toolbelt.utils.linux_utils import (
         delete_environment_variable,
-        update_environment_variable,
         set_environment_variable,
     )
 elif opersys == 'win32':
