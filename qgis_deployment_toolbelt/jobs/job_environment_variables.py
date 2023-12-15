@@ -12,12 +12,6 @@
 
 
 # Standard library
-import logging
-from os.path import expanduser, expandvars
-from pathlib import Path
-from sys import platform as opersys
-
-
 # Standard library
 import logging
 from os.path import expanduser, expandvars
@@ -31,21 +25,20 @@ from qgis_deployment_toolbelt.utils.check_path import (
     check_var_can_be_path,
 )
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
-if opersys == 'linux':
+
+if opersys == "linux":
     from qgis_deployment_toolbelt.utils.linux_utils import (
         delete_environment_variable,
         set_environment_variable,
     )
-elif opersys == 'win32':
+elif opersys == "win32":
     from qgis_deployment_toolbelt.utils.win32utils import (
         delete_environment_variable,
         refresh_environment,
         set_environment_variable,
     )
 else:
-    logger.debug(
-        "Unsupported operating system."
-    )
+    logger.debug("Unsupported operating system.")
     exit()
 
 
@@ -64,7 +57,6 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-
 
 
 class JobEnvironmentVariables(GenericJob):
@@ -153,11 +145,13 @@ class JobEnvironmentVariables(GenericJob):
             refresh_environment()
 
         elif opersys == "linux":
-            logger.debug(
-                f"OS : {opersys}"
-            )
+            logger.debug(f"OS : {opersys}")
             for env_var in self.options:
-                print(f'ACTION {env_var.get("action")}', f'NAME {env_var.get("name")}', f'VALUE {env_var.get("value")}')
+                print(
+                    f'ACTION {env_var.get("action")}',
+                    f'NAME {env_var.get("name")}',
+                    f'VALUE {env_var.get("value")}',
+                )
                 if env_var.get("action") == "add":
                     try:
                         set_environment_variable(
@@ -166,7 +160,7 @@ class JobEnvironmentVariables(GenericJob):
                                 value=env_var.get("value"),
                                 value_type=env_var.get("value_type"),
                             ),
-                            scope=env_var.get("scope")
+                            scope=env_var.get("scope"),
                         )
                     except NameError:
                         logger.debug(
@@ -175,14 +169,13 @@ class JobEnvironmentVariables(GenericJob):
                 elif env_var.get("action") == "remove":
                     try:
                         delete_environment_variable(
-                            env_key=env_var.get("name"),
-                            scope=env_var.get("scope")
+                            env_key=env_var.get("name"), scope=env_var.get("scope")
                         )
                     except NameError:
                         logger.debug(
                             f"Variable name '{env_var.get('name')}' is not defined"
                         )
-                '''
+                """
                 elif env_var.get("action") == "update":
                     try:
                         update_environment_variable(
@@ -197,7 +190,7 @@ class JobEnvironmentVariables(GenericJob):
                         logger.debug(
                             f"Variable name '{env_var.get('name')}' is not defined"
                         )
-                '''
+                """
             # force Linux to refresh the environment ?
 
         else:
@@ -259,4 +252,3 @@ class JobEnvironmentVariables(GenericJob):
 if __name__ == "__main__":
     """Standalone execution."""
     pass
-
