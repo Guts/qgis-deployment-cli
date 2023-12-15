@@ -31,9 +31,7 @@ if opersys == "win32":
 elif opersys == "linux":
     from qgis_deployment_toolbelt.utils.linux_utils import get_environment_variable
 else:
-    logger.debug(
-        "Unsupported operating system."
-    )
+    logger.debug("Unsupported operating system.")
     exit()
 
 # #############################################################################
