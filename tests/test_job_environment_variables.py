@@ -7,7 +7,8 @@
         # for whole test
         python -m unittest tests.test_job_environment_variables
         # for specific
-        python -m unittest tests.test_job_environment_variables.TestJobEnvironmentVariables.test_environment_variables_set
+        python -m unittest tests.test_job_environment_variables
+            .TestJobEnvironmentVariables.test_environment_variables_set
 """
 
 # #############################################################################
@@ -16,6 +17,7 @@
 
 # Standard library
 import unittest
+import logging
 from os.path import expanduser
 from pathlib import Path
 from sys import platform as opersys
@@ -26,6 +28,7 @@ from qgis_deployment_toolbelt.jobs.job_environment_variables import (
 )
 from qgis_deployment_toolbelt.utils import str2bool
 
+logger = logging.getLogger(__name__)
 if opersys == "win32":
     from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
 elif opersys == "linux":

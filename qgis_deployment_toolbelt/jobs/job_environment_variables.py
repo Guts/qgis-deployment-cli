@@ -26,6 +26,26 @@ from qgis_deployment_toolbelt.utils.check_path import (
 )
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 
+
+# #############################################################################
+# ########## Globals ###############
+# ##################################
+
+
+# logs
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
+
+# #############################################################################
+# ###### Conditional imports #######
+# ##################################
+
+
 if opersys == "linux":
     from qgis_deployment_toolbelt.utils.linux_utils import (
         delete_environment_variable,
@@ -41,18 +61,6 @@ else:
     logger.debug("Unsupported operating system.")
     exit()
 
-
-# #############################################################################
-# ########## Globals ###############
-# ##################################
-
-# logs
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-logger = logging.getLogger(__name__)
 
 # #############################################################################
 # ########## Classes ###############
