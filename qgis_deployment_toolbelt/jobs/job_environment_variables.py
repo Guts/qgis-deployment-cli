@@ -26,7 +26,6 @@ from qgis_deployment_toolbelt.utils.check_path import (
 )
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 
-
 # #############################################################################
 # ########## Globals ###############
 # ##################################

@@ -15,9 +15,10 @@
 # ########## Libraries #############
 # ##################################
 
+import logging
+
 # Standard library
 import unittest
-import logging
 from os.path import expanduser
 from pathlib import Path
 from sys import platform as opersys
