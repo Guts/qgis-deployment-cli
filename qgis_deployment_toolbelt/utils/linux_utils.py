@@ -149,12 +149,10 @@ def set_environment_variable(
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
 
-    """
     shell: tuple[str, str] | None = get_shell_to_use()
     if shell is None:
         logger.error("Shell to use is not recognized.")
         return False
-    """
 
     if get_environment_variable(env_key, scope) is not None:
         logger.info(f"Environment variable {env_key} already there")
@@ -239,21 +237,6 @@ def set_environment_variable(
         return False
 
 
-"""
-def update_environment_variable(env_key: str, env_value: str | bool | int, scope: str = "user") -> bool:
-    # TODO don't add an extra line
-    # TODO integrate in set_environment_variable : delete if exists
-    resdel: bool = delete_environment_variable(env_key, scope)
-    resadd: bool = set_environment_variable(env_key, env_value, scope)
-    logger.info(
-        f"Environment variable {env_key} has been updated to {env_value}\n"
-        "Shell profile updated"
-    )
-
-    return resdel and resadd
-"""
-
-
 def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
     """Remove environment variable from Linux profile file
     Args:
@@ -274,6 +257,11 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         logger.error("Shell to use is not recognized.")
         return False
     """
+
+    shell: tuple[str, str] | None = get_shell_to_use()
+    if shell is None:
+        logger.error("Shell to use is not recognized.")
+        return False
 
     bash_profile = get_profile_file(scope)
 
@@ -410,8 +398,9 @@ def get_profile_file(scope: str = "user") -> str:
                 "Neither .bash_profile nor .login_profile nor .profile was found, "
                 "~/.profile will be created and used"
             )
+            bash_profile = Path.home().joinpath(".profile")
             bash_profile.touch()
-            return Path.home().joinpath(".profile")
+            return bash_profile
     else:
         logger.error(f"Scope {scope} not handled.")
         return None
