@@ -239,7 +239,6 @@ def set_environment_variable(
 def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
     """Remove environment variable from Linux profile file
     Args:
-
         env_key (str): environment variable name (= key) to remove
         scope (str, optional): environment variable scope. Must be "user" or "system",
             defaults to "user". Defaults to "user".
