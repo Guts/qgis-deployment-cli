@@ -103,7 +103,6 @@ def is_dot_profile_file() -> bool:
 def get_environment_variable(envvar_name: str, scope: str = "user") -> str | None:
     """Get environment variable from Linux profile file
     Args:
-
         envvar_name (str): environment variable name (= key) to retrieve
         scope (str, optional): environment variable scope. Must be "user" or "system",
             defaults to "user". Defaults to "user".
