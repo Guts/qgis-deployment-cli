@@ -31,11 +31,6 @@ from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 
 
 # logs
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 logger = logging.getLogger(__name__)
 
 
