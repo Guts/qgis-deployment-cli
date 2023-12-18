@@ -136,7 +136,6 @@ def set_environment_variable(
 ) -> bool:
     """Set environment variable in Linux profile file
     Args:
-
         env_key (str): environment variable name (= key) to set
         env_value (str): environment variable value to set
         scope (str, optional): environment variable scope. Must be "user" or "system",
