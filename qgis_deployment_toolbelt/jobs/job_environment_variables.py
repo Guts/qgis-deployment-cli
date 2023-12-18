@@ -12,7 +12,6 @@
 
 
 # Standard library
-# Standard library
 import logging
 from os.path import expanduser, expandvars
 from pathlib import Path
