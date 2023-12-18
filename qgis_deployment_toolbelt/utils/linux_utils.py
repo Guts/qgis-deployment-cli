@@ -87,6 +87,17 @@ def get_shell_to_use() -> tuple[str, str] | None:
 
 
 def is_dot_profile_file() -> bool:
+    """Get environment variable from Linux profile file
+    Args:
+
+        envvar_name (str): environment variable name (= key) to retrieve
+        scope (str, optional): environment variable scope. Must be "user" or "system",
+            defaults to "user". Defaults to "user".
+
+    Returns:
+        Optional[str]: environment variable value or None if not found
+    """
+
     return check_path(
         input_path=Path.home().joinpath(".profile"),
         must_be_a_file=True,
