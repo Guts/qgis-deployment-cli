@@ -51,7 +51,7 @@ elif opersys == "win32":
         set_environment_variable,
     )
 else:
-    logger.debug("Unsupported operating system.")
+    logger.error("Unsupported operating system.")
     exit()
 
 
