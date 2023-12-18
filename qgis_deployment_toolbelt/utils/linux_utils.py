@@ -29,11 +29,6 @@ from qgis_deployment_toolbelt.utils.check_path import check_path
 # ########## Globals ###############
 # ##################################
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 logger = logging.getLogger(__name__)
 
 qdt_block_comment_start = "# BEGIN QDT MANAGED BLOCK"
