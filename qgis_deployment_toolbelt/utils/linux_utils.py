@@ -345,7 +345,6 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
 def get_profile_file(scope: str = "user") -> str:
     """Get Linux profile file depending on shell and scope
     Args:
-
         scope (str, optional): environment variable scope. Must be "user" or "system",
             defaults to "user". Defaults to "user".
 
