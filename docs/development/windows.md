@@ -6,7 +6,7 @@ Tested on:
 
 ## Requirements
 
-- [Python 3.10+ installed with the Windows MSI installer](https://www.python.org/downloads/windows/) (version from the Windows store is not working)
+- [Python 3.10+ installed with the Windows MSI installer](https://www.python.org/downloads/windows/) (version from the Windows store is not working with virtual environments)
 - [Git](https://git-scm.com/download/win) and/or [GitHub Desktop](https://desktop.github.com/)
 
 ## Enable remote scripts (for virtual environment)
@@ -14,7 +14,7 @@ Tested on:
 Open a Powershell prompt as **administrator** inside the repository folder:
 
 ```powershell
-# if not already done, enable scripts  - required by virtualenv
+# if not already done, enable scripts - required by virtualenv
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
@@ -44,9 +44,24 @@ python -m pip install -U pip setuptools wheel
 
 # install dependencies
 python -m pip install -U -r requirements/development.txt
+```
 
-# finally, install the package in editable mode
+## Install git hooks
+
+```sh
+pre-commit install
+```
+
+## Install project
+
+```sh
 python -m pip install -e .
+```
+
+Try it with:
+
+```sh
+qgis-deployment-toolbelt --help
 ```
 
 Happy coding!

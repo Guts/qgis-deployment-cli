@@ -11,7 +11,7 @@ The CHANGELOG format tries to complies with [Keep a Changelog](https://keepachan
 
 ## Git hooks
 
-We use git hooks through [pre-commit](https://pre-commit.com/) to enforce and automatically check some "rules". Please install it before to push any commit.
+We use git hooks through [pre-commit](https://pre-commit.com/) to enforce and automatically check some "rules". Please install it before any commit: `pre-commit install`.
 
 See the relevant configuration file: `.pre-commit-config.yaml`.
 
