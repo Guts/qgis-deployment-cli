@@ -6,7 +6,7 @@ Project uses Sphinx to generate documentation from docstrings (documentation in-
 
 To build it:
 
-```bash
+```sh
 # install aditionnal dependencies
 python -m pip install -U -r requirements/documentation.txt
 # build it
@@ -19,7 +19,7 @@ Open `docs/_build/index.html` in a web browser.
 
 ## Write documentation using live render
 
-```bash
+```sh
 sphinx-autobuild -b html docs/ docs/_build
 ```
 
