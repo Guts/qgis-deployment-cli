@@ -62,6 +62,15 @@ def find_key_from_values(value_to_find: str) -> str | None:
 
 
 def get_shell_to_use() -> tuple[str, str] | None:
+    """Detect active shell
+
+    It performs some checks or operations depending on value type: user and
+        variable expansion, check if URL is valid, etc.
+
+    Returns:
+        tuple[str, str]: Detected shell or None if not found [name, path]
+    """
+
     try:
         shell = shellingham.detect_shell()
         logger.debug(f"Detected active shell: {shell}")
