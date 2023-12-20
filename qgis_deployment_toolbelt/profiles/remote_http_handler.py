@@ -15,11 +15,14 @@
 import logging
 from pathlib import Path
 
+# 3rd party
+import requests
+
+# project
 from qgis_deployment_toolbelt.profiles.profiles_handler_base import (
     RemoteProfilesHandlerBase,
 )
-
-# project
+from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 
 # #############################################################################
 # ########## Globals ###############
@@ -51,6 +54,7 @@ class HttpHandler(RemoteProfilesHandlerBase):
         Args:
             source_repository_path_or_uri (str | Path): path to the source repository
         """
+        self.SOURCE_REPOSITORY_PATH_OR_URL = source_repository_path_or_uri
         super().__init__(source_repository_type=source_repository_type)
 
     def download(self, destination_local_path: Path):
@@ -60,7 +64,18 @@ class HttpHandler(RemoteProfilesHandlerBase):
             destination_local_path (Path): path to the local folder where to download
 
         """
-        logger.info("Start downloading from")
+        logger.info(
+            f"Start downloading from {self.SOURCE_REPOSITORY_PATH_OR_URL} to "
+            f"{destination_local_path}"
+        )
+
+        # get qdt-files.json
+        req = requests.get(
+            url=f"{self.SOURCE_REPOSITORY_PATH_OR_URL}/qdt-files.json",
+            proxies=get_proxy_settings(),
+        )
+        req.raise_for_status()
+        req.json()
 
 
 # #############################################################################
