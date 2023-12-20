@@ -148,7 +148,6 @@ class JobProfilesDownloader(GenericJob):
                 raise NotImplementedError
             downloader = HttpHandler(
                 source_repository_path_or_uri=self.options.get("source"),
-                source_repository_type="",
             )
             downloader.download(destination_local_path=self.qdt_working_folder)
         else:
