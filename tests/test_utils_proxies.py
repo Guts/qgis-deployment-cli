@@ -31,6 +31,7 @@ class TestUtilsNetworkProxies(unittest.TestCase):
         self.assertIsNone(get_proxy_settings())
 
         # using generic - only http
+        get_proxy_settings.cache_clear()
         environ["HTTP_PROXY"] = "http://proxy.example.com:3128"
         self.assertIsInstance(get_proxy_settings(), dict)
         self.assertEqual(
@@ -41,6 +42,7 @@ class TestUtilsNetworkProxies(unittest.TestCase):
         environ.pop("HTTP_PROXY")  # clean up
 
         # using generic - only https
+        get_proxy_settings.cache_clear()
         environ["HTTPS_PROXY"] = "https://proxy.example.com:3128"
         self.assertIsInstance(get_proxy_settings(), dict)
         self.assertEqual(
@@ -51,6 +53,7 @@ class TestUtilsNetworkProxies(unittest.TestCase):
         environ.pop("HTTPS_PROXY")  # clean up
 
         # using generic - both http and https
+        get_proxy_settings.cache_clear()
         environ["HTTP_PROXY"] = "http://proxy.example.com:3128"
         environ["HTTPS_PROXY"] = "https://proxy.example.com:3128"
         self.assertIsInstance(get_proxy_settings(), dict)
@@ -65,6 +68,7 @@ class TestUtilsNetworkProxies(unittest.TestCase):
         environ.pop("HTTPS_PROXY")  # clean up
 
         # using custom QDT
+        get_proxy_settings.cache_clear()
         environ["QDT_PROXY_HTTP"] = "http://user:p8ùX45@proxy.example.com:3128"
         self.assertIsInstance(get_proxy_settings(), dict)
         self.assertEqual(
