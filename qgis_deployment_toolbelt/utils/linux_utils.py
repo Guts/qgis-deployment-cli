@@ -55,6 +55,7 @@ def find_key_from_values(value_to_find: str) -> str | None:
         str | None: The key corresponding to the found value. Returns None if the value
             is not found.
     """
+
     for key, values in shell_path_to_names.items():
         if value_to_find in values:
             return key
@@ -68,7 +69,8 @@ def get_shell_to_use() -> tuple[str, str] | None:
         variable expansion, check if URL is valid, etc.
 
     Returns:
-        tuple[str, str]: Detected shell or None if not found [name, path]
+        optional tuple[str, str] | None: Detected shell [name, path]
+            or None if shell not found
     """
 
     try:
@@ -96,15 +98,9 @@ def get_shell_to_use() -> tuple[str, str] | None:
 
 
 def is_dot_profile_file() -> bool:
-    """Get environment variable from Linux profile file
-    Args:
-
-        envvar_name (str): environment variable name (= key) to retrieve
-        scope (str, optional): environment variable scope. Must be "user" or "system",
-            defaults to "user". Defaults to "user".
-
+    """Check if ~/.profile file exists
     Returns:
-        Optional[str]: environment variable value or None if not found
+        bool : True if found False if not
     """
 
     return check_path(
@@ -123,7 +119,7 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
             defaults to "user". Defaults to "user".
 
     Returns:
-        Optional[str]: environment variable value or None if not found
+        Optional str | None: environment variable value or None if not found
     """
 
     profile_file = get_profile_file(scope)
@@ -156,7 +152,7 @@ def set_environment_variable(
             defaults to "user". Defaults to "user".
 
     Returns:
-        Optional[str]: environment variable value or None if not found
+       bool: True if environment variable has been set False if not
     """
 
     if isinstance(env_value, bool):
@@ -258,16 +254,8 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
             defaults to "user". Defaults to "user".
 
     Returns:
-        [bool]: true if environment variable was successfully removed
+        bool: true if environment variable was successfully removed
                 false if not
-    """
-
-    """
-    shell: tuple[str, str] | None = get_shell_to_use()
-
-    if shell is None:
-        logger.error("Shell to use is not recognized.")
-        return False
     """
 
     shell: tuple[str, str] | None = get_shell_to_use()
@@ -277,17 +265,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
 
     bash_profile = get_profile_file(scope)
 
-    # if shell[0] == "bash":
     if bash_profile is not None:
-        """
-        bash_profile = Path.home().joinpath(".profile")
-        if not is_dot_profile_file():
-            logger.error(
-                f"Shell profile does not exist {bash_profile}"
-            )
-            return False
-        """
-
         logger.debug(f"parsing {bash_profile}")
 
         line_begin = f"export {env_key}="
@@ -361,7 +339,7 @@ def get_profile_file(scope: str = "user") -> str:
             defaults to "user". Defaults to "user".
 
     Returns:
-        Optional[str]: profile file path or None if not found
+        Optional str | None: profile file path or None if not found
     """
 
     # TODO : Add shell checking ?

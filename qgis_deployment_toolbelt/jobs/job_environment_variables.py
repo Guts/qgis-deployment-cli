@@ -106,16 +106,17 @@ class JobEnvironmentVariables(GenericJob):
 
     def __init__(self, options: list[dict]) -> None:
         """Instantiate the class.
-
         Args:
             options (List[dict]): list of dictionary with environment variables to set
             or remove.
         """
+
         super().__init__()
         self.options: list[dict] = [self.validate_options(opt) for opt in options]
 
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""
+
         if opersys == "win32":
             for env_var in self.options:
                 if env_var.get("action") == "add":
@@ -232,4 +233,5 @@ class JobEnvironmentVariables(GenericJob):
 
 if __name__ == "__main__":
     """Standalone execution."""
+
     pass
