@@ -171,22 +171,7 @@ class JobEnvironmentVariables(GenericJob):
                         logger.debug(
                             f"Variable name '{env_var.get('name')}' is not defined"
                         )
-                """
-                elif env_var.get("action") == "update":
-                    try:
-                        update_environment_variable(
-                            env_key=env_var.get("name"),
-                            env_value=self.prepare_value(
-                                value=env_var.get("value"),
-                                value_type=env_var.get("value_type"),
-                            ),
-                            scope=env_var.get("scope")
-                        )
-                    except NameError:
-                        logger.debug(
-                            f"Variable name '{env_var.get('name')}' is not defined"
-                        )
-                """
+
             # force Linux to refresh the environment ?
 
         else:
