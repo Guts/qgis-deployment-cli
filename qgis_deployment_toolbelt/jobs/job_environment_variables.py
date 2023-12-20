@@ -148,11 +148,6 @@ class JobEnvironmentVariables(GenericJob):
         elif opersys == "linux":
             logger.debug(f"OS : {opersys}")
             for env_var in self.options:
-                print(
-                    f'ACTION {env_var.get("action")}',
-                    f'NAME {env_var.get("name")}',
-                    f'VALUE {env_var.get("value")}',
-                )
                 if env_var.get("action") == "add":
                     try:
                         set_environment_variable(
