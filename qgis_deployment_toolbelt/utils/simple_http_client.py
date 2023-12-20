@@ -274,7 +274,7 @@ class SimpleHttpClient:
             logger.error(f"HTTP Exception occurred: {err}")
             raise err
 
-        except socket.timeout as err:
+        except TimeoutError as err:
             logger.error(f"Request timed out. timeout set: {self.timeout}")
             raise err
 
