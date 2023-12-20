@@ -148,7 +148,6 @@ class JobProfilesDownloader(GenericJob):
                 raise NotImplementedError
             downloader = HttpHandler(
                 source_repository_path_or_uri=self.options.get("source"),
-                branch_to_use=self.options.get("branch", "master"),
                 source_repository_type="",
             )
             downloader.download(destination_local_path=self.qdt_working_folder)
@@ -347,7 +346,11 @@ class JobProfilesDownloader(GenericJob):
 
     def sync_copy_only_missing(self, profiles_folder_to_copy: tuple[Path]) -> None:
         """Copy only missing profiles from downloaded ones to QGIS profiles folder to
-        local destination."""
+        local destination.
+
+        Args:
+            profiles_folder_to_copy (tuple[Path]): folders to copy.
+        """
         # copy downloaded profiles into this
         for d in profiles_folder_to_copy:
             copytree(
