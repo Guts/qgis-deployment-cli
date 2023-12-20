@@ -21,7 +21,10 @@
         "protocol": {
             "description": "Set which protocol to use.",
             "enum": [
-                "git"
+                "http",
+                "git",
+                "git_local",
+                "git_remote"
             ],
             "type": "string"
         },

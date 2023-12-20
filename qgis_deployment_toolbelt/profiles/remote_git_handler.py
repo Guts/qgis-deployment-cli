@@ -17,10 +17,9 @@
 import logging
 
 # project
-from qgis_deployment_toolbelt.profiles.git_handler_base import GitHandlerBase
-
-# 3rd party
-
+from qgis_deployment_toolbelt.profiles.profiles_handler_base import (
+    RemoteProfilesHandlerBase,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -33,13 +32,13 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-class RemoteGitHandler(GitHandlerBase):
+class RemoteGitHandler(RemoteProfilesHandlerBase):
     """Handle remote git repository."""
 
     def __init__(
         self,
         source_repository_url: str,
-        source_repository_type: str = "remote",
+        source_repository_type: str = "git_remote",
         branch_to_use: str | None = None,
     ) -> None:
         """Constructor.

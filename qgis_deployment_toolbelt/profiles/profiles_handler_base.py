@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-class GitHandlerBase:
+class RemoteProfilesHandlerBase:
     """Common git repository handler using dulwich.
 
     It's designed to handle thoses cases:
@@ -53,20 +53,24 @@ class GitHandlerBase:
 
     SOURCE_REPOSITORY_ACTIVE_BRANCH: str | None = None
     SOURCE_REPOSITORY_PATH_OR_URL: Path | str | None = None
-    SOURCE_REPOSITORY_TYPE: Literal["local", "remote"] | None = None
+    SOURCE_REPOSITORY_TYPE: Literal[
+        "git_local", "git_remote", "http", "local", "remote"
+    ] | None = None
 
     DESTINATION_PATH: Path | None = None
     DESTINATION_BRANCH_TO_USE: str | None = None
 
     def __init__(
         self,
-        source_repository_type: Literal["local", "remote"],
+        source_repository_type: Literal[
+            "git_local", "git_remote", "http", "local", "remote"
+        ],
         branch_to_use: str | None = None,
     ) -> None:
         """Object instanciation.
 
         Args:
-            source_repository_type (Literal["local", "remote"]): type of source
+            source_repository_type (Literal["git_local", "git_remote", "local", "remote"]): type of source
                 repository
             branch_to_use (str | None, optional): branch to clone or checkout. If None,
                 the source active branch will be used. Defaults to None.
@@ -85,7 +89,7 @@ class GitHandlerBase:
     def is_valid_git_repository(
         self,
         source_repository_path_or_url: Path | str | None = None,
-        force_type: Literal["local", "remote"] | None = None,
+        force_type: Literal["git_local", "git_remote", "local", "remote"] | None = None,
         raise_error: bool = True,
     ) -> bool:
         """Determine if the given path or URL is a valid repository or not.
@@ -93,7 +97,7 @@ class GitHandlerBase:
         Args:
             source_repository_path_or_url (Path | str | None, optional): _description_.
                 Defaults to None.
-            force_type (Literal["local", "remote"], optional): force git repository
+            force_type (Literal["git_local","local", "remote"], optional): force git repository
                 type to check. If None, it uses the SOURCE_REPOSITORY_TYPE attribute.
                 Defaults None.
             raise_error (bool, optional): if True, it raises an exception. Defaults
@@ -124,12 +128,18 @@ class GitHandlerBase:
         else:
             repository_type = force_type
 
-        # check according to the repository type
-        if repository_type == "remote" and not self._is_url_git_repository(
+        # check according to the repository types
+        if repository_type in (
+            "git_remote",
+            "remote",
+        ) and not self._is_url_git_repository(
             remote_git_url=source_repository_path_or_url
         ):
             valid_source = False
-        elif repository_type == "local" and not self._is_local_path_git_repository(
+        elif repository_type in (
+            "git_local",
+            "local",
+        ) and not self._is_local_path_git_repository(
             local_path=source_repository_path_or_url
         ):
             valid_source = False
@@ -387,7 +397,7 @@ class GitHandlerBase:
         ) and not self.is_valid_git_repository(
             source_repository_path_or_url=to_local_destination_path,
             raise_error=False,
-            force_type="local",
+            force_type="git_local",
         ):
             try:
                 logger.debug("Start cloning operations...")
@@ -414,7 +424,7 @@ class GitHandlerBase:
         elif to_local_destination_path.exists() and self.is_valid_git_repository(
             source_repository_path_or_url=to_local_destination_path,
             raise_error=False,
-            force_type="local",
+            force_type="git_local",
         ):
             # FETCH
             logger.debug("Start fetching operations...")
@@ -488,7 +498,7 @@ class GitHandlerBase:
             f"Cloning repository {self.SOURCE_REPOSITORY_PATH_OR_URL} ({branch=}) to {local_path}"
         )
 
-        if self.SOURCE_REPOSITORY_TYPE == "local":
+        if self.SOURCE_REPOSITORY_TYPE in ("git_local", "local"):
             with porcelain.open_repo_closing(
                 path_or_repo=self.SOURCE_REPOSITORY_PATH_OR_URL
             ) as repo_obj:
@@ -499,7 +509,7 @@ class GitHandlerBase:
                     checkout=True,
                     progress=None,
                 )
-        elif self.SOURCE_REPOSITORY_TYPE == "remote":
+        elif self.SOURCE_REPOSITORY_TYPE in ("git_remote", "remote"):
             repo_obj = porcelain.clone(
                 source=self.SOURCE_REPOSITORY_PATH_OR_URL,
                 target=f"{local_path.resolve()}",

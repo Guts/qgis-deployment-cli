@@ -65,7 +65,7 @@ class TestGitHandlerLocal(unittest.TestCase):
         )
 
         self.assertIsInstance(local_git_handler.SOURCE_REPOSITORY_PATH_OR_URL, Path)
-        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "local")
+        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "git_local")
         self.assertEqual(
             local_git_handler.SOURCE_REPOSITORY_PATH_OR_URL,
             self.source_git_path_source.resolve(),
@@ -108,7 +108,7 @@ class TestGitHandlerLocal(unittest.TestCase):
             branch_to_use="main",
         )
 
-        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "local")
+        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "git_local")
 
         with tempfile.TemporaryDirectory(
             prefix="QDT_test_local_git_",
@@ -127,7 +127,7 @@ class TestGitHandlerLocal(unittest.TestCase):
             branch_to_use="no_existing_branch",
         )
 
-        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "local")
+        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "git_local")
         self.assertEqual(local_git_handler.DESTINATION_BRANCH_TO_USE, "main")
 
         local_git_handler.download(
@@ -151,7 +151,7 @@ class TestGitHandlerLocal(unittest.TestCase):
             branch_to_use="main",
         )
 
-        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "local")
+        self.assertEqual(local_git_handler.SOURCE_REPOSITORY_TYPE, "git_local")
 
         with tempfile.TemporaryDirectory(
             prefix="QDT_test_local_git_",
