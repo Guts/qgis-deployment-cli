@@ -112,11 +112,16 @@ class JobProfilesDownloader(GenericJob):
 
         # prepare remote source
         if self.options.get("protocol") in ("git", "git_local", "git_remote"):
-            logger.warning(
-                DeprecationWarning(
-                    "'git' protocol has been split into 2 more explicit: 'git_local' and 'git_protocol'. Please update your scenario consequently."
+            if self.options.get("protocol") == "git":
+                logger.warning(
+                    DeprecationWarning(
+                        "'git' protocol has been split into 2 more explicit: 'git_local' "
+                        "(for git repositories accessible directly through file system "
+                        "and 'git_remote' (for repositories accessible network request "
+                        "to a remote git server through HTTP). "
+                        "Please update your scenario consequently."
+                    )
                 )
-            )
             if self.options.get("protocol") == "git_remote" or self.options.get(
                 "source"
             ).startswith(("git://", "http://", "https://")):
