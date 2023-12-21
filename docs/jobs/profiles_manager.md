@@ -1,12 +1,29 @@
 # Profiles manager
 
-This job synchronize local profiles with remote storage (git for now).
+This job synchronize local profiles from remote storage (git for now).
 
 ----
 
 ## Use it
 
 Sample job configurations.
+
+### **Remote** HTTP repository
+
+```yaml
+- name: Synchronize profiles from local git repository
+  uses: qprofiles-manager
+  with:
+    action: download
+    branch: main
+    protocol: http
+    source: https://organization.intra/qgis/qdt/
+    sync_mode: only_new_version
+```
+
+:::{note}
+If you use the HTTP procotol, a `qdt-files.json` must be downloadable at the URL source. Typically: `https://organization.intra/qgis/qdt/qdt-files.json`.
+:::
 
 ### Public **remote** git repository in **overwrite** mode
 
@@ -16,7 +33,7 @@ Sample job configurations.
   with:
     action: download
     branch: main
-    protocol: git
+    protocol: git_remote
     source: https://github.com/geotribu/profils-qgis.git
     sync_mode: overwrite
 ```
@@ -29,7 +46,7 @@ Sample job configurations.
   with:
     action: download
     branch: main
-    protocol: git
+    protocol: git_local
     source: file:///home/jmo/Git/Geotribu/profils-qgis
     sync_mode: only_new_version
 ```
@@ -58,7 +75,8 @@ Set which protocol to use.
 
 Possible_values:
 
-- `git` (_default_): use git to clone or pull changes from remote repository. `source` must end with `.git` and `branch` should also be set.
+- `git_local`: use git to clone or pull changes from a repository accessible through filesystem, on the same computer or a shared drive on local network. `source` must end with `.git` and `branch` should also be set.
+- `git_remote` (_default_): use git to clone or pull changes from a remote repository accessible through underlying HTTP protocol. `source` must end with `.git` and `branch` should also be set.
 - `http`: use HTTP to download remote profiles. Source must start with `http`.
 
 ### source
