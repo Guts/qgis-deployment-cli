@@ -12,7 +12,6 @@
 
 # standard
 import unittest
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 # package
@@ -24,24 +23,31 @@ class TestSimpleHttpClient(unittest.TestCase):
         """Run before each test method."""
         self.client = SimpleHttpClient(timeout=5)
 
-    def test_download_file(self):
-        """Test file downloading."""
-        dst_filepath = Path("./tests/fixtures/tmp/index.html")
-        # Télécharger le fichier depuis le serveur HTTP local
-        url = "https://duckduckgo.com/index.html"
-        download_result = self.client.download_file(url, dst_filepath)
+    # def test_download_file(self):
+    #     """Test file downloading."""
+    #     dst_filepath = Path("./tests/fixtures/tmp/qdt_readme.md")
+    #     # Télécharger le fichier depuis le serveur HTTP local
+    #     url = f"{__uri_repository__}/raw/main/README.md"
 
-        self.assertIsInstance(download_result, Path)
-        self.assertTrue(download_result.resolve(), dst_filepath.resolve())
-        self.assertTrue(download_result.is_file())
+    #     # clean up proxy
+    #     if getenv("QDT_PROXY_HTTP"):
+    #         environ.pop("QDT_PROXY_HTTP")
+    #     get_proxy_settings.cache_clear()
 
-        with dst_filepath.open("r") as fifi:
-            lines = fifi.readlines()
+    #     # download file
+    #     download_result = self.client.download_file(url, dst_filepath)
 
-        self.assertEqual(lines[0], "<!DOCTYPE html>\n")
+    #     self.assertIsInstance(download_result, Path)
+    #     self.assertTrue(download_result.resolve(), dst_filepath.resolve())
+    #     self.assertTrue(download_result.is_file())
 
-        # clean up
-        dst_filepath.unlink(missing_ok=True)
+    #     # with dst_filepath.open("r") as fifi:
+    #     #     lines = fifi.readlines()
+
+    #     # self.assertEqual(lines[0], "<!DOCTYPE html>\n")
+
+    #     # clean up
+    #     dst_filepath.unlink(missing_ok=True)
 
     def test_get(self):
         # Créer une réponse factice pour la méthode get

@@ -205,7 +205,7 @@ class SimpleHttpClient:
         if scheme == "https":
             if isinstance(self.proxy_settings, dict) and "https" in self.proxy_settings:
                 conn = http.client.HTTPSConnection(
-                    self.proxy_settings.get("https"),
+                    host=self.proxy_settings.get("https"),
                     timeout=self.timeout,
                     context=self.ssl_context,
                 )
@@ -217,7 +217,9 @@ class SimpleHttpClient:
         else:
             if isinstance(self.proxy_settings, dict) and "http" in self.proxy_settings:
                 conn = http.client.HTTPConnection(
-                    self.proxy_settings.get("http"), port=port, timeout=self.timeout
+                    host=self.proxy_settings.get("http"),
+                    port=port,
+                    timeout=self.timeout,
                 )
                 conn.set_tunnel(host=host, port=port, headers=combined_headers)
             else:
@@ -237,6 +239,7 @@ class SimpleHttpClient:
                     method=method, url=path, body=body, headers=combined_headers
                 )
                 response = EnhancedHTTPResponse(conn.getresponse())
+                response.begin()
 
                 # handle redirections
                 if response.status // 100 == 3 and "Location" in response.headers:
@@ -363,6 +366,7 @@ class SimpleHttpClient:
 
         # handle HTTP method and args
         if method.lower() == "post" or data is not None:
+            body = None
             if data:
                 body = urllib.parse.urlencode(data)
                 headers = headers or {}
