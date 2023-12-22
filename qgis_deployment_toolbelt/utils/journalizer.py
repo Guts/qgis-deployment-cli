@@ -13,9 +13,15 @@ from logging.handlers import RotatingFileHandler
 from os import getenv
 from os.path import expanduser, expandvars
 from pathlib import Path
-from platform import architecture
-from platform import platform as opersys
+from platform import architecture, platform, uname
 from socket import gethostname
+
+# 3rd party
+# Imports depending on operating system
+if "linux" in uname().system.lower():
+    import distro
+else:
+    distro = None
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
@@ -124,7 +130,11 @@ def headers():
     """Basic information to log before other message."""
     # initialize the log
     logger.info(f"{'='*10} {__title__} - {__version__} {'='*10}")
-    logger.debug(f"Operating System: {opersys()}")
+    logger.debug(f"Operating System: {platform()}")
+    if distro:
+        logger.debug(
+            f"Distribution name and version: {distro.name()} {distro.version()}"
+        )
     logger.debug(f"Architecture: {architecture()[0]}")
     logger.debug(f"Computer: {gethostname()}")
     logger.debug(f"Launched by user: {getuser()}")
