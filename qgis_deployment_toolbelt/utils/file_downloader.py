@@ -49,7 +49,6 @@ def download_remote_file_to_local(
     Returns:
         Path: path to the local file (should be the same as local_file_path)
     """
-
     # check if file exists
     if local_file_path.exists():
         logger.warning(f"{local_file_path} already exists. It's about to be replaced.")
