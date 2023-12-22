@@ -231,10 +231,6 @@ class SimpleHttpClient:
         response = EnhancedHTTPResponse()
         response_body = None
 
-        # prepare response_body
-        response = EnhancedHTTPResponse
-        response_body = None
-
         # make request
         try:
             is_redirected: bool = True
