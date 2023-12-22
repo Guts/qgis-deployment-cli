@@ -63,14 +63,10 @@ def find_key_from_values(value_to_find: str) -> str | None:
 
 
 def get_shell_to_use() -> tuple[str, str] | None:
-    """Detect active shell
-
-    It performs some checks or operations depending on value type: user and
-        variable expansion, check if URL is valid, etc.
+    """Detects shell to be used.
 
     Returns:
-        optional tuple[str, str] | None: Detected shell [name, path]
-            or None if shell not found
+        tuple[str, str] | None: [shell name, shell path] or None if not found;
     """
 
     try:
@@ -97,20 +93,6 @@ def get_shell_to_use() -> tuple[str, str] | None:
     return shell
 
 
-def is_dot_profile_file() -> bool:
-    """Check if ~/.profile file exists
-    Returns:
-        bool : True if found False if not
-    """
-
-    return check_path(
-        input_path=Path.home().joinpath(".profile"),
-        must_be_a_file=True,
-        must_exists=True,
-        raise_error=False,
-    )
-
-
 def get_environment_variable(envvar_name: str, scope: str = "user") -> str | None:
     """Get environment variable from Linux profile file
     Args:
@@ -119,26 +101,30 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
             defaults to "user". Defaults to "user".
 
     Returns:
-        Optional str | None: environment variable value or None if not found
+        str | None: environment variable value or None if not found
     """
 
     profile_file = get_profile_file(scope)
 
-    logger.debug(f"parsing {profile_file}")
+    if profile_file is not None:
+        logger.debug(f"parsing {profile_file}")
 
-    # Read file content
-    with profile_file.open(mode="r", encoding="UTF-8") as file:
-        lines = file.readlines()
+        # Read file content
+        with profile_file.open(mode="r", encoding="UTF-8") as file:
+            lines = file.readlines()
 
-    # look for export line
-    env_value = None
-    for line in lines:
-        if envvar_name in line.strip():
-            env_value = [item.strip() for item in re.split("=", line)][-1]
+        # look for export line
+        env_value = None
+        for line in lines:
+            if envvar_name in line.strip():
+                env_value = [item.strip() for item in re.split("=", line)][-1]
 
-    logger.debug(f"Value for environment variable {envvar_name}: {env_value}")
+        logger.debug(f"Value for environment variable {envvar_name}: {env_value}")
 
-    return env_value
+        return env_value
+    else:
+        logger.error("Profile file was not found.")
+        return None
 
 
 def set_environment_variable(
@@ -152,16 +138,11 @@ def set_environment_variable(
             defaults to "user". Defaults to "user".
 
     Returns:
-       bool: True if environment variable has been set False if not
+        bool: True if environment variable correctly set or False if not
     """
 
     if isinstance(env_value, bool):
         env_value = str(bool(env_value)).lower()
-
-    shell: tuple[str, str] | None = get_shell_to_use()
-    if shell is None:
-        logger.error("Shell to use is not recognized.")
-        return False
 
     if get_environment_variable(env_key, scope) is not None:
         logger.info(f"Environment variable {env_key} already there")
@@ -172,20 +153,10 @@ def set_environment_variable(
             logger.info(f"Environment variable already set to {env_value}")
             return True
 
-    bash_profile = get_profile_file(scope)
+    profile_file = get_profile_file(scope)
 
-    # if shell[0] == "bash":
-    if bash_profile is not None:
-        """
-        bash_profile = Path.home().joinpath(".profile")
-        if not is_dot_profile_file():
-            logger.error(
-                f"Shell profile does not exist and will be created {bash_profile}"
-            )
-            bash_profile.touch()
-        """
-
-        logger.debug(f"parsing {bash_profile}")
+    if profile_file is not None:
+        logger.debug(f"parsing {profile_file}")
 
         export_line = f"export {env_key}={str(env_value)}"
         block_start_found = False
@@ -194,7 +165,7 @@ def set_environment_variable(
         line_found = False
 
         # Read file content
-        with bash_profile.open(mode="r", encoding="UTF-8") as file:
+        with profile_file.open(mode="r", encoding="UTF-8") as file:
             lines = file.readlines()
 
         # look for block and export line
@@ -221,7 +192,7 @@ def set_environment_variable(
         elif block_found and not line_found:
             lines.insert(block_end_line, f"{export_line}\n")
 
-            with bash_profile.open(mode="w", encoding="UTF-8") as file:
+            with profile_file.open(mode="w", encoding="UTF-8") as file:
                 file.writelines(lines)
             logger.info(
                 f"QDT block was already here but not the line: '{export_line}. "
@@ -234,7 +205,7 @@ def set_environment_variable(
                 f"{export_line}\n",
                 f"{qdt_block_comment_end}",
             )
-            with open(bash_profile, "a") as file:
+            with open(profile_file, "a") as file:
                 file.writelines(new_lines)
             logger.info(
                 f"Nor QDT block and the line: '{export_line}' were present. "
@@ -242,7 +213,7 @@ def set_environment_variable(
             )
             return True
     else:
-        logger.error(f"Shell {shell[0]} is not supported")
+        logger.error("Profile file was not found.")
         return False
 
 
@@ -254,19 +225,13 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
             defaults to "user". Defaults to "user".
 
     Returns:
-        bool: true if environment variable was successfully removed
-                false if not
+        bool: True if environment variable successfully removed or False if not
     """
 
-    shell: tuple[str, str] | None = get_shell_to_use()
-    if shell is None:
-        logger.error("Shell to use is not recognized.")
-        return False
+    profile_file = get_profile_file(scope)
 
-    bash_profile = get_profile_file(scope)
-
-    if bash_profile is not None:
-        logger.debug(f"parsing {bash_profile}")
+    if profile_file is not None:
+        logger.debug(f"parsing {profile_file}")
 
         line_begin = f"export {env_key}="
         block_start_found = False
@@ -277,7 +242,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         line_begin_line: int = 0
 
         # Lire le contenu du fichier
-        with bash_profile.open(mode="r", encoding="UTF-8") as file:
+        with profile_file.open(mode="r", encoding="UTF-8") as file:
             lines = file.readlines()
 
         # look for block and beginning of line
@@ -319,7 +284,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
             )
         # pos = [block_start_line, line_begin_line, block_end_line]
         new_lines = [lines[i] for i, e in enumerate(lines) if i not in pos]
-        with bash_profile.open(mode="w", encoding="UTF-8") as file:
+        with profile_file.open(mode="w", encoding="UTF-8") as file:
             file.writelines(new_lines)
         logger.info(
             f"QDT block for environment variable '{env_key}' has been removed. "
@@ -328,21 +293,30 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         return True
 
     else:
-        logger.error(f"Shell {shell[0]} is not supported")
+        logger.error("Profile file was not found.")
         return False
 
 
-def get_profile_file(scope: str = "user") -> str:
+def get_profile_file(scope: str = "user") -> str | None:
     """Get Linux profile file depending on shell and scope
     Args:
         scope (str, optional): environment variable scope. Must be "user" or "system",
             defaults to "user". Defaults to "user".
 
     Returns:
-        Optional str | None: profile file path or None if not found
+        str | None: profile file path or None if not found
     """
 
-    # TODO : Add shell checking ?
+    # Shell checking
+    shell: tuple[str, str] | None = get_shell_to_use()
+    if shell is None:
+        logger.error("Shell to use is not recognized.")
+        return None
+
+    if shell[0] != "bash":
+        logger.error("Shell {shell} is not supported.")
+        return None
+
     if scope == "system":
         if check_path(
             input_path=Path("/etc").joinpath("profile"),
