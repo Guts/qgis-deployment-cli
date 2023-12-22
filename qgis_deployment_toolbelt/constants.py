@@ -30,6 +30,9 @@ from qgis_deployment_toolbelt.utils.check_path import check_path
 # logs
 logger = logging.getLogger(__name__)
 
+# defaults
+DEFAULT_QDT_WORKING_FOLDER = Path.home().joinpath(".cache/qgis-deployment-toolbelt")
+
 # #############################################################################
 # ########## Functions #############
 # ##################################
@@ -50,10 +53,24 @@ def get_qdt_working_directory(
         Path: path to the QDT working directory
     """
     if specific_value:
+        logger.info(f"QDT working folder - Using the specified value: {specific_value}")
         return Path(expandvars(expanduser(specific_value)))
-    elif getenv("QDT_LOCAL_WORK_DIR"):
-        return Path(expandvars(expanduser(getenv("QDT_LOCAL_WORK_DIR"))))
+    elif qdt_local_working_folder := getenv("QDT_LOCAL_WORK_DIR"):
+        logger.info(
+            "QDT working folder - Using value specified as environment variable: "
+            f"{qdt_local_working_folder}"
+        )
+        return Path(expandvars(expanduser(qdt_local_working_folder)))
     else:
+        if identifier:
+            logger.info(
+                f"QDT working folder - Using default path '{DEFAULT_QDT_WORKING_FOLDER}' "
+                f"with custom identifier '{identifier}'"
+            )
+        else:
+            logger.info(
+                f"QDT working folder - Using default path: {DEFAULT_QDT_WORKING_FOLDER}"
+            )
         return Path(
             expandvars(
                 expanduser(
