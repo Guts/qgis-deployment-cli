@@ -91,7 +91,7 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
                 f"Logs folder set with QDT_LOGS_DIR environment variable: {logs_folder}"
             )
         else:
-            logs_folder = get_qdt_working_directory().parent / "logs"
+            logs_folder = get_qdt_working_directory().joinpath("logs")
             logger.debug(
                 "Logs folder specified in QDT_LOGS_DIR environment variable "
                 f"{getenv('QDT_LOGS_DIR')} can't be used (see logs above). Fallback on "
@@ -110,6 +110,7 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
             maxBytes=3000000,
             mode="a",
         )
+
         # force new file by execution
         if logs_filepath.is_file():
             log_file_handler.doRollover()
@@ -148,3 +149,18 @@ def headers():
         logger.debug(f"Network proxies detected: {proxies_settings}")
     else:
         logger.debug("No network proxies detected")
+
+
+def get_logger_filepath() -> Path | None:
+    """Retrieve log filepath within logger handlers.
+
+    Returns:
+        Path | None: path to the logfile or None if no handler has baseFilename attr.
+    """
+    if logger.root.hasHandlers():
+        for handler in logger.root.handlers:
+            if hasattr(handler, "baseFilename"):
+                return Path(handler.baseFilename)
+
+    logger.warning("No file found in ay log handlers.")
+    return None

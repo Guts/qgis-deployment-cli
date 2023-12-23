@@ -13,6 +13,7 @@
 
 # Standard library
 import logging
+from os import getenv
 from pathlib import Path
 from sys import platform as opersys
 
@@ -45,7 +46,7 @@ class GenericJob:
 
     def __init__(self) -> None:
         """Object instanciation."""
-        # local QDT folder
+        # local QDT folders
         self.qdt_working_folder = get_qdt_working_directory()
         if not self.qdt_working_folder.exists():
             logger.info(
@@ -53,7 +54,12 @@ class GenericJob:
                 "Creating it to properly run the job."
             )
             self.qdt_working_folder.mkdir(parents=True, exist_ok=True)
-        logger.debug(f"Working folder: {self.qdt_working_folder}")
+        logger.debug(f"QDT working folder: {self.qdt_working_folder}")
+
+        self.qdt_downloaded_repositories = self.qdt_working_folder.joinpath(
+            f"repositories/{getenv('QDT_TMP_RUNNING_SCENARIO_ID', 'default')}"
+        )
+        self.qdt_plugins_folder = self.qdt_working_folder.joinpath("plugins")
 
         # destination profiles folder
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
@@ -65,33 +71,40 @@ class GenericJob:
             self.qgis_profiles_path.mkdir(parents=True)
         logger.debug(f"Installed QGIS profiles folder: {self.qgis_profiles_path}")
 
-    def list_downloaded_profiles(self) -> tuple[QdtProfile]:
+    def list_downloaded_profiles(self) -> tuple[QdtProfile] | None:
         """List downloaded QGIS profiles, i.e. a profile's folder located into the QDT
             working folder.
-            Typically: `~/.cache/qgis-deployment-toolbelt/geotribu` or
-            `%USERPROFILE%/.cache/qgis-deployment-toolbelt/geotribu`).
+            Typically: `~/.cache/qgis-deployment-toolbelt/repositories/geotribu` or
+            `%USERPROFILE%/.cache/qgis-deployment-toolbelt/repositories/geotribu`).
 
         Returns:
-            tuple[QdtProfile]: tuple of profiles objects
+            tuple[QdtProfile] | None: tuple of profiles objects or None if no profile
+                folder listed
         """
-        return self.filter_profiles_folder(start_parent_folder=self.qdt_working_folder)
+        return self.filter_profiles_folder(
+            start_parent_folder=self.qdt_downloaded_repositories
+        )
 
-    def list_installed_profiles(self) -> tuple[QdtProfile]:
+    def list_installed_profiles(self) -> tuple[QdtProfile] | None:
         """List installed QGIS profiles, i.e. a profile's folder located into the QGIS
             profiles path and so accessible to the end-user through the QGIS interface.
             Typically: `~/.local/share/QGIS/QGIS3/profiles/geotribu` or
             `%APPDATA%/QGIS/QGIS3/profiles/geotribu`).
 
         Returns:
-            tuple[QdtProfile]: tuple of profiles objects
+            tuple[QdtProfile] | None: tuple of profiles objects or Non if no profile is
+                installed in QGIS3/profiles
         """
         return self.filter_profiles_folder(start_parent_folder=self.qgis_profiles_path)
 
-    def filter_profiles_folder(self, start_parent_folder: Path) -> tuple[QdtProfile]:
+    def filter_profiles_folder(
+        self, start_parent_folder: Path
+    ) -> tuple[QdtProfile] | None:
         """Parse a folder structure to filter on QGIS profiles folders.
 
         Returns:
-            tuple[QdtProfile]: tuple of profiles objects
+            tuple[QdtProfile] | None: tuple of profiles objects or Non if no profile
+                folder found
         """
         # first, try to get folders containing a profile.json
         qgis_profiles_folder = [

@@ -8,7 +8,7 @@ metadata:
 
 # Toolbelt settings
 settings:
-  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/demo/
+  # LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/demo/
   # QGIS_EXE_PATH:
   #   linux: /usr/bin/qgis
   #   mac: /usr/bin/qgis

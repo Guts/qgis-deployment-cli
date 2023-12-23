@@ -17,6 +17,8 @@ import logging
 from os import environ
 from pathlib import Path
 
+# project
+from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.jobs.job_environment_variables import (
     JobEnvironmentVariables,
 )
@@ -91,7 +93,7 @@ class JobsOrchestrator:
             if job.ID == job_id:
                 return job
 
-    def init_job_class_from_id(self, job_id: str, options: dict) -> object:
+    def init_job_class_from_id(self, job_id: str, options: dict) -> GenericJob:
         """Get job class from id and instanciate it with options.
 
         :param str job_id: job identifier (i.e. "qprofiles-manager")

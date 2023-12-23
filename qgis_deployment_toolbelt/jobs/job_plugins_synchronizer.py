@@ -73,21 +73,16 @@ class JobPluginsSynchronizer(GenericJob):
         self.options: dict = self.validate_options(options)
 
         # where QDT downloads plugins
-        self.qdt_plugins_folder = self.qdt_working_folder.parent / "plugins"
         self.qdt_plugins_folder.mkdir(exist_ok=True, parents=True)
         logger.info(f"QDT plugins folder: {self.qdt_plugins_folder}")
-
-        logger.debug(
-            "Using plugins listed into profile.json files found into profiles "
-            f"already installed under the QGIS3 user data: {self.qgis_profiles_path.resolve()}"
-        )
 
         # which profile.json file to use
         if self.options.get("profile_ref") == "installed":
             self.profiles_path = self.qgis_profiles_path
             logger.debug(
                 "Using plugins listed into profile.json files found into profiles "
-                f"already installed under the QGIS3 user data: {self.profiles_path.resolve()}"
+                "already installed under the QGIS3 user folder: "
+                f"{self.profiles_path.resolve()}"
             )
         else:
             self.profiles_path = self.qdt_working_folder

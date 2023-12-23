@@ -18,13 +18,12 @@ from pathlib import Path
 from sys import platform as opersys
 from urllib.parse import urlsplit
 
+# submodules
 from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
 from qgis_deployment_toolbelt.utils.check_path import check_path
-
-# submodules
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 
@@ -135,7 +134,7 @@ def run(args: argparse.Namespace):
 
     # -- Load and validate scenario --
     try:
-        scenario = ScenarioReader(in_yaml=Path(args.scenario_filepath))
+        scenario: ScenarioReader = ScenarioReader(in_yaml=Path(args.scenario_filepath))
     except Exception as err:
         exit_cli_error(
             f"Unable to read the scenario: {args.scenario_filepath}. Trace: {err}",
@@ -175,15 +174,17 @@ def run(args: argparse.Namespace):
 
     qdt_local_working_folder = get_qdt_working_directory(
         specific_value=scenario.settings.get("LOCAL_QDT_WORKDIR"),
-        identifier=scenario.metadata.get("id"),
     )
-    logger.info(f"QDT working folder: " f"{qdt_local_working_folder}")
+    logger.info(f"QDT working folder: {qdt_local_working_folder}")
+    environ["QDT_LOCAL_QDT_WORKDIR"] = f"{qdt_local_working_folder.resolve()}"
+    environ["QDT_TMP_RUNNING_SCENARIO_ID"] = str(scenario.metadata.get("id"))
 
     # -- STEPS JOBS
-    steps_ok = []
-    orchestrator = JobsOrchestrator()
+    steps_ok: list = []
+    orchestrator: JobsOrchestrator = JobsOrchestrator()
 
     # filter out unrecognized jobs
+    logger.debug("Filtering valid steps in scenario...")
     for step in scenario.steps:
         if step.get("uses") not in orchestrator.jobs_ids:
             logger.warning(f"{step.get('uses')} not found in available jobs. Skipping.")
