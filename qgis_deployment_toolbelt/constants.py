@@ -39,48 +39,54 @@ DEFAULT_QDT_WORKING_FOLDER = Path.home().joinpath(".cache/qgis-deployment-toolbe
 
 
 def get_qdt_working_directory(
-    specific_value: PathLike | None = None, identifier: str = "default"
+    specific_value: PathLike | None = None, identifier: str | None = None
 ) -> Path:
     """Get QDT working directory.
 
     Args:
         specific_value (PathLike, optional): a specific path to use. If set it's \
             expanded and returned. Defaults to None.
-        identifier (str, optional): used to make the folder unique. If not set, \
-            'default' (sure, not so unique...) is used. Defaults to "default".
+        identifier (str, optional): used to make the folder unique. Defaults to None.
 
     Returns:
         Path: path to the QDT working directory
     """
     if specific_value:
-        logger.info(f"QDT working folder - Using the specified value: {specific_value}")
+        logger.debug(
+            f"QDT working folder - Using the specified value: {specific_value}"
+        )
         return Path(expandvars(expanduser(specific_value)))
     elif qdt_local_working_folder := getenv("QDT_LOCAL_WORK_DIR"):
-        logger.info(
+        logger.debug(
             "QDT working folder - Using value specified as environment variable: "
             f"{qdt_local_working_folder}"
         )
         return Path(expandvars(expanduser(qdt_local_working_folder)))
     else:
-        if identifier:
-            logger.info(
+        if identifier is not None:
+            logger.debug(
                 f"QDT working folder - Using default path '{DEFAULT_QDT_WORKING_FOLDER}' "
                 f"with custom identifier '{identifier}'"
             )
-        else:
-            logger.info(
-                f"QDT working folder - Using default path: {DEFAULT_QDT_WORKING_FOLDER}"
-            )
-        return Path(
-            expandvars(
-                expanduser(
-                    getenv(
-                        "QDT_LOCAL_WORK_DIR",
-                        f"~/.cache/qgis-deployment-toolbelt/{identifier}",
-                    ),
+            return Path(
+                expandvars(
+                    expanduser(
+                        getenv(
+                            "QDT_LOCAL_WORK_DIR",
+                            DEFAULT_QDT_WORKING_FOLDER.joinpath(identifier),
+                        ),
+                    )
                 )
             )
-        )
+        else:
+            logger.debug(
+                f"QDT working folder - Using default path: {DEFAULT_QDT_WORKING_FOLDER}"
+            )
+            return Path(
+                expandvars(
+                    expanduser(getenv("QDT_LOCAL_WORK_DIR", DEFAULT_QDT_WORKING_FOLDER))
+                )
+            )
 
 
 # #############################################################################
@@ -94,7 +100,7 @@ class OSConfiguration:
 
     name_python: str
     names_alter: list = None
-    profiles_path: Path = getenv("QGIS_CUSTOM_CONFIG_PATH")
+    profiles_path: Path | None = getenv("QGIS_CUSTOM_CONFIG_PATH")
     qgis_bin_exe_path: Path = None
     shortcut_extension: str = None
     shortcut_forbidden_chars: tuple[str] = None

@@ -105,11 +105,8 @@ class JobProfilesDownloader(GenericJob):
         self.options: dict = self.validate_options(options)
 
         # where QDT downloads remote repositories
-        self.qdt_plugins_folder.mkdir(exist_ok=True, parents=True)
-        logger.info(
-            "QDT folder where remote repositories will be downloaded: "
-            f"{self.qdt_downloaded_repositories}"
-        )
+        self.qdt_downloaded_repositories.mkdir(exist_ok=True, parents=True)
+        logger.debug(f"Local repositories folder: {self.qdt_downloaded_repositories}")
 
     def run(self) -> None:
         """Execute job logic."""
@@ -136,16 +133,10 @@ class JobProfilesDownloader(GenericJob):
                     source_repository_url=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
                 )
-                downloader.download(
-                    destination_local_path=self.qdt_downloaded_repositories
-                )
             elif self.options.get("source").startswith("file://"):
                 downloader = LocalGitHandler(
                     source_repository_path_or_uri=self.options.get("source"),
                     branch_to_use=self.options.get("branch", "master"),
-                )
-                downloader.download(
-                    destination_local_path=self.qdt_downloaded_repositories
                 )
             else:
                 logger.error(
@@ -163,13 +154,15 @@ class JobProfilesDownloader(GenericJob):
             downloader = HttpHandler(
                 source_repository_path_or_uri=self.options.get("source"),
             )
-            downloader.download(destination_local_path=self.qdt_working_folder)
         else:
             logger.critical(
                 f"Protocol '{self.options.get('protocol')}' is not part of supported ones: "
                 f"{self.OPTIONS_SCHEMA.get('protocol').get('possible_values')}"
             )
             raise NotImplementedError
+
+        # run download operation
+        downloader.download(destination_local_path=self.qdt_downloaded_repositories)
 
         # check of there are some profiles folders within the downloaded folder
         profiles_folders = self.list_downloaded_profiles()
