@@ -18,6 +18,25 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.30.0-beta1 - 2023-12-26
+
+### Features and enhancements 🎉
+
+* Security: increase security scans and improve related documentation by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/352>
+* Feature: download from http (part 1) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/351>
+* feature: add util to get ProxyHandler and cache some recurring functions by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/358>
+* feature: add simple http client by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/360>
+* improvement: use proxy handle in upgrade sub-command by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/362>
+* log: on Linux, add distribution name and version by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/363>
+* log: add details about how QDT working folder is determined by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/364>
+* Change: move QDT subfolders to generic job by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/347>
+* feature: use proxy handler in file downloader by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/359>
+
+### Documentation 📖
+
+* docs: improve development guide by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/357>
+* docs: update qprofiles-manager with deprecated 'git' value by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/361>
+
 ## 0.29.0 - 2023-11-16
 
 ### Bugs fixes 🐛
