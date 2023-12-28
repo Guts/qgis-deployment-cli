@@ -15,6 +15,7 @@ from requests.exceptions import ConnectionError, HTTPError
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
+from qgis_deployment_toolbelt.utils.formatters import convert_octets
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 
 # ############################################################################
@@ -80,7 +81,8 @@ def download_remote_file_to_local(
                         if chunk:
                             buffile.write(chunk)
             logger.info(
-                f"Downloading {remote_url_to_download} to {local_file_path} succeeded."
+                f"Downloading {remote_url_to_download} to {local_file_path} "
+                f"({convert_octets(local_file_path.stat().st_size)}) succeeded."
             )
     except HTTPError as error:
         logger.error(
