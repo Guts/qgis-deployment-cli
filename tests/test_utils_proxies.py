@@ -28,7 +28,7 @@ class TestUtilsNetworkProxies(unittest.TestCase):
     def test_proxy_settings(self):
         """Test proxy settings retriever."""
         # by default, no proxy
-        self.assertIsNone(get_proxy_settings())
+        self.assertDictEqual(get_proxy_settings(), {})
 
         # using generic - only http
         get_proxy_settings.cache_clear()
