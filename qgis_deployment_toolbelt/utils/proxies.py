@@ -14,7 +14,7 @@
 import logging
 from functools import lru_cache
 from os import environ
-from urllib.request import OpenerDirector, ProxyHandler, build_opener, getproxies
+from urllib.request import getproxies
 
 # package
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
@@ -30,24 +30,6 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Functions #############
 # ##################################
-@lru_cache
-def get_proxy_handler() -> OpenerDirector:
-    """Return URL opener with or without proxy handler.
-
-    Returns:
-        OpenerDirector: request handler supporting proxy settings
-    """
-    # Handle network proxy
-    if get_proxy_settings() is not None:
-        proxy_handler = ProxyHandler(get_proxy_settings())  # Create a proxy handler
-        opener = build_opener(proxy_handler)  # Create an opener that will use the proxy
-    else:
-        proxy_handler = ProxyHandler()  # Create a proxy handler
-        opener = build_opener(proxy_handler)  # Create an opener that will use the proxy
-
-    return opener
-
-
 @lru_cache
 def get_proxy_settings() -> dict:
     """Retrieves network proxy settings from operating system configuration or
