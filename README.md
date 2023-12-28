@@ -6,6 +6,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Guts/qgis-deployment-cli/main.svg)](https://results.pre-commit.ci/latest/github/Guts/qgis-deployment-cli/main)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Guts_qgis-deployment-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Guts_qgis-deployment-cli)
 
 [![🎳 Tester](https://github.com/Guts/qgis-deployment-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/Guts/qgis-deployment-cli/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/Guts/qgis-deployment-cli/branch/main/graph/badge.svg?token=ZHGRNMA7TV)](https://codecov.io/gh/Guts/qgis-deployment-cli)
