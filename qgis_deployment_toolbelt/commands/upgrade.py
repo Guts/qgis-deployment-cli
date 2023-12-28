@@ -12,7 +12,6 @@
 
 # Standard library
 import argparse
-import json
 import logging
 import sys
 from collections.abc import Iterable
@@ -20,9 +19,9 @@ from os import getenv
 from pathlib import Path
 from sys import platform as opersys
 from urllib.parse import urlsplit, urlunsplit
-from urllib.request import Request
 
 # 3rd party library
+import requests
 from packaging.version import Version
 
 # submodules
@@ -39,7 +38,7 @@ from qgis_deployment_toolbelt.utils.bouncer import (
     exit_cli_success,
 )
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
-from qgis_deployment_toolbelt.utils.proxies import get_proxy_handler
+from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # #############################################################################
@@ -108,13 +107,13 @@ def get_latest_release(api_repo_url: str) -> dict | None:
         )
         headers["Authorization"] = f"Bearer {getenv('GITHUB_TOKEN')}"
 
-    request = Request(url=request_url, headers=headers)
-
     try:
         release_info = None
-        with get_proxy_handler().open(request) as response:
-            if response.status == 200:
-                release_info = json.loads(response.read())
+        req = requests.get(
+            url=request_url, headers=headers, proxies=get_proxy_settings()
+        )
+        req.raise_for_status()
+        release_info = req.json()
         return release_info
     except Exception as err:
         logger.error(err)
