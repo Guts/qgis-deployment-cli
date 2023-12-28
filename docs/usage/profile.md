@@ -14,6 +14,29 @@ QDT expects to find this file in the folder of each profile stored in the source
 - on a local Git repository
 - on a web server through HTTP using a `qdt.json`
 
+### On an HTTP web server
+
+#### Generate the `qdt-files.json` index file
+
+> Typically on Ubuntu
+
+Install tree:
+
+```sh
+sudo apt install tree
+```
+
+Run it:
+
+```sh
+# move to your QDT folder. Here we take the QDT repository
+cd examples/
+# generate the qdt-files.json
+tree -J qdt-files.json
+```
+
+----
+
 ## Typical structure of a project with profiles
 
 Given 3 profiles to be deployed: `avdanced`, `beginner` and `readonly`. Here comes a typical organization of folders, subfolers and files into your repository:
