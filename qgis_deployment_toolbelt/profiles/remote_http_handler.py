@@ -16,6 +16,7 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from shutil import rmtree
 from typing import TypedDict
 
 # 3rd party
@@ -104,6 +105,9 @@ class HttpHandler(RemoteProfilesHandlerBase):
                 f"{destination_local_path} failed. Trace: {err}"
             )
             raise err
+
+        # clean everything before downloading
+        rmtree(path=destination_local_path, ignore_errors=True)
 
         # make sure destination path exists
         if not destination_local_path.exists():
