@@ -49,13 +49,14 @@ def get_proxy_handler() -> OpenerDirector:
 
 
 @lru_cache
-def get_proxy_settings() -> dict | None:
+def get_proxy_settings() -> dict:
     """Retrieves network proxy settings from operating system configuration or
     environment variables.
 
     Returns:
-        dict | None: system proxy settings or None if no proxy is set
+        dict: proxy settings with protocl as key and URL as value
     """
+    proxy_settings = {}
     if environ.get("QDT_PROXY_HTTP"):
         proxy_settings = {
             "http": environ.get("QDT_PROXY_HTTP"),
@@ -96,7 +97,6 @@ def get_proxy_settings() -> dict | None:
         logger.debug(f"Proxies settings found in the OS: {proxy_settings}")
     else:
         logger.debug("No proxy settings found in environment vars nor OS settings.")
-        proxy_settings = None
 
     # check scheme and URL validity
     if isinstance(proxy_settings, dict):

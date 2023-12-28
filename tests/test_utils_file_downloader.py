@@ -13,7 +13,9 @@
 # standard library
 import unittest
 from pathlib import Path
-from urllib.error import HTTPError, URLError
+
+# 3rd party
+from requests.exceptions import ConnectionError, HTTPError
 
 # project
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
@@ -49,7 +51,7 @@ class TestUtilsFileDownloader(unittest.TestCase):
     def test_download_file_raise_url_error(self):
         """Test download with a bad URL."""
 
-        with self.assertRaises(URLError):
+        with self.assertRaises(ConnectionError):
             download_remote_file_to_local(
                 remote_url_to_download="https://fake_url/youpi.dmg",
                 local_file_path=Path("README.md"),

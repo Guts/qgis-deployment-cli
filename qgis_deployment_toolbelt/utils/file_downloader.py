@@ -8,12 +8,14 @@
 # standard library
 import logging
 from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.request import Request
+
+# 3rd party
+from requests import Session
+from requests.exceptions import ConnectionError, HTTPError
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
-from qgis_deployment_toolbelt.utils.proxies import get_proxy_handler
+from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 
 # ############################################################################
 # ########## GLOBALS #############
@@ -34,6 +36,7 @@ def download_remote_file_to_local(
     user_agent: str = f"{__title_clean__}/{__version__}",
     content_type: str | None = None,
     chunk_size: int = 8192,
+    timeout=(800, 800),
 ) -> Path:
     """Check if the local index file exists. If not, download the search index from \
         remote URL. If it does exist, check if it has been modified.
@@ -51,7 +54,7 @@ def download_remote_file_to_local(
     """
     # check if file exists
     if local_file_path.exists():
-        logger.warning(f"{local_file_path} already exists. It's about to be replaced.")
+        logger.info(f"{local_file_path} already exists. It's about to be replaced.")
         local_file_path.unlink(missing_ok=True)
 
     # make sure parents folder exist
@@ -62,37 +65,33 @@ def download_remote_file_to_local(
     if content_type:
         headers["Accept"] = content_type
 
-    # download the remote file into local file
-    custom_request = Request(url=remote_url_to_download, headers=headers)
-
     try:
-        with get_proxy_handler().open(custom_request) as response, local_file_path.open(
-            mode="wb"
-        ) as buffile:
-            while True:
-                chunk = response.read(chunk_size)
-                if not chunk:
-                    break
-                buffile.write(chunk)
-        logger.info(
-            f"Downloading {remote_url_to_download} to {local_file_path} succeeded."
-        )
+        with Session() as dl_session:
+            dl_session.proxies.update(get_proxy_settings())
+            dl_session.headers.update(headers)
+
+            with dl_session.get(
+                url=remote_url_to_download, stream=True, timeout=timeout
+            ) as req:
+                req.raise_for_status()
+
+                with local_file_path.open(mode="wb") as buffile:
+                    for chunk in req.iter_content(chunk_size=chunk_size):
+                        if chunk:
+                            buffile.write(chunk)
+            logger.info(
+                f"Downloading {remote_url_to_download} to {local_file_path} succeeded."
+            )
     except HTTPError as error:
         logger.error(
             f"Downloading {remote_url_to_download} to {local_file_path} failed. "
             f"Cause: HTTPError. Trace: {error}"
         )
         raise error
-    except URLError as error:
+    except ConnectionError as error:
         logger.error(
             f"Downloading {remote_url_to_download} to {local_file_path} failed. "
-            f"Cause: URLError. Trace: {error}"
-        )
-        raise error
-    except TimeoutError as error:
-        logger.error(
-            f"Downloading {remote_url_to_download} to {local_file_path} failed. "
-            f"Cause: TimeoutError. Trace: {error}"
+            f"Cause: ConnectionError. Trace: {error}"
         )
         raise error
     except Exception as error:
