@@ -86,7 +86,7 @@ def get_svg_size(image_filepath: Path) -> tuple[int, int]:
 
 
 def check_image_dimensions(
-    image_filepath: str | Path,
+    image_filepath: Path,
     min_width: int = 500,
     max_width: int = 600,
     min_height: int = 250,
@@ -95,7 +95,7 @@ def check_image_dimensions(
 ) -> bool:
     """Check input image dimensions against passed limits.
 
-    :param Union[str, Path] image_filepath: path to the image to check
+    :param Path image_filepath: path to the image to check
     :param int min_width: minimum width, defaults to 500
     :param int max_width: maximum width, defaults to 600
     :param int min_height: minimum height, defaults to 250
