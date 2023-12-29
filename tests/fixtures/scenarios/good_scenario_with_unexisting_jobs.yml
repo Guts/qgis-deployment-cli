@@ -69,3 +69,15 @@ steps:
     with:
       action: create_or_restore
       strict: false
+
+  - name: Create report
+    uses: telemetry-manager
+    with:
+      action: send
+      module: sentry
+
+  - name: Send log
+    uses: telemetry-manager
+    with:
+      action: send
+      module: sentry

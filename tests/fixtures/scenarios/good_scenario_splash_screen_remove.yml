@@ -2,11 +2,10 @@
 # For now, it's more a roadmap than a real description of what it's implemented.
 
 metadata:
-  title: "Sample scenario of QGIS Deployment Toolbelt"
-  id: sample-scenario-good
+  title: "Test scenario removing splash screens"
+  id: sample-scenario-good-splash-removal
   description: >-
-    This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
-    demonstrate capabilities.
+    Test scenario with splash screen removing
 
 settings:
   DEBUG: false
@@ -18,18 +17,6 @@ settings:
   SCENARIO_VALIDATION: true
 
 steps:
-  - name: Set environment variables
-    uses: manage-env-vars
-    with:
-      - name: PYQGIS_STARTUP
-        action: "add"
-        value: "~/scripts/qgis_startup.py"
-        scope: "user"
-      - name: QDT_TEST_FAKE_ENV_VAR_BOOL
-        action: "add"
-        value: true
-        scope: "user"
-
   - name: Synchronize QGIS profiles from remote location
     uses: qprofiles-manager
     with:
@@ -67,5 +54,5 @@ steps:
   - name: Set splash screen
     uses: splash-screen-manager
     with:
-      action: create_or_restore
+      action: remove
       strict: false

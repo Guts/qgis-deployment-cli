@@ -404,7 +404,7 @@ class QgisIniHelper:
             pass
 
         # make sure that the file exists
-        if isinstance(ini_file, Path) and ini_file.exists() and switch:
+        if isinstance(ini_file, Path) and ini_file.exists():
             # open
             cfg_parser = self.cfg_parser()
             cfg_parser.read(ini_file, encoding="UTF8")
