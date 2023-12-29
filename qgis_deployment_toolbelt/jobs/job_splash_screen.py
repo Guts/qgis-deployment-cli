@@ -21,7 +21,6 @@ from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.profiles.qgis_ini_handler import QgisIniHelper
 from qgis_deployment_toolbelt.utils.check_image_size import check_image_dimensions
-from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
 # ########## Globals ###############
@@ -74,43 +73,37 @@ class JobSplashScreenManager(GenericJob):
         """Execute job logic."""
         # check of there are some profiles folders within the downloaded folder
         downloaded_profiles = self.list_downloaded_profiles()
-        if downloaded_profiles is None:
-            logger.error("No QGIS profile found in the downloaded folder.")
+        if downloaded_profiles is None or not len(downloaded_profiles):
+            logger.warning(
+                f"Job {self.ID} ran successfully but that's because no QGIS profile has "
+                "been  found in the QDT downloaded folder. Was the expected behavior?"
+            )
             return
 
-        li_installed_profiles_path = [
-            d
-            for d in self.qgis_profiles_path.iterdir()
-            if d.is_dir() and not d.name.startswith(".")
-        ]
-
-        if self.options.get("action") in ("create", "create_or_restore"):
-            for profile_downloaded in downloaded_profiles:
-                # default absolute splash screen path
-                installed_splash_screen_filepath = (
-                    profile_downloaded.path_in_qgis / self.DEFAULT_SPLASH_FILEPATH
-                )
-                # target QGIS configuration files
+        # iterate over downloaded profiles
+        for profile_downloaded in downloaded_profiles:
+            logger.debug(
+                f"Applying splash screen for downloaded profile '{profile_downloaded.name}'"
+            )
+            profile_installed = profile_downloaded.installed_profile
+            # target QGIS configuration files
+            if isinstance(profile_installed, QdtProfile):
+                qini_helper_installed = profile_installed.get_qgis3ini_helper()
+            else:
                 qini_helper_installed = QgisIniHelper(
                     ini_filepath=profile_downloaded.path_in_qgis / "QGIS/QGIS3.ini",
                     ini_type="profile_qgis3",
                 )
 
+            if self.options.get("action") == "remove":
+                qini_helper_installed.set_splash_screen(switch=False)
+            elif self.options.get("action") in ("create", "create_or_restore"):
+                # default absolute splash screen path
+                installed_splash_screen_filepath = (
+                    profile_downloaded.path_in_qgis / self.DEFAULT_SPLASH_FILEPATH
+                )
                 # check if a profile.json exists
-                if check_path(
-                    input_path=profile_downloaded.path_in_qgis.joinpath("profile.json"),
-                    must_be_a_file=True,
-                    must_be_readable=True,
-                    must_exists=True,
-                    raise_error=False,
-                ):
-                    profile_installed: QdtProfile = QdtProfile.from_json(
-                        profile_json_path=profile_downloaded.path_in_qgis.joinpath(
-                            "profile.json"
-                        ),
-                        profile_folder=profile_downloaded.path_in_qgis,
-                    )
-
+                if isinstance(profile_installed, QdtProfile):
                     # if the splash image referenced into the profile.json exists, make
                     # sure it complies QGIS splash screen naming rules
                     if (
@@ -187,24 +180,9 @@ class JobSplashScreenManager(GenericJob):
                     f"Profile {profile_installed.name}: splash screen set "
                     f"in {qini_helper_installed.profile_customization_path}"
                 )
-        elif self.options.get("action") == "remove":
-            for profile_dir in li_installed_profiles_path:
-                # default absolute splash screen path
-                installed_splash_screen_filepath = (
-                    profile_dir / self.DEFAULT_SPLASH_FILEPATH
-                )
 
-                # target QGIS configuration files
-                cfg_qgis_custom = profile_dir / "QGIS/QGISCUSTOMIZATION3.ini"
-
-                # set the splash screen into the customization file
-                qini_helper_installed.set_splash_screen(
-                    ini_file=cfg_qgis_custom,
-                    splash_screen_filepath=installed_splash_screen_filepath.resolve(),
-                    switch=False,
-                )
-        else:
-            raise NotImplementedError
+            else:
+                raise NotImplementedError
 
         logger.debug(f"Job {self.ID} ran successfully.")
 

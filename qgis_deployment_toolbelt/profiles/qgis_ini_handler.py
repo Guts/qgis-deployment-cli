@@ -210,6 +210,9 @@ class QgisIniHelper:
                     )
                     return False
                 else:
+                    logger.debug(
+                        f"{ini_file.initial_file_path} has a splash screen set: {splash_path}"
+                    )
                     return True
             else:
                 logger.debug(
@@ -227,7 +230,7 @@ class QgisIniHelper:
             cfg_parser = self.cfg_parser()
             cfg_parser.read(ini_file, encoding="UTF8")
             logger.debug(
-                f"{ini_file} is an existing file, has been parsed. Let's check if a "
+                f"{ini_file} is an existing file and has been parsed. Let's check if a "
                 "splash path is set."
             )
             return self.is_splash_screen_set(cfg_parser)
@@ -436,10 +439,6 @@ class QgisIniHelper:
             pass
 
         # FROM NOW: isinstance(ini_file, CustomConfigParser) is True
-        assert isinstance(ini_file, CustomConfigParser)
-        assert isinstance(ini_file.get_initial_file_path(), Path)
-        assert ini_file.get_initial_file_path().exists()
-
         qgiscustomization3ini_filepath = ini_file.get_initial_file_path()
         option = "splashpath"
         section = "Customization"
@@ -530,64 +529,4 @@ class QgisIniHelper:
 
 if __name__ == "__main__":
     """Standalone execution."""
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
-    new_config_file = Path("tests/fixtures/qgis_ini/default_no_customization/QGIS3.ini")
-    assert new_config_file.exists()
-    ini_config = QgisIniHelper(ini_filepath=new_config_file)
-
-    print(ini_config.is_ui_customization_enabled())
-    assert ini_config.is_ui_customization_enabled() is False
-    ini_config.set_ui_customization_enabled()
-    assert ini_config.is_ui_customization_enabled() is True
-    ini_config.set_ui_customization_enabled(switch=False)
-    assert ini_config.is_ui_customization_enabled() is False
-
-    qini_helper = QgisIniHelper(
-        ini_filepath=Path(
-            "/home/jmo/Git/Oslandia/QGIS/qgis-deployment-cli/tests/fixtures/tmp/customization_with_splashpath.ini"
-        ),
-        ini_type="profile_qgis3customization",
-    )
-    qini_helper.ini_type = "profile_qgis3customization"
-    print(qini_helper.is_splash_screen_set())
-
-    fake_config = "[Customization]\nsplashpath="
-
-    tmp_ini_customization = Path(
-        "tests/fixtures/tmp/customization_with_splashpath_empty.ini"
-    )
-    tmp_ini_customization.parent.mkdir(parents=True, exist_ok=True)
-    tmp_ini_customization.write_text(fake_config)
-
-    qini_helper = QgisIniHelper(
-        ini_filepath=tmp_ini_customization, ini_type="profile_qgis3customization"
-    )
-    print(qini_helper.is_splash_screen_set())
-    assert qini_helper.is_splash_screen_set() is False
-    tmp_ini_customization.unlink()
-
-    # ENABLE/DISABLE SPLASH SCREEN
-    fake_config = "[Customization]\nsplashpath="
-
-    tmp_ini_customization = Path(
-        "tests/fixtures/tmp/customization_with_splashpath_empty.ini"
-    )
-    tmp_ini_customization.parent.mkdir(parents=True, exist_ok=True)
-    tmp_ini_customization.write_text(fake_config)
-
-    qini_helper = QgisIniHelper(
-        ini_filepath=tmp_ini_customization, ini_type="profile_qgis3customization"
-    )
-    qini_helper.set_splash_screen(switch=False) is False
-    tmp_ini_customization.unlink()
-
-    not_existing_ini = Path("no_existing_file.ini")
-    qini_helper = QgisIniHelper(
-        ini_filepath=not_existing_ini, ini_type="profile_qgis3customization"
-    )
-    qini_helper.set_splash_screen(switch=False) is False
+    pass
