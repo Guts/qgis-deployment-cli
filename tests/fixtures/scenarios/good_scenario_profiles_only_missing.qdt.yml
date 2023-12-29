@@ -2,15 +2,15 @@
 # For now, it's more a roadmap than a real description of what it's implemented.
 
 metadata:
-  title: "Sample scenario of QGIS Deployment Toolbelt"
-  id: sample-scenario-good-only-missing
+  title: "Tests scenario of QGIS Deployment Toolbelt"
+  id: test-scenario-profiles-sync-only_missing
   description: >-
     This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
     demonstrate capabilities.
 
 settings:
   DEBUG: false
-  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/Oslandia/
+  LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/tests/
   QGIS_EXE_PATH:
     linux: /usr/bin/qgis
     mac: /usr/bin/qgis
@@ -21,7 +21,7 @@ steps:
   - name: Synchronize QGIS profiles from remote location
     uses: qprofiles-manager
     with:
-      protocol: git
+      protocol: git_remote
       branch: main
-      source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
+      source: https://github.com/Guts/qgis-deployment-cli.git
       sync_mode: only_missing
