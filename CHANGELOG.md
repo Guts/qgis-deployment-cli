@@ -18,6 +18,43 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.30.0 - 2023-12-29
+
+### Bugs fixes 🐛
+
+* Fix: splash screen removal by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/381>
+
+### Features and enhancements 🎉
+
+* Security: increase security scans and improve related documentation by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/352>
+* Feature: download from http (part 1) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/351>
+* feature: add util to get ProxyHandler and cache some recurring functions by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/358>
+* feature: use proxy handler in file downloader by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/359>
+* feature: add simple http client by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/360>
+* improvement: use proxy handle in upgrade sub-command by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/362>
+* log: on Linux, add distribution name and version by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/363>
+* log: add details about how QDT working folder is determined by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/364>
+* Change: move QDT subfolders to generic job by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/347>
+* Refacto: use requests to download files by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/367>
+* Refacto: remove dead code by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/368>
+* Feature: add file size to downloader log by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/369>
+* Feature: add log filepath on exit error by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/370>
+* feature: HTTP downloader refacto part 2 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/372>
+* feature: add function name to log by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/380>
+* tests: add more scenarii and factorize test by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/382>
+* feature: QdtProfile has now shortcuts to access to ini files and its installed alter-ego by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/383>
+* Feature: improve splash screen manager logic by using ini helper intensively by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/384>
+
+### Tooling 🔧
+
+* tooling: add SonarCloud configuration file by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/378>
+
+### Documentation 📖
+
+* docs: improve development guide by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/357>
+* docs: update qprofiles-manager with deprecated 'git' value by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/361>
+* tooling: add SonarCloud badge by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/371>
+
 ## 0.30.0-beta2 - 2023-12-29
 
 ### Features and enhancements 🎉
