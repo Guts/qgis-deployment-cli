@@ -18,6 +18,24 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.30.0-beta2 - 2023-12-29
+
+### Features and enhancements 🎉
+
+* Refacto: use requests to download files by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/367>
+* Refacto: remove dead code by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/368>
+* Feature: add file size to downloader log by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/369>
+* Feature: add log filepath on exit error by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/370>
+* feature: HTTP downloader refacto part 2 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/372>
+
+### Tooling 🔧
+
+* tooling: add SonarCloud configuration file by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/378>
+
+### Documentation 📖
+
+* tooling: add SonarCloud badge by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/371>
+
 ## 0.30.0-beta1 - 2023-12-26
 
 ### Features and enhancements 🎉
