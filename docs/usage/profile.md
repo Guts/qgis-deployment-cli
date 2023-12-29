@@ -101,7 +101,7 @@ qgis-profiles/
 
 ### Use a `.gitignore` file to exclude folders and files with patterns
 
-### What and why
+#### What and why
 
 A QGIS profile folder often contains a bunch of files. Some of these files might be temporary or generated automatically by your computer or QGIS, and you don't really want to include them when you're sharing your profile with others or storing it in a version control system like Git.
 
@@ -111,7 +111,7 @@ For example, if your profile involves plugins or automatically generated preview
 
 In summary, the .gitignore file helps you manage which files Git should ignore and not include when you're tracking changes in your profile. It's a helpful tool for keeping your version control system tidy and focused on the important parts of your work.
 
-### How
+#### How
 
 1. Create a `.gitignore` in your QDT folder
 1. Add a file or folder path or pattern to exclude by line
@@ -133,7 +133,7 @@ profiles/*/previewImages/
 *.*~
 ```
 
-### Resources
+#### Resources
 
 - [gitignore explained on GitHub official documentation](https://docs.github.com/get-started/getting-started-with-git/ignoring-files)
 - the [.gitignore file](https://github.com/Guts/qgis-deployment-cli/blob/main/examples/.gitignore) used in official examples from QDT repository
