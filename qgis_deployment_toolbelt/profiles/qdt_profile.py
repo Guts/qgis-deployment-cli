@@ -17,6 +17,7 @@ import logging
 from pathlib import Path
 from sys import platform as opersys
 from sys import version_info
+from typing import Literal
 
 # Imports depending on Python version
 if version_info[1] < 11:
@@ -28,8 +29,9 @@ else:
 from packaging.version import InvalidVersion, Version
 
 # Package
-from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
+from qgis_deployment_toolbelt.profiles.qgis_ini_handler import QgisIniHelper
 from qgis_deployment_toolbelt.utils.check_path import check_path
 
 # #############################################################################
@@ -55,20 +57,20 @@ class QdtProfile:
 
     def __init__(
         self,
-        alias: str = None,
-        author: str = None,
-        description: str = None,
-        email: str = None,
-        folder: Path = None,
-        icon: str = None,
-        json_ref_path: Path = None,
+        alias: str | None = None,
+        author: str | None = None,
+        description: str | None = None,
+        email: str | None = None,
+        folder: Path | None = None,
+        icon: str | None = None,
+        json_ref_path: Path | None = None,
         loaded_from_json: bool = False,
-        name: str = None,
-        plugins: list = None,
-        qgis_maximum_version: str = None,
-        qgis_minimum_version: str = None,
-        splash: str = None,
-        version: str = None,
+        name: str | None = None,
+        plugins: list | None = None,
+        qgis_maximum_version: str | None = None,
+        qgis_minimum_version: str | None = None,
+        splash: str | None = None,
+        version: str | None = None,
         **kwargs,
     ):
         """Initialize a QDT Profile object.
@@ -76,6 +78,8 @@ class QdtProfile:
         :param str name: name of the shortcut that will be created
         :param str author: profile author name
         """
+        # store QDT working folder
+        self.qdt_working_folder = get_qdt_working_directory()
         # retrieve operating system specific configuration
         if opersys not in OS_CONFIG:
             raise OSError(
@@ -132,15 +136,20 @@ class QdtProfile:
             self._version = version
 
     @classmethod
-    def from_json(cls, profile_json_path: Path, profile_folder: Path = None) -> Self:
+    def from_json(
+        cls, profile_json_path: Path, profile_folder: Path | None = None
+    ) -> "QdtProfile":
         """Load profile from a profile.json file.
 
-        :param Path profile_json_path: path to the profile json file
-        :param Path profile_folder: path to the profile folder, defaults to None
+        Args:
+            profile_json_path (Path): path to the profile json file
+            profile_folder (Path | None, optional): path to the profile folder,
+                defaults to None.
 
-        :return Self: QdtProfile object with attributes filled from JSON.
+        Returns:
+            QdtProfile: QdtProfile object with attributes filled from JSON.
 
-        :example:
+        Example:
 
             .. code-block:: python
 
@@ -148,7 +157,6 @@ class QdtProfile:
                         Path(src_profile / "profile.json")
                     )
                 print(profile.splash.resolve())
-
         """
         # checks
         check_path(
@@ -193,7 +201,8 @@ class QdtProfile:
     def folder(self) -> Path:
         """Returns the path to the folder where the profile is stored.
 
-        :return Path: profile folder path
+        Returns:
+            Path: profile folder path
         """
         if isinstance(self._folder, Path):
             return self._folder.resolve()
@@ -256,7 +265,7 @@ class QdtProfile:
         Returns:
             Path: path to the installed (i.e. in QGIS) profile folder
         """
-        return self.os_config.profiles_path / self.name
+        return self.os_config.profiles_path.joinpath(self.name)
 
     @property
     def plugins(self) -> list[QgisPlugin]:
@@ -349,6 +358,106 @@ class QdtProfile:
 
         return profile_version < version_to_compare
 
+    def status(self) -> Literal["downloaded", "installed", "unknown"]:
+        """Determine current profile status: downloaded (in QDT working folder),
+        installed (in QGIS3/profiles) or unknown.
+
+        Returns:
+            str: one of "downloaded", "installed", "unknown"
+        """
+        if not isinstance(self.folder, Path):
+            return "unknown"
+
+        if self.folder.is_relative_to(self.os_config.profiles_path):
+            return "installed"
+        elif self.folder.is_relative_to(self.qdt_working_folder):
+            return "downloaded"
+        else:
+            return "unknown"
+
+    @property
+    def installed_profile(self) -> "QdtProfile | None":
+        """Returns the installed profile object only if the corresponding profiles.json
+            exists.
+
+        Returns:
+            QdtProfile | None: QdtProfile object if profile.json exists, else None
+        """
+
+        if self.status() == "installed":
+            return self
+        elif self.status() == "downloaded":
+            if self.path_in_qgis.joinpath("profile.json").is_file():
+                return self.from_json(
+                    profile_json_path=self.path_in_qgis.joinpath("profile.json"),
+                    profile_folder=self.path_in_qgis.resolve(),
+                )
+            else:
+                # TODO: develop a class method to load a profile from a folder
+                pass
+        return None
+
+    # -- QGIS*.ini files --
+    def has_qgis3_ini_file(self) -> bool:
+        """Determine if a QGIS/QGIS3.ini file exists in the profile folder.
+
+        Returns:
+            bool: True if a QGIS/QGIS3.ini file exists in the profile folder.
+        """
+        return check_path(
+            input_path=self.folder.joinpath("QGIS/QGIS3.ini"),
+            must_be_a_file=True,
+            must_be_a_folder=False,
+            must_be_readable=True,
+            must_exists=True,
+            raise_error=False,
+        )
+
+    def has_qgis3customization_ini_file(self) -> bool:
+        """Determine if a QGIS/QGISCUSTOMIZATION3.ini file exists in the profile folder.
+
+        Returns:
+            bool: True if a QGIS/QGISCUSTOMIZATION3.ini file exists in the profile folder.
+        """
+        return check_path(
+            input_path=self.folder.joinpath("QGIS/QGISCUSTOMIZATION3.ini"),
+            must_be_a_file=True,
+            must_be_a_folder=False,
+            must_be_readable=True,
+            must_exists=True,
+            raise_error=False,
+        )
+
+    def get_qgis3ini_helper(self) -> QgisIniHelper:
+        """Return the QGIS3 ini helper for the profile configuration.
+
+        Returns:
+            QgisIniHelper: Ini helper loaded with profile's QGIS/QGIS3.ini
+        """
+        logger.debug(
+            f"Returning QGISCUSTOMIZATION3.ini helper for profile '{self.name}' using "
+            f"this file: {self.folder.joinpath('QGIS/QGISCUSTOMIZATION3.ini')}"
+        )
+        return QgisIniHelper(
+            ini_filepath=self.folder.joinpath("QGIS/QGIS3.ini"),
+            ini_type="profile_qgis3",
+        )
+
+    def get_qgis3customizationini_helper(self) -> QgisIniHelper:
+        """Return the QGIS3 ini helper for the profile customization.
+
+        Returns:
+            QgisIniHelper: Ini helper loaded with profile's QGIS/QGISCUSTOMIZATION3.ini
+        """
+        logger.debug(
+            f"Returning QGISCUSTOMIZATION3.ini helper for profile '{self.name}' using "
+            f"this file: {self.folder.joinpath('QGIS/QGISCUSTOMIZATION3.ini')}"
+        )
+        return QgisIniHelper(
+            ini_filepath=self.folder.joinpath("QGIS/QGISCUSTOMIZATION3.ini"),
+            ini_type="profile_qgis3customization",
+        )
+
 
 # #############################################################################
 # ##### Stand alone program ########
@@ -356,11 +465,4 @@ class QdtProfile:
 
 if __name__ == "__main__":
     """Standalone execution."""
-    profile_good_sample = Path("tests/fixtures/profiles/good_profile_complete.json")
-    assert profile_good_sample.is_file() is True
-
-    qdt_profile = QdtProfile.from_json(
-        profile_json_path=profile_good_sample, profile_folder=profile_good_sample.parent
-    )
-    assert isinstance(qdt_profile, QdtProfile)
-    assert isinstance(qdt_profile.plugins, list)
+    pass
