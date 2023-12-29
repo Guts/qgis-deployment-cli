@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
+
+metadata:
+  title: "Demonstration scenario of QGIS Deployment Toolbelt with HTTP"
+  id: qdt-demo-scenario-http
+  description: >-
+    Demonstration scenario of QGIS Deployment Toolbelt that uses HTTP (without git) to download remote profiles.
+
+# Toolbelt settings
+settings:
+  SCENARIO_VALIDATION: true
+
+# Deployment workflow, step by step
+steps:
+  - name: Download profiles from remote git repository
+    uses: qprofiles-manager
+    with:
+      source: https://raw.githubusercontent.com/Guts/qgis-deployment-cli/examples/
+      protocol: http
+      sync_mode: only_new_version
+
+  - name: Download plugins
+    uses: qplugins-downloader
+    with:
+      force: false
+      threads: 5
+
+  - name: Synchronize plugins
+    uses: qplugins-synchronizer
+    with:
+      action: create_or_restore
+
+  - name: Create shortcuts for profiles
+    uses: shortcuts-manager
+    with:
+      action: create_or_restore
+      include:
+        - profile: qdt_demo
+          label: "QDT - Demo profile"
+          desktop: true
+          start_menu: true
+        - profile: QDT Viewer Mode
+          label: "QDT - Viewer profile"
+          desktop: true
+          start_menu: true
+
+  - name: Set splash screen
+    uses: splash-screen-manager
+    with:
+      action: create_or_restore
+      strict: false

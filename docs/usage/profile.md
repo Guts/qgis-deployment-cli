@@ -118,7 +118,7 @@ In summary, the .gitignore file helps you manage which files Git should ignore a
 
 Typical `.gitignore` content:
 
-```ignore
+```gitignore
 # -- QDT usual patterns --
 
 # Common

@@ -63,4 +63,4 @@ Requirements:
 
 Opening the properties of the executable, the related tab should look like this:
 
-![QGIS Deployment Toolbelt - Properties security](/..static/executable_windows_properties_signed.png)
+![QGIS Deployment Toolbelt - Properties security](../static/executable_windows_properties_signed.png)
