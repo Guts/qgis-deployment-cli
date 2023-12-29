@@ -73,7 +73,7 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
     if not logfile:
         logging.basicConfig(
             level=verbosity,
-            format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
+            format="%(asctime)s||%(levelname)s||%(module)s||%(funcName)s||%(lineno)d||%(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
             handlers=[log_console_handler],
         )
@@ -117,7 +117,7 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
 
         logging.basicConfig(
             level=verbosity,
-            format="%(asctime)s||%(levelname)s||%(module)s||%(lineno)d||%(message)s",
+            format="%(asctime)s||%(levelname)s||%(module)s||%(funcName)s||%(lineno)d||%(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
             handlers=[log_console_handler, log_file_handler],
         )
