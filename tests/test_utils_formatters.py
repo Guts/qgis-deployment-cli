@@ -14,7 +14,10 @@
 import unittest
 
 # project
-from qgis_deployment_toolbelt.utils.formatters import convert_octets
+from qgis_deployment_toolbelt.utils.formatters import (
+    convert_octets,
+    url_ensure_trailing_slash,
+)
 
 # ############################################################################
 # ########## Classes #############
@@ -34,6 +37,22 @@ class TestUtilsFormatters(unittest.TestCase):
         self.assertEqual(
             convert_octets(2097152),
             "2.0 Mo",
+        )
+
+    def test_url_ensure_trailing_slash(self):
+        """Test URL trailing slash."""
+        self.assertEqual(
+            url_ensure_trailing_slash(
+                in_url="https://guts.github.io/qgis-deployment-cli"
+            ),
+            "https://guts.github.io/qgis-deployment-cli/",
+        )
+
+        self.assertEqual(
+            url_ensure_trailing_slash(
+                in_url="https://guts.github.io/qgis-deployment-cli/"
+            ),
+            "https://guts.github.io/qgis-deployment-cli/",
         )
 
 

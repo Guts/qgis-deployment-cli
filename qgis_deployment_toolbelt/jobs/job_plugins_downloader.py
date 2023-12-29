@@ -132,7 +132,7 @@ class JobPluginsDownloader(GenericJob):
 
     def copy_plugins(
         self, plugins_to_copy: list[QgisPlugin], destination_parent_folder: Path
-    ) -> tuple[list[Path], list[Path]]:
+    ) -> tuple[list[QgisPlugin], list[QgisPlugin]]:
         """Copy listed plugins into the specified folder.
 
         Args:
@@ -140,7 +140,7 @@ class JobPluginsDownloader(GenericJob):
             destination_parent_folder (Path): where to store copied plugins
 
         Returns:
-            Tuple[List[Path],List[Path]]: tuple of (copied plugins, failed copies)
+            Tuple[List[QgisPlugin],List[QgisPlugin]]: tuple of (copied plugins, failed copies)
         """
         copied_plugins: list[QgisPlugin] = []
         failed_plugins: list[QgisPlugin] = []
@@ -205,7 +205,7 @@ class JobPluginsDownloader(GenericJob):
         plugins_to_download: list[QgisPlugin],
         destination_parent_folder: Path,
         threads: int = 5,
-    ) -> tuple[list[Path], list[Path]]:
+    ) -> tuple[list[QgisPlugin], list[QgisPlugin]]:
         """Download listed plugins into the specified folder, using multithreads or not.
 
         Args:
@@ -215,7 +215,7 @@ class JobPluginsDownloader(GenericJob):
                 performed synchronously. Defaults to 5.
 
         Returns:
-            Tuple[List[Path],List[Path]]: tuple of (downloaded plugins, failed downloads)
+            Tuple[List[QgisPlugin],List[QgisPlugin]]: tuple of (downloaded plugins, failed downloads)
         """
         downloaded_plugins: list[QgisPlugin] = []
         failed_plugins: list[QgisPlugin] = []
@@ -236,7 +236,7 @@ class JobPluginsDownloader(GenericJob):
                         content_type="application/zip",
                     )
                     logger.info(
-                        f"Plugin {plugin.name} from {plugin.guess_download_url} "
+                        f"Plugin {plugin.name} from {plugin.download_url} "
                         f"downloaded in {plugin_download_path}"
                     )
                     downloaded_plugins.append(plugin)
@@ -295,7 +295,7 @@ class JobPluginsDownloader(GenericJob):
             profile_json_counter += 1
 
             # read profile.json
-            qdt_profile = QdtProfile.from_json(
+            qdt_profile: QdtProfile = QdtProfile.from_json(
                 profile_json_path=profile_json,
                 profile_folder=profile_json.parent,
             )

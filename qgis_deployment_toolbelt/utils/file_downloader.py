@@ -12,6 +12,7 @@ from pathlib import Path
 # 3rd party
 from requests import Session
 from requests.exceptions import ConnectionError, HTTPError
+from requests.utils import requote_uri
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
@@ -47,8 +48,10 @@ def download_remote_file_to_local(
         local_file_path (Path): local path to the index file
         user_agent (str, optional): user agent to use to perform the request. Defaults \
             to f"{__title_clean__}/{__version__}".
-        content_type (str): HTTP content-type.
-        chunk_size (int): size of each chunk to read and write in bytes.
+        content_type (str | None, optional): HTTP content-type. Defaults to None.
+        chunk_size (int, optional): size of each chunk to read and write in bytes. \
+            Defaults to 8192.
+        timeout (tuple, optional): custom timeout (request, response). Defaults to (800, 800).
 
     Returns:
         Path: path to the local file (should be the same as local_file_path)
@@ -72,7 +75,7 @@ def download_remote_file_to_local(
             dl_session.headers.update(headers)
 
             with dl_session.get(
-                url=remote_url_to_download, stream=True, timeout=timeout
+                url=requote_uri(remote_url_to_download), stream=True, timeout=timeout
             ) as req:
                 req.raise_for_status()
 
