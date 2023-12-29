@@ -12,7 +12,7 @@ QDT expects to find this file in the folder of each profile stored in the source
 
 - on a remote Git repository (github.com, gitlab.com, GitLab instance...)
 - on a local Git repository
-- on a web server through HTTP using a `qdt.json`
+- on a web server through HTTP using a `qdt-files.json`
 
 ### On an HTTP web server
 
@@ -29,11 +29,23 @@ sudo apt install tree
 Run it:
 
 ```sh
-# move to your QDT folder. Here we take the QDT repository
+# move to your QDT profiles folder. Here we take the QDT repository as example:
 cd examples/
 # generate the qdt-files.json
-tree -J qdt-files.json
+tree --gitignore -D --timefmt="%Y-%m-%dT%H:%M:%S%Z" -s -J -o qdt-files.json .
 ```
+
+Detailed explanation:
+
+- `tree`: command that displays the directory tree structure.
+<!-- - `-f`: display the full path for each file and directory. -->
+- `--gitignore`: apply gitignore-style rules to exclude files and directories.
+- `-D`: print the modification time for each file or directory.
+- `--timefmt="%Y-%m-%dT%H:%M:%S%Z"`: specify the time format as ISO8601 with UTC (Coordinated Universal Time).
+- `-s`: print the size of each file.
+- `-J`: output the directory tree in JSON format.
+- `-o qdt-files.json`: save the output to a file named 'qdt-files.json'.
+- `.`: specify the current directory as the starting point for the tree.
 
 ----
 
@@ -44,8 +56,10 @@ Given 3 profiles to be deployed: `avdanced`, `beginner` and `readonly`. Here com
 ```sh
 qgis-profiles/
 ├── .git/
+├── .gitignore
 ├── LICENSE
 ├── profiles
+│   ├── .gitignore
 │   ├── advanced
 │   │   ├── images
 │   │   │   ├── profile_advanced.ico
@@ -80,10 +94,49 @@ qgis-profiles/
 ## Good practices and recomendations
 
 - if you use a Git repository, store profiles in a subfolder not at the project root and specify the relative path in scenario
-- do not store the entire profile folder, but only files that contans something specific to your profile
+- do not store the entire profile folder, but only files that contans something specific to your profile (use a `.gitignore` file - see [below](#use-a-gitignore-file-to-exclude-folders-and-files-with-patterns))
 - keep only the lines of `*.ini` files which are custom to your profile:
   - QGIS will fill them automatically if needed
   - it reduces the surface of possible conflicts when dealing to upgrade a profile
+
+### Use a `.gitignore` file to exclude folders and files with patterns
+
+### What and why
+
+A QGIS profile folder often contains a bunch of files. Some of these files might be temporary or generated automatically by your computer or QGIS, and you don't really want to include them when you're sharing your profile with others or storing it in a version control system like Git.
+
+That's where the `.gitignore` file comes in. It's a special file that you can create in your profile folder, and it lists the names or patterns of files that you want Git (and compatible softwares) to ignore. When you tell Git to ignore certain files, it won't track them or include them when you share or save your profile.
+
+For example, if your profile involves plugins or automatically generated preview images (projects thumbnails), you might want to ignore most of theses files and the other ones like compiled binaries or scripts (typically `*.pyc`...), log files, or temporary build files. By adding these file names or patterns to your `.gitignore` file, you keep your profile clean and avoid cluttering it with files that aren't essential for others to understand and work on your profile.
+
+In summary, the .gitignore file helps you manage which files Git should ignore and not include when you're tracking changes in your profile. It's a helpful tool for keeping your version control system tidy and focused on the important parts of your work.
+
+### How
+
+1. Create a `.gitignore` in your QDT folder
+1. Add a file or folder path or pattern to exclude by line
+
+Typical `.gitignore` content:
+
+```ignore
+# -- QDT usual patterns --
+
+# Common
+!.gitkeep
+*.log
+
+# QGIS Profiles
+profiles/*/python/plugins/
+profiles/*/previewImages/
+*.db
+*.*~
+*.*~
+```
+
+### Resources
+
+- [gitignore explained on GitHub official documentation](https://docs.github.com/get-started/getting-started-with-git/ignoring-files)
+- the [.gitignore file](https://github.com/Guts/qgis-deployment-cli/blob/main/examples/.gitignore) used in official examples from QDT repository
 
 ----
 
