@@ -2,10 +2,11 @@
 # For now, it's more a roadmap than a real description of what it's implemented.
 
 metadata:
-  title: "Test scenario removing splash screens"
-  id: sample-scenario-good-splash-removal
+  title: "Test scenario containing unexisting jobs"
+  id: test-scenario-good-unexisting-jobs
   description: >-
-    Test scenario with splash screen removing
+    This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
+    demonstrate capabilities.
 
 settings:
   DEBUG: false
@@ -17,12 +18,24 @@ settings:
   SCENARIO_VALIDATION: true
 
 steps:
+  - name: Set environment variables
+    uses: manage-env-vars
+    with:
+      - name: PYQGIS_STARTUP
+        action: "add"
+        value: "~/scripts/qgis_startup.py"
+        scope: "user"
+      - name: QDT_TEST_FAKE_ENV_VAR_BOOL
+        action: "add"
+        value: true
+        scope: "user"
+
   - name: Synchronize QGIS profiles from remote location
     uses: qprofiles-manager
     with:
       action: download
-      source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
-      protocol: git
+      source: https://github.com/Guts/qgis-deployment-cli.git
+      protocol: git_remote
       branch: main
 
   - name: Download plugins
@@ -43,16 +56,29 @@ steps:
     with:
       action: create_or_restore
       include:
-        - profile: oslandia
-          label: "QGIS - Profil Oslandia"
-          additional_arguments: "--noversioncheck"
+        - profile: qdt_demo
+          label: "TEST QDT - Demo profile"
           desktop: true
           start_menu: true
-          icon: "qgis_icon_oslandia.ico"
-          qgis_path: "%PROGRAMFILES%\\QGIS\\3_22\\bin\\qgis-bin.exe"
+        - profile: QDT Viewer Mode
+          label: "TEST QDT - Viewer profile"
+          desktop: true
+          start_menu: true
 
   - name: Set splash screen
     uses: splash-screen-manager
     with:
-      action: remove
+      action: create_or_restore
       strict: false
+
+  - name: Create report
+    uses: telemetry-manager
+    with:
+      action: send
+      module: sentry
+
+  - name: Send log
+    uses: telemetry-manager
+    with:
+      action: send
+      module: sentry

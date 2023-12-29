@@ -26,12 +26,24 @@ from qgis_deployment_toolbelt import __about__, cli
 sample_scenario_good: Path = Path(
     "tests/fixtures/scenarios/good_scenario_sample.qdt.yml"
 )
+sample_scenario_good_with_unexisting_jobs: Path = Path(
+    "tests/fixtures/scenarios/good_scenario_with_unexisting_jobs.qdt.yml"
+)
+sample_scenario_good_splash_removal: Path = Path(
+    "tests/fixtures/scenarios/good_scenario_splash_screen_remove.qdt.yml"
+)
+
 sample_scenario_false: Path = Path(
     "tests/fixtures/scenarios/false_scenario_sample.qdt.yml"
 )
 sample_scenario_imaginary: Path = Path(
     "tests/fixtures/scenarios/imaginary_scenario_sample.qdt.yml"
 )
+
+good_scenarios = [
+    ["deploy", f"--scenario={scenario_path.resolve()}"]
+    for scenario_path in Path("tests/fixtures/scenarios/").glob("good_*.qdt.yml")
+]
 
 # #############################################################################
 # ######## Classes #################
@@ -66,42 +78,48 @@ def test_cli_version(capsys, option):
     assert err == ""
 
 
-def test_main_run(capsys):
+@pytest.mark.parametrize("option", good_scenarios)
+def test_main_run(capsys, option):
     """Test main cli command"""
-    # runner = CliRunner()
-    # result = runner.invoke(
-    #     qgis_deployment_toolbelt,
-    #     [],
-    # )
-    # assert result.exit_code == 0
-
-    # result = runner.invoke(
-    #     qgis_deployment_toolbelt,
-    #     [f"--scenario={str(sample_scenario_imaginary.resolve())}"],
-    # )
-    # assert result.exit_code == 1
-
     with pytest.raises(SystemExit):
-        cli.main(["deploy", f"--scenario={str(sample_scenario_good.resolve())}"])
+        cli.main(option)
 
     out, err = capsys.readouterr()
     assert err == ""
 
 
-# def test_main_run_with_disable_validation_option():
-#     """Test main cli command with the disable validation option"""
-#     runner = CliRunner()
-#     result = runner.invoke(
-#         qgis_deployment_toolbelt,
-#         [f"--scenario={str(sample_scenario_good.resolve())}", "--disable-validation"],
-#     )
-#     assert result.exit_code == 0
+def test_main_run_unexising_jobs(capsys):
+    """Test main cli command"""
+    with pytest.raises(SystemExit):
+        cli.main(
+            [
+                "deploy",
+                f"--scenario={str(sample_scenario_good_with_unexisting_jobs.resolve())}",
+            ]
+        )
 
-#     result = runner.invoke(
-#         qgis_deployment_toolbelt,
-#         [f"--scenario={str(sample_scenario_false.resolve())}", "--disable-validation"],
-#     )
-#     assert result.exit_code == 1
+    out, err = capsys.readouterr()
+    assert err == ""
+
+
+def test_main_run_failed(capsys):
+    """Test main cli command"""
+    with pytest.raises(FileExistsError):
+        cli.main(["deploy", f"--scenario={str(sample_scenario_false.resolve())}"])
+
+    out, err = capsys.readouterr()
+    assert err == ""
+
+
+def test_main_run_removing_splash(capsys):
+    """Test main cli command"""
+    with pytest.raises(SystemExit):
+        cli.main(
+            ["deploy", f"--scenario={sample_scenario_good_splash_removal.resolve()}"]
+        )
+
+    out, err = capsys.readouterr()
+    assert err == ""
 
 
 # #############################################################################

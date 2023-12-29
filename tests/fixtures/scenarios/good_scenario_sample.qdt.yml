@@ -2,8 +2,8 @@
 # For now, it's more a roadmap than a real description of what it's implemented.
 
 metadata:
-  title: "Sample scenario of QGIS Deployment Toolbelt"
-  id: sample-scenario-good
+  title: "Test scenario of QGIS Deployment Toolbelt"
+  id: test-basic-scenario-good
   description: >-
     This is an example a scenario YAML file for the QGIS Deployment Toolbelt to
     demonstrate capabilities.
@@ -11,21 +11,17 @@ metadata:
 settings:
   DEBUG: false
   LOCAL_WORK_DIR: ~/.cache/qgis-deployment-toolbelt/tests/
-  QGIS_EXE_PATH:
-    linux: /usr/bin/qgis
-    mac: /usr/bin/qgis
-    windows: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
   SCENARIO_VALIDATION: true
 
 steps:
   - name: Set environment variables
     uses: manage-env-vars
     with:
-      - name: PYQGIS_STARTUP
+      - name: TEST_PYQGIS_STARTUP
         action: "add"
         value: "~/scripts/qgis_startup.py"
         scope: "user"
-      - name: QDT_TEST_FAKE_ENV_VAR_BOOL
+      - name: TEST_QDT_TEST_FAKE_ENV_VAR_BOOL
         action: "add"
         value: true
         scope: "user"
@@ -34,8 +30,8 @@ steps:
     uses: qprofiles-manager
     with:
       action: download
-      source: https://gitlab.com/charente-eaux/ocarhy/profils-qgis.git
-      protocol: git
+      source: https://github.com/Guts/qgis-deployment-cli.git
+      protocol: git_remote
       branch: main
 
   - name: Download plugins
@@ -49,20 +45,20 @@ steps:
     with:
       action: create_or_restore
       profile_ref: downloaded
-      source: ~/.cache/qgis-deployment-toolbelt/plugins
 
   - name: Create shortcuts for profiles
     uses: shortcuts-manager
     with:
       action: create_or_restore
       include:
-        - profile: oslandia
-          label: "QGIS - Profil Oslandia"
-          additional_arguments: "--noversioncheck"
+        - profile: qdt_demo
+          label: "TEST QDT - Demo profile"
           desktop: true
           start_menu: true
-          icon: "qgis_icon_oslandia.ico"
-          qgis_path: "%PROGRAMFILES%\\QGIS\\3_22\\bin\\qgis-bin.exe"
+        - profile: QDT Viewer Mode
+          label: "TEST QDT - Viewer profile"
+          desktop: true
+          start_menu: true
 
   - name: Set splash screen
     uses: splash-screen-manager
