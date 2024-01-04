@@ -1,7 +1,7 @@
 # How to use behind a network proxy
 
 :::{info}
-Only HTTP and HTTPS proxies are supported. Not socks, no PAC.
+Only HTTP and HTTPS proxies are supported. No socks, no PAC.
 :::
 
 ## Passing as CLI option
@@ -13,6 +13,8 @@ Only HTTP and HTTPS proxies are supported. Not socks, no PAC.
 qdt --proxy-http "http://user:password@proxyserver.intra:8765"
 ```
 
+----
+
 ## Using environment variables
 
 ### Generic `HTTP_PROXY` and `HTTPS_PROXY`
@@ -23,3 +25,18 @@ qdt --proxy-http "http://user:password@proxyserver.intra:8765"
 
 - it avoids potential conflict with "classic" proxy settings
 - it allows to use a specific network proxy for QDT (can be useful for some well controlled systems)
+
+#### Example on Windows PowerShell
+
+Only for the QDT command scope:
+
+```powershell
+$env:QDT_PROXY_HTTP='http://user:password@proxyserver.intra:8765'; qdt -vvv
+```
+
+At the shell session scope:
+
+```powershell
+> $env:QDT_PROXY_HTTP='http://user:password@proxyserver.intra:8765'
+> qdt -vvv
+```
