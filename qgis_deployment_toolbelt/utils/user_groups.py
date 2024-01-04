@@ -59,9 +59,7 @@ def get_user_local_groups(user_name: str | None = None) -> list[str]:
         return [g.gr_name for g in grp.getgrall() if user_name in g.gr_mem]
     elif opersys.lower() in ("win32", "windows"):
         server_host_name = uname()[1]
-        return win32net.NetUserGetLocalGroups(
-            serverName=server_host_name, userName=user_name
-        )
+        return win32net.NetUserGetLocalGroups(server_host_name, user_name)
     else:
         raise NotImplementedError(f"Unsupported operating system: {opersys}")
 
