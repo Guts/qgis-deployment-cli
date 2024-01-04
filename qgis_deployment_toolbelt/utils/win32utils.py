@@ -149,12 +149,12 @@ def refresh_environment() -> bool:
     HWND_BROADCAST: int = 0xFFFF
     WM_SETTINGCHANGE: int = 0x001A
     SMTO_ABORTIFHUNG: int = 0x0002
-    sParam = "Environment"
+    send_parameter = "Environment"
 
     res1 = res2 = None
     try:
         res1, res2 = win32gui.SendMessageTimeout(
-            HWND_BROADCAST, WM_SETTINGCHANGE, 0, sParam, SMTO_ABORTIFHUNG, 100
+            HWND_BROADCAST, WM_SETTINGCHANGE, 0, send_parameter, SMTO_ABORTIFHUNG, 100
         )
     except NameError:
         logger.critical(" name 'win32gui' is not defined")
