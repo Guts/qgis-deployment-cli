@@ -21,12 +21,11 @@ from sys import platform as opersys
 # Imports depending on operating system
 if opersys == "win32":
     """windows"""
-
+    # standard
     import winreg
 
+    # 3rd party
     import win32gui
-else:
-    pass
 
 
 # #############################################################################
@@ -63,7 +62,7 @@ def delete_environment_variable(envvar_name: str, scope: str = "user") -> bool:
     if scope == "user":
         hkey = user_hkey
     else:
-        system_hkey
+        hkey = system_hkey
 
     # get it to check if variable exits
     try:
@@ -98,11 +97,12 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
     if scope == "user":
         hkey = user_hkey
     else:
-        system_hkey
+        hkey = system_hkey
+
     # try to get the value
     try:
         with winreg.OpenKey(*hkey, access=winreg.KEY_READ) as key:
-            value, regtype = winreg.QueryValueEx(key, envvar_name)
+            value, _ = winreg.QueryValueEx(key, envvar_name)
         return value
     except OSError:
         logger.error(
@@ -149,12 +149,12 @@ def refresh_environment() -> bool:
     HWND_BROADCAST: int = 0xFFFF
     WM_SETTINGCHANGE: int = 0x001A
     SMTO_ABORTIFHUNG: int = 0x0002
-    sParam = "Environment"
+    send_parameter = "Environment"
 
     res1 = res2 = None
     try:
         res1, res2 = win32gui.SendMessageTimeout(
-            HWND_BROADCAST, WM_SETTINGCHANGE, 0, sParam, SMTO_ABORTIFHUNG, 100
+            HWND_BROADCAST, WM_SETTINGCHANGE, 0, send_parameter, SMTO_ABORTIFHUNG, 100
         )
     except NameError:
         logger.critical(" name 'win32gui' is not defined")
@@ -185,7 +185,7 @@ def set_environment_variable(
     if scope == "user":
         hkey = user_hkey
     else:
-        system_hkey
+        hkey = system_hkey
 
     # try to set the value
     try:
