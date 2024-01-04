@@ -102,7 +102,7 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
     # try to get the value
     try:
         with winreg.OpenKey(*hkey, access=winreg.KEY_READ) as key:
-            value, regtype = winreg.QueryValueEx(key, envvar_name)
+            value, _ = winreg.QueryValueEx(key, envvar_name)
         return value
     except OSError:
         logger.error(
