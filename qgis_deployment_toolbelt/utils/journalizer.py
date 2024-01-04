@@ -151,9 +151,7 @@ def headers():
     else:
         logger.debug("No network proxies detected")
 
-    check_user_group = is_user_in_group(
-        username=getuser(), group_name=getenv("QDT_GROUP_TO_CHECK", "sudo")
-    )
+    check_user_group = is_user_in_group(group_name=getenv("QDT_GROUP_TO_CHECK", "sudo"))
     logger.info(f"WIP - {check_user_group=}")
 
 
