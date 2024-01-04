@@ -35,7 +35,7 @@ qdt_block_comment_start = "# BEGIN QDT MANAGED BLOCK"
 qdt_block_comment_end = "# END QDT MANAGED BLOCK"
 shell_path_to_names = {
     "bash": ("/bin/bash", "/usr/bin/bash"),
-    "zsh": ("/bin/bash/zsh", "/usr/bin/zsh"), # TODO: support ZSH
+    "zsh": ("/bin/bash/zsh", "/usr/bin/zsh"),  # TODO: support ZSH
 }
 
 # #############################################################################
