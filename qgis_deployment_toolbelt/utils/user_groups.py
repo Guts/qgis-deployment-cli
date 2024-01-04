@@ -11,7 +11,6 @@
 # ##################################
 
 # standard library
-import grp
 import logging
 from functools import lru_cache
 from sys import platform as opersys
@@ -23,7 +22,8 @@ if opersys == "win32":
     # 3rd party
     import win32net
     import win32security
-
+else:
+    import grp
 
 # #############################################################################
 # ########## Globals ###############
