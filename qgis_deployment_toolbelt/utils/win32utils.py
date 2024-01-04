@@ -21,12 +21,11 @@ from sys import platform as opersys
 # Imports depending on operating system
 if opersys == "win32":
     """windows"""
-
+    # standard
     import winreg
 
+    # 3rd party
     import win32gui
-else:
-    pass
 
 
 # #############################################################################
