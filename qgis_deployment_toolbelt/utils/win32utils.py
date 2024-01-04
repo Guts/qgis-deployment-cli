@@ -63,7 +63,7 @@ def delete_environment_variable(envvar_name: str, scope: str = "user") -> bool:
     if scope == "user":
         hkey = user_hkey
     else:
-        system_hkey
+        hkey = system_hkey
 
     # get it to check if variable exits
     try:
@@ -98,7 +98,8 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
     if scope == "user":
         hkey = user_hkey
     else:
-        system_hkey
+        hkey = system_hkey
+
     # try to get the value
     try:
         with winreg.OpenKey(*hkey, access=winreg.KEY_READ) as key:
@@ -185,7 +186,7 @@ def set_environment_variable(
     if scope == "user":
         hkey = user_hkey
     else:
-        system_hkey
+        hkey = system_hkey
 
     # try to set the value
     try:
