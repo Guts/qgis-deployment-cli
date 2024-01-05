@@ -25,7 +25,6 @@ if opersys == "win32":
     # 3rd party
     import win32com
     import win32net
-    import win32security
 
     # try to import pyad
     try:
@@ -86,6 +85,47 @@ def get_user_local_groups(user_name: str | None = None) -> list[str]:
     elif opersys.lower() in ("win32", "windows"):
         server_host_name = uname()[1]
         return sorted(set(win32net.NetUserGetLocalGroups(server_host_name, user_name)))
+    else:
+        raise NotImplementedError(f"Unsupported operating system: {opersys}")
+
+
+@lru_cache
+def get_user_domain_groups(user_name: str | None = None) -> list[str]:
+    """Lists the domain groups to which the user belong.
+
+    On Linux and MacOS, it always return an empty list. TODO: implement it (probably
+        using pure LDAP).
+    On Windows, it relies on win32net (COM).
+
+    Args:
+        user_name (str | None, optional): name of user. If None, the current user name
+            is used. Defaults to None.
+
+    Raises:
+        NotImplementedError: if operating system is not supported.
+
+    Returns:
+        list[str]: sorted list of unique groups names
+    """
+    if user_name is None:
+        user_name = getuser()
+
+    if not is_computer_attached_to_a_domain():
+        logger.debug(
+            "Computer is not attached to a domain so retrieving user's domain groups "
+            "is meaningless. Returning empty list."
+        )
+        return []
+
+    if opersys.lower() in ("darwin", "linux"):
+        # TODO: find a way to retrive user's domain groups on Linux and MacOS (probably
+        #  using pure ldap)
+        return []
+    elif opersys.lower() in ("win32", "windows"):
+        if pyad is not None:
+            user_obj = pyad.aduser.ADUser.from_cn(getuser())
+            return sorted(set(user_obj.get_attribute("memberOf")))
+        return []
     else:
         raise NotImplementedError(f"Unsupported operating system: {opersys}")
 
@@ -191,46 +231,54 @@ def is_user_in_group(group_name: str, user_name: str | None = None) -> bool:
         bool: True if the user is a member of the group, False otherwise or if
             something fails.
     """
+    # local variables
+    local_groups = []
+    domain_groups = []
+
+    # if user not specified, use the current user name
     if user_name is None:
         user_name = getuser()
 
+    # first, get local groups
     try:
-        if opersys.lower() in ("darwin", "linux"):
-            # Get the list of group names the user is a member of
-            local_groups = get_user_local_groups()
-            logger.debug(
-                f"User '{user_name}' belongs to following LOCAL groups: "
-                f"{'; '.join(local_groups)}. "
-            )
-            return group_name in local_groups
-        elif opersys.lower() in ("win32", "windows"):
-            local_groups = get_user_local_groups()
-            logger.debug(
-                f"User '{user_name}' belongs to following LOCAL groups: "
-                f"{'; '.join(local_groups)}. "
-            )
-
-            domain = None  # Set to the appropriate domain or leave as None for the current domain
-
-            user_info = win32net.NetUserGetInfo(domain, user_name, 1)
-            # user_sid = user_info.get("user_sid")
-
-            group_sid = win32security.LookupAccountName(domain, group_name)[0]
-
-            return win32security.CheckTokenMembership(None, group_sid)
-
-        else:
-            raise NotImplementedError(f"Unsupported operating system: {opersys}")
-
-    except KeyError as err:
-        logger.error(
-            f"The specified user '{user_name}' or the specified group "
-            f"'{group_name}' does not exist. Trace: {err}"
+        local_groups = get_user_local_groups()
+        logger.debug(
+            f"User '{user_name}' belongs to following LOCAL groups: "
+            f"{'; '.join(local_groups)}. "
         )
-        return False
     except Exception as err:
-        logger.critical(
-            f"Checking if user '{user_name}' belongs to the group '{group_name}' "
-            f"failed. Trace: {err}"
+        logger.error(f"Retrieving user's LOCAL groups failed. Trace: {err}")
+
+    # if computer is not attached to a domain, check only on local groups
+    if not is_computer_attached_to_a_domain():
+        return group_name in local_groups
+
+    try:
+        domain_groups = get_user_domain_groups()
+        logger.debug(
+            f"User '{user_name}' belongs to following DOMAIN groups: "
+            f"{'; '.join(domain_groups)}. "
         )
-        return False
+    except Exception as err:
+        logger.error(f"Retrieving user's DOMAIN groups failed. Trace: {err}")
+
+    # -- FORMER CODE: keeping it until during feature development
+    # domain = None  # Set to the appropriate domain or leave as None for the current domain
+    # user_info = win32net.NetUserGetInfo(domain, user_name, 1)
+    # # user_sid = user_info.get("user_sid")
+    # group_sid = win32security.LookupAccountName(domain, group_name)[0]
+    # return win32security.CheckTokenMembership(None, group_sid)
+    # except KeyError as err:
+    #     logger.error(
+    #         f"The specified user '{user_name}' or the specified group "
+    #         f"'{group_name}' does not exist. Trace: {err}"
+    #     )
+    #     return False
+    # except Exception as err:
+    #     logger.critical(
+    #         f"Checking if user '{user_name}' belongs to the group '{group_name}' "
+    #         f"failed. Trace: {err}"
+    #     )
+    #     return False
+
+    return any([group_name in domain_groups, group_name in local_groups])
