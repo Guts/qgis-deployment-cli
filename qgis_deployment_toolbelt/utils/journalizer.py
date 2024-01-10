@@ -28,6 +28,7 @@ from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import get_qdt_working_directory
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
+from qgis_deployment_toolbelt.utils.user_groups import is_user_in_group
 
 # ############################################################################
 # ########## GLOBALS #############
@@ -149,6 +150,9 @@ def headers():
         logger.debug(f"Network proxies detected: {proxies_settings}")
     else:
         logger.debug("No network proxies detected")
+
+    check_user_group = is_user_in_group(group_name=getenv("QDT_GROUP_TO_CHECK", "sudo"))
+    logger.info(f"WIP - {check_user_group=}")
 
 
 def get_logger_filepath() -> Path | None:
