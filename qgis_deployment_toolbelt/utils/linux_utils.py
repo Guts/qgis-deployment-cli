@@ -128,12 +128,12 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
 
 
 def set_environment_variable(
-    env_key: str, env_value: str | bool | int, scope: str = "user"
+    envvar_name: str, envvar_value: str | bool | int, scope: str = "user"
 ) -> bool:
     """Set environment variable in Linux profile file
     Args:
-        env_key (str): environment variable name (= key) to set
-        env_value (str): environment variable value to set
+        envvar_name (str): environment variable name (= key) to set
+        envvar_value (str): environment variable value to set
         scope (str, optional): environment variable scope. Must be "user" or "system",
             defaults to "user". Defaults to "user".
 
@@ -141,16 +141,16 @@ def set_environment_variable(
         bool: True if environment variable correctly set or False if not
     """
 
-    if isinstance(env_value, bool):
-        env_value = str(bool(env_value)).lower()
+    if isinstance(envvar_value, bool):
+        envvar_value = str(bool(envvar_value)).lower()
 
-    if get_environment_variable(env_key, scope) is not None:
-        logger.info(f"Environment variable {env_key} already there")
-        if get_environment_variable(env_key, scope) != env_value:
+    if get_environment_variable(envvar_name, scope) is not None:
+        logger.info(f"Environment variable {envvar_name} already there")
+        if get_environment_variable(envvar_name, scope) != envvar_value:
             logger.info("Environment variable value to be changed")
-            delete_environment_variable(env_key)
+            delete_environment_variable(envvar_name)
         else:
-            logger.info(f"Environment variable already set to {env_value}")
+            logger.info(f"Environment variable already set to {envvar_value}")
             return True
 
     profile_file = get_profile_file(scope)
@@ -158,7 +158,7 @@ def set_environment_variable(
     if profile_file is not None:
         logger.debug(f"parsing {profile_file}")
 
-        export_line = f"export {env_key}={str(env_value)}"
+        export_line = f"export {envvar_name}={str(envvar_value)}"
         block_start_found = False
         block_end_found = False
         block_end_line: int = 0
@@ -186,7 +186,7 @@ def set_environment_variable(
 
         if line_found:
             logger.debug(
-                f"Environment variable and key {env_key}={env_value} is already present"
+                f"Environment variable and key {envvar_name}={envvar_value} is already present"
             )
             return True
         elif block_found and not line_found:
@@ -217,10 +217,10 @@ def set_environment_variable(
         return False
 
 
-def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
+def delete_environment_variable(envvar_name: str, scope: str = "user") -> bool:
     """Remove environment variable from Linux profile file
     Args:
-        env_key (str): environment variable name (= key) to remove
+        envvar_name (str): environment variable name (= key) to remove
         scope (str, optional): environment variable scope. Must be "user" or "system",
             defaults to "user". Defaults to "user".
 
@@ -233,7 +233,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
     if profile_file is not None:
         logger.debug(f"parsing {profile_file}")
 
-        line_begin = f"export {env_key}="
+        line_begin = f"export {envvar_name}="
         block_start_found = False
         block_start_line: int = 0
         block_end_found = False
@@ -267,19 +267,19 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         if line_found:
             pos.append(line_begin_line)
             logger.debug(
-                f"Environment variable and key {env_key} was found. "
+                f"Environment variable and key {envvar_name} was found. "
                 "It will be removed"
             )
         if block_start_found:
             pos.append(block_start_line)
             logger.debug(
-                f"QDT block start was found for '{env_key}'. "
+                f"QDT block start was found for '{envvar_name}'. "
                 "Block start will be removed."
             )
         if block_end_found:
             pos.append(block_end_line)
             logger.info(
-                f"QDT block end was found for: '{env_key}'. "
+                f"QDT block end was found for: '{envvar_name}'. "
                 "Block end will be removed."
             )
         # pos = [block_start_line, line_begin_line, block_end_line]
@@ -287,7 +287,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         with profile_file.open(mode="w", encoding="UTF-8") as file:
             file.writelines(new_lines)
         logger.info(
-            f"QDT block for environment variable '{env_key}' has been removed. "
+            f"QDT block for environment variable '{envvar_name}' has been removed. "
             "Shell profile updated."
         )
         return True
@@ -297,7 +297,7 @@ def delete_environment_variable(env_key: str, scope: str = "user") -> bool:
         return False
 
 
-def get_profile_file(scope: str = "user") -> str | None:
+def get_profile_file(scope: str = "user") -> Path | None:
     """Get Linux profile file depending on shell and scope
     Args:
         scope (str, optional): environment variable scope. Must be "user" or "system",

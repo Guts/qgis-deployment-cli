@@ -122,12 +122,12 @@ class JobEnvironmentVariables(GenericJob):
                 if env_var.get("action") == "add":
                     try:
                         set_environment_variable(
-                            envvar_name=env_var.get("name"),
+                            envvar_name=env_var.get("name", None),
                             envvar_value=self.prepare_value(
-                                value=env_var.get("value"),
-                                value_type=env_var.get("value_type"),
+                                value=env_var.get("value", None),
+                                value_type=env_var.get("value_type", None),
                             ),
-                            scope=env_var.get("scope"),
+                            scope=env_var.get("scope", None),
                         )
                     except NameError:
                         logger.debug(
@@ -136,8 +136,8 @@ class JobEnvironmentVariables(GenericJob):
                 elif env_var.get("action") == "remove":
                     try:
                         delete_environment_variable(
-                            envvar_name=env_var.get("name"),
-                            scope=env_var.get("scope"),
+                            envvar_name=env_var.get("name", None),
+                            scope=env_var.get("scope", None),
                         )
                     except NameError:
                         logger.debug(
@@ -152,12 +152,12 @@ class JobEnvironmentVariables(GenericJob):
                 if env_var.get("action") == "add":
                     try:
                         set_environment_variable(
-                            env_key=env_var.get("name"),
-                            env_value=self.prepare_value(
-                                value=env_var.get("value"),
-                                value_type=env_var.get("value_type"),
+                            envvar_name=env_var.get("name", None),
+                            envvar_value=self.prepare_value(
+                                value=env_var.get("value", None),
+                                value_type=env_var.get("value_type", None),
                             ),
-                            scope=env_var.get("scope"),
+                            scope=env_var.get("scope", None),
                         )
                     except NameError:
                         logger.debug(
@@ -166,7 +166,8 @@ class JobEnvironmentVariables(GenericJob):
                 elif env_var.get("action") == "remove":
                     try:
                         delete_environment_variable(
-                            env_key=env_var.get("name"), scope=env_var.get("scope")
+                            envvar_name=env_var.get("name", None),
+                            scope=env_var.get("scope", None),
                         )
                     except NameError:
                         logger.debug(
@@ -183,7 +184,7 @@ class JobEnvironmentVariables(GenericJob):
         logger.debug(f"Job {self.ID} ran successfully.")
 
     # -- INTERNAL LOGIC ------------------------------------------------------
-    def prepare_value(self, value: str, value_type: str = None) -> str:
+    def prepare_value(self, value: str, value_type: str | None = None) -> str:
         """Prepare value to be used in the environment variable.
 
         It performs some checks or operations depending on value type: user and
