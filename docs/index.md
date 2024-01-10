@@ -12,7 +12,7 @@
 
 ## What it is and the underlying philosophy
 
-Development is  développement est conçu selon les principes suivants :
+Development is leaded by the following principles and goals:
 
 - a tailor-made tool for QGIS ecosystem
 - open source and community driven
