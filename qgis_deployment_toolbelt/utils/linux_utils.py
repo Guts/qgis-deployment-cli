@@ -189,29 +189,30 @@ def set_environment_variable(
                 f"Environment variable and key {envvar_name}={envvar_value} is already present"
             )
             return True
-        elif block_found and not line_found:
-            lines.insert(block_end_line, f"{export_line}\n")
+        else:
+            if block_found:
+                lines.insert(block_end_line, f"{export_line}\n")
 
-            with profile_file.open(mode="w", encoding="UTF-8") as file:
-                file.writelines(lines)
-            logger.info(
-                f"QDT block was already here but not the line: '{export_line}. "
-                "It has been added."
-            )
-            return True
-        elif not block_found and not line_found:
-            new_lines = (
-                f"\n{qdt_block_comment_start}\n",
-                f"{export_line}\n",
-                f"{qdt_block_comment_end}",
-            )
-            with open(profile_file, "a") as file:
-                file.writelines(new_lines)
-            logger.info(
-                f"Nor QDT block and the line: '{export_line}' were present. "
-                "Both have been added."
-            )
-            return True
+                with profile_file.open(mode="w", encoding="UTF-8") as file:
+                    file.writelines(lines)
+                logger.info(
+                    f"QDT block was already here but not the line: '{export_line}. "
+                    "It has been added."
+                )
+                return True
+            else:
+                new_lines = (
+                    f"\n{qdt_block_comment_start}\n",
+                    f"{export_line}\n",
+                    f"{qdt_block_comment_end}",
+                )
+                with open(profile_file, "a") as file:
+                    file.writelines(new_lines)
+                logger.info(
+                    f"Nor QDT block and the line: '{export_line}' were present. "
+                    "Both have been added."
+                )
+                return True
     else:
         logger.error("Profile file was not found.")
         return False
