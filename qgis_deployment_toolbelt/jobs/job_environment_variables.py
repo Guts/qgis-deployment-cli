@@ -117,48 +117,71 @@ class JobEnvironmentVariables(GenericJob):
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""
 
-        logger.debug(f"OS : {opersys}")
+        if opersys == "win32":
+            for env_var in self.options:
+                if env_var.get("action") == "add":
+                    try:
+                        set_environment_variable(
+                            envvar_name=env_var.get("name", None),
+                            envvar_value=self.prepare_value(
+                                value=env_var.get("value", None),
+                                value_type=env_var.get("value_type", None),
+                            ),
+                            scope=env_var.get("scope", None),
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+                elif env_var.get("action") == "remove":
+                    try:
+                        delete_environment_variable(
+                            envvar_name=env_var.get("name", None),
+                            scope=env_var.get("scope", None),
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+            # force Windows to refresh the environment
+            refresh_environment()
 
-        # Environment variables dictionary processing
-        for env_var in self.options:
-            if env_var.get("action") == "add":
-                try:
-                    set_environment_variable(
-                        envvar_name=env_var.get("name", None),
-                        envvar_value=self.prepare_value(
-                            value=env_var.get("value", None),
-                            value_type=env_var.get("value_type", None),
-                        ),
-                        scope=env_var.get("scope", None),
-                    )
-                except NameError:
-                    logger.debug(
-                        f"Variable name '{env_var.get('name')}' is not defined"
-                    )
-            elif env_var.get("action") == "remove":
-                try:
-                    delete_environment_variable(
-                        envvar_name=env_var.get("name", None),
-                        scope=env_var.get("scope", None),
-                    )
-                except NameError:
-                    logger.debug(
-                        f"Variable name '{env_var.get('name')}' is not defined"
-                    )
+        elif opersys == "linux":
+            logger.debug(f"OS : {opersys}")
+            for env_var in self.options:
+                if env_var.get("action") == "add":
+                    try:
+                        set_environment_variable(
+                            envvar_name=env_var.get("name", None),
+                            envvar_value=self.prepare_value(
+                                value=env_var.get("value", None),
+                                value_type=env_var.get("value_type", None),
+                            ),
+                            scope=env_var.get("scope", None),
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
+                elif env_var.get("action") == "remove":
+                    try:
+                        delete_environment_variable(
+                            envvar_name=env_var.get("name", None),
+                            scope=env_var.get("scope", None),
+                        )
+                    except NameError:
+                        logger.debug(
+                            f"Variable name '{env_var.get('name')}' is not defined"
+                        )
 
-            if opersys == "win32":
-                # force Windows to refresh the environment
-                refresh_environment()
+            # force Linux to refresh the environment ?
 
-            elif opersys == "linux":
-                pass
+        else:
+            logger.debug(
+                f"Setting persistent environment variables is not supported on {opersys}"
+            )
 
-            else:
-                logger.debug(
-                    f"Setting persistent environment variables is not supported on {opersys}"
-                )
-
-            logger.debug(f"Job {self.ID} ran successfully.")
+        logger.debug(f"Job {self.ID} ran successfully.")
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def prepare_value(self, value: str, value_type: str | None = None) -> str:
