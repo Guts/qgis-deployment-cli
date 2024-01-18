@@ -16,6 +16,9 @@ from platform import architecture, platform, uname
 from socket import gethostname
 
 # 3rd party
+import certifi
+from requests.utils import DEFAULT_CA_BUNDLE_PATH
+
 # Imports depending on operating system
 if "linux" in uname().system.lower():
     import distro
@@ -130,6 +133,13 @@ def headers():
         logger.debug(f"Network proxies detected: {proxies_settings}")
     else:
         logger.debug("No network proxies detected")
+
+    # SSL CA certificates
+    logger.debug(f"Installed certificate authority (CA) bundle: {certifi.where()}")
+    logger.debug(f"Default certificate authority (CA) bundle: {DEFAULT_CA_BUNDLE_PATH}")
+    logger.debug(
+        f"Certificate authority (CA) bundle to use: {getenv('REQUESTS_CA_BUNDLE', getenv('CURL_CA_BUNDLE'))}"
+    )
 
 
 def get_logger_filepath() -> Path | None:
