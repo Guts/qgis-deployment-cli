@@ -18,7 +18,11 @@ from pathlib import Path
 from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
+from qgis_deployment_toolbelt.constants import (
+    OS_CONFIG,
+    get_qdt_logs_folder,
+    get_qdt_working_directory,
+)
 from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadName,
     JobOptionBadValue,
@@ -60,7 +64,7 @@ class GenericJob:
             f"repositories/{getenv('QDT_TMP_RUNNING_SCENARIO_ID', 'default')}"
         )
         self.qdt_plugins_folder = self.qdt_working_folder.joinpath("plugins")
-
+        self.qdt_logs_folder = get_qdt_logs_folder()
         # destination profiles folder
         self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
         if not self.qgis_profiles_path.exists():
