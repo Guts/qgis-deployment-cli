@@ -46,6 +46,9 @@ def get_qdt_logs_folder() -> Path:
     Returns:
         Path: path to the QDT logs folder.
     """
+    # default
+    qdt_logs_folder = get_qdt_working_directory().joinpath("logs")
+
     if isinstance(getenv("QDT_LOGS_DIR"), str) and check_path(
         input_path=Path(expandvars(expanduser(getenv("QDT_LOGS_DIR")))),
         must_be_a_file=False,
@@ -59,10 +62,8 @@ def get_qdt_logs_folder() -> Path:
         )
 
     else:
-        qdt_logs_folder = get_qdt_working_directory().joinpath("logs")
         logger.debug(
-            "Logs folder specified in QDT_LOGS_DIR environment variable "
-            f"{getenv('QDT_LOGS_DIR')} can't be used (see logs above). Fallback on "
+            f"Default value used for QDT logs folder: {qdt_logs_folder}"
             f"default folder: {qdt_logs_folder}"
         )
     return qdt_logs_folder
