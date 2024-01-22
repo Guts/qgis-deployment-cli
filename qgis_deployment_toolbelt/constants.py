@@ -49,13 +49,13 @@ def get_qdt_logs_folder() -> Path:
     qdt_logs_folder = get_qdt_working_directory().joinpath("logs")
 
     if isinstance(getenv("QDT_LOGS_DIR"), str):
-        qdt_logs_folder = Path(expandvars(expanduser(getenv("QDT_LOGS_DIR"))))
+        qdt_logs_folder_env = Path(expandvars(expanduser(getenv("QDT_LOGS_DIR"))))
         logger.debug(
             f"Logs folder set from QDT_LOGS_DIR environment variable: {qdt_logs_folder}"
         )
         # check
         if not check_path(
-            input_path=qdt_logs_folder,
+            input_path=qdt_logs_folder_env,
             must_be_a_file=False,
             must_be_a_folder=True,
             must_be_writable=True,
@@ -63,12 +63,11 @@ def get_qdt_logs_folder() -> Path:
         ):
             logger.error(
                 "Logs folder path set in QDT_LOGS_DIR environment variable is not a "
-                f"valid folder path: {qdt_logs_folder}. It must to point to a writable"
-                "folder."
+                f"valid folder path: {qdt_logs_folder_env}. It must to point to a "
+                f"writable folder. Fallback to default {qdt_logs_folder}."
             )
-            # fallback to default
-            qdt_logs_folder = get_qdt_working_directory().joinpath("logs")
-
+        else:
+            qdt_logs_folder = qdt_logs_folder_env
     else:
         logger.debug(f"Default value used for QDT logs folder: {qdt_logs_folder}")
 
