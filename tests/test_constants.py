@@ -74,6 +74,14 @@ class TestConstants(unittest.TestCase):
             )
             unsetenv("QDT_LOGS_DIR")
 
+        # with a bad value set in environment var --> fallback to default value (and error logged)
+        environ["QDT_LOGS_DIR"] = f"{Path(__file__).resolve()}"
+        self.assertEqual(
+            constants.get_qdt_logs_folder(),
+            constants.get_qdt_working_directory().joinpath("logs"),
+        )
+        unsetenv("QDT_LOGS_DIR")
+
     def test_get_qdt_working_folder(self):
         """Test how QDT working folder is retrieved"""
         # using specific value

@@ -39,9 +39,8 @@ DEFAULT_QDT_WORKING_FOLDER = Path.home().joinpath(".cache/qgis-deployment-toolbe
 
 
 def get_qdt_logs_folder() -> Path:
-    """Get QDT logs folder. First, it tries to get path from environment variable
-        `QDT_LOGS_DIR`, then it uses the default path: a `logs` subfolder under the QDT
-        working folder.
+    """Get QDT logs folder. It uses the default path (a `logs` subfolder under the QDT
+        working folder) or the path defined in environment variable `QDT_LOGS_DIR`.
 
     Returns:
         Path: path to the QDT logs folder.
@@ -49,23 +48,30 @@ def get_qdt_logs_folder() -> Path:
     # default
     qdt_logs_folder = get_qdt_working_directory().joinpath("logs")
 
-    if isinstance(getenv("QDT_LOGS_DIR"), str) and check_path(
-        input_path=Path(expandvars(expanduser(getenv("QDT_LOGS_DIR")))),
-        must_be_a_file=False,
-        must_be_a_folder=True,
-        must_be_writable=True,
-        raise_error=False,
-    ):
+    if isinstance(getenv("QDT_LOGS_DIR"), str):
         qdt_logs_folder = Path(expandvars(expanduser(getenv("QDT_LOGS_DIR"))))
         logger.debug(
             f"Logs folder set from QDT_LOGS_DIR environment variable: {qdt_logs_folder}"
         )
+        # check
+        if not check_path(
+            input_path=qdt_logs_folder,
+            must_be_a_file=False,
+            must_be_a_folder=True,
+            must_be_writable=True,
+            raise_error=False,
+        ):
+            logger.error(
+                "Logs folder path set in QDT_LOGS_DIR environment variable is not a "
+                f"valid folder path: {qdt_logs_folder}. It must to point to a writable"
+                "folder."
+            )
+            # fallback to default
+            qdt_logs_folder = get_qdt_working_directory().joinpath("logs")
 
     else:
-        logger.debug(
-            f"Default value used for QDT logs folder: {qdt_logs_folder}"
-            f"default folder: {qdt_logs_folder}"
-        )
+        logger.debug(f"Default value used for QDT logs folder: {qdt_logs_folder}")
+
     return qdt_logs_folder
 
 
