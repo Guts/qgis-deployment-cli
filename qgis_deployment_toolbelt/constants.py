@@ -38,6 +38,36 @@ DEFAULT_QDT_WORKING_FOLDER = Path.home().joinpath(".cache/qgis-deployment-toolbe
 # ##################################
 
 
+def get_qdt_logs_folder() -> Path:
+    """Get QDT logs folder. First, it tries to get path from environment variable
+        `QDT_LOGS_DIR`, then it uses the default path: a `logs` subfolder under the QDT
+        working folder.
+
+    Returns:
+        Path: path to the QDT logs folder.
+    """
+    if isinstance(getenv("QDT_LOGS_DIR"), str) and check_path(
+        input_path=Path(expandvars(expanduser(getenv("QDT_LOGS_DIR")))),
+        must_be_a_file=False,
+        must_be_a_folder=True,
+        must_be_writable=True,
+        raise_error=False,
+    ):
+        qdt_logs_folder = Path(expandvars(expanduser(getenv("QDT_LOGS_DIR"))))
+        logger.debug(
+            f"Logs folder set from QDT_LOGS_DIR environment variable: {qdt_logs_folder}"
+        )
+
+    else:
+        qdt_logs_folder = get_qdt_working_directory().joinpath("logs")
+        logger.debug(
+            "Logs folder specified in QDT_LOGS_DIR environment variable "
+            f"{getenv('QDT_LOGS_DIR')} can't be used (see logs above). Fallback on "
+            f"default folder: {qdt_logs_folder}"
+        )
+    return qdt_logs_folder
+
+
 def get_qdt_working_directory(
     specific_value: PathLike | None = None, identifier: str | None = None
 ) -> Path:
