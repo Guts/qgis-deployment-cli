@@ -51,7 +51,7 @@ def get_qdt_logs_folder() -> Path:
     if isinstance(getenv("QDT_LOGS_DIR"), str):
         qdt_logs_folder_env = Path(expandvars(expanduser(getenv("QDT_LOGS_DIR"))))
         logger.debug(
-            f"Logs folder set from QDT_LOGS_DIR environment variable: {qdt_logs_folder}"
+            f"Logs folder set from QDT_LOGS_DIR environment variable: {qdt_logs_folder_env}"
         )
         # check
         if not check_path(
