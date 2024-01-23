@@ -10,6 +10,7 @@
         python -m unittest tests.test_constants.TestConstants.test_constants
 """
 
+import tempfile
 import unittest
 from os import environ, getenv, unsetenv
 from os.path import expanduser, expandvars
@@ -53,6 +54,33 @@ class TestConstants(unittest.TestCase):
         self.assertTrue(
             os_config_forbidden_chars.valid_shortcut_name(shortcut_name="qgis_ltr_3_28")
         )
+
+    def test_get_qdt_logs_folder(self):
+        """Test how QDT logs folder is retrieved"""
+        # default value
+        self.assertEqual(
+            constants.get_qdt_logs_folder(),
+            constants.get_qdt_working_directory().joinpath("logs"),
+        )
+
+        # using environment variable
+        with tempfile.TemporaryDirectory(
+            prefix="qdt_test_logs_folder_", ignore_cleanup_errors=True
+        ) as tmpdirname:
+            environ["QDT_LOGS_DIR"] = tmpdirname
+            self.assertEqual(
+                constants.get_qdt_logs_folder(),
+                Path(tmpdirname),
+            )
+            unsetenv("QDT_LOGS_DIR")
+
+        # with a bad value set in environment var --> fallback to default value (and error logged)
+        environ["QDT_LOGS_DIR"] = f"{Path(__file__).resolve()}"
+        self.assertEqual(
+            constants.get_qdt_logs_folder(),
+            constants.get_qdt_working_directory().joinpath("logs"),
+        )
+        unsetenv("QDT_LOGS_DIR")
 
     def test_get_qdt_working_folder(self):
         """Test how QDT working folder is retrieved"""

@@ -11,7 +11,6 @@ import logging
 from getpass import getuser
 from logging.handlers import RotatingFileHandler
 from os import getenv
-from os.path import expanduser, expandvars
 from pathlib import Path
 from platform import architecture, platform, uname
 from socket import gethostname
@@ -25,8 +24,7 @@ else:
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
-from qgis_deployment_toolbelt.constants import get_qdt_working_directory
-from qgis_deployment_toolbelt.utils.check_path import check_path
+from qgis_deployment_toolbelt.constants import get_qdt_logs_folder
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 
 # ############################################################################
@@ -79,24 +77,7 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
         )
 
     else:
-        if getenv("QDT_LOGS_DIR") and check_path(
-            input_path=Path(expandvars(expanduser(getenv("QDT_LOGS_DIR")))),
-            must_be_a_file=False,
-            must_be_a_folder=True,
-            must_be_writable=True,
-            raise_error=False,
-        ):
-            logs_folder = Path(expandvars(expanduser(getenv("QDT_LOGS_DIR"))))
-            logger.debug(
-                f"Logs folder set with QDT_LOGS_DIR environment variable: {logs_folder}"
-            )
-        else:
-            logs_folder = get_qdt_working_directory().joinpath("logs")
-            logger.debug(
-                "Logs folder specified in QDT_LOGS_DIR environment variable "
-                f"{getenv('QDT_LOGS_DIR')} can't be used (see logs above). Fallback on "
-                f"default folder: {logs_folder}"
-            )
+        logs_folder = get_qdt_logs_folder()
 
         # make sure folder exists
         logs_folder.mkdir(exist_ok=True, parents=True)
