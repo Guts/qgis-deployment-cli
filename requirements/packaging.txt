@@ -2,5 +2,5 @@
 # ---------
 
 pyinstaller>=5,<6.4
-pyinstaller-hooks-contrib==2023.*
+pyinstaller-hooks-contrib==2024.*
 pypiwin32==223 ; sys_platform == 'win32'
