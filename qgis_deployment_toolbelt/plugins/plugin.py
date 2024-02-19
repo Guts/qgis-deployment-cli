@@ -381,7 +381,7 @@ if __name__ == "__main__":
     sample_plugin_different_name = {
         "name": "Layers menu from project",
         "version": "v2.0.6",
-        "url": "https://plugins.qgis.org/plugins/menu_from_project/version/v2.0.6/download/",
+        "url": "https://plugins.qgis.org/plugins/menu_from_project/version/2.0.6/download/",
         "type": "remote",
         "plugin_id": 1846,
     }
