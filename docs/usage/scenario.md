@@ -67,5 +67,3 @@ In order to minimize friction and maximize productivity, the project tries to pr
   }
 }
 ```
-
----

@@ -142,7 +142,7 @@ profiles/*/previewImages/
 
 ## Model definition
 
-The project comes with a [JSON schema]("https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",) describing the model of a profile:
+The project comes with a [JSON schema](https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json) describing the model of a profile:
 
 ```{eval-rst}
 .. literalinclude:: ../schemas/profile/qgis_profile.json
@@ -157,7 +157,7 @@ With a submodel for plugin object:
 ```
 
 :::{tip}
-To retrieve the ID of a plugin see [this page](../misc/tip_get_plugin_id.md).
+To retrieve the ID of a plugin see [this page](../guides/howto_qgis_get_plugin_id.md).
 :::
 
 ----
