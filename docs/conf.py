@@ -51,6 +51,7 @@ extensions = [
     "sphinx_design",
     "sphinxcontrib.mermaid",
     "sphinxext.opengraph",
+    "sphinx_sitemap",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -95,6 +96,11 @@ pygments_style = "sphinx"
 
 
 # -- Options for HTML output -------------------------------------------------
+
+suppress_warnings = ["myst.duplicate_def"]
+
+# final URL
+html_baseurl = __about__.__uri_homepage__
 
 # Theme
 html_favicon = "static/logo_qdt.png"
@@ -190,6 +196,9 @@ ogp_custom_meta_tags = [
     '<meta property="twitter:site" content="@oslandia" />',
     f'<meta property="twitter:title" content="{project}" />',
 ]
+
+# sitemap
+sitemap_url_scheme = "{link}"
 
 # -- Functions ------------------------------------------------------------------
 
