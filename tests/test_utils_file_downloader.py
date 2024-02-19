@@ -11,6 +11,7 @@
 """
 
 # standard library
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -30,32 +31,45 @@ class TestUtilsFileDownloader(unittest.TestCase):
 
     def test_download_file_exists(self):
         """Test download remote file locally to a file which already exists."""
-
-        # file that already exist locally
-        downloaded_file = download_remote_file_to_local(
-            remote_url_to_download="https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/README.md",
-            local_file_path=Path("README_from_remote.md"),
-        )
-        self.assertIsInstance(downloaded_file, Path)
-        downloaded_file.unlink(missing_ok=True)
+        with tempfile.TemporaryDirectory(
+            prefix="qdt_test_downloader_", ignore_cleanup_errors=True
+        ) as tmpdirname:
+            # file that already exist locally
+            downloaded_file = download_remote_file_to_local(
+                remote_url_to_download="https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/README.md",
+                local_file_path=Path(tmpdirname).joinpath("README_from_remote.md"),
+            )
+            self.assertIsInstance(downloaded_file, Path)
+            self.assertTrue(downloaded_file.exists())
+            self.assertTrue(downloaded_file.is_file())
 
     def test_download_file_raise_http_error(self):
         """Test download handling an HTTP error."""
-
-        with self.assertRaises(HTTPError):
-            download_remote_file_to_local(
-                remote_url_to_download="https://qgis.org/fake-page",
-                local_file_path=Path("README.md"),
-            )
+        with tempfile.TemporaryDirectory(
+            prefix="qdt_test_downloader_", ignore_cleanup_errors=True
+        ) as tmpdirname:
+            with self.assertRaises(HTTPError):
+                downloaded_file = download_remote_file_to_local(
+                    remote_url_to_download="https://qgis.org/fake-page",
+                    local_file_path=Path(tmpdirname).joinpath("dl_404.html"),
+                )
+                self.assertIsInstance(downloaded_file, Path)
+                self.assertFalse(downloaded_file.exists())
+                self.assertFalse(downloaded_file.is_file())
 
     def test_download_file_raise_url_error(self):
         """Test download with a bad URL."""
-
-        with self.assertRaises(ConnectionError):
-            download_remote_file_to_local(
-                remote_url_to_download="https://fake_url/youpi.dmg",
-                local_file_path=Path("README.md"),
-            )
+        with tempfile.TemporaryDirectory(
+            prefix="qdt_test_downloader_", ignore_cleanup_errors=True
+        ) as tmpdirname:
+            with self.assertRaises(ConnectionError):
+                downloaded_file = download_remote_file_to_local(
+                    remote_url_to_download="https://fake_url/youpi.dmg",
+                    local_file_path=Path(tmpdirname).joinpath("fake_file.dmg"),
+                )
+                self.assertIsInstance(downloaded_file, Path)
+                self.assertFalse(downloaded_file.exists())
+                self.assertFalse(downloaded_file.is_file())
 
 
 # ############################################################################
