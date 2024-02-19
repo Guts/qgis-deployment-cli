@@ -59,7 +59,15 @@ class QgisIniHelper:
         """Instanciation.
 
         Args:
-            ini_filepath: path to the QGIS3.ini configuration file
+            ini_filepath (Path): path to the QGIS3.ini configuration file
+            ini_type (Literal[ &quot;profile_qgis3&quot;, \
+                &quot;profile_qgis3customization&quot;, &quot;plugin_metadata&quot;, \
+                None ], optional): type of ini file. None enables autodetection. \
+                Defaults to None.
+            strict (bool, optional): strict mode applied to ConfigParser. Defaults to \
+                False.
+            enable_environment_variables_interpolation (bool, optional): if enabled, \
+                values matching environment variables are interepreted. Defaults to True.
         """
         if (
             ini_filepath is not None
@@ -95,6 +103,16 @@ class QgisIniHelper:
         else:
             logger.warning(f"Unrecognized ini type: {ini_filepath}")
 
+        # check if file exists
+        if not check_path(
+            input_path=ini_filepath,
+            must_be_a_file=True,
+            must_be_readable=True,
+            must_exists=True,
+            raise_error=False,
+        ):
+            logger.info(f"The specified file does not exist: {ini_filepath.resolve()}.")
+
         # store options
         self.strict_mode = strict
         self.enable_environment_variables_interpolation = (
@@ -109,9 +127,11 @@ class QgisIniHelper:
         """
         qgis_cfg_parser = CustomConfigParser(
             strict=self.strict_mode,
-            interpolation=EnvironmentVariablesInterpolation()
-            if self.enable_environment_variables_interpolation
-            else None,
+            interpolation=(
+                EnvironmentVariablesInterpolation()
+                if self.enable_environment_variables_interpolation
+                else None
+            ),
         )
         qgis_cfg_parser.optionxform = str
         return qgis_cfg_parser
