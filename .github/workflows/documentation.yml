@@ -2,17 +2,20 @@ name: "📚 Documentation"
 
 on:
   push:
-    branches: [main]
+    branches:
+        - main
     paths:
-      - "docs/**/*"
       - ".github/workflows/documentation.yml"
+      - "docs/**/*"
       - "qgis_deployment_toolbelt/**/*.py"
+      - requirements/documentation.txt
 
     tags:
       - "*"
 
   pull_request:
-    branches: [main]
+    branches:
+        - main
     paths:
       - ".github/workflows/documentation.yml"
       - docs/**/*
@@ -28,11 +31,11 @@ permissions:
 
 # Allow one concurrent deployment
 concurrency:
-  group: "pages"
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
-  PYTHON_VERSION: "3.10"
+  PYTHON_VERSION: "3.11"
 
 jobs:
   build-docs:
