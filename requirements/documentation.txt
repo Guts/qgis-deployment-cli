@@ -2,6 +2,7 @@
 # -------------
 
 furo==2024.*
+matplotlib>=3.8.2,<4
 myst-parser[linkify]>=2,<3
 sphinx-argparse-cli>=1,<2
 sphinx-autobuild==2024.*
