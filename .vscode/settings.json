@@ -5,6 +5,14 @@
     "files.associations": {
         "./requirements/*.txt": "pip-requirements"
     },
+    // JSON
+    "[json]": {
+        "editor.formatOnSave": true,
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace"
+    },
     // Python
     "python.analysis.autoFormatStrings": true,
     "python.analysis.typeCheckingMode": "basic",
@@ -20,6 +28,19 @@
             88
         ],
         "editor.wordWrapColumn": 88,
+    },
+    // YAML
+    "[yaml]": {
+        "editor.autoIndent": "keep",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        }
     },
     // Tests
     "python.testing.unittestEnabled": true,
