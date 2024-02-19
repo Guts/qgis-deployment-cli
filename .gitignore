@@ -136,6 +136,7 @@ _logs/
 *.pfx
 docs/misc/licenses.md
 docs/misc/dependencies.md
+docs/usage/download_section.md
 QGISDeploymentToolbelt_*Ubuntu*
 tests/fixtures/tmp/*
 build_environment_report.txt
