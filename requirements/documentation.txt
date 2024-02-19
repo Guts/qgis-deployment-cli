@@ -10,6 +10,7 @@ sphinx-copybutton<1
 sphinx-design>=0.5,<1
 sphinxcontrib-mermaid>=0.9,<1
 sphinxext-opengraph>=0.4,<1
+sphinx-sitemap>=2.4,<3
 
 # -- 'HIDDEN' dependencies, used during CI
 # pip-licenses<5
