@@ -49,13 +49,12 @@ class TestUtilsFileDownloader(unittest.TestCase):
             prefix="qdt_test_downloader_", ignore_cleanup_errors=True
         ) as tmpdirname:
             with self.assertRaises(HTTPError):
-                downloaded_file = download_remote_file_to_local(
+                download_remote_file_to_local(
                     remote_url_to_download="https://qgis.org/fake-page",
                     local_file_path=Path(tmpdirname).joinpath("dl_404.html"),
                 )
-                self.assertIsInstance(downloaded_file, Path)
-                self.assertFalse(downloaded_file.exists())
-                self.assertFalse(downloaded_file.is_file())
+            self.assertFalse(Path(tmpdirname).joinpath("dl_404.html").exists())
+            self.assertFalse(Path(tmpdirname).joinpath("dl_404.html").is_file())
 
     def test_download_file_raise_url_error(self):
         """Test download with a bad URL."""
@@ -63,13 +62,12 @@ class TestUtilsFileDownloader(unittest.TestCase):
             prefix="qdt_test_downloader_", ignore_cleanup_errors=True
         ) as tmpdirname:
             with self.assertRaises(ConnectionError):
-                downloaded_file = download_remote_file_to_local(
+                download_remote_file_to_local(
                     remote_url_to_download="https://fake_url/youpi.dmg",
                     local_file_path=Path(tmpdirname).joinpath("fake_file.dmg"),
                 )
-                self.assertIsInstance(downloaded_file, Path)
-                self.assertFalse(downloaded_file.exists())
-                self.assertFalse(downloaded_file.is_file())
+            self.assertFalse(Path(tmpdirname).joinpath("fake_file.dmg").exists())
+            self.assertFalse(Path(tmpdirname).joinpath("fake_file.dmg").is_file())
 
 
 # ############################################################################
