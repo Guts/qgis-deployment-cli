@@ -10,15 +10,23 @@
         python -m unittest tests.test_constants.TestConstants.test_constants
 """
 
+
+# standard
 import tempfile
 import unittest
+from dataclasses import is_dataclass
 from os import environ, getenv, unsetenv
 from os.path import expanduser, expandvars
 from pathlib import Path
 from sys import platform as opersys
 
 # project
-from qgis_deployment_toolbelt import constants
+from qgis_deployment_toolbelt.constants import (
+    OS_CONFIG,
+    OSConfiguration,
+    get_qdt_logs_folder,
+    get_qdt_working_directory,
+)
 
 # ############################################################################
 # ########## Classes #############
@@ -35,18 +43,20 @@ class TestConstants(unittest.TestCase):
 
     def test_constants(self):
         """Test types."""
-        self.assertIsInstance(constants.OS_CONFIG, dict)
-        os_config = constants.OS_CONFIG.get(opersys)
-        self.assertIsInstance(os_config, constants.OSConfiguration)
+        self.assertIsInstance(OS_CONFIG, dict)
+        os_config = OS_CONFIG.get(opersys)
+        self.assertIsInstance(os_config, OSConfiguration)
 
-        self.assertIsInstance(os_config.profiles_path, Path)
+        self.assertIsInstance(os_config.qgis_profiles_path, Path)
         self.assertIsInstance(os_config.shortcut_extension, str)
         self.assertIsInstance(os_config.shortcut_forbidden_chars, (tuple, type(None)))
         self.assertIsInstance(os_config.shortcut_icon_extensions, tuple)
 
         # Check for forbidden characters in the shortcut name
-        os_config_forbidden_chars = constants.OSConfiguration(
-            name_python=opersys, shortcut_forbidden_chars=(" ", "-")
+        os_config_forbidden_chars = OSConfiguration(
+            names_alter=["test", "fake"],
+            name_python=opersys,
+            shortcut_forbidden_chars=(" ", "-"),
         )
         self.assertFalse(
             os_config_forbidden_chars.valid_shortcut_name(shortcut_name="qgis-ltr 3.28")
@@ -59,8 +69,8 @@ class TestConstants(unittest.TestCase):
         """Test how QDT logs folder is retrieved"""
         # default value
         self.assertEqual(
-            constants.get_qdt_logs_folder(),
-            constants.get_qdt_working_directory().joinpath("logs"),
+            get_qdt_logs_folder(),
+            get_qdt_working_directory().joinpath("logs"),
         )
 
         # using environment variable
@@ -69,7 +79,7 @@ class TestConstants(unittest.TestCase):
         ) as tmpdirname:
             environ["QDT_LOGS_DIR"] = tmpdirname
             self.assertEqual(
-                constants.get_qdt_logs_folder(),
+                get_qdt_logs_folder(),
                 Path(tmpdirname),
             )
             unsetenv("QDT_LOGS_DIR")
@@ -77,8 +87,8 @@ class TestConstants(unittest.TestCase):
         # with a bad value set in environment var --> fallback to default value (and error logged)
         environ["QDT_LOGS_DIR"] = f"{Path(__file__).resolve()}"
         self.assertEqual(
-            constants.get_qdt_logs_folder(),
-            constants.get_qdt_working_directory().joinpath("logs"),
+            get_qdt_logs_folder(),
+            get_qdt_working_directory().joinpath("logs"),
         )
         unsetenv("QDT_LOGS_DIR")
 
@@ -86,23 +96,21 @@ class TestConstants(unittest.TestCase):
         """Test how QDT working folder is retrieved"""
         # using specific value
         self.assertEqual(
-            constants.get_qdt_working_directory(
-                specific_value="~/.cache/qdt/unit-tests/"
-            ),
+            get_qdt_working_directory(specific_value="~/.cache/qdt/unit-tests/"),
             Path(Path.home(), ".cache/qdt/unit-tests/"),
         )
 
         # using environment variable
         environ["QDT_LOCAL_WORK_DIR"] = "~/.cache/qdt/unit-tests-env-var/"
         self.assertEqual(
-            constants.get_qdt_working_directory(),
+            get_qdt_working_directory(),
             Path(Path.home(), ".cache/qdt/unit-tests-env-var/"),
         )
         unsetenv("QDT_LOCAL_WORK_DIR")
 
     def test_get_qgis_bin_path(self):
         """Test get GIS exe path helper property"""
-        os_config: constants.OS_CONFIG = constants.OS_CONFIG.get(opersys)
+        os_config: OSConfiguration = OS_CONFIG.get(opersys)
         # default value
         self.assertEqual(os_config.get_qgis_bin_path, os_config.qgis_bin_exe_path)
 
@@ -111,12 +119,12 @@ class TestConstants(unittest.TestCase):
         if "QDT_QGIS_EXE_PATH" in environ:
             environ.pop("QDT_QGIS_EXE_PATH")
         environ["QDT_QGIS_EXE_PATH"] = "/usr/bin/toto"
-        os_config: constants.OS_CONFIG = constants.OS_CONFIG.get(opersys)
+        os_config: OSConfiguration = OS_CONFIG.get(opersys)
         self.assertEqual(os_config.get_qgis_bin_path, Path("/usr/bin/toto"))
 
         environ.pop("QDT_QGIS_EXE_PATH")
         environ["QDT_QGIS_EXE_PATH"] = "~/qgis-ltr-bin.exe"
-        os_config: constants.OS_CONFIG = constants.OS_CONFIG.get(opersys)
+        os_config: OSConfiguration = OS_CONFIG.get(opersys)
         self.assertEqual(
             os_config.get_qgis_bin_path,
             Path(expanduser("~/qgis-ltr-bin.exe")).resolve(),
@@ -136,7 +144,7 @@ class TestConstants(unittest.TestCase):
         }
         environ["QDT_QGIS_EXE_PATH"] = str(d_test)
 
-        os_config: constants.OS_CONFIG = constants.OS_CONFIG.get(opersys)
+        os_config: OSConfiguration = OS_CONFIG.get(opersys)
 
         self.assertEqual(
             os_config.get_qgis_bin_path,
@@ -144,6 +152,27 @@ class TestConstants(unittest.TestCase):
         )
 
         environ.pop("QDT_QGIS_EXE_PATH")
+
+    def test_get_qgis_profiles_folder_custom(self):
+        """Test QGIS profiles path folder."""
+        if "QGIS_CUSTOM_CONFIG_PATH" in environ:
+            environ.pop("QGIS_CUSTOM_CONFIG_PATH")
+
+        custom_qgis_profiles_folder = Path("tests/fixtures/tmp/custom_qgis_config_path")
+        environ["QGIS_CUSTOM_CONFIG_PATH"] = f"{custom_qgis_profiles_folder}"
+
+        os_config: OSConfiguration = OSConfiguration.from_opersys()
+
+        self.assertTrue(is_dataclass(os_config))
+        self.assertIsInstance(os_config, OSConfiguration)
+
+        self.assertEqual(
+            os_config.qgis_profiles_path,
+            custom_qgis_profiles_folder,
+        )
+
+        environ.pop("QGIS_CUSTOM_CONFIG_PATH")
+        unsetenv("QGIS_CUSTOM_CONFIG_PATH")
 
 
 # ############################################################################

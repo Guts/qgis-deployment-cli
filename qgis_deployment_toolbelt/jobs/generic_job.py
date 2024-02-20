@@ -15,10 +15,12 @@
 import logging
 from os import getenv
 from pathlib import Path
-from sys import platform as opersys
 
 # package
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
+from qgis_deployment_toolbelt.constants import (
+    OSConfiguration,
+    get_qdt_working_directory,
+)
 from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadName,
     JobOptionBadValue,
@@ -46,6 +48,9 @@ class GenericJob:
 
     def __init__(self) -> None:
         """Object instanciation."""
+        # operating system configuration
+        self.os_config = OSConfiguration.from_opersys()
+
         # local QDT folders
         self.qdt_working_folder = get_qdt_working_directory()
         if not self.qdt_working_folder.exists():
@@ -62,7 +67,8 @@ class GenericJob:
         self.qdt_plugins_folder = self.qdt_working_folder.joinpath("plugins")
 
         # destination profiles folder
-        self.qgis_profiles_path: Path = Path(OS_CONFIG.get(opersys).profiles_path)
+        self.qgis_profiles_path: Path = self.os_config.qgis_profiles_path
+        print(f"PROFILES DESTINATION FOLDER: {self.qgis_profiles_path}")
         if not self.qgis_profiles_path.exists():
             logger.info(
                 f"Installed QGIS profiles folder not found: {self.qgis_profiles_path}. "

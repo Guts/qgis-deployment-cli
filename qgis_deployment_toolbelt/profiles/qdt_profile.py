@@ -265,7 +265,7 @@ class QdtProfile:
         Returns:
             Path: path to the installed (i.e. in QGIS) profile folder
         """
-        return self.os_config.profiles_path.joinpath(self.name)
+        return self.os_config.qgis_profiles_path.joinpath(self.name)
 
     @property
     def plugins(self) -> list[QgisPlugin]:
@@ -368,7 +368,7 @@ class QdtProfile:
         if not isinstance(self.folder, Path):
             return "unknown"
 
-        if self.folder.is_relative_to(self.os_config.profiles_path):
+        if self.folder.is_relative_to(self.os_config.qgis_profiles_path):
             return "installed"
         elif self.folder.is_relative_to(self.qdt_working_folder):
             return "downloaded"
