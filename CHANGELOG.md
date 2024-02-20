@@ -18,6 +18,42 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.30.1 - 2024-02-20
+
+### Bugs fixes 🐛
+
+* fix: undefined variable on Windows if scope != user by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/392>
+* fix: change refs to menu_from_projects to match new versioning scheme by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/424>
+
+### Features and enhancements 🎉
+
+* Refacto: factorize logs folders retrieval by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/398>
+* fix: tests were failing because of upstream URL change by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/409>
+* Feature: log details about Certificates Authority bundle by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/397>
+* tests: improve downloader testing by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/412>
+* Improve: testing ini files against untracked files by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/416>
+* Improve: refacto operating system constants retrieval by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/421>
+
+### Tooling 🔧
+
+* CI: update autolabeler to v5 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/411>
+* tooling: enable import autocompletion in VSCode by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/422>
+
+### Documentation 📖
+
+* docs: clean up and fix some syntax errors by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/420>
+* docs: add custom qgis profiles folderpath with QGIS_CUSTOM_CONFIG_PATH by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/423>
+* docs: add example on run QDT behind a proxy with PowerShell by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/394>
+* docs: fix typo spotted by @sylvainbeo by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/395>
+* docs: release upper pins of dependencies to reduce dependabot noise by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/417>
+* docs: enable social cards by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/418>
+* docs: add sitemap by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/419>
+* docs: add new plugin's id retrieval method and reorganize the table of contents by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/425>
+
+### Other Changes
+
+* security: bump pillow to 10.2 to fix CVE-2022-22817 by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/400>
+
 ## 0.30.0 - 2023-12-29
 
 ### Bugs fixes 🐛
