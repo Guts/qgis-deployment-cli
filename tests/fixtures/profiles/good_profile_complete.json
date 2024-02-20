@@ -15,22 +15,21 @@
       "name": "french_locator_filter",
       "version": "1.0.4",
       "url": "https://plugins.qgis.org/plugins/french_locator_filter/version/1.0.4/download/",
-      "type": "remote",
+      "location": "remote",
       "plugin_id": 1846
     },
     {
       "name": "pg_metadata",
       "version": "1.2.1",
       "url": "https://plugins.qgis.org/plugins/pg_metadata/version/1.2.1/download/",
-      "type": "remote"
+      "location": "remote"
     },
     {
       "name": "Layers menu from project",
-      "version": "v2.0.6",
+      "version": "2.1.0",
       "official_repository": true,
       "plugin_id": 0,
-      "url": "https://plugins.qgis.org/plugins/menu_from_project/version/2.0.6/download/",
-      "type": "remote"
+      "location": "remote"
     },
     {
       "name": "Geotuileur",
