@@ -177,6 +177,7 @@ myst_substitutions = {
     "author": author,
     "date_update": datetime.now().strftime("%d %B %Y"),
     "description": description,
+    "license": __about__.__license__,
     "repo_url": __about__.__uri__,
     "title": project,
     "version": version,

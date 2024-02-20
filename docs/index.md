@@ -4,6 +4,7 @@
 > **Author and contributors:** {{ author }}  
 > **Version:** {{ version }}  
 > **Source code:** {{ repo_url }}  
+> **License:** {{ license }}  
 > **Last documentation build:** {{ date_update }}
 
 ----
@@ -36,6 +37,8 @@ Development is leaded by the following principles and goals:
 
 ----
 
+## Table of contents
+
 ```{toctree}
 ---
 caption: How to use
@@ -49,22 +52,6 @@ usage/scenario
 jobs/index
 usage/cli
 usage/settings
-```
-
-```{toctree}
----
-caption: Development
-maxdepth: 1
----
-Code documentation <_apidoc/modules>
-development/contribute
-development/ubuntu
-development/windows
-development/documentation
-development/testing
-development/packaging
-development/releasing
-development/history
 ```
 
 ```{toctree}
@@ -87,4 +74,24 @@ misc/security
 misc/compatibility
 misc/credits
 misc/funding
+```
+
+----
+
+## Want to contribute?
+
+```{toctree}
+---
+caption: Development
+maxdepth: 1
+---
+Code documentation <_apidoc/modules>
+development/contribute
+development/ubuntu
+development/windows
+development/documentation
+development/testing
+development/packaging
+development/releasing
+development/history
 ```
