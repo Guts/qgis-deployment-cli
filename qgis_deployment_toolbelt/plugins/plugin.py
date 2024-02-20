@@ -347,7 +347,7 @@ if __name__ == "__main__":
         "name": "french_locator_filter",
         "version": "1.0.4",
         "url": "https://plugins.qgis.org/plugins/french_locator_filter/version/1.0.4/download/",
-        "type": "remote",
+        "location": "remote",
     }
 
     plugin_obj_one: QgisPlugin = QgisPlugin.from_dict(sample_plugin_complete)
@@ -380,9 +380,9 @@ if __name__ == "__main__":
 
     sample_plugin_different_name = {
         "name": "Layers menu from project",
-        "version": "v2.0.6",
-        "url": "https://plugins.qgis.org/plugins/menu_from_project/version/2.0.6/download/",
-        "type": "remote",
+        "version": "2.1.0",
+        "url": "https://plugins.qgis.org/plugins/menu_from_project/version/2.1.0/download/",
+        "location": "remote",
         "plugin_id": 1846,
     }
 

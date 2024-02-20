@@ -79,7 +79,7 @@ class TestQgisPluginObject(unittest.TestCase):
             "name": "french_locator_filter",
             "version": "1.0.4",
             "url": "https://plugins.qgis.org/plugins/french_locator_filter/version/1.0.4/download/",
-            "type": "remote",
+            "location": "remote",
         }
 
         plugin_obj_one: QgisPlugin = QgisPlugin.from_dict(sample_plugin_complete)
@@ -121,9 +121,9 @@ class TestQgisPluginObject(unittest.TestCase):
         # plugin as dict
         sample_plugin_complex = {
             "name": "Layers menu from project",
-            "version": "2.0.6",
-            "url": "https://plugins.qgis.org/plugins/menu_from_project/version/2.0.6/download/",
-            "type": "remote",
+            "version": "2.1.0",
+            "url": "https://plugins.qgis.org/plugins/menu_from_project/version/2.1.0/download/",
+            "location": "remote",
             "plugin_id": 1846,
         }
         # plugin as object
