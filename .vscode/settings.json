@@ -15,9 +15,12 @@
     },
     // Python
     "python.analysis.autoFormatStrings": true,
+    "python.analysis.autoImportCompletions": true,
     "python.analysis.typeCheckingMode": "basic",
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.terminal.activateEnvironment": true,
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": true,
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true,
@@ -42,9 +45,6 @@
             "strings": true
         }
     },
-    // Tests
-    "python.testing.unittestEnabled": true,
-    "python.testing.pytestEnabled": true,
     // extensions
     "autoDocstring.guessTypes": true,
     "autoDocstring.docstringFormat": "google",
