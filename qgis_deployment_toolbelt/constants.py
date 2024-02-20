@@ -11,6 +11,9 @@
 # ########## Libraries #############
 # ##################################
 
+# special
+from __future__ import annotations
+
 # Standard library
 import ast
 import logging
@@ -19,6 +22,8 @@ from os import PathLike, getenv
 from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import which
+from sys import platform as opersys
+from typing import Literal
 
 # package
 from qgis_deployment_toolbelt.utils.check_path import check_path
@@ -135,13 +140,13 @@ class OSConfiguration:
     """Settings related to QGIS and depending on operating system"""
 
     name_python: str
-    names_alter: list = None
-    profiles_path: Path | None = getenv("QGIS_CUSTOM_CONFIG_PATH")
-    qgis_bin_exe_path: Path = None
-    shortcut_extension: str = None
-    shortcut_forbidden_chars: tuple[str] = None
-    shortcut_icon_extensions: tuple[str] = None
-    shortcut_icon_default_path: str = None
+    names_alter: list[str]
+    qgis_bin_exe_path: Path | None = None
+    qgis_profiles_path: Path | None = None
+    shortcut_extension: str | None = None
+    shortcut_forbidden_chars: tuple[str, ...] | None = None
+    shortcut_icon_extensions: tuple[str, ...] | None = None
+    shortcut_icon_default_path: str | None = None
 
     @property
     def get_qgis_bin_path(self) -> Path:
@@ -217,54 +222,96 @@ class OSConfiguration:
                 return False
         return True
 
+    @classmethod
+    def from_opersys(
+        cls,
+        operating_system_codename: Literal["darwin", "linux", "win32"] | None = None,
+    ) -> OSConfiguration:
+        """Create configuration object with defaults values from a operating system
+            code name.
+
+        Args:
+            operating_system_codename: operating system code name as specified in \
+                sys.platform. If None, fallback to current operating system. \
+                    Defaults to None.
+
+        Returns:
+            Self: OSConfiguration object with defaults settings
+        """
+        # if not specified, fallback to current operating system
+        if operating_system_codename is None:
+            operating_system_codename = opersys
+            logger.debug(
+                f"Getting configuration for current operating system: {opersys}"
+            )
+
+        # returning configuration for operating system
+        if operating_system_codename == "darwin":
+            return cls(
+                name_python="darwin",
+                names_alter=["apple", "mac", "macos"],
+                qgis_bin_exe_path=Path("/usr/bin/qgis"),
+                qgis_profiles_path=Path(
+                    getenv(
+                        "QGIS_CUSTOM_CONFIG_PATH",
+                        Path.home()
+                        / "Library/Application Support/QGIS/QGIS3/profiles/",
+                    )
+                ),
+                shortcut_extension="app",
+                shortcut_icon_extensions=("icns",),
+            )
+        elif operating_system_codename == "linux":
+            return cls(
+                name_python="linux",
+                names_alter=["kubuntu", "ubuntu"],
+                qgis_bin_exe_path=Path("/usr/bin/qgis"),
+                qgis_profiles_path=Path(
+                    getenv(
+                        "QGIS_CUSTOM_CONFIG_PATH",
+                        Path.home() / ".local/share/QGIS/QGIS3/profiles/",
+                    )
+                ),
+                shortcut_extension=".desktop",
+                shortcut_icon_extensions=("ico", "svg", "png"),
+                shortcut_icon_default_path="qgis",
+            )
+        elif operating_system_codename == "win32":
+            return cls(
+                name_python="win32",
+                names_alter=["win", "windows"],
+                qgis_bin_exe_path=Path(
+                    expandvars(
+                        expanduser("%PROGRAMFILES%/QGIS 3.34.4/bin/qgis-ltr-bin.exe")
+                    )
+                ),
+                qgis_profiles_path=Path(
+                    getenv(
+                        "QGIS_CUSTOM_CONFIG_PATH",
+                        expandvars("%APPDATA%/QGIS/QGIS3/profiles"),
+                    )
+                ),
+                shortcut_extension=".lnk",
+                shortcut_forbidden_chars=("<", ">", ":", '"', "/", "\\", "|", "?", "*"),
+                shortcut_icon_extensions=("ico",),
+            )
+        else:
+            raise ValueError(
+                f"Unsupported operating system specified: {operating_system_codename}. "
+                "Must be one of: {', '.join('darwin', 'linux', 'win32')}"
+            )
+
 
 # #############################################################################
 # ########## Main ##################
 # ##################################
 
+# "static" dictionary. Useful when need to access settings at the program (module)
+# beginning (instanciation)
 OS_CONFIG: dict[str, OSConfiguration] = {
-    "darwin": OSConfiguration(
-        name_python="darwin",
-        names_alter=["apple", "mac", "macos"],
-        profiles_path=Path(
-            getenv(
-                "QGIS_CUSTOM_CONFIG_PATH",
-                Path.home() / "Library/Application Support/QGIS/QGIS3/profiles/",
-            )
-        ),
-        qgis_bin_exe_path=Path("/usr/bin/qgis"),
-        shortcut_extension="app",
-        shortcut_icon_extensions=("icns",),
-    ),
-    "linux": OSConfiguration(
-        name_python="linux",
-        names_alter=["kubuntu", "ubuntu"],
-        profiles_path=Path(
-            getenv(
-                "QGIS_CUSTOM_CONFIG_PATH",
-                Path.home() / ".local/share/QGIS/QGIS3/profiles/",
-            )
-        ),
-        qgis_bin_exe_path=Path("/usr/bin/qgis"),
-        shortcut_extension=".desktop",
-        shortcut_icon_extensions=("ico", "svg", "png"),
-        shortcut_icon_default_path="qgis",
-    ),
-    "win32": OSConfiguration(
-        name_python="win32",
-        names_alter=["win", "windows"],
-        profiles_path=Path(
-            getenv(
-                "QGIS_CUSTOM_CONFIG_PATH", expandvars("%APPDATA%/QGIS/QGIS3/profiles")
-            )
-        ),
-        qgis_bin_exe_path=Path(
-            expandvars(expanduser("%PROGRAMFILES%/QGIS 3.28.4/bin/qgis-ltr-bin.exe"))
-        ),
-        shortcut_extension=".lnk",
-        shortcut_forbidden_chars=("<", ">", ":", '"', "/", "\\", "|", "?", "*"),
-        shortcut_icon_extensions=("ico",),
-    ),
+    "darwin": OSConfiguration.from_opersys(operating_system_codename="darwin"),
+    "linux": OSConfiguration.from_opersys(operating_system_codename="linux"),
+    "win32": OSConfiguration.from_opersys(operating_system_codename="win32"),
 }
 
 # #############################################################################
