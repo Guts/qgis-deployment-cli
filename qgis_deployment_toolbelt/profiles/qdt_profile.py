@@ -15,7 +15,6 @@
 import json
 import logging
 from pathlib import Path
-from sys import platform as opersys
 from sys import version_info
 from typing import Literal
 
@@ -29,7 +28,10 @@ else:
 from packaging.version import InvalidVersion, Version
 
 # Package
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
+from qgis_deployment_toolbelt.constants import (
+    OSConfiguration,
+    get_qdt_working_directory,
+)
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.profiles.qgis_ini_handler import QgisIniHelper
 from qgis_deployment_toolbelt.utils.check_path import check_path
@@ -81,12 +83,7 @@ class QdtProfile:
         # store QDT working folder
         self.qdt_working_folder = get_qdt_working_directory()
         # retrieve operating system specific configuration
-        if opersys not in OS_CONFIG:
-            raise OSError(
-                f"Your operating system {opersys} is not supported. "
-                f"Supported platforms: {','.join(OS_CONFIG.keys())}."
-            )
-        self.os_config = OS_CONFIG.get(opersys)
+        self.os_config = OSConfiguration.from_opersys()
 
         # default values for immutable attributes
         self.loaded_from_json = loaded_from_json

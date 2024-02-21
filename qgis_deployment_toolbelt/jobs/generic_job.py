@@ -68,7 +68,6 @@ class GenericJob:
 
         # destination profiles folder
         self.qgis_profiles_path: Path = self.os_config.qgis_profiles_path
-        print(f"PROFILES DESTINATION FOLDER: {self.qgis_profiles_path}")
         if not self.qgis_profiles_path.exists():
             logger.info(
                 f"Installed QGIS profiles folder not found: {self.qgis_profiles_path}. "

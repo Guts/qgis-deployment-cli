@@ -22,7 +22,6 @@ from sys import platform as opersys
 
 # project
 from qgis_deployment_toolbelt.constants import (
-    OS_CONFIG,
     OSConfiguration,
     get_qdt_logs_folder,
     get_qdt_working_directory,
@@ -43,8 +42,8 @@ class TestConstants(unittest.TestCase):
 
     def test_constants(self):
         """Test types."""
-        self.assertIsInstance(OS_CONFIG, dict)
-        os_config = OS_CONFIG.get(opersys)
+
+        os_config = OSConfiguration.from_opersys(opersys)
         self.assertIsInstance(os_config, OSConfiguration)
 
         self.assertIsInstance(os_config.qgis_profiles_path, Path)
@@ -64,6 +63,11 @@ class TestConstants(unittest.TestCase):
         self.assertTrue(
             os_config_forbidden_chars.valid_shortcut_name(shortcut_name="qgis_ltr_3_28")
         )
+
+    def test_unsupported_operating_system(self):
+        """Test that a bad operating system name raise an error."""
+        with self.assertRaises(ValueError):
+            OSConfiguration.from_opersys("fake_operating_system_name")
 
     def test_get_qdt_logs_folder(self):
         """Test how QDT logs folder is retrieved"""
@@ -110,7 +114,7 @@ class TestConstants(unittest.TestCase):
 
     def test_get_qgis_bin_path(self):
         """Test get GIS exe path helper property"""
-        os_config: OSConfiguration = OS_CONFIG.get(opersys)
+        os_config = OSConfiguration.from_opersys()
         # default value
         self.assertEqual(os_config.get_qgis_bin_path, os_config.qgis_bin_exe_path)
 
@@ -119,12 +123,12 @@ class TestConstants(unittest.TestCase):
         if "QDT_QGIS_EXE_PATH" in environ:
             environ.pop("QDT_QGIS_EXE_PATH")
         environ["QDT_QGIS_EXE_PATH"] = "/usr/bin/toto"
-        os_config: OSConfiguration = OS_CONFIG.get(opersys)
+        os_config = OSConfiguration.from_opersys()
         self.assertEqual(os_config.get_qgis_bin_path, Path("/usr/bin/toto"))
 
         environ.pop("QDT_QGIS_EXE_PATH")
         environ["QDT_QGIS_EXE_PATH"] = "~/qgis-ltr-bin.exe"
-        os_config: OSConfiguration = OS_CONFIG.get(opersys)
+        os_config = OSConfiguration.from_opersys()
         self.assertEqual(
             os_config.get_qgis_bin_path,
             Path(expanduser("~/qgis-ltr-bin.exe")).resolve(),
@@ -144,7 +148,7 @@ class TestConstants(unittest.TestCase):
         }
         environ["QDT_QGIS_EXE_PATH"] = str(d_test)
 
-        os_config: OSConfiguration = OS_CONFIG.get(opersys)
+        os_config = OSConfiguration.from_opersys()
 
         self.assertEqual(
             os_config.get_qgis_bin_path,
