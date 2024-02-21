@@ -10,14 +10,18 @@
 # ########## Libraries #############
 # ##################################
 
+
 # Standard library
+import tempfile
+from os import environ, getenv
 from pathlib import Path
 
 # 3rd party
 import pytest
 
-# module to test
+# project
 from qgis_deployment_toolbelt import __about__, cli
+from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 
 # #############################################################################
 # ######## Globals #################
@@ -79,13 +83,39 @@ def test_cli_version(capsys, option):
 
 
 @pytest.mark.parametrize("option", good_scenarios)
-def test_main_run(capsys, option):
+def test_main_run(capsys, option, monkeypatch):
     """Test main cli command"""
-    with pytest.raises(SystemExit):
-        cli.main(option)
 
-    out, err = capsys.readouterr()
-    assert err == ""
+    with tempfile.TemporaryDirectory(
+        prefix="QDT_test_cli_run_",
+        ignore_cleanup_errors=True,
+    ) as tmpdirname:
+        # customize QDT working folder and profiles destination folder
+        tmp_dir = Path(tmpdirname).joinpath(f"scenario_{good_scenarios.index(option)}")
+        environ[
+            "QDT_LOCAL_WORK_DIR"
+        ] = f"{tmp_dir.parent.joinpath('qdt_working_folder').resolve()}"
+        environ["QGIS_CUSTOM_CONFIG_PATH"] = f"{tmp_dir.resolve()}"
+
+        assert getenv("QGIS_CUSTOM_CONFIG_PATH") is not None
+
+        with pytest.raises(SystemExit):
+            cli.main(option)
+
+        out, err = capsys.readouterr()
+        assert err == ""
+
+        # checks
+        created_profiles = [
+            QdtProfile.from_json(profile_json_path=f, profile_folder=f.parent)
+            for f in tmp_dir.glob("**/profile.json")
+        ]
+
+        assert Path(getenv("QGIS_CUSTOM_CONFIG_PATH")).is_dir()
+        assert len(created_profiles) > 0
+
+    # clean up environment vars
+    environ.pop("QGIS_CUSTOM_CONFIG_PATH")
 
 
 def test_main_run_unexising_jobs(capsys):
@@ -113,13 +143,20 @@ def test_main_run_failed(capsys):
 
 def test_main_run_removing_splash(capsys):
     """Test main cli command"""
-    with pytest.raises(SystemExit):
-        cli.main(
-            ["deploy", f"--scenario={sample_scenario_good_splash_removal.resolve()}"]
-        )
+    with tempfile.TemporaryDirectory(
+        prefix="qdt_test_cli_main_", ignore_cleanup_errors=True
+    ) as tmpdirname:
+        environ["QGIS_CUSTOM_CONFIG_PATH"] = tmpdirname
+        with pytest.raises(SystemExit):
+            cli.main(
+                [
+                    "deploy",
+                    f"--scenario={sample_scenario_good_splash_removal.resolve()}",
+                ]
+            )
 
-    out, err = capsys.readouterr()
-    assert err == ""
+        out, err = capsys.readouterr()
+        assert err == ""
 
 
 # #############################################################################
