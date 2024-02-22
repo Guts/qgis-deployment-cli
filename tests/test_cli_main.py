@@ -83,7 +83,7 @@ def test_cli_version(capsys, option):
 
 
 @pytest.mark.parametrize("option", good_scenarios)
-def test_main_run(capsys, option, monkeypatch):
+def test_main_run(capsys, option):
     """Test main cli command"""
 
     with tempfile.TemporaryDirectory(
