@@ -19,7 +19,10 @@ from sys import platform as opersys
 from urllib.parse import urlsplit
 
 # submodules
-from qgis_deployment_toolbelt.constants import OS_CONFIG, get_qdt_working_directory
+from qgis_deployment_toolbelt.constants import (
+    SUPPORTED_OPERATING_SYSTEMS_CODENAMES,
+    get_qdt_working_directory,
+)
 from qgis_deployment_toolbelt.jobs import JobsOrchestrator
 from qgis_deployment_toolbelt.scenarios import ScenarioReader
 from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_success
@@ -151,10 +154,10 @@ def run(args: argparse.Namespace):
         exit_cli_error(result_scenario_validity)
 
     # check operating system
-    if opersys not in OS_CONFIG:
+    if opersys not in SUPPORTED_OPERATING_SYSTEMS_CODENAMES:
         raise OSError(
             f"Your operating system {opersys} is not supported. "
-            f"Supported platforms: {','.join(OS_CONFIG.keys())}."
+            f"Supported platforms: {','.join(SUPPORTED_OPERATING_SYSTEMS_CODENAMES)}."
         )
 
     # -- Run --

@@ -350,22 +350,6 @@ class JobProfilesDownloader(GenericJob):
                 f"{self.qgis_profiles_path.resolve()}"
             )
 
-    def sync_copy_only_missing(self, profiles_folder_to_copy: tuple[Path]) -> None:
-        """Copy only missing profiles from downloaded ones to QGIS profiles folder to
-        local destination.
-
-        Args:
-            profiles_folder_to_copy (tuple[Path]): folders to copy.
-        """
-        # copy downloaded profiles into this
-        for d in profiles_folder_to_copy:
-            copytree(
-                d,
-                self.qgis_profiles_path,
-                copy_function=copy2,
-                dirs_exist_ok=True,
-            )
-
     def sync_overwrite_local_profiles(
         self, profiles_to_copy: tuple[QdtProfile]
     ) -> None:

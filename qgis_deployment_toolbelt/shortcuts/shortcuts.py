@@ -21,8 +21,6 @@ from pathlib import Path
 from string import Template
 from sys import platform as opersys
 
-# 3rd party
-
 # Imports depending on operating system
 if opersys == "win32":
     """windows"""
@@ -34,8 +32,9 @@ elif opersys == "linux":
 else:
     pass
 
+# package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
-from qgis_deployment_toolbelt.constants import OS_CONFIG
+from qgis_deployment_toolbelt.constants import OSConfiguration
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 
@@ -72,12 +71,7 @@ class ApplicationShortcut:
         :param Union[str, Path] work_dir: current folder where to start the executable, defaults to None. In QDT, it's the profile folder.
         """
         # retrieve operating system specific configuration
-        if opersys not in OS_CONFIG:
-            raise OSError(
-                f"Your operating system {opersys} is not supported. "
-                f"Supported platforms: {','.join(OS_CONFIG.keys())}."
-            )
-        self.os_config = OS_CONFIG.get(opersys)
+        self.os_config = OSConfiguration.from_opersys()
 
         # -- CHECK TYPE AND STORE ATTRIBUTES
         # mandatory

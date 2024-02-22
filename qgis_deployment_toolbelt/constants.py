@@ -23,7 +23,6 @@ from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import which
 from sys import platform as opersys
-from typing import Literal
 
 # package
 from qgis_deployment_toolbelt.utils.check_path import check_path
@@ -37,6 +36,10 @@ logger = logging.getLogger(__name__)
 
 # defaults
 DEFAULT_QDT_WORKING_FOLDER = Path.home().joinpath(".cache/qgis-deployment-toolbelt")
+
+# Operating systems
+SUPPORTED_OPERATING_SYSTEMS_CODENAMES: tuple[str, ...] = ("darwin", "linux", "win32")
+
 
 # #############################################################################
 # ########## Functions #############
@@ -225,7 +228,7 @@ class OSConfiguration:
     @classmethod
     def from_opersys(
         cls,
-        operating_system_codename: Literal["darwin", "linux", "win32"] | None = None,
+        operating_system_codename: str | None = None,
     ) -> OSConfiguration:
         """Create configuration object with defaults values from a operating system
             code name.
@@ -300,24 +303,3 @@ class OSConfiguration:
                 f"Unsupported operating system specified: {operating_system_codename}. "
                 "Must be one of: {', '.join('darwin', 'linux', 'win32')}"
             )
-
-
-# #############################################################################
-# ########## Main ##################
-# ##################################
-
-# "static" dictionary. Useful when need to access settings at the program (module)
-# beginning (instanciation)
-OS_CONFIG: dict[str, OSConfiguration] = {
-    "darwin": OSConfiguration.from_opersys(operating_system_codename="darwin"),
-    "linux": OSConfiguration.from_opersys(operating_system_codename="linux"),
-    "win32": OSConfiguration.from_opersys(operating_system_codename="win32"),
-}
-
-# #############################################################################
-# ##### Stand alone program ########
-# ##################################
-
-if __name__ == "__main__":
-    """Standalone execution."""
-    pass
