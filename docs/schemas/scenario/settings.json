@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/settings.json",
+  "$id": "https://github.com/Guts/qgis-deployment-cli/raw/main/docs/schemas/scenario/settings.json",
   "title": "QGIS Deployment Toolbelt - Environment variables",
   "description": "Define environment variables for the QGIS Deployment CLI execution, prefixing them with 'QDT_'. Attention, no confusion: these are the settings for the toolbelt, not for the QGIS installation.",
   "type": "object",

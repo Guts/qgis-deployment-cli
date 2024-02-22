@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/splash-screen-manager.json",
+    "$id": "https://github.com/Guts/qgis-deployment-cli/raw/main/docs/schemas/scenario/jobs/splash-screen-manager.json",
     "description": "Set your custom splash screen image.",
     "title": "Splash Screen Manager.",
     "type": "object",
