@@ -13,9 +13,13 @@ settings:
   SCENARIO_VALIDATION: true
 
 steps:
-  - name: Synchronize QGIS profiles from remote location
-    uses: qprofiles-manager
+  - name: Download QGIS profiles from remote location
+    uses: qprofiles-downloader
     with:
       protocol: http
       source: https://raw.githubusercontent.com/Guts/qgis-deployment-cli/examples/
+
+  - name: Synchronize downloaded profiles with installed ones
+    uses: qprofiles-synchronizer
+    with:
       sync_mode: overwrite

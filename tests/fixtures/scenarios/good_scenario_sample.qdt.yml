@@ -26,13 +26,17 @@ steps:
         value: true
         scope: "user"
 
-  - name: Synchronize QGIS profiles from remote location
-    uses: qprofiles-manager
+  - name: Download profiles from remote git repository
+    uses: qprofiles-downloader
     with:
-      action: download
       source: https://github.com/Guts/qgis-deployment-cli.git
       protocol: git_remote
       branch: main
+
+  - name: Synchronize downloaded profiles with installed ones
+    uses: qprofiles-synchronizer
+    with:
+      sync_mode: only_new_version
 
   - name: Download plugins
     uses: qplugins-downloader
