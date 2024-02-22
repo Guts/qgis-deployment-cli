@@ -55,7 +55,13 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4.0.1
+        with:
+          env_vars: OS,PYTHON
+          flags: unittests
+          name: Code Coverage for unittests on [${{ matrix.os }}.python-${{ matrix.python-version }}]
         env:
+          OS: ${{ matrix.os }}
+          PYTHON: ${{ matrix.python-version }}
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   integration-test:
