@@ -1,0 +1,60 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/jobs/qprofiles-downloader.json",
+    "description": "Job to download remote profiles to local QDT working folder.",
+    "title": "QProfiles Downloader",
+    "type": "object",
+    "properties": {
+        "branch": {
+            "default": "master",
+            "description": "Name of the branch to use when working with a git repository.",
+            "type": "string"
+        },
+        "protocol": {
+            "description": "Set which protocol to use for downloading profiles.",
+            "enum": [
+                "http",
+                "git_local",
+                "git_remote"
+            ],
+            "deprecated": [
+                "git"
+            ],
+            "type": "string"
+        },
+        "source": {
+            "description": "Location of profiles. Typically: 'https://github.com/Guts/qgis-deployment-cli.git' or 'https://raw.githubusercontent.com/Guts/qgis-deployment-cli/examples/'",
+            "type": "string"
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "protocol": {
+                        "const": "git_local"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "branch"
+                ]
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "protocol": {
+                        "const": "git_remote"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "branch"
+                ]
+            }
+        }
+    ]
+}
