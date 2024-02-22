@@ -12,10 +12,8 @@
 # ##################################
 
 # Standard library
-import importlib
 import logging
 from os import environ
-from pathlib import Path
 
 # project
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
@@ -47,7 +45,7 @@ logger = logging.getLogger(__name__)
 class JobsOrchestrator:
     """Orchestrate jobs."""
 
-    JOBS = (
+    JOBS: tuple = (
         JobEnvironmentVariables,
         JobPluginsDownloader,
         JobPluginsSynchronizer,
@@ -58,6 +56,7 @@ class JobsOrchestrator:
     PACKAGE_NAME: str = "qgis_deployment_toolbelt.jobs"
 
     def __init__(self) -> None:
+        """Instanciate orchestrator."""
         # log environment variables prefixed with QDT_
         qdt_env_vars = {
             env_var: value
@@ -70,20 +69,15 @@ class JobsOrchestrator:
                 logger.debug(f"{var_name}={var_value}")
 
     @property
-    def available_jobs(self) -> list[Path]:
-        """List all available jobs."""
-        # job modules
-        return list(Path(__file__).parent.glob("job_*.py"))
-
-    @property
-    def jobs_ids(self) -> tuple[str]:
+    def jobs_ids(self) -> tuple[str, ...]:
         """Returns available jobs ID.
 
-        :return Tuple[str]: jobs ids
+        Returns:
+            tuple[str]: tuple of jobs ids
         """
         return tuple([job.ID for job in self.JOBS])
 
-    def get_job_module_from_id(self, job_id: str) -> object:
+    def get_job_module_from_id(self, job_id: str) -> GenericJob | None:
         """Get job class from id.
 
         :param str job_id: job identifier (as defined in scenario file)
@@ -93,7 +87,7 @@ class JobsOrchestrator:
             if job.ID == job_id:
                 return job
 
-    def init_job_class_from_id(self, job_id: str, options: dict) -> GenericJob:
+    def init_job_class_from_id(self, job_id: str, options: dict) -> GenericJob | None:
         """Get job class from id and instanciate it with options.
 
         :param str job_id: job identifier (i.e. "qprofiles-manager")
@@ -101,22 +95,5 @@ class JobsOrchestrator:
 
         :return object: instanciated job class with options
         """
-        return self.get_job_module_from_id(job_id)(options)
-
-    def import_job(self, job_name: str):
-        """Import a job."""
-        return importlib.import_module(name=job_name, package=self.PACKAGE_NAME)
-
-    def import_all_jobs(self) -> None:
-        """Import all jobs."""
-        for module in self.available_jobs:
-            self.JOBS[module.stem] = self.import_job(module.stem)
-
-
-# #############################################################################
-# ##### Stand alone program ########
-# ##################################
-
-if __name__ == "__main__":
-    """Standalone execution."""
-    pass
+        if job := self.get_job_module_from_id(job_id):
+            return job(options)
