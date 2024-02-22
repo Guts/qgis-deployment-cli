@@ -114,7 +114,7 @@ class JobEnvironmentVariables(GenericJob):
         super().__init__()
         self.options: list[dict] = [self.validate_options(opt) for opt in options]
 
-    def runWin32(self) -> None:
+    def run_win32(self) -> None:
         """Apply environment variables from dictionary to the Win32 system."""
 
         for env_var in self.options:
