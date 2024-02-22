@@ -43,7 +43,7 @@ class TestConstants(unittest.TestCase):
     def test_constants(self):
         """Test types."""
 
-        os_config = OSConfiguration.from_opersys(opersys)
+        os_config = OSConfiguration.from_opersys()
         self.assertIsInstance(os_config, OSConfiguration)
 
         self.assertIsInstance(os_config.qgis_profiles_path, Path)
