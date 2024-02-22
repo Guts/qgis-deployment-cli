@@ -46,13 +46,6 @@ class JobProfilesDownloader(GenericJob):
             "possible_values": None,
             "condition": None,
         },
-        "local_destination": {
-            "type": str,
-            "required": False,
-            "default": ".cache/qgis-deployment-toolbelt/profiles",
-            "possible_values": None,
-            "condition": None,
-        },
         "protocol": {
             "type": str,
             "required": True,
@@ -86,10 +79,6 @@ class JobProfilesDownloader(GenericJob):
 
     def run(self) -> None:
         """Execute job logic."""
-        # download or refresh
-        if self.options.get("action", "download") != "download":
-            raise NotImplementedError
-
         # prepare remote source
         if self.options.get("protocol") in ("git", "git_local", "git_remote"):
             if self.options.get("protocol") == "git":
