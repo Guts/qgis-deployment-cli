@@ -18,12 +18,16 @@ settings:
 # Deployment workflow, step by step
 steps:
   - name: Download profiles from remote git repository
-    uses: qprofiles-manager
+    uses: qprofiles-downloader
     with:
       source: https://github.com/Guts/qgis-deployment-cli.git
       protocol: git_remote
-      sync_mode: overwrite
       branch: main
+
+  - name: Download profiles from remote git repository
+    uses: qprofiles-synchronizer
+    with:
+      sync_mode: overwrite
 
   - name: Download plugins
     uses: qplugins-downloader

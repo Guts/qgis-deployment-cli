@@ -1,9 +1,10 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/qprofiles-manager.json",
-    "description": "QDT job synchronizing local working directory with remote profiles.",
-    "title": "QProfiles Synchronizer.",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/jobs/qprofiles-manager.json",
+    "description": "!! DEPRECATED !! Split into 2 different jobs since version 0.31. Former description: job synchronizing local working directory with remote profiles.",
+    "title": "QProfiles Manager.",
     "type": "object",
+    "deprecated": true,
     "properties": {
         "action": {
             "default": "download",
@@ -42,7 +43,6 @@
                 "only_new_version",
                 "overwrite"
             ],
-
             "type": "string"
         }
     },

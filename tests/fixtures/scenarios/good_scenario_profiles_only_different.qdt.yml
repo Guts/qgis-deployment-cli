@@ -14,14 +14,18 @@ settings:
   QGIS_EXE_PATH:
     linux: /usr/bin/qgis
     mac: /usr/bin/qgis
-    windows: "%PROGRAMFILES%/QGIS/3_22/bin/qgis-bin.exe"
+    windows: "%PROGRAMFILES%/QGIS/3_34/bin/qgis-bin.exe"
   SCENARIO_VALIDATION: true
 
 steps:
-  - name: Synchronize QGIS profiles from remote location
-    uses: qprofiles-manager
+  - name: Download profiles from remote git repository
+    uses: qprofiles-downloader
     with:
+      source: https://github.com/Guts/qgis-deployment-cli.git
       protocol: git_remote
       branch: main
-      source: https://github.com/Guts/qgis-deployment-cli.git
+
+  - name: Synchronize downloaded profiles with installed ones
+    uses: qprofiles-synchronizer
+    with:
       sync_mode: only_different_version

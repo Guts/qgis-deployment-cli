@@ -24,8 +24,9 @@ from qgis_deployment_toolbelt.jobs.job_plugins_downloader import JobPluginsDownl
 from qgis_deployment_toolbelt.jobs.job_plugins_synchronizer import (
     JobPluginsSynchronizer,
 )
+from qgis_deployment_toolbelt.jobs.job_profiles_downloader import JobProfilesDownloader
 from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
-    JobProfilesDownloader,
+    JobProfilesSynchronizer,
 )
 from qgis_deployment_toolbelt.jobs.job_shortcuts import JobShortcutsManager
 from qgis_deployment_toolbelt.jobs.job_splash_screen import JobSplashScreenManager
@@ -50,6 +51,7 @@ class JobsOrchestrator:
         JobPluginsDownloader,
         JobPluginsSynchronizer,
         JobProfilesDownloader,
+        JobProfilesSynchronizer,
         JobShortcutsManager,
         JobSplashScreenManager,
     )

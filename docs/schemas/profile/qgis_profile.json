@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/qgis_profile.json",
+    "$id": "https://github.com/Guts/qgis-deployment-cli/raw/main/docs/schemas/profile/qgis_profile.json",
     "$comment": "A QGIS profile described in a JSON file.",
     "type": "object",
     "properties": {

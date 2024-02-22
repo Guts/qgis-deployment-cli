@@ -1,15 +1,6 @@
-# Profiles manager
+# Profiles Downloader
 
-```{error}
-Since version 0.31.0, this job has been split into 2 jobs:
-
-- [profiles-downloader](./profiles_downloader.md)
-- [profiles-synchronizer](./profiles_synchronizer.md)
-
-Please update your scenario files.
-```
-
-This job synchronize local profiles from remote storage (git for now).
+This job downloads remote profiles through different protocols to the local QDT working folder.
 
 ----
 
@@ -20,44 +11,40 @@ Sample job configurations.
 ### **Remote** HTTP repository
 
 ```yaml
-- name: Synchronize profiles from local git repository
-  uses: qprofiles-manager
+- name: Download profiles from remote HTTP server
+  uses: qprofiles-downloader
   with:
-    action: download
     branch: main
     protocol: http
     source: https://organization.intra/qgis/qdt/
-    sync_mode: only_new_version
 ```
 
 :::{note}
 If you use the HTTP procotol, a `qdt-files.json` must be downloadable at the URL source. Typically: `https://organization.intra/qgis/qdt/qdt-files.json`.
+
+See this guide on [how to generate the qdt-files.json](../usage/profile.md#generate-the-qdt-filesjson-index-file).
 :::
 
-### Public **remote** git repository in **overwrite** mode
+### Public **remote** git repository
 
 ```yaml
-- name: Synchronize profiles from remote git repository
-  uses: qprofiles-manager
+- name: Download profiles from remote Git server
+  uses: qprofiles-downloader
   with:
-    action: download
     branch: main
     protocol: git_remote
     source: https://github.com/geotribu/profils-qgis.git
-    sync_mode: overwrite
 ```
 
 ### **Local** git repository
 
 ```yaml
-- name: Synchronize profiles from local git repository
-  uses: qprofiles-manager
+- name: Download profiles from local Git repository
+  uses: qprofiles-downloader
   with:
-    action: download
     branch: main
     protocol: git_local
     source: file:///home/jmo/Git/Geotribu/profils-qgis
-    sync_mode: only_new_version
 ```
 
 ----
@@ -97,14 +84,3 @@ Must start with:
 - `file://`: for local disk or network
 - `git://` (_recomended_): for git repositories
 - `https://`: for profiles stored into git repositories accessible through HTTP or profiles downloadable through an HTTP server
-
-### sync_mode
-
-Synchronization mode to apply with profiles.
-
-Possible_values:
-
-- `only_missing` (_default_): only install profiles that does not exist locally
-- `only_different_version`: only install profiles that does not exist locally and update those with a different version number (lesser or upper)
-- `only_new_version`: only install profiles that does not exist locally and update those with a lesser version number
-- `overwrite`: systematically overwrite local profiles

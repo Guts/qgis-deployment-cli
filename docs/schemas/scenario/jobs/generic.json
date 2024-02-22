@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/jobs/generic.json",
+  "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/jobs/generic.json",
   "description": "Definition of a job, i.e. a logic execution which can be ran during a step.",
   "title": "Steps",
   "type": "array",
@@ -26,9 +26,14 @@
           "manage-env-vars",
           "qplugins-downloader",
           "qplugins-synchronizer",
+          "qprofiles-downloader",
+          "qprofiles-synchronizer",
           "qprofiles-manager",
           "shortcuts-manager",
           "splash-screen-manager"
+        ],
+        "deprecated": [
+          "qprofiles-manager"
         ]
       },
       "with": {
