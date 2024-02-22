@@ -57,6 +57,7 @@ jobs:
         uses: codecov/codecov-action@v4.0.1
         with:
           env_vars: OS,PYTHON
+          flags: unittests
           name: Code Coverage for unittests on [${{ matrix.os }}.python-${{ matrix.python-version }}]
         env:
           OS: ${{ matrix.os }}
