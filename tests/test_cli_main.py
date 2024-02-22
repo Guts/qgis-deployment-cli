@@ -94,7 +94,7 @@ def test_main_run(capsys, option):
         tmp_dir = Path(tmpdirname).joinpath(f"scenario_{good_scenarios.index(option)}")
         environ[
             "QDT_LOCAL_WORK_DIR"
-        ] = f"{tmp_dir.parent.joinpath('qdt_working_folder').resolve()}"
+        ] = f"{Path(tmpdirname).joinpath('qdt_working_folder').resolve()}"
         environ["QGIS_CUSTOM_CONFIG_PATH"] = f"{tmp_dir.resolve()}"
 
         assert getenv("QGIS_CUSTOM_CONFIG_PATH") is not None
