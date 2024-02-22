@@ -18,6 +18,12 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.30.2 - 2024-02-22
+
+### Features and enhancements 🎉
+
+* Improve: cleanup OSConfig and refacto CLI's tests to run outside real QGIS profiles folder by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/427>
+
 ## 0.30.1 - 2024-02-20
 
 ### Bugs fixes 🐛
