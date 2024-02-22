@@ -145,7 +145,7 @@ class JobEnvironmentVariables(GenericJob):
         # force Windows to refresh the environment
         refresh_environment()
 
-    def runLinux(self) -> None:
+    def run_linux(self) -> None:
         """Apply environment variables from dictionary to the Linux system."""
 
         logger.debug(f"OS : {opersys}")
