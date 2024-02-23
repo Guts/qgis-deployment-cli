@@ -29,11 +29,13 @@ from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
 if opersys == "linux":
     from qgis_deployment_toolbelt.utils.linux_utils import (
         delete_environment_variable,
+        refresh_environment,
         set_environment_variable,
     )
 elif opersys == "win32":
     from qgis_deployment_toolbelt.utils.win32utils import (
         delete_environment_variable,
+        refresh_environment,
         set_environment_variable,
     )
 
@@ -137,6 +139,10 @@ class JobEnvironmentVariables(GenericJob):
                         f"Variable name '{env_var.get('name')}' is not defined"
                     )
 
+        # refresh environment to update variables
+        refresh_environment()
+
+        # log
         logger.debug(f"Job {self.ID} ran successfully.")
 
     # -- INTERNAL LOGIC ------------------------------------------------------
