@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
+
 # This is a sample of a YAML file for the QGIS Deployment Toolbelt scenario.
 # For now, it's more a roadmap than a real description of what it's implemented.
 
@@ -20,11 +22,12 @@ steps:
       - name: TEST_PYQGIS_STARTUP
         action: "add"
         value: "~/scripts/qgis_startup.py"
-        scope: "user"
-      - name: TEST_QDT_TEST_FAKE_ENV_VAR_BOOL
+        scope: user
+      - name: TEST_FAKE_BOOL
         action: "add"
-        value: true
-        scope: "user"
+        scope: user
+        value: false
+        value_type: bool
 
   - name: Download profiles from remote git repository
     uses: qprofiles-downloader
