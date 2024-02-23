@@ -7,12 +7,14 @@
         # for whole test
         python -m unittest tests.test_job_environment_variables
         # for specific
-        python -m unittest tests.test_job_environment_variables.TestJobEnvironmentVariables.test_environment_variables_set
+        python -m unittest tests.test_job_environment_variables
+            .TestJobEnvironmentVariables.test_environment_variables_set
 """
 
 # #############################################################################
 # ########## Libraries #############
 # ##################################
+
 
 # Standard library
 import unittest
@@ -26,8 +28,14 @@ from qgis_deployment_toolbelt.jobs.job_environment_variables import (
 )
 from qgis_deployment_toolbelt.utils import str2bool
 
+# 3rd party
+
+
+# conditional imports
 if opersys == "win32":
     from qgis_deployment_toolbelt.utils.win32utils import get_environment_variable
+elif opersys == "linux":
+    from qgis_deployment_toolbelt.utils.linux_utils import get_environment_variable
 
 
 # #############################################################################
@@ -56,7 +64,7 @@ class TestJobEnvironmentVariables(unittest.TestCase):
         pass
 
     # -- TESTS ---------------------------------------------------------
-    # @unittest.skipIf(opersys != "win32", "Test specific to Windows.")
+    @unittest.skipIf(opersys == "darwin", f"Not supported operating system: {opersys}.")
     def test_environment_variables_set_unset(self):
         """Test YAML loader"""
         fake_env_vars = [
@@ -68,9 +76,9 @@ class TestJobEnvironmentVariables(unittest.TestCase):
             },
             {
                 "action": "add",
-                "name": "QDT_PROXY_HTTP",
+                "name": "QDT_TEST_URL_API_PLUGIN",
                 "scope": "user",
-                "value": "http://proxy.qdt.com:8080",
+                "value": "http://api.intra.net",
                 "value_type": "url",
             },
             {
@@ -104,8 +112,8 @@ class TestJobEnvironmentVariables(unittest.TestCase):
                 str(Path(expanduser("~/scripts/qgis_startup.py")).resolve()),
             )
             self.assertEqual(
-                get_environment_variable("QDT_PROXY_HTTP"),
-                "http://proxy.qdt.com:8080",
+                get_environment_variable("QDT_TEST_URL_API_PLUGIN"),
+                "http://api.intra.net",
             )
             self.assertEqual(
                 get_environment_variable("QDT_TEST_ENV_VAR"),
@@ -120,7 +128,59 @@ class TestJobEnvironmentVariables(unittest.TestCase):
                     "action": "remove",
                 },
                 {
-                    "name": "QDT_PROXY_HTTP",
+                    "name": "QDT_TEST_URL_API_PLUGIN",
+                    "scope": "user",
+                    "action": "remove",
+                },
+                {
+                    "name": "QDT_TEST_FAKE_ENV_VAR_BOOL",
+                    "scope": "user",
+                    "action": "remove",
+                },
+                {
+                    "name": "QDT_TEST_FAKE_ENV_VAR_PATH",
+                    "scope": "user",
+                    "action": "remove",
+                },
+            ]
+            job_env_vars = JobEnvironmentVariables(fake_env_vars)
+            job_env_vars.run()
+
+            self.assertIsNone(
+                get_environment_variable("QDT_TEST_FAKE_ENV_VAR_BOOL", "user")
+            )
+            self.assertIsNone(
+                get_environment_variable("QDT_TEST_FAKE_ENV_VAR_PATH"),
+            )
+        elif opersys == "linux":
+            self.assertTrue(
+                str2bool(
+                    get_environment_variable("QDT_TEST_FAKE_ENV_VAR_BOOL", "user")
+                ),
+                True,
+            )
+            self.assertEqual(
+                get_environment_variable("QDT_TEST_FAKE_ENV_VAR_PATH"),
+                str(Path(expanduser("~/scripts/qgis_startup.py")).resolve()),
+            )
+            self.assertEqual(
+                get_environment_variable("QDT_TEST_URL_API_PLUGIN"),
+                "http://api.intra.net",
+            )
+            self.assertEqual(
+                get_environment_variable("QDT_TEST_ENV_VAR"),
+                "this is a custom value",
+            )
+
+            # clean up
+            fake_env_vars = [
+                {
+                    "name": "QDT_TEST_ENV_VAR",
+                    "scope": "user",
+                    "action": "remove",
+                },
+                {
+                    "name": "QDT_TEST_URL_API_PLUGIN",
                     "scope": "user",
                     "action": "remove",
                 },

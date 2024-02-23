@@ -6,10 +6,10 @@
     Author: Julien Moura (https://github.com/guts)
 """
 
-
 # #############################################################################
 # ########## Libraries #############
 # ##################################
+
 
 # Standard library
 import logging
@@ -24,15 +24,23 @@ from qgis_deployment_toolbelt.utils.check_path import (
     check_var_can_be_path,
 )
 from qgis_deployment_toolbelt.utils.url_helpers import check_str_is_url
-from qgis_deployment_toolbelt.utils.win32utils import (
-    delete_environment_variable,
-    refresh_environment,
-    set_environment_variable,
-)
+
+# conditional import
+if opersys == "linux":
+    from qgis_deployment_toolbelt.utils.linux_utils import (
+        delete_environment_variable,
+        set_environment_variable,
+    )
+elif opersys == "win32":
+    from qgis_deployment_toolbelt.utils.win32utils import (
+        delete_environment_variable,
+        set_environment_variable,
+    )
 
 # #############################################################################
 # ########## Globals ###############
 # ##################################
+
 
 # logs
 logger = logging.getLogger(__name__)
@@ -88,55 +96,51 @@ class JobEnvironmentVariables(GenericJob):
 
     def __init__(self, options: list[dict]) -> None:
         """Instantiate the class.
-
         Args:
             options (List[dict]): list of dictionary with environment variables to set
             or remove.
         """
+
         super().__init__()
         self.options: list[dict] = [self.validate_options(opt) for opt in options]
 
     def run(self) -> None:
         """Apply environment variables from dictionary to the system."""
-        if opersys == "win32":
-            for env_var in self.options:
-                if env_var.get("action") == "add":
-                    try:
-                        set_environment_variable(
-                            envvar_name=env_var.get("name"),
-                            envvar_value=self.prepare_value(
-                                value=env_var.get("value"),
-                                value_type=env_var.get("value_type"),
-                            ),
-                            scope=env_var.get("scope"),
-                        )
-                    except NameError:
-                        logger.debug(
-                            f"Variable name '{env_var.get('name')}' is not defined"
-                        )
-                elif env_var.get("action") == "remove":
-                    try:
-                        delete_environment_variable(
-                            envvar_name=env_var.get("name"),
-                            scope=env_var.get("scope"),
-                        )
-                    except NameError:
-                        logger.debug(
-                            f"Variable name '{env_var.get('name')}' is not defined"
-                        )
-            # force Windows to refresh the environment
-            refresh_environment()
 
-        # TODO: for linux, edit ~/.profile or add a .env file and source it from ~./profile
-        else:
-            logger.debug(
-                f"Setting persistent environment variables is not supported on {opersys}"
-            )
+        if opersys not in ("linux", "win32"):
+            logger.error(f"This job does not support your operating system: {opersys}")
+            return
+
+        for env_var in self.options:
+            if env_var.get("action") == "add":
+                try:
+                    set_environment_variable(
+                        envvar_name=env_var.get("name", None),
+                        envvar_value=self.prepare_value(
+                            value=env_var.get("value", None),
+                            value_type=env_var.get("value_type", None),
+                        ),
+                        scope=env_var.get("scope", None),
+                    )
+                except NameError:
+                    logger.debug(
+                        f"Variable name '{env_var.get('name')}' is not defined"
+                    )
+            elif env_var.get("action") == "remove":
+                try:
+                    delete_environment_variable(
+                        envvar_name=env_var.get("name", None),
+                        scope=env_var.get("scope", None),
+                    )
+                except NameError:
+                    logger.debug(
+                        f"Variable name '{env_var.get('name')}' is not defined"
+                    )
 
         logger.debug(f"Job {self.ID} ran successfully.")
 
     # -- INTERNAL LOGIC ------------------------------------------------------
-    def prepare_value(self, value: str, value_type: str = None) -> str:
+    def prepare_value(self, value: str, value_type: str | None = None) -> str:
         """Prepare value to be used in the environment variable.
 
         It performs some checks or operations depending on value type: user and
@@ -178,12 +182,3 @@ class JobEnvironmentVariables(GenericJob):
                 )
 
         return str(value).strip()
-
-
-# #############################################################################
-# ##### Stand alone program ########
-# ##################################
-
-if __name__ == "__main__":
-    """Standalone execution."""
-    pass

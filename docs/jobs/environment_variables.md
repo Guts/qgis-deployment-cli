@@ -1,6 +1,15 @@
 # Environment variables manager
 
-Use this job to set/delete environment variables. For example to set a value for a QGIS environment variable or to set a parameter that used by a plugin.
+Use this job to set/delete environment variables. For example to set a value for a QGIS environment variable or to set a parameter which is used by a plugin.
+
+----
+
+## Compatibility
+
+This job is compatible with:
+
+- Windows: storing environment variables in registry
+- Linux (bash): storing environment variables in `~/.profile` for `scope=user` and `/etc/profile.d/qdt` for `scope=system`.
 
 ----
 
@@ -16,6 +25,7 @@ Sample job configuration in your scenario file:
       action: "add"
       scope: "user"
       value: "\\SIG\\QGIS\\CONFIG\\qgis_global_settings.ini"
+      value_type: path
 ```
 
 ----

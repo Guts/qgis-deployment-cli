@@ -118,6 +118,20 @@ def test_main_run(capsys, option):
     environ.pop("QGIS_CUSTOM_CONFIG_PATH")
 
 
+def test_main_run_as_admin(capsys):
+    """Test main cli command on scenario requiring admin rights"""
+    with pytest.raises(SystemExit):
+        cli.main(
+            [
+                "deploy",
+                f"--scenario={Path('tests/fixtures/scenarios/scenario_sample_as_admin.qdt.yml').resolve()}",
+            ]
+        )
+
+    out, err = capsys.readouterr()
+    assert err == ""
+
+
 def test_main_run_unexising_jobs(capsys):
     """Test main cli command"""
     with pytest.raises(SystemExit):
