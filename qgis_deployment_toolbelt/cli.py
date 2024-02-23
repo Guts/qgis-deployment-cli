@@ -25,7 +25,11 @@ from qgis_deployment_toolbelt.__about__ import (
     __uri_homepage__,
     __version__,
 )
-from qgis_deployment_toolbelt.commands import parser_main_deployment, parser_upgrade
+from qgis_deployment_toolbelt.commands import (
+    parser_extract_from_profile,
+    parser_main_deployment,
+    parser_upgrade,
+)
 from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 
 # #############################################################################
@@ -165,6 +169,19 @@ def main(in_args: list[str] = None):
     )
     add_common_arguments(subcmd_deployment)
     parser_main_deployment(subcmd_deployment)
+
+    # Extractor
+    subcmd_extract = subparsers.add_parser(
+        "extract",
+        aliases=[
+            "qgis2qdt",
+        ],
+        help="Generate profile ready for QDT from an existing QGIS profile.",
+        formatter_class=main_parser.formatter_class,
+        prog="upgrade",
+    )
+    add_common_arguments(subcmd_extract)
+    parser_extract_from_profile(subcmd_extract)
 
     # Upgrader
     subcmd_upgrade = subparsers.add_parser(
