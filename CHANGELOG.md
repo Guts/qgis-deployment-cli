@@ -18,6 +18,12 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.31.1 - 2024-02-23
+
+### Bugs fixes 🐛
+
+* fix: restore refresh_environment by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/438>
+
 ## 0.31.0 - 2024-02-23
 
 ### Features and enhancements 🎉
