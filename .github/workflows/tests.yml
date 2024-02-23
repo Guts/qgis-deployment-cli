@@ -2,13 +2,15 @@ name: "🎳 Tester"
 
 on:
   push:
-    branches: [main]
+    branches:
+        - main
     paths:
       - "**/*.py"
       - ".github/workflows/tests.yml"
 
   pull_request:
-    branches: [main]
+    branches:
+        - main
     paths:
       - "**/*.py"
       - ".github/workflows/tests.yml"
@@ -22,9 +24,17 @@ env:
 jobs:
   unit-test:
     strategy:
+      fail-fast: false
+      # max-parallel: 4
       matrix:
-        os: [macos-latest, ubuntu-22.04, windows-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        os:
+          - macos-latest
+          - ubuntu-22.04
+          - windows-latest
+        python-version:
+            - "3.10"
+            - "3.11"
+            - "3.12"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -66,9 +76,17 @@ jobs:
 
   integration-test:
     strategy:
+      fail-fast: false
+      # max-parallel: 4
       matrix:
-        os: [macos-latest, ubuntu-22.04, windows-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        os:
+          - macos-latest
+          - ubuntu-22.04
+          - windows-latest
+        python-version:
+            - "3.10"
+            - "3.11"
+            - "3.12"
 
     runs-on: ${{ matrix.os }}
     steps:
