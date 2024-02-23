@@ -18,6 +18,22 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.31.0 - 2024-02-23
+
+### Features and enhancements 🎉
+
+* refacto: remove unused methods and improve doctsrings by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/429>
+* Refacto: split profiles sync job by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/432>
+* Feature: job environment variables support linux by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/435>
+
+### Tooling 🔧
+
+* ci: use codecov upload token by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/430>
+* ci: tag codecov uploads with CI matrix vars by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/431>
+* tooling: ignore dev scripts and fixtures from Sonar analisis by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/433>
+* ci: disable matrix fail fast by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/434>
+* tooling: make sonar ignore tests for duplication by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/436>
+
 ## 0.30.2 - 2024-02-22
 
 ### Features and enhancements 🎉
