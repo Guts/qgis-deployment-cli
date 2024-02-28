@@ -11,6 +11,8 @@
 # ########## Libraries #############
 # ##################################
 
+# special
+from __future__ import annotations
 
 # Standard library
 import configparser
@@ -20,7 +22,6 @@ from dataclasses import dataclass, fields
 from enum import Enum
 from os.path import expanduser, expandvars
 from pathlib import Path
-from sys import version_info
 from urllib.parse import quote, urlsplit, urlunsplit
 
 # 3rd party
@@ -29,12 +30,6 @@ from packaging.version import InvalidVersion, Version
 # package
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.slugger import sluggy
-
-# Imports depending on Python version
-if version_info[1] < 11:
-    from typing_extensions import Self
-else:
-    from typing import Self
 
 # #############################################################################
 # ########## Globals ###############
@@ -80,14 +75,14 @@ class QgisPlugin:
     version: str = "latest"
 
     @classmethod
-    def from_dict(cls, input_dict: dict) -> Self:
+    def from_dict(cls, input_dict: dict) -> QgisPlugin:
         """Create object from a dictionary.
 
         Args:
             input_dict (dict): input dictionary
 
         Returns:
-            Self: instanciated object
+            QgisPlugin: instanciated object
         """
         # map attributes names
         for k, v in cls.ATTR_MAP.items():
@@ -129,14 +124,14 @@ class QgisPlugin:
         )
 
     @classmethod
-    def from_plugin_folder(cls, input_plugin_folder: Path) -> Self:
+    def from_plugin_folder(cls, input_plugin_folder: Path) -> QgisPlugin:
         """Create object from a QGIS plugin folder. Must contain a metadata.txt file.
 
         Args:
             input_plugin_folder (Path): path to the folder containgin a QGIS plugin
 
         Returns:
-            Self: instanciated object
+            QgisPlugin: instanciated object
         """
         # check that input path is a folder
         check_path(
@@ -167,14 +162,14 @@ class QgisPlugin:
         return cls.from_dict(plugin_md_as_dict)
 
     @classmethod
-    def from_zip(cls, input_zip_path: Path) -> Self:
+    def from_zip(cls, input_zip_path: Path) -> QgisPlugin:
         """Create object from a ZIP file.
 
         Args:
             input_zip_path (Path): filepath of the input zip
 
         Returns:
-            Self: instanciated object
+            QgisPlugin: instanciated object
         """
         with zipfile.ZipFile(file=input_zip_path) as zf:
             # find the metadata.txt file
@@ -254,12 +249,12 @@ class QgisPlugin:
         else:
             return sluggy(self.name)
 
-    def is_older_than(self, version_to_compare: str | Self) -> bool:
+    def is_older_than(self, version_to_compare: str | QgisPlugin) -> bool:
         """Determine if the actual object version is older than the given version to \
             compare.
 
         Args:
-            version_to_compare (Union[str, Self]): given version to compare with object version
+            version_to_compare (Union[str, QgisPlugin]): given version to compare with object version
 
         Returns:
             bool: True if the given version is newer (more recent)

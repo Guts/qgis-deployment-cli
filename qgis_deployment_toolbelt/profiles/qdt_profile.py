@@ -11,18 +11,14 @@
 # ########## Libraries #############
 # ##################################
 
+# special
+from __future__ import annotations
+
 # standard
 import json
 import logging
 from pathlib import Path
-from sys import version_info
 from typing import Literal
-
-# Imports depending on Python version
-if version_info[1] < 11:
-    from typing_extensions import Self
-else:
-    from typing import Self
 
 # 3rd party
 from packaging.version import InvalidVersion, Version
@@ -135,7 +131,7 @@ class QdtProfile:
     @classmethod
     def from_json(
         cls, profile_json_path: Path, profile_folder: Path | None = None
-    ) -> "QdtProfile":
+    ) -> QdtProfile:
         """Load profile from a profile.json file.
 
         Args:
@@ -301,12 +297,12 @@ class QdtProfile:
         """
         return self._version
 
-    def is_older_than(self, version_to_compare: str | Self) -> bool:
+    def is_older_than(self, version_to_compare: str | QdtProfile) -> bool:
         """Determine if the actual object version is older than the given version to
             compare.
 
         Args:
-            version_to_compare (Union[str, Self]): given version to compare with object
+            version_to_compare (Union[str, QdtProfile]): given version to compare with object
             version
 
         Returns:
@@ -373,7 +369,7 @@ class QdtProfile:
             return "unknown"
 
     @property
-    def installed_profile(self) -> "QdtProfile | None":
+    def installed_profile(self) -> QdtProfile | None:
         """Returns the installed profile object only if the corresponding profiles.json
             exists.
 
