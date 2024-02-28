@@ -350,12 +350,20 @@ class ApplicationShortcut:
                 f"Using shortcut template in packaged mode: {template_shortcut}"
             )
 
-        check_path(
+        if not check_path(
             input_path=template_shortcut,
             must_be_a_file=True,
             must_be_readable=True,
             must_exists=True,
-        )
+            raise_error=False,
+        ):
+            logger.error(
+                FileNotFoundError(
+                    f"Shortcut template ({template_shortcut}) doesn't exist. "
+                    "Unable to create shortcuts."
+                )
+            )
+            return (None, None)
 
         # load template
         with template_shortcut.open("r", encoding="UTF-8") as bf_tpl:
