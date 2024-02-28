@@ -139,7 +139,7 @@ docs/misc/dependencies.md
 docs/usage/download_section.md
 QGISDeploymentToolbelt_*Ubuntu*
 tests/fixtures/tmp/*
-build_environment_report.txt
+build_environment_report*.txt
 safety_report.txt
 bandit_report.csv
 tests/fixtures/http-test-local/qdt-files.json
