@@ -7,9 +7,11 @@
 
 # standard library
 import logging
+from os import getenv
 from pathlib import Path
 
 # 3rd party
+import truststore
 from requests import Session
 from requests.exceptions import ConnectionError, HTTPError
 from requests.utils import requote_uri
@@ -18,6 +20,7 @@ from requests.utils import requote_uri
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
 from qgis_deployment_toolbelt.utils.formatters import convert_octets
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
+from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # ############################################################################
 # ########## GLOBALS #############
@@ -26,6 +29,9 @@ from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 # logs
 logger = logging.getLogger(__name__)
 
+if str2bool(getenv("QDT_SSL_USE_SYSTEM_STORES", False)):
+    truststore.inject_into_ssl()
+    logger.debug("Option to use native system certificates stores is enabled.")
 
 # ############################################################################
 # ########## FUNCTIONS ###########

@@ -17,6 +17,7 @@ from socket import gethostname
 
 # 3rd party
 import certifi
+import truststore
 from requests.utils import DEFAULT_CA_BUNDLE_PATH
 
 # Imports depending on operating system
@@ -29,6 +30,7 @@ else:
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import get_qdt_logs_folder
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
+from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # ############################################################################
 # ########## GLOBALS #############
@@ -140,6 +142,10 @@ def headers():
     logger.debug(
         f"Certificate authority (CA) bundle to use: {getenv('REQUESTS_CA_BUNDLE', getenv('CURL_CA_BUNDLE'))}"
     )
+
+    if str2bool(getenv("QDT_SSL_USE_SYSTEM_STORES", False)):
+        truststore.inject_into_ssl()
+        logger.debug("Option to use native system certificates stores is enabled.")
 
 
 def get_logger_filepath() -> Path | None:
