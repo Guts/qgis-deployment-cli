@@ -18,6 +18,17 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.31.2 - 2024-03-01
+
+### Bugs fixes 🐛
+
+* Fix: shortcut template was bundled to the wrong path by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/442>
+
+### Features and enhancements 🎉
+
+* refacto: rm typing_extensions from deps replacing by future.annotations by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/441>
+* Feature: network use native system stores by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/444>
+
 ## 0.31.1 - 2024-02-23
 
 ### Bugs fixes 🐛
