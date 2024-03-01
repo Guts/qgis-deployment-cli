@@ -28,10 +28,11 @@ Some others parameters can be set using environment variables.
 
 ----
 
-## QGIS environment variables
+## 3rd party environment variables
 
-Some of the QGIS environment variable applies to QDT:
+Some of the 3rd party environment variable applies to QDT:
 
 | Variable name       | Description            |
 | :------------------ | :----------------------: |
+| `REQUESTS_CA_BUNDLE` | Set the path to the bundle of SSL certificates to use for HTTPS requests. See also [How to use custom SSL certificates](../guides/howto_use_custom_ssl_certs.md).  |
 | `QGIS_CUSTOM_CONFIG_PATH` | Used to customize the path to the folder where QGIS stores the user's profiles. See [upstream documentation](https://docs.qgis.org/3.34/en/docs/user_manual/introduction/qgis_configuration.html#profiles-path). |
