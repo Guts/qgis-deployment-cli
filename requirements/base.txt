@@ -6,3 +6,4 @@ packaging>=20,<24
 pyyaml>=5.4,<7
 pywin32==306 ; sys_platform == 'win32'
 requests>=2.31,<3
+truststore>=0.8,<1

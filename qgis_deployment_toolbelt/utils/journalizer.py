@@ -10,7 +10,7 @@
 import logging
 from getpass import getuser
 from logging.handlers import RotatingFileHandler
-from os import getenv
+from os import environ, getenv
 from pathlib import Path
 from platform import architecture, platform, uname
 from socket import gethostname
@@ -29,6 +29,7 @@ else:
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.constants import get_qdt_logs_folder
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
+from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # ############################################################################
 # ########## GLOBALS #############
@@ -140,6 +141,21 @@ def headers():
     logger.debug(
         f"Certificate authority (CA) bundle to use: {getenv('REQUESTS_CA_BUNDLE', getenv('CURL_CA_BUNDLE'))}"
     )
+
+    if str2bool(getenv("QDT_SSL_USE_SYSTEM_STORES", False)):
+        logger.debug("Option to use native system certificates stores is enabled.")
+        if "REQUESTS_CA_BUNDLE" in environ:
+            environ.pop("REQUESTS_CA_BUNDLE")
+            logger.debug(
+                "Custom path to CA Bundle (REQUESTS_CA_BUNDLE) has been removed from "
+                "environment variables."
+            )
+        if "CURL_CA_BUNDLE" in environ:
+            environ.pop("CURL_CA_BUNDLE")
+            logger.debug(
+                "Custom path to CA Bundle (CURL_CA_BUNDLE) has been removed from "
+                "environment variables."
+            )
 
 
 def get_logger_filepath() -> Path | None:
