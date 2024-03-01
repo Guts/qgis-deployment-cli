@@ -10,14 +10,13 @@
 import logging
 from getpass import getuser
 from logging.handlers import RotatingFileHandler
-from os import getenv
+from os import environ, getenv
 from pathlib import Path
 from platform import architecture, platform, uname
 from socket import gethostname
 
 # 3rd party
 import certifi
-import truststore
 from requests.utils import DEFAULT_CA_BUNDLE_PATH
 
 # Imports depending on operating system
@@ -144,8 +143,19 @@ def headers():
     )
 
     if str2bool(getenv("QDT_SSL_USE_SYSTEM_STORES", False)):
-        truststore.inject_into_ssl()
         logger.debug("Option to use native system certificates stores is enabled.")
+        if "REQUESTS_CA_BUNDLE" in environ:
+            environ.pop("REQUESTS_CA_BUNDLE")
+            logger.debug(
+                "Custom path to CA Bundle (REQUESTS_CA_BUNDLE) has been removed from "
+                "environment variables."
+            )
+        if "CURL_CA_BUNDLE" in environ:
+            environ.pop("CURL_CA_BUNDLE")
+            logger.debug(
+                "Custom path to CA Bundle (CURL_CA_BUNDLE) has been removed from "
+                "environment variables."
+            )
 
 
 def get_logger_filepath() -> Path | None:
