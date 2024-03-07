@@ -87,6 +87,7 @@ setup(
         "Topic :: System :: Installation/Setup",
     ],
     # packaging
+    python_requires=">=3.10,<4",
     py_modules=["qgis_deployment_toolbelt"],
     packages=find_packages(
         exclude=["contrib", "docs", "*.tests", "*.tests.*", "tests.*", "tests", ".venv"]
