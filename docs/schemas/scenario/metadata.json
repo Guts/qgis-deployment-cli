@@ -7,8 +7,7 @@
   "properties": {
     "title": {
       "description": "The title of the job.",
-      "type": "string",
-      "pattern": "^[A-Za-z0-9 ]+$"
+      "type": "string"
     },
     "id": {
       "description": "Unique identifier of the job. Like the title but slugified and without special characters.",
