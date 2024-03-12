@@ -78,10 +78,20 @@
       {
         "properties": {
           "uses": {
-            "const": "qprofiles-manager"
+            "const": "qprofiles-downloader"
           },
           "with": {
-            "$ref": "qprofiles-manager.json"
+            "$ref": "qprofiles-downloader.json"
+          }
+        }
+      },
+      {
+        "properties": {
+          "uses": {
+            "const": "qprofiles-synchronizer"
+          },
+          "with": {
+            "$ref": "qprofiles-synchronizer.json"
           }
         }
       },

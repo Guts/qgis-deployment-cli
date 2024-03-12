@@ -15,21 +15,5 @@
             ],
             "type": "string"
         }
-    },
-    "allOf": [
-        {
-            "if": {
-                "properties": {
-                    "protocol": {
-                        "const": "git"
-                    }
-                }
-            },
-            "then": {
-                "required": [
-                    "branch"
-                ]
-            }
-        }
-    ]
+    }
 }
