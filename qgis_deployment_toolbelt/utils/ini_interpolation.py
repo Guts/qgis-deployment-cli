@@ -75,6 +75,33 @@ class EnvironmentVariablesInterpolation(BasicInterpolation):
             )
             return value
 
+    def before_write(
+        self,
+        parser: ConfigParser,
+        section: str,
+        option: str,
+        value: str,
+    ) -> str:
+        """Called before write option=value line in INI file.
+
+        Args:
+            parser (ConfigParser): parser whose function is overloaded
+            section (str): section's name
+            option (str): option's name
+            value (str): value to try to interpolate
+
+        Returns:
+            str: interpolated value
+        """
+        value = super().before_write(parser, section, option, value)
+        try:
+            return expandvars(expanduser(value))
+        except Exception as exc:
+            logger.error(
+                f"Failed to interpolate {value} in {section}/{option}. Trace: {exc}"
+            )
+            return value
+
 
 # #############################################################################
 # ##### Stand alone program ########
