@@ -13,6 +13,7 @@
 # standard
 import tempfile
 import unittest
+from configparser import ConfigParser
 from pathlib import Path
 
 # project
@@ -204,6 +205,68 @@ class TestQgisIniHelper(unittest.TestCase):
                 ini_filepath=not_existing_ini_config, ini_type="profile_qgis3"
             )
             self.assertFalse(qini_helper.set_splash_screen(switch=False))
+
+    def test_merge_existing_file(self):
+        """Test merge of INI file with backup value"""
+        dst_config = "[Section]\nvalue=initial_value"
+        src_config = "[Section]\nvalue=new_value"
+        with tempfile.TemporaryDirectory(
+            prefix="qdt_test_ini_file_", ignore_cleanup_errors=True
+        ) as tmpdirname:
+            dst_ini_path = Path(tmpdirname).joinpath("dest.ini")
+            dst_ini_path.parent.mkdir(parents=True, exist_ok=True)
+            dst_ini_path.write_text(dst_config)
+
+            dst_ini = QgisIniHelper(
+                ini_filepath=dst_ini_path,
+                ini_type="profile_qgis3customization",
+            )
+
+            src_ini_path = Path(tmpdirname).joinpath("src.ini")
+            src_ini_path.parent.mkdir(parents=True, exist_ok=True)
+            src_ini_path.write_text(src_config)
+
+            src_ini = QgisIniHelper(
+                ini_filepath=src_ini_path,
+                ini_type="profile_qgis3customization",
+            )
+
+            src_ini.merge_to(dst_ini)
+
+            cfg_parser = ConfigParser()
+            cfg_parser.read(dst_ini_path)
+            self.assertIn("QDT_backup_Section", cfg_parser)
+            self.assertEqual("initial_value", cfg_parser["QDT_backup_Section"]["value"])
+            self.assertIn("Section", cfg_parser)
+            self.assertEqual("new_value", cfg_parser["Section"]["value"])
+
+    def test_merge_not_existing_file(self):
+        """Test merge of INI file with not existing file"""
+        src_config = "[Section]\nvalue=new_value"
+        with tempfile.TemporaryDirectory(
+            prefix="qdt_test_ini_file_", ignore_cleanup_errors=True
+        ) as tmpdirname:
+            src_ini_path = Path(tmpdirname).joinpath("src.ini")
+            src_ini_path.parent.mkdir(parents=True, exist_ok=True)
+            src_ini_path.write_text(src_config)
+
+            src_ini = QgisIniHelper(
+                ini_filepath=src_ini_path,
+                ini_type="profile_qgis3customization",
+            )
+
+            empty_ini_path = Path(tmpdirname).joinpath("empty.ini")
+            empty_ini = QgisIniHelper(
+                ini_filepath=empty_ini_path,
+                ini_type="profile_qgis3customization",
+            )
+            src_ini.merge_to(empty_ini)
+
+            cfg_parser = ConfigParser()
+            cfg_parser.read(empty_ini_path)
+            self.assertNotIn("QDT_backup_Section", cfg_parser)
+            self.assertIn("Section", cfg_parser)
+            self.assertEqual("new_value", cfg_parser["Section"]["value"])
 
 
 # ############################################################################

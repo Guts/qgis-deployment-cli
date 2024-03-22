@@ -3,14 +3,14 @@ name: "🎳 Tester"
 on:
   push:
     branches:
-        - main
+      - main
     paths:
       - "**/*.py"
       - ".github/workflows/tests.yml"
 
   pull_request:
     branches:
-        - main
+      - main
     paths:
       - "**/*.py"
       - ".github/workflows/tests.yml"
@@ -32,9 +32,9 @@ jobs:
           - ubuntu-22.04
           - windows-latest
         python-version:
-            - "3.10"
-            - "3.11"
-            - "3.12"
+          - "3.10"
+          - "3.11"
+          - "3.12"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -84,9 +84,9 @@ jobs:
           - ubuntu-22.04
           - windows-latest
         python-version:
-            - "3.10"
-            - "3.11"
-            - "3.12"
+          - "3.10"
+          - "3.11"
+          - "3.12"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -114,8 +114,15 @@ jobs:
       - name: QDT - Echoing version
         run: qdeploy-toolbelt --version
 
-      - name: QDT - Sample scenario
-        run: qgis-deployment-toolbelt --verbose
+      - name: QDT - Check upgrade
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required to avoid GH API rate limit
+        run: qdt upgrade
 
-      - name: QDT - Sample scenario
+      - name: QDT - Run sample scenario twice
+        run: |
+          qgis-deployment-toolbelt --verbose
+          qgis-deployment-toolbelt
+
+      - name: QDT - Run sample scenario a third time
         run: qgis-deployment-toolbelt --verbose --no-logfile
