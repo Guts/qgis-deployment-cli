@@ -5,7 +5,7 @@
   "description": "Demo QGIS profile for QDT customized for end-users which are only viewers.",
   "author": "Julien Moura",
   "email": "infos+qdt@oslandia.com",
-  "icon": "images/logo_qdt.ico",
+  "icon": "images/icon_shortcut_qdt_viewer_mode.ico",
   "qgisMinimumVersion": "3.28.4",
   "qgisMaximumVersion": "3.99.10",
   "version": "1.1.0",

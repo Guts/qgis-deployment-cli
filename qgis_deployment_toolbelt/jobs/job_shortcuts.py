@@ -186,15 +186,15 @@ class JobShortcutsManager(GenericJob):
         )
         return qdt_profile
 
-    def get_icon_path(self, profile: QdtProfile, icon_filename: str) -> Path:
+    def get_icon_path(self, profile: QdtProfile, icon_filename: str) -> Path | None:
         """Get icon path to use with the shortcut. Looking for:
 
-            1. checks if an icon key has been specified in the scenario file and if it
-                exists
+            1. checks if an icon key has been specified in the profile.json file and
+                if it exists
             2. checks if an icon has been specified into scenario and if it exists
                 within profile folder (in QGIS)
             3. checks if an icon has been specified into scenario and if it exists under
-                a subfolder starting from the toolbelt (adn handling pathlib OSError)
+                a subfolder starting from the toolbelt (and handling pathlib OSError)
 
         Args:
             profile (QdtProfile): QGIS profile object
