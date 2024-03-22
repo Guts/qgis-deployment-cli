@@ -3,14 +3,14 @@ name: "🎳 Tester"
 on:
   push:
     branches:
-        - main
+      - main
     paths:
       - "**/*.py"
       - ".github/workflows/tests.yml"
 
   pull_request:
     branches:
-        - main
+      - main
     paths:
       - "**/*.py"
       - ".github/workflows/tests.yml"
@@ -32,9 +32,9 @@ jobs:
           - ubuntu-22.04
           - windows-latest
         python-version:
-            - "3.10"
-            - "3.11"
-            - "3.12"
+          - "3.10"
+          - "3.11"
+          - "3.12"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -84,9 +84,9 @@ jobs:
           - ubuntu-22.04
           - windows-latest
         python-version:
-            - "3.10"
-            - "3.11"
-            - "3.12"
+          - "3.10"
+          - "3.11"
+          - "3.12"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -115,7 +115,9 @@ jobs:
         run: qdeploy-toolbelt --version
 
       - name: QDT - Sample scenario
-        run: qgis-deployment-toolbelt --verbose
+        run: |
+          qgis-deployment-toolbelt --verbose
+          qgis-deployment-toolbelt --verbose
 
       - name: QDT - Sample scenario
         run: qgis-deployment-toolbelt --verbose --no-logfile
