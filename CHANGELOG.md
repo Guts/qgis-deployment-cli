@@ -18,6 +18,34 @@ Unreleased
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
+## 0.32.0 - 2024-03-22
+
+### Bugs fixes 🐛
+
+* fix: remove deprecated job and fix minor confusing refs in JSON schemas by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/449>
+
+### Features and enhancements 🎉
+
+* feat(env variable): add write of environnement variable in .ini files from QDT profile by @jmkerloch in <https://github.com/Guts/qgis-deployment-cli/pull/452>
+
+### Tooling 🔧
+
+* packaging: set Python min/max versions by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/447>
+
+### Documentation 📖
+
+* demo: renew shortcuts profiles icons and add versions compatible with QGIS profiles list by @sylvainbeo and @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/453>
+
+### Other Changes
+
+* deps: bump minimal versions for git sync by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/443>
+
+### New Contributors
+
+* @jmkerloch and @sylvainbeo made their first contribution
+
+----
+
 ## 0.31.2 - 2024-03-01
 
 ### Bugs fixes 🐛
