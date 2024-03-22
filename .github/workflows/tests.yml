@@ -115,6 +115,8 @@ jobs:
         run: qdeploy-toolbelt --version
 
       - name: QDT - Check upgrade
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required to avoid GH API rate limit
         run: qdt upgrade
 
       - name: QDT - Run sample scenario twice
