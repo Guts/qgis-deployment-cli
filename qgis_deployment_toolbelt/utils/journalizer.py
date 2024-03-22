@@ -17,6 +17,7 @@ from socket import gethostname
 
 # 3rd party
 import certifi
+import coloredlogs
 from requests.utils import DEFAULT_CA_BUNDLE_PATH
 
 # Imports depending on operating system
@@ -50,6 +51,9 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
         verbosity (int): verbosity level
         logfile (Path, optional): file where to store log. Defaults to None.
     """
+
+    coloredlogs.install(level="DEBUG")
+
     # handle log level overridden by environment variable
     verbosity = getenv("QDT_LOGS_LEVEL", verbosity)
     try:

@@ -7,3 +7,5 @@ pyyaml>=5.4,<7
 pywin32==306 ; sys_platform == 'win32'
 requests>=2.31,<3
 truststore>=0.8,<1
+coloredlogs>=15.0.1,<15.0.2
+colorama>=0.4.6,<0.4.7; sys_platform == 'win32'
