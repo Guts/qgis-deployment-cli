@@ -52,8 +52,6 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
         logfile (Path, optional): file where to store log. Defaults to None.
     """
 
-    coloredlogs.install(level="DEBUG")
-
     # handle log level overridden by environment variable
     verbosity = getenv("QDT_LOGS_LEVEL", verbosity)
     try:
@@ -74,6 +72,8 @@ def configure_logger(verbosity: int = 1, logfile: Path = None):
     # set console handler
     log_console_handler = logging.StreamHandler()
     log_console_handler.setLevel(verbosity)
+
+    coloredlogs.install(level=verbosity)
 
     # set log file
     if not logfile:
