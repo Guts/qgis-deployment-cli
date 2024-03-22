@@ -272,11 +272,16 @@ class JobProfilesSynchronizer(GenericJob):
 
         # copy downloaded profiles into this
         for d in profiles_to_copy:
-            logger.info(f"Copying {d.folder} to {d.path_in_qgis}")
-            d.path_in_qgis.mkdir(parents=True, exist_ok=True)
-            copytree(
-                d.folder,
-                d.path_in_qgis,
-                copy_function=copy2,
-                dirs_exist_ok=True,
-            )
+            if d.path_in_qgis.exists():
+                logger.info(f"Merging {d.folder} to {d.path_in_qgis}")
+                installed_profile = QdtProfile(folder=d.path_in_qgis)
+                d.merge_to(installed_profile)
+            else:
+                logger.info(f"Copying {d.folder} to {d.path_in_qgis}")
+                d.path_in_qgis.mkdir(parents=True, exist_ok=True)
+                copytree(
+                    d.folder,
+                    d.path_in_qgis,
+                    copy_function=copy2,
+                    dirs_exist_ok=True,
+                )

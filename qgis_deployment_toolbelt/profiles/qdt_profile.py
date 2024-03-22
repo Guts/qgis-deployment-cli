@@ -17,7 +17,9 @@ from __future__ import annotations
 # standard
 import json
 import logging
+import tempfile
 from pathlib import Path
+from shutil import copy2, copytree
 from typing import Literal
 
 # 3rd party
@@ -450,6 +452,62 @@ class QdtProfile:
             ini_filepath=self.folder.joinpath("QGIS/QGISCUSTOMIZATION3.ini"),
             ini_type="profile_qgis3customization",
         )
+
+    def merge_to(self, dst: QdtProfile) -> None:
+        """Merge QdtProfile to another profile
+
+
+        Args:
+            dst (QdtProfile): _description_
+        """
+        with tempfile.TemporaryDirectory(
+            prefix=f"QDT_merge_profile_{self.name}_", ignore_cleanup_errors=True
+        ) as tmpdirname:
+            logger.info(
+                f"Merge profile {self.name} with {tmpdirname} temporary directory"
+            )
+            # Copy source QdtProfile folder
+            copytree(
+                self.folder,
+                tmpdirname,
+                copy_function=copy2,
+                dirs_exist_ok=True,
+            )
+            # Merge INI files
+            tmp_profile = QdtProfile(folder=Path(tmpdirname))
+
+            # QGIS3
+            if self.has_qgis3_ini_file() and dst.has_qgis3_ini_file():
+                # Copy current installed file
+                copy2(
+                    dst.get_qgis3ini_helper().ini_filepath,
+                    tmp_profile.get_qgis3ini_helper().ini_filepath,
+                )
+                # Merge
+                self.get_qgis3ini_helper().merge_to(tmp_profile.get_qgis3ini_helper())
+
+            # QGISCUSTOMIZATION3
+            if (
+                self.has_qgis3customization_ini_file()
+                and dst.has_qgis3customization_ini_file()
+            ):
+                # Copy current installed file
+                copy2(
+                    dst.get_qgis3customizationini_helper().ini_filepath,
+                    tmp_profile.get_qgis3customizationini_helper().ini_filepath,
+                )
+                # Merge
+                self.get_qgis3customizationini_helper().merge_to(
+                    tmp_profile.get_qgis3customizationini_helper()
+                )
+
+            logger.info(f"Copying {tmpdirname} to {dst.path_in_qgis}")
+            copytree(
+                tmpdirname,
+                dst.path_in_qgis,
+                copy_function=copy2,
+                dirs_exist_ok=True,
+            )
 
 
 # #############################################################################

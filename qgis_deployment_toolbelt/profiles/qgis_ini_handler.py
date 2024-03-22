@@ -11,6 +11,9 @@
 # ########## Libraries #############
 # ##################################
 
+# special
+from __future__ import annotations
+
 # Standard library
 import logging
 from pathlib import Path
@@ -112,6 +115,7 @@ class QgisIniHelper:
             raise_error=False,
         ):
             logger.info(f"The specified file does not exist: {ini_filepath.resolve()}.")
+        self.ini_filepath = ini_filepath
 
         # store options
         self.strict_mode = strict
@@ -541,6 +545,93 @@ class QgisIniHelper:
                 f"{option} is DISABLED in {qgiscustomization3ini_filepath}"
             )
             return False
+
+    @staticmethod
+    def _copy_section(
+        config_dest: CustomConfigParser,
+        config_src: CustomConfigParser,
+        section_src: str,
+    ) -> None:
+        """Copy section from an INI config to another INI config
+
+        Args:
+            config_dest (CustomConfigParser): destination INI content
+            config_src (CustomConfigParser): source INI content
+            section_src (str): section to copy
+        """
+        if section_src not in config_dest.sections() and section_src != "DEFAULT":
+            config_dest.add_section(section_src)
+        for param in config_src[section_src]:
+            config_dest[section_src][param] = config_src[section_src][param]
+
+    @staticmethod
+    def _backup_section(
+        config_dest: CustomConfigParser,
+        config_src: CustomConfigParser,
+        section_src: str,
+        dst: Path,
+    ) -> None:
+        """Backup a INI section for with updated values
+
+        Args:
+            config_dest (CustomConfigParser): destination INI content
+            config_src (CustomConfigParser): source INI content
+            section_src (str): section to backup
+            dst (Path): destination file
+        """
+        if section_src not in config_dest:
+            return
+        # Get updated values
+        updated_values = {
+            param: config_dest[section_src][param]
+            for param in config_src[section_src]
+            if param in config_dest[section_src]
+            and config_src[section_src][param] != config_dest[section_src][param]
+        }
+        if len(updated_values):
+            backup_section = f"QDT_backup_{section_src}"
+            logger.info(
+                f"Section {section_src} already available in {dst}. Copying updated content to {backup_section}"
+            )
+            if backup_section not in config_dest.sections():
+                config_dest.add_section(backup_section)
+            for param, backup_val in updated_values.items():
+                config_dest[backup_section][param] = backup_val
+
+    def merge_to(self, dst: QgisIniHelper) -> None:
+        """Merge INI file to another INI file.
+        If the destination file exists a merge is done:
+        - all available sections are kept
+        - if a section is available in both INI files, keep updated parameters in a backup section
+        If environnement variable interpolation is enabled, value are written with current environnement values
+
+        Args:
+            dst (QgisIniHelper): destination ini file
+        """
+        if not self.ini_filepath or not self.ini_filepath.exists():
+            logger.warning(
+                f"File {self.ini_filepath} doesn't exists. Can't merge to {dst}"
+            )
+            return
+
+        # Read source INI content
+        config_src = self.cfg_parser()
+        config_src.read(self.ini_filepath)
+
+        if dst.ini_filepath.exists():
+            # Read destination INI content
+            config_dest = dst.cfg_parser()
+            config_dest.read(dst.ini_filepath)
+            # Add sections in source INI
+            for section in config_src:
+                self._backup_section(config_dest, config_src, section, dst.ini_filepath)
+                self._copy_section(config_dest, config_src, section)
+            # Write to destination, environnement variable will be interpolated if interpolation enabled
+            with dst.ini_filepath.open("w") as config_file:
+                config_dest.write(config_file)
+        else:
+            with dst.ini_filepath.open("w") as config_file:
+                config_src.write(config_file)
 
 
 # #############################################################################
