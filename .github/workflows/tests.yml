@@ -114,10 +114,13 @@ jobs:
       - name: QDT - Echoing version
         run: qdeploy-toolbelt --version
 
-      - name: QDT - Sample scenario
+      - name: QDT - Check upgrade
+        run: qdt upgrade
+
+      - name: QDT - Run sample scenario twice
         run: |
           qgis-deployment-toolbelt --verbose
-          qgis-deployment-toolbelt --verbose
+          qgis-deployment-toolbelt
 
-      - name: QDT - Sample scenario
+      - name: QDT - Run sample scenario a third time
         run: qgis-deployment-toolbelt --verbose --no-logfile
