@@ -6,7 +6,6 @@
     "properties": {
         "folder_name": {
             "description": "Name of the plugins's directory once installed in QGIS. Useful when name does not complies with filename conventions.",
-            "pattern": "^([a-zA-Z]:)?(\\\\[^<>:\"/\\\\|?*]+)+\\\\?$",
             "type": "string"
         },
         "location": {
@@ -45,15 +44,10 @@
         },
         "repository_url_xml": {
             "description": "URL to the plugin repository file (XML).",
-            "type": "string"
-        },
-        "type": {
-            "enum": [
-                "local",
-                "remote"
-            ],
-            "deprecated": true,
-            "type": "string"
+            "type": "string",
+            "examples": [
+                "https://oslandia.gitlab.io/qgis/ngp-connect/plugins.xml"
+            ]
         },
         "url": {
             "description": "Direct URI (URL or local path) to download the plugin archive (.zip).",
@@ -65,10 +59,9 @@
             ]
         },
         "version": {
-            "description": "Plugin version to install.",
+            "description": "Version of the plugin to be installed.",
             "maxLength": 14,
             "minLength": 5,
-            "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
             "type": "string"
         }
     }
