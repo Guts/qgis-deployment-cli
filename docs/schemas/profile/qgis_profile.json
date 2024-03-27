@@ -25,7 +25,6 @@
         },
         "folder_name": {
             "description": "Name of the profile's directory in QGIS.",
-            "pattern": "^([a-zA-Z]:)?(\\\\[^<>:\"/\\\\|?*]+)+\\\\?$",
             "type": "string"
         },
         "icon": {
@@ -34,7 +33,7 @@
         },
         "name": {
             "description": "Profile name without any special characters.",
-            "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$"
+            "type": "string"
         },
         "plugins": {
             "description": "Plugins installed with the profile.",
