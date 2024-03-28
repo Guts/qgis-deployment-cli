@@ -13,6 +13,7 @@
 
 # Standard library
 import logging
+import os
 from os.path import expanduser, expandvars
 from pathlib import Path
 from sys import platform as opersys
@@ -116,24 +117,32 @@ class JobEnvironmentVariables(GenericJob):
         for env_var in self.options:
             if env_var.get("action") == "add":
                 try:
+                    envvar_name = env_var.get("name", None)
+                    envvar_value = self.prepare_value(
+                        value=env_var.get("value", None),
+                        value_type=env_var.get("value_type", None),
+                    )
                     set_environment_variable(
-                        envvar_name=env_var.get("name", None),
-                        envvar_value=self.prepare_value(
-                            value=env_var.get("value", None),
-                            value_type=env_var.get("value_type", None),
-                        ),
+                        envvar_name=envvar_name,
+                        envvar_value=envvar_value,
                         scope=env_var.get("scope", None),
                     )
+                    # Add to local environnement to be used in other QDT jobs
+                    os.environ[envvar_name] = envvar_value
                 except NameError:
                     logger.debug(
                         f"Variable name '{env_var.get('name')}' is not defined"
                     )
             elif env_var.get("action") == "remove":
                 try:
+                    envvar_name = env_var.get("name", None)
                     delete_environment_variable(
-                        envvar_name=env_var.get("name", None),
+                        envvar_name=envvar_name,
                         scope=env_var.get("scope", None),
                     )
+                    # Remove from local environnement so it won't be used in other QDT jobs
+                    if envvar_name in os.environ:
+                        del os.environ[envvar_name]
                 except NameError:
                     logger.debug(
                         f"Variable name '{env_var.get('name')}' is not defined"
