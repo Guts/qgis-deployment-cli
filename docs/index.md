@@ -59,6 +59,7 @@ usage/settings
 caption: Guides
 maxdepth: 1
 ---
+guides/howto_validate_profiles_scenarios
 guides/howto_behind_proxy
 guides/howto_use_custom_ssl_certs
 guides/howto_qgis_get_plugin_id

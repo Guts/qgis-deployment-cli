@@ -1,11 +1,55 @@
-# How to automatically validate profile.json and scenarios files
+# How to automatically validate QDT files
 
+In order to minimize friction and maximize productivity, the project provides a [schema.json](https://json-schema.org/) for scenarios and profiles files.
+
+## Text editors (IDE)
+
+If your editor supports JSON and YAML schema validation, it's definitely recommended to set it up. Here is a demonstration on how it works in Visual Studio Code:
+
+<!-- markdownlint-disable MD033 -->
+<video preload="metadata" width="100%" controls>
+  <source src="../_static/qdt_assisted_edition_vscode.webm" type="video/webm">
+  Your browser does not support HTML 5 video tag.
+</video>
+<!-- markdownlint-enable MD033 -->
+
+### Visual Studio Code
+
+#### Profiles
+
+Add the following line at the top of your JSON file:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json"
+  [...]
+}
+```
+
+#### Scenarios
+
+1. Install the [vscode-yaml](https://marketplace.visualstudio.com/items?itemname=redhat.vscode-yaml) extension for YAML language support.
+2. Add the schema under the `yaml.schemas` key in your user or workspace [`settings.json`](https://code.visualstudio.com/docs/getstarted/settings):
+
+```json
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
+  }
+}
+```
+
+----
 
 ## Using pre-commit
 
-Here comes a typical configuration:
+Since it's strongly recomended to use Git to store and publish QDT profiles and scenarios, it's possible to use git hooks to automatically validate QDT files.
 
-```yaml
+Here comes a typical configuration for the [pre-commit micro-framework](https://pre-commit.com/) (see [upstream instructions](https://pre-commit.com/#install) to install it):
+
+```{code-block} yaml
+:caption: Example file .pre-commit-config.yaml (adapt to your subfolders)
+
 exclude: ".venv|tests/dev/|tests/fixtures/"
 fail_fast: false
 repos:

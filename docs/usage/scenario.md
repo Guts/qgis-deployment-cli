@@ -33,6 +33,12 @@ A step consists of 3 elements:
 See available jobs
 ```
 
+:::{tip}
+Editing a scenario file can be tricky and since it's a critical piece of the QDT workflow, the project provide some tooling to help writing and checking them: [How to automatically validate QDT files](../guides/howto_validate_profiles_scenarios.md).
+:::
+
+----
+
 ## Sample scenario
 
 For development and test purposes, project provides a [sample scenario](https://github.com/Guts/qgis-deployment-cli/blob/main/tests/fixtures/scenarios/good_scenario_sample.qdt.yml):
@@ -40,30 +46,4 @@ For development and test purposes, project provides a [sample scenario](https://
 ```{eval-rst}
 .. literalinclude:: ../../tests/fixtures/scenarios/good_scenario_sample.qdt.yml
   :language: yaml
-```
-
-### Validate scenario using JSON Schema
-
-In order to minimize friction and maximize productivity, the project tries to provide a [schema.json](https://json-schema.org/) for scenarios files. If your editor supports YAML schema validation, it's definitely recommended to set it up.
-
-#### Generic
-
-1. Ensure your editor of choice has support for YAML schema validation.
-2. Add the following lines at the top of your scenario file:
-
-```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
-```
-
-#### Visual Studio Code
-
-1. Install the [vscode-yaml](https://marketplace.visualstudio.com/items?itemname=redhat.vscode-yaml) extension for YAML language support.
-2. Add the schema under the `yaml.schemas` key in your user or workspace [`settings.json`](https://code.visualstudio.com/docs/getstarted/settings):
-
-```json
-{
-  "yaml.schemas": {
-    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
-  }
-}
 ```
