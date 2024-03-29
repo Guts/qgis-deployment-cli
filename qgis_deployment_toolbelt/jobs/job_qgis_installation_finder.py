@@ -20,6 +20,7 @@ from shutil import which
 from sys import platform as opersys
 
 # package
+from qgis_deployment_toolbelt.exceptions import QgisInstallNotFound
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 
 # #############################################################################
@@ -81,6 +82,11 @@ class JobQgisInstallationFinder(GenericJob):
 
         if installed_qgis_path:
             os.environ["QDT_QGIS_EXE_PATH"] = installed_qgis_path
+        else:
+            if self.options.get("if_not_found", "error") == "error":
+                raise QgisInstallNotFound()
+            else:
+                logger.warning("No QGIS installation found")
 
         # log
         logger.debug(f"Job {self.ID} ran successfully.")
