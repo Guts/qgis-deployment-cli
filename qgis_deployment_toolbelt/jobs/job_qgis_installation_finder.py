@@ -97,32 +97,32 @@ class JobQgisInstallationFinder(GenericJob):
             str | None : installed qgis path
         """
         if opersys == "linux":
-            return self._get_linux_installed_qgis_path()
+            found_versions = self._get_linux_installed_qgis_path()
         elif opersys == "win32":
             # Check for installed version in the default install directory
             found_versions = self._get_windows_installed_qgis_path()
-            if len(found_versions) == 0:
-                return None
 
-            logger.debug(f"Found installed QGIS : {found_versions}")
-            latest_version = self._get_latest_version_from_list(
-                versions=list(found_versions.keys())
+        if len(found_versions) == 0:
+            return None
+
+        logger.debug(f"Found installed QGIS : {found_versions}")
+        latest_version = self._get_latest_version_from_list(
+            versions=list(found_versions.keys())
+        )
+        latest_qgis = found_versions[latest_version]
+
+        if "version_priority" in self.options:
+            for version in self.options["version_priority"]:
+                if latest_matching_version := self._get_latest_matching_version_path(
+                    found_versions=found_versions, version=version
+                ):
+                    return latest_matching_version
+            version_priority_str = ",".join(self.options["version_priority"])
+            logger.info(
+                f"QGIS version(s) [{version_priority_str}] not found. Using latest found version {latest_version} : {latest_qgis}"
             )
-            latest_qgis = found_versions[latest_version]
 
-            if "version_priority" in self.options:
-                for version in self.options["version_priority"]:
-                    if latest_matching_version := self._get_latest_matching_version_path(
-                        found_versions=found_versions, version=version
-                    ):
-                        return latest_matching_version
-                version_priority_str = ",".join(self.options["version_priority"])
-                logger.info(
-                    f"QGIS version(s) [{version_priority_str}] not found. Using latest found version {latest_qgis}"
-                )
-
-            return latest_qgis
-        return None
+        return latest_qgis
 
     @staticmethod
     def _get_latest_version_from_list(versions: list[str]) -> str | None:
@@ -232,17 +232,25 @@ class JobQgisInstallationFinder(GenericJob):
         return found_version
 
     @staticmethod
-    def _get_linux_installed_qgis_path() -> str | None:
+    def _get_linux_installed_qgis_path() -> dict[str, str]:
         """Get install qgis path for linux operating system with which
 
         Returns:
-            str | None: qgis install path, None if not found
+            dict[str, str]: dict of QGIS version and QGIS bin path
         """
         # use which to find installed qgis
-        if which_qgis_path := which("qgis"):
-            logger.debug(f"QGIS path found using which: {which_qgis_path}")
-            return which_qgis_path
-        return None
+        found_version = {}
+        if qgis_bin := which("qgis"):
+            logger.debug(f"QGIS path found using which: {qgis_bin}")
+            version_str = JobQgisInstallationFinder._get_qgis_bin_version(
+                qgis_bin=qgis_bin
+            )
+            if version_str:
+                found_version[version_str] = qgis_bin
+            else:
+                logger.warning(f"Can't define QGIS version for '{qgis_bin}' binary.")
+
+        return found_version
 
     @staticmethod
     def _get_qgis_bin_version(qgis_bin: str) -> str | None:
