@@ -36,6 +36,23 @@ Multiple QGIS version can be installed in Windows, this option prioritize the ve
 
 It define a list of version to use by priority.
 
+For example if you define :
+
+```yaml
+- name: Find installed QGIS
+  uses: qgis-installation-finder
+  with:
+    version_priority:
+      - "3.34"
+      - "3.36"
+```
+
+QDT will first use 3.34.z versions. If none are available it will use 3.36.z versions.
+
+If multiple 3.34.z versions are available, the latest will be used. For example if 3.34.1 and 3.34.5 version are available, 3.34.5 will be used.
+
+If no version from version_priority` is available, it will use the latest found version.
+
 ### if_not_found
 
 Job behavior if QGIS is not found.
@@ -56,7 +73,7 @@ On Windows QDT try to locate installed versions in the current directories :
 - `%PROGRAMFILES%\\QGIS x.y.z\\bin\`
 - `%QDT_OSGEO4W_INSTALL_DIR%` (default value : `C:\\OSGeo4W`)
 
-By default, the latest version is used.
+By default, the latest version found is used.
 
 ----
 
