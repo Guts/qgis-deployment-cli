@@ -39,6 +39,39 @@ Development is leaded by the following principles and goals:
 - an installer for QGIS
 - a packager helper
 
+## Quickstart
+
+### With Python
+
+1. Get QDT executable:
+
+    ```sh
+    pip install -U qgis-deployment-toolbelt
+    ```
+
+    :::{important}
+    It's not directly related to QDT but check that the Python scripts folder is declared in your `PATH` (list of folders where executables are authorized to run).
+    :::
+
+1. Run a scenario. For example the one which is shipped as demonstration in QDT project:
+
+    ```sh
+    qdt -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+    ```
+
+### With the stand-alone executable
+
+> Typically on Windows
+
+1. Download latest version that matches your environment from [releases](https://github.com/Guts/qgis-deployment-cli/releases/latest)
+1. Rename it as `qdt.exe`
+1. Open a terminal in the same folder
+1. Run a scenario. For example the one which is shipped as demonstration in QDT project:
+
+    ```sh
+    ./qdt.exe -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+    ```
+
 ----
 
 ## Table of contents
