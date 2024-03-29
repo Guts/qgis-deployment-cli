@@ -42,8 +42,8 @@ Job behavior if QGIS is not found.
 
 Possible_values:
 
-- `warning`: if no version found, a warning is displayed in QDT logs
-- `error` (_default_): if no version found, QDT stop and the other jobs are not run
+- `warning` (_default_): if no version found, a warning is displayed in QDT logs
+- `error`: if no version found, QDT stop and the other jobs are not run
 
 ----
 

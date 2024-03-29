@@ -55,7 +55,7 @@ class JobQgisInstallationFinder(GenericJob):
         "if_not_found": {
             "type": str,
             "required": False,
-            "default": "error",
+            "default": "warning",
             "possible_values": ("warning", "error"),
             "condition": "in",
         },
@@ -82,7 +82,7 @@ class JobQgisInstallationFinder(GenericJob):
         if installed_qgis_path:
             os.environ["QDT_QGIS_EXE_PATH"] = installed_qgis_path
         else:
-            if self.options.get("if_not_found", "error") == "error":
+            if self.options.get("if_not_found", "warning") == "error":
                 raise QgisInstallNotFound()
             else:
                 logger.warning("No QGIS installation found")

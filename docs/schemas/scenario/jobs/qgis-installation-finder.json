@@ -13,7 +13,7 @@
         "type": "array"
       },
       "if_not_found": {
-        "default": "error",
+        "default": "warning",
         "description": "Behavior if no QGIS installation found.",
         "enum": [
           "warning",
