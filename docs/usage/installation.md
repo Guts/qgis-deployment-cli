@@ -2,6 +2,17 @@
 
 ## As a stand-alone executable
 
+### Requirements
+
+- operating system:
+    - Linux (tested on Debian-based distribution)
+    - Windows 10+
+- network:
+    - github.com
+    - pypi.org
+
+### Step-by-step
+
 1. Download the latest release from [GitHub Release](https://github.com/Guts/qgis-deployment-cli/releases/latest):
 
   ```{include} download_section.md
@@ -20,6 +31,12 @@ MacOS version is not tested and is just here to encourage beta-testing and feedb
 ----
 
 ## As a Python package
+
+### Requirements
+
+- Python 3.10+
+
+### Step-by-step
 
 The package is installable with pip:
 
