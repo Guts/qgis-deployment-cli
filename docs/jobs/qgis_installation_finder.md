@@ -1,6 +1,6 @@
 # QGIS installation finder
 
-Use this job to find installed QGIS version to auto definition QDT environnement variable `QDT_QGIS_EXE_PATH` needed for shortcut creation
+Use this job to find installed QGIS version for automatic definition of QDT environnement variable `QDT_QGIS_EXE_PATH` needed for shortcut creation
 
 ----
 
@@ -32,9 +32,9 @@ Sample job configuration in your scenario file:
 
 ### version_priority
 
-Multiple QGIS version can be installed in Windows, this option prioritize the version to use.
+Multiple versions of QGIS can be installed on Windows.
 
-It define a list of version to use by priority.
+This option is used to specify the preferred QGIS version
 
 For example if you define :
 
@@ -55,7 +55,7 @@ If no version from version_priority` is available, it will use the latest found 
 
 ### if_not_found
 
-Job behavior if QGIS is not found.
+This option determines the action to be taken if QGIS is not found during the search process.
 
 Possible_values:
 
