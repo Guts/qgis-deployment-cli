@@ -52,21 +52,11 @@ class TestJobQgisInstallationFinder(unittest.TestCase):
     # -- TESTS ---------------------------------------------------------
     def test_get_latest_version_from_list(self):
         """Test definition of latest version from a list of version"""
-
-        # OSGeo4W is last
         self.assertEqual(
             JobQgisInstallationFinder._get_latest_version_from_list(
-                ["3.25.1", "4.0.1", "3.28.2", "OSGeo4W"]
+                ["3.25.1", "4.0.1", "3.28.2"]
             ),
             "4.0.1",
-        )
-
-        # OSGeo4W consider last before OSGeo4W64
-        self.assertEqual(
-            JobQgisInstallationFinder._get_latest_version_from_list(
-                ["OSGeo4W", "OSGeo4W64"]
-            ),
-            "OSGeo4W",
         )
 
     def test_get_latest_matching_version_path(self):
@@ -79,7 +69,6 @@ class TestJobQgisInstallationFinder(unittest.TestCase):
                     "3.25.1": "/path/to/3_25_1",
                     "3.25.8": "/path/to/3_25_8",
                     "3.25.2": "/path/to/3_25_2",
-                    "OSGeo4W64": "/path/to/OSGeo4W64",
                 },
                 "3.25",
             ),
@@ -93,7 +82,6 @@ class TestJobQgisInstallationFinder(unittest.TestCase):
                     "3.25.1": "/path/to/3_25_1",
                     "3.25.8": "/path/to/3_25_8",
                     "3.25.2": "/path/to/3_25_2",
-                    "OSGeo4W64": "/path/to/OSGeo4W64",
                 },
                 "3.36",
             )

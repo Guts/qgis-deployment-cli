@@ -36,7 +36,6 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 OSGEO4W_VERSION = "OSGeo4W"
-OSGEO4W_64_VERSION = "OSGeo4W64"
 
 
 class JobQgisInstallationFinder(GenericJob):
@@ -143,9 +142,6 @@ class JobQgisInstallationFinder(GenericJob):
             if OSGEO4W_VERSION in used_version:
                 used_version.remove(OSGEO4W_VERSION)
                 used_version.append(OSGEO4W_VERSION)
-            if OSGEO4W_64_VERSION in used_version:
-                used_version.remove(OSGEO4W_64_VERSION)
-                used_version.append(OSGEO4W_64_VERSION)
             return used_version[0]
         return None
 
@@ -219,18 +215,11 @@ class JobQgisInstallationFinder(GenericJob):
                     found_version[version] = qgis_exe
 
         # OSGEO4W
-        install_dir = "C:\\OSGeo4W"
+        install_dir = os.environ.get("QDT_OSGEO4W_INSTALL_DIR", "C:\\OSGeo4W")
         if qgis_exe := JobQgisInstallationFinder._get_qgis_bin_in_install_dir(
             install_dir
         ):
             found_version[OSGEO4W_VERSION] = qgis_exe
-
-        # OSGEO4W64
-        install_dir = "C:\\OSGeo4W64"
-        if qgis_exe := JobQgisInstallationFinder._get_qgis_bin_in_install_dir(
-            install_dir
-        ):
-            found_version[OSGEO4W_64_VERSION] = qgis_exe
 
         return found_version
 

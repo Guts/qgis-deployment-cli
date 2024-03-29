@@ -4,6 +4,15 @@ Use this job to find installed QGIS version to auto definition QDT environnement
 
 ----
 
+## Compatibility
+
+This job is compatible with:
+
+- Windows
+- Linux
+
+----
+
 ## Use it
 
 Sample job configuration in your scenario file:
@@ -45,8 +54,7 @@ On Linux, QDT locate installed QGIS with `which`command.
 On Windows QDT try to locate installed versions in the current directories :
 
 - `%PROGRAMFILES%\\QGIS x.y.z\\bin\`
-- `C:\\OSGeo4W`
-- `C:\\OSGeo4W64`
+- `%QDT_OSGEO4W_INSTALL_DIR%` (default value : `C:\\OSGeo4W`)
 
 By default, the latest version is used.
 
