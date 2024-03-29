@@ -29,7 +29,7 @@ At the shell session scope:
 
 If the `QDT_SSL_USE_SYSTEM_STORES` environment variable is set to `True`, HTTPS requests rely on the native system certificates store.
 
-:::{info}
+:::{note}
 If enabled, this environment variable take precedence over `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` which are ignored.
 :::
 

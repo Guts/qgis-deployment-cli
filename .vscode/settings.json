@@ -72,4 +72,12 @@
         ],
         "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
     },
+    "markdownlint.config": {
+        "MD007": {
+            "indent": 4
+        },
+        "MD024": {
+            "allow_different_nesting": true
+        },
+    }
 }
