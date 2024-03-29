@@ -1,11 +1,55 @@
-# How to automatically validate profile.json and scenarios files
+# How to automatically validate QDT files
 
+In order to minimize friction and maximize productivity, the project provides a [schema.json](https://json-schema.org/) for scenarios and profiles files.
+
+## Text editors (IDE)
+
+If your editor supports YAML schema validation, it's definitely recommended to set it up.
+
+1. Ensure your editor of choice has support for YAML schema validation.
+2. Add the following lines at the top of your scenario file:
+
+```yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
+```
+
+### Visual Studio Code
+
+#### Profiles
+
+Add the following line at the top of your JSON file:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json"
+  [...]
+}
+```
+
+#### Scenarios
+
+1. Install the [vscode-yaml](https://marketplace.visualstudio.com/items?itemname=redhat.vscode-yaml) extension for YAML language support.
+2. Add the schema under the `yaml.schemas` key in your user or workspace [`settings.json`](https://code.visualstudio.com/docs/getstarted/settings):
+
+```json
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
+  }
+}
+```
+
+----
 
 ## Using pre-commit
 
-Here comes a typical configuration:
+Since it's strongly recomended to use Git to store and publish QDT profiles and scenarios, it's possible to use git hooks to automatically validate QDT files.
 
-```yaml
+Here comes a typical configuration for the [pre-commit micro-framework](https://pre-commit.com/) (see [upstream instructions](https://pre-commit.com/#install) to install it):
+
+```{code-block} yaml
+:caption: Example file .pre-commit-config.yaml (adapt to your subfolders)
+
 exclude: ".venv|tests/dev/|tests/fixtures/"
 fail_fast: false
 repos:

@@ -14,6 +14,10 @@ QDT expects to find this file in the folder of each profile stored in the source
 - on a local Git repository
 - on a web server through HTTP using a `qdt-files.json`
 
+:::{tip}
+Editing a profile.json file can be tricky and since it's a critical piece of the QDT workflow, the project provide some tooling to help writing and checking them: [How to automatically validate QDT files](../guides/howto_validate_profiles_scenarios.md).
+:::
+
 ### On an HTTP web server
 
 #### Generate the `qdt-files.json` index file
