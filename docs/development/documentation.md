@@ -20,10 +20,10 @@ Open `docs/_build/index.html` in a web browser.
 ## Write documentation using live render
 
 ```sh
-sphinx-autobuild -b html docs/ docs/_build
+sphinx-autobuild -b html docs/ docs/_autobuild/ --delay 3 --open-browser --ignore docs/misc/dependencies.md --ignore docs/usage/download_section.md
 ```
 
-Open <http://localhost:8000> in a web browser to see the HTML render updated when a file is saved.
+Your default web browser should be automatically opened on <http://localhost:8000> displaying the HTML render which will be  updated when a file is saved.
 
 ---
 
