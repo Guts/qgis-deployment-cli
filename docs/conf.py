@@ -149,6 +149,10 @@ intersphinx_mapping = {
 
 # -- Extension configuration -------------------------------------------------
 
+autodoc_default_options = {
+    "special-members": "__init__",
+}
+
 # mermaid
 mermaid_params = [
     "--theme",
