@@ -1,0 +1,3 @@
+User-agent: *
+
+Sitemap: https://guts.github.io/qgis-deployment-cli/sitemap.xml
