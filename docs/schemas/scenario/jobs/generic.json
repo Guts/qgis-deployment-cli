@@ -30,7 +30,8 @@
           "qprofiles-synchronizer",
           "qprofiles-manager",
           "shortcuts-manager",
-          "splash-screen-manager"
+          "splash-screen-manager",
+          "qgis-installation-finder"
         ],
         "deprecated": [
           "qprofiles-manager"
@@ -114,7 +115,17 @@
             "$ref": "splash-screen-manager.json"
           }
         }
-      }
+      },
+      {
+        "properties": {
+          "uses": {
+            "const": "qgis-installation-finder"
+          },
+          "with": {
+            "$ref": "qgis-installation-finder.json"
+          }
+        }
+      },
     ],
     "required": [
       "name",

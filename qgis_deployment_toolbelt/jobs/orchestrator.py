@@ -28,6 +28,9 @@ from qgis_deployment_toolbelt.jobs.job_profiles_downloader import JobProfilesDow
 from qgis_deployment_toolbelt.jobs.job_profiles_synchronizer import (
     JobProfilesSynchronizer,
 )
+from qgis_deployment_toolbelt.jobs.job_qgis_installation_finder import (
+    JobQgisInstallationFinder,
+)
 from qgis_deployment_toolbelt.jobs.job_shortcuts import JobShortcutsManager
 from qgis_deployment_toolbelt.jobs.job_splash_screen import JobSplashScreenManager
 
@@ -54,6 +57,7 @@ class JobsOrchestrator:
         JobProfilesSynchronizer,
         JobShortcutsManager,
         JobSplashScreenManager,
+        JobQgisInstallationFinder,
     )
     PACKAGE_NAME: str = "qgis_deployment_toolbelt.jobs"
 
