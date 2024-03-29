@@ -1,4 +1,4 @@
-# {{ title }} - Documentation
+# {{ title }} (QDT) - Documentation
 
 > **Description:** {{ description }}  
 > **Author and contributors:** {{ author }}  
@@ -7,9 +7,13 @@
 > **License:** {{ license }}  
 > **Last documentation build:** {{ date_update }}
 
+[![PyPi version badge](https://badgen.net/pypi/v/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/qgis-deployment-toolbelt)](https://pypi.org/project/qgis-deployment-toolbelt/)
+
 ----
 
-![QGIS Deployment Toolbelt CLI](/static/qgis-deployment-toolbelt_cli_help.png)
+![QGIS Deployment Toolbelt CLI](./static/qgis-deployment-toolbelt_cli_help.png)
 
 ## What it is and the underlying philosophy
 
@@ -26,8 +30,8 @@ Development is leaded by the following principles and goals:
 - easily reusable
 - easily maintenable
 - compatible with automation mechanisms:
-  - cron / scheduled tasks
-  - Windows [groups policies](https://en.wikipedia.org/wiki/Group_Policy) (so called GPO for *Group Policies Object*) and [tooling around client management](https://learn.microsoft.com/en-us/windows/client-management/)
+    - cron / scheduled tasks
+    - Windows [groups policies](https://en.wikipedia.org/wiki/Group_Policy) (so called GPO for *Group Policies Object*) and [tooling around client management](https://learn.microsoft.com/en-us/windows/client-management/)
 - flexible enough to be adapted to an internal security policy (allowing to put a custom code certificate)
 
 ### It's not
@@ -74,6 +78,7 @@ guides/*
 caption: Miscellaneous
 maxdepth: 1
 ---
+misc/examples
 misc/security
 misc/compatibility
 misc/credits
