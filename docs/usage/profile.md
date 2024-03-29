@@ -11,45 +11,12 @@ QDT expects to find this file in the folder of each profile stored in the source
 3 options:
 
 - on a remote Git repository (github.com, gitlab.com, GitLab instance...)
-- on a local Git repository
-- on a web server through HTTP using a `qdt-files.json`
+- on a local Git repository (a folder with a `.git` subfolder containing every Git internal stuff)
+- on a web server through HTTP using a `qdt-files.json` - see guide: [how to publish on a HTTP server](../guides/howto_publish_http.md)
 
 :::{tip}
 Editing a profile.json file can be tricky and since it's a critical piece of the QDT workflow, the project provide some tooling to help writing and checking them: [How to automatically validate QDT files](../guides/howto_validate_profiles_scenarios.md).
 :::
-
-### On an HTTP web server
-
-#### Generate the `qdt-files.json` index file
-
-> Typically on Ubuntu
-
-Install tree:
-
-```sh
-sudo apt install tree
-```
-
-Run it:
-
-```sh
-# move to your QDT profiles folder. Here we take the QDT repository as example:
-cd examples/
-# generate the qdt-files.json
-tree --gitignore -D --timefmt="%Y-%m-%dT%H:%M:%S%Z" -s -J -o qdt-files.json .
-```
-
-Detailed explanation:
-
-- `tree`: command that displays the directory tree structure.
-<!-- - `-f`: display the full path for each file and directory. -->
-- `--gitignore`: apply gitignore-style rules to exclude files and directories.
-- `-D`: print the modification time for each file or directory.
-- `--timefmt="%Y-%m-%dT%H:%M:%S%Z"`: specify the time format as ISO8601 with UTC (Coordinated Universal Time).
-- `-s`: print the size of each file.
-- `-J`: output the directory tree in JSON format.
-- `-o qdt-files.json`: save the output to a file named 'qdt-files.json'.
-- `.`: specify the current directory as the starting point for the tree.
 
 ----
 
@@ -100,8 +67,8 @@ qgis-profiles/
 - if you use a Git repository, store profiles in a subfolder not at the project root and specify the relative path in scenario
 - do not store the entire profile folder, but only files that contans something specific to your profile (use a `.gitignore` file - see [below](#use-a-gitignore-file-to-exclude-folders-and-files-with-patterns))
 - keep only the lines of `*.ini` files which are custom to your profile:
-  - QGIS will fill them automatically if needed
-  - it reduces the surface of possible conflicts when dealing to upgrade a profile
+    - QGIS will fill them automatically if needed
+    - it reduces the surface of possible conflicts when dealing to upgrade a profile
 
 ### Use a `.gitignore` file to exclude folders and files with patterns
 
