@@ -4,14 +4,14 @@ In order to minimize friction and maximize productivity, the project provides a 
 
 ## Text editors (IDE)
 
-If your editor supports YAML schema validation, it's definitely recommended to set it up.
+If your editor supports JSON and YAML schema validation, it's definitely recommended to set it up. Here is a demonstration on how it works in Visual Studio Code:
 
-1. Ensure your editor of choice has support for YAML schema validation.
-2. Add the following lines at the top of your scenario file:
-
-```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
-```
+<!-- markdownlint-disable MD033 -->
+<video preload="metadata" width="100%" controls>
+  <source src="../_static/qdt_assisted_edition_vscode.webm" type="video/webm">
+  Your browser does not support HTML 5 video tag.
+</video>
+<!-- markdownlint-enable MD033 -->
 
 ### Visual Studio Code
 

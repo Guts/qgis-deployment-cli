@@ -114,6 +114,7 @@ html_theme_options = {
 
 
 html_extra_path = ["robots.txt"]
+html_static_path = ["static/extra"]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
