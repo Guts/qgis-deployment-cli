@@ -7,11 +7,23 @@
     },
     // JSON
     "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
         "editor.quickSuggestions": {
             "strings": true
         },
         "editor.suggest.insertMode": "replace"
+    },
+    // Markdown
+    "markdown.updateLinksOnFileMove.enabled": "prompt",
+    "markdown.updateLinksOnFileMove.enableForDirectories": true,
+    "markdown.validate.enabled": true,
+    "markdown.validate.fileLinks.markdownFragmentLinks": "warning",
+    "markdown.validate.fragmentLinks.enabled": "warning",
+    "[markdown]": {
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+        "editor.formatOnSave": true,
+        "files.trimTrailingWhitespace": false,
     },
     // Python
     "python.analysis.autoFormatStrings": true,
