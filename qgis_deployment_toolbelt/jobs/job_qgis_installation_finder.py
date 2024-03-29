@@ -15,6 +15,7 @@
 import logging
 import os
 import re
+import subprocess
 from os.path import expandvars
 from shutil import which
 from sys import platform as opersys
@@ -34,8 +35,6 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-
-OSGEO4W_VERSION = "OSGeo4W"
 
 
 class JobQgisInstallationFinder(GenericJob):
@@ -138,10 +137,6 @@ class JobQgisInstallationFinder(GenericJob):
         if len(versions):
             used_version = versions
             used_version.sort(reverse=True)
-            # OSGEO4W version must be check last because we can't define version
-            if OSGEO4W_VERSION in used_version:
-                used_version.remove(OSGEO4W_VERSION)
-                used_version.append(OSGEO4W_VERSION)
             return used_version[0]
         return None
 
@@ -207,19 +202,32 @@ class JobQgisInstallationFinder(GenericJob):
             # Check if the directory name matches the pattern
             match = directory_pattern.match(dir_name)
             if match:
-                version = match.group(1) + "." + match.group(2) + "." + match.group(3)
                 install_dir = os.path.join(prog_file_dir, dir_name)
-                if qgis_exe := JobQgisInstallationFinder._get_qgis_bin_in_install_dir(
+                if qgis_bin := JobQgisInstallationFinder._get_qgis_bin_in_install_dir(
                     install_dir
                 ):
-                    found_version[version] = qgis_exe
+                    version_str = JobQgisInstallationFinder._get_qgis_bin_version(
+                        qgis_bin=qgis_bin
+                    )
+                    if version_str:
+                        found_version[version_str] = qgis_bin
+                    else:
+                        logger.warning(
+                            f"Can't define QGIS version for '{qgis_bin}' binary."
+                        )
 
         # OSGEO4W
         install_dir = os.environ.get("QDT_OSGEO4W_INSTALL_DIR", "C:\\OSGeo4W")
-        if qgis_exe := JobQgisInstallationFinder._get_qgis_bin_in_install_dir(
+        if qgis_bin := JobQgisInstallationFinder._get_qgis_bin_in_install_dir(
             install_dir
         ):
-            found_version[OSGEO4W_VERSION] = qgis_exe
+            version_str = JobQgisInstallationFinder._get_qgis_bin_version(
+                qgis_bin=qgis_bin
+            )
+            if version_str:
+                found_version[version_str] = qgis_bin
+            else:
+                logger.warning(f"Can't define QGIS version for '{qgis_bin}' binary.")
 
         return found_version
 
@@ -234,4 +242,25 @@ class JobQgisInstallationFinder(GenericJob):
         if which_qgis_path := which("qgis"):
             logger.debug(f"QGIS path found using which: {which_qgis_path}")
             return which_qgis_path
+        return None
+
+    @staticmethod
+    def _get_qgis_bin_version(qgis_bin: str) -> str | None:
+        """Get QGIS bin version with --version
+
+        Args:
+            qgis_bin (str): QGIS bin path
+
+        Returns:
+            str | None: SemVer version, None if version not found
+        """
+        process = subprocess.Popen(
+            f'"{qgis_bin}" --version', stdout=subprocess.PIPE, shell=True
+        )
+        stdout_, _ = process.communicate()
+        version_str = stdout_.decode()
+        version_pattern = r"QGIS (\d+\.\d+\.\d+)-(\w+).*"
+        version_match = re.match(version_pattern, version_str)
+        if version_match:
+            return version_match.group(1)
         return None

@@ -58,8 +58,6 @@ On Windows QDT try to locate installed versions in the current directories :
 
 By default, the latest version is used.
 
-Since we can't define which version is installed by OSGeo4W this will be the last version used if available
-
 ----
 
 ## Schema
