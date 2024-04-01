@@ -53,9 +53,9 @@ class RemoteProfilesHandlerBase:
 
     SOURCE_REPOSITORY_ACTIVE_BRANCH: str | None = None
     SOURCE_REPOSITORY_PATH_OR_URL: Path | str | None = None
-    SOURCE_REPOSITORY_TYPE: Literal[
-        "git_local", "git_remote", "http", "local", "remote"
-    ] | None = None
+    SOURCE_REPOSITORY_TYPE: (
+        Literal["git_local", "git_remote", "http", "local", "remote"] | None
+    ) = None
 
     DESTINATION_PATH: Path | None = None
     DESTINATION_BRANCH_TO_USE: str | None = None
