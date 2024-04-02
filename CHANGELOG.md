@@ -16,7 +16,29 @@ Unreleased
 
 -->
 
-<!-- Release notes generated using configuration in .github/release.yml at main -->
+## 0.32.1 - 2024-04-02
+
+### Bugs fixes 🐛
+
+* fix(env variable): update local environment by @jmkerloch in <https://github.com/Guts/qgis-deployment-cli/pull/455>
+
+### Tooling 🔧
+
+* Tooling: add config for markdown files in VS Code  by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/461>
+
+### Documentation 📖
+
+* docs: fix autobuild command by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/462>
+* docs: minor fixes by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/467>
+* docs: complete validation tooling by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/463>
+* docs: add quickstart by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/468>
+* docs: remove pattern from JSON schemas by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/456>
+* docs: add how to check using git hooks by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/457>
+* docs: add robots.txt for SEO engines by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/458>
+* docs: enable zoom in mermaid diagrams by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/459>
+* docs: autodoc __init__ functions by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/460>
+* docs: add a page referencing QDT projects by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/465>
+* docs: move how to publish to an HTTP server in a specific guide page by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/466>
 
 ## 0.32.0 - 2024-03-22
 
