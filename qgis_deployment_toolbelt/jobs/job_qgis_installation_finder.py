@@ -119,7 +119,7 @@ class JobQgisInstallationFinder(GenericJob):
                     return latest_matching_version
             version_priority_str = ",".join(self.options["version_priority"])
             logger.info(
-                f"QGIS version(s) [{version_priority_str}] not found. Using latest found version {latest_version} : {latest_qgis}"
+                f"QGIS version(s) [{version_priority_str}] not found. Using most recent found version {latest_version} : {latest_qgis}"
             )
 
         return latest_qgis
