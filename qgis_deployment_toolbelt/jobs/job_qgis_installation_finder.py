@@ -17,6 +17,7 @@ import os
 import re
 import subprocess
 from os.path import expandvars
+from pathlib import Path
 from shutil import which
 from sys import platform as opersys
 
@@ -71,6 +72,8 @@ class JobQgisInstallationFinder(GenericJob):
 
     def run(self) -> None:
         """Define QDT_QGIS_EXE_PATH for shortcut creation"""
+        if not self.run_needed():
+            return
 
         if opersys not in ("linux", "win32"):
             logger.error(f"This job does not support your operating system: {opersys}")
@@ -90,6 +93,27 @@ class JobQgisInstallationFinder(GenericJob):
         logger.debug(f"Job {self.ID} ran successfully.")
 
     # -- INTERNAL LOGIC ------------------------------------------------------
+    def run_needed(self) -> bool:
+        """Check if job run is needed
+
+        Returns:
+            bool: return True if job must be run, False otherwise
+        """
+        if "QDT_QGIS_EXE_PATH" in os.environ:
+            qgis_bin = os.environ["QDT_QGIS_EXE_PATH"]
+            if Path(qgis_bin).exists():
+                version_str = self._get_qgis_bin_version(qgis_bin)
+                if version_str:
+                    logger.info(
+                        f"QDT_QGIS_EXE_PATH defined and path {qgis_bin} exists for QGIS {version_str}. {self.ID} job is skipped. "
+                    )
+                    return False
+                else:
+                    logger.warning(
+                        f"QDT_QGIS_EXE_PATH defined and path {qgis_bin} exists but the QGIS version can't be defined. Check variable."
+                    )
+        return True
+
     def get_installed_qgis_path(self) -> str | None:
         """Get list of installed qgis
 

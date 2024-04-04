@@ -2,6 +2,8 @@
 
 Use this job to find installed QGIS version for automatic definition of QDT environnement variable `QDT_QGIS_EXE_PATH` (used for shortcut creation).
 
+If the environment variable is already defined and a valid QGIS installation is found by this variable, the job is skipped.
+
 ----
 
 ## Compatibility
