@@ -51,6 +51,8 @@ If multiple 3.34.z versions are available, the latest will be used. For example 
 
 If any version of `version_priority` is available, then the most recent version found is used.
 
+The environment variable `QDT_PREFERRED_QGIS_VERSION` is used as top priority if defined.
+
 ### if_not_found
 
 This option determines the action to be taken if QGIS is not found during the search process.

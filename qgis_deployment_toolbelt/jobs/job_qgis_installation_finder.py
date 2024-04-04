@@ -111,12 +111,20 @@ class JobQgisInstallationFinder(GenericJob):
         )
         latest_qgis = found_versions[latest_version]
 
+        version_priority: list[str] = []
         if "version_priority" in self.options:
-            for version in self.options["version_priority"]:
-                if latest_matching_version := self._get_latest_matching_version_path(
-                    found_versions=found_versions, version=version
-                ):
-                    return latest_matching_version
+            version_priority = self.options["version_priority"]
+
+        # Add preferred qgis version on top of the list
+        if "QDT_PREFERRED_QGIS_VERSION" in os.environ:
+            version_priority.insert(0, os.environ["QDT_PREFERRED_QGIS_VERSION"])
+
+        for version in version_priority:
+            if latest_matching_version := self._get_latest_matching_version_path(
+                found_versions=found_versions, version=version
+            ):
+                return latest_matching_version
+
             version_priority_str = ",".join(self.options["version_priority"])
             logger.info(
                 f"QGIS version(s) [{version_priority_str}] not found. Using most recent found version {latest_version} : {latest_qgis}"
