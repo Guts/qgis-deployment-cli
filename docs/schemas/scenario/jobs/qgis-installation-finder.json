@@ -10,7 +10,10 @@
       "version_priority": {
         "default": "",
         "description": "Define QGIS version priority for search.",
-        "type": "array"
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       },
       "if_not_found": {
         "default": "warning",
