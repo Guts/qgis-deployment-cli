@@ -24,14 +24,14 @@
         "maxLength": 255,
         "enum": [
           "manage-env-vars",
+          "qgis-installation-finder",
           "qplugins-downloader",
           "qplugins-synchronizer",
           "qprofiles-downloader",
           "qprofiles-synchronizer",
           "qprofiles-manager",
           "shortcuts-manager",
-          "splash-screen-manager",
-          "qgis-installation-finder"
+          "splash-screen-manager"
         ],
         "deprecated": [
           "qprofiles-manager"
