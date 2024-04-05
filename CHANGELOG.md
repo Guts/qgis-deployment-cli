@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.33.0 - 2024-04-05
+
+### Features and enhancements 🎉
+
+* feat(installed qgis): add qgis-installation-finder job by @jmkerloch in <https://github.com/Guts/qgis-deployment-cli/pull/464>
+
 ## 0.32.1 - 2024-04-02
 
 ### Bugs fixes 🐛
