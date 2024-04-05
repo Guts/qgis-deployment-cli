@@ -1,0 +1,209 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/rules.json",
+    "$comment": "A set of JSON rules usable for QDT profiles to make conditional deployment.",
+    "type": "object",
+    "description": "Rules contain a set of conditions. When the engine is run, each rule condition is evaluated. If the results are truthy, the profile's is installed.",
+    "required": [
+        "conditions",
+        "name"
+    ],
+    "properties": {
+        "conditions": {
+            "$id": "#/properties/conditions",
+            "type": "object",
+            "title": "Conditions",
+            "description": "Rule conditions are a combination of facts, operators, and values that determine whether the rule is a success or a failure. The simplest form of a condition consists of a fact, an operator, and a value. When the engine runs, the operator is used to compare the fact against the value. Each rule's conditions must have either an all or an any operator at its root, containing an array of conditions. The all operator specifies that all conditions contained within must be truthy for the rule to be considered a success. The any operator only requires one condition to be truthy for the rule to succeed.",
+            "default": {},
+            "examples": [
+                {
+                    "all": [
+                        {
+                            "path": "$.environment.operating_system_code",
+                            "operator": "equal",
+                            "value": "linux"
+                        }
+                    ]
+                }
+            ],
+            "oneOf": [
+                {
+                    "required": [
+                        "any"
+                    ]
+                },
+                {
+                    "required": [
+                        "all"
+                    ]
+                }
+            ],
+            "properties": {
+                "any": {
+                    "$ref": "#/definitions/conditionArray"
+                },
+                "all": {
+                    "$ref": "#/definitions/conditionArray"
+                }
+            }
+        },
+        "name": {
+            "$id": "#/properties/name",
+            "default": {},
+            "description": "A way of naming your rules, allowing them to be easily identifiable in Rule Results. This is usually of type String, but could also be Object, Array, or Number. Note that the name need not be unique, and that it has no impact on execution of the rule.",
+            "examples": [
+                "My Rule Name"
+            ],
+            "title": "The Name Schema",
+            "type": "string"
+        }
+    },
+    "definitions": {
+        "conditionArray": {
+            "type": "array",
+            "title": "Condition Array",
+            "description": "An array of conditions with a possible recursive inclusion of another condition array.",
+            "default": [],
+            "items": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/conditions"
+                    },
+                    {
+                        "$ref": "#/definitions/condition"
+                    }
+                ]
+            }
+        },
+        "condition": {
+            "type": "object",
+            "title": "Condition",
+            "description": "Rule conditions are a combination of facts, operators, and values that determine whether the rule is a success or a failure. The simplest form of a condition consists of a fact, an operator, and a value. When the engine runs, the operator is used to compare the fact against the value. Sometimes facts require additional input to perform calculations. For this, the params property is passed as an argument to the fact handler. params essentially functions as fact arguments, enabling fact handlers to be more generic and reusable.",
+            "default": {
+                "fact": "my-fact",
+                "operator": "lessThanInclusive",
+                "value": 1
+            },
+            "examples": [
+                {
+                    "fact": "gameDuration",
+                    "operator": "equal",
+                    "value": 40.0
+                },
+                {
+                    "value": 5.0,
+                    "fact": "personalFoulCount",
+                    "operator": "greaterThanInclusive"
+                },
+                {
+                    "fact": "product-price",
+                    "operator": "greaterThan",
+                    "path": "$.price",
+                    "value": 100.0,
+                    "params": {
+                        "productId": "widget"
+                    }
+                }
+            ],
+            "required": [
+                "path",
+                "operator",
+                "value"
+            ],
+            "properties": {
+                "operator": {
+                    "type": "string",
+                    "anyOf": [
+                        {
+                            "const": "equal",
+                            "title": "fact must equal value"
+                        },
+                        {
+                            "const": "notEqual",
+                            "title": "fact must not equal value"
+                        },
+                        {
+                            "const": "these",
+                            "title": "erators use strict equality (===) and inequality (!==)"
+                        },
+                        {
+                            "const": "lessThan",
+                            "title": "fact must be less than value"
+                        },
+                        {
+                            "const": "lessThanInclusiv",
+                            "title": "fact must be less than or equal to value"
+                        },
+                        {
+                            "const": "greaterThan",
+                            "title": "fact must be greater than value"
+                        },
+                        {
+                            "const": "greaterThanInclusiv",
+                            "title": "fact must be greater than or equal to value"
+                        },
+                        {
+                            "const": "in",
+                            "title": "fact must be included in value (an array)"
+                        },
+                        {
+                            "const": "notIn",
+                            "title": "fact must not be included in value (an array)"
+                        },
+                        {
+                            "const": "contains",
+                            "title": "fact (an array) must include value"
+                        },
+                        {
+                            "const": "doesNotContain",
+                            "title": "fact (an array) must not include value"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "title": "Operator",
+                    "description": "The operator compares the value returned by the fact to what is stored in the value property. If the result is truthy, the condition passes.",
+                    "default": "",
+                    "examples": [
+                        "equal"
+                    ]
+                },
+                "value": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "object"
+                        },
+                        {
+                            "type": "array"
+                        },
+                        {
+                            "type": "number"
+                        },
+                        {
+                            "type": "boolean"
+                        }
+                    ],
+                    "title": "Value",
+                    "description": "The value the fact should be compared to.",
+                    "default": 0,
+                    "examples": [
+                        40
+                    ]
+                },
+                "path": {
+                    "type": "string",
+                    "title": "Path",
+                    "description": "For more complex data structures, writing a separate fact handler for each object property quickly becomes verbose and unwieldy. To address this, a path property may be provided to traverse fact data using json-path syntax. Json-path support is provided by jsonpath-plus",
+                    "default": "",
+                    "examples": [
+                        "$.price"
+                    ]
+                }
+            }
+        }
+    }
+}

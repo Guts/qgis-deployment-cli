@@ -57,6 +57,14 @@
             "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
             "type": "string"
         },
+        "rules": {
+            "description": "Plugins installed with the profile.",
+            "title": "QGIS Plugins",
+            "type": "array",
+            "items": {
+                "$ref": "rules.json"
+            }
+        },
         "splash": {
             "description": "Relative path to the splash image.",
             "type": "string"
