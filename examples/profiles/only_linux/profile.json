@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+  "name": "QDT Only Linux",
+  "folder_name": "qdt_only_linux",
+  "description": "Demonstrating a QDT profile that's deployed only on Linux.",
+  "author": "Julien Moura",
+  "email": "infos+qdt@oslandia.com",
+  "qgisMinimumVersion": "3.34.0",
+  "qgisMaximumVersion": "3.99.10",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "name": "Environment",
+      "description": "Profile is configured to run only on Linux.",
+      "conditions": {
+        "all": [
+          {
+            "path": "$.environment.operating_system_code",
+            "value": "linux",
+            "operator": "equal"
+          }
+        ]
+      }
+    }
+  ]
+}
