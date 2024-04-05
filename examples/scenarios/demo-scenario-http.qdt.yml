@@ -12,6 +12,11 @@ settings:
 
 # Deployment workflow, step by step
 steps:
+  - name: Find installed QGIS
+    uses: qgis-installation-finder
+    with:
+      version_priority:
+        - "3.36"
   - name: Download profiles from remote git repository
     uses: qprofiles-downloader
     with:

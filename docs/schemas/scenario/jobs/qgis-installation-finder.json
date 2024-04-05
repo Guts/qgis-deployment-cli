@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Guts/qgis-deployment-cli/raw/main/docs/schemas/scenario/jobs/qgis-installation-finder.json",
+  "description": "Job in charge of findind installed QGIS version on computer.",
+  "title": "QGIS installation finder",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "version_priority": {
+        "default": "",
+        "description": "Define QGIS version priority for search.",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "if_not_found": {
+        "default": "warning",
+        "description": "Behavior if no QGIS installation found.",
+        "enum": [
+          "warning",
+          "error"
+        ],
+        "type": "string"
+      }
+    }
+  }
+}

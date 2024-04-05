@@ -105,3 +105,12 @@ class SplashScreenBadDimensions(Exception):
             " dimensions recomended by QGIS for splash screen: 600x300."
         )
         super().__init__(self.message)
+
+
+class QgisInstallNotFound(Exception):
+    """When no QGIS installation are found."""
+
+    def __init__(self):
+        """Initialization method."""
+        self.message = "No QGIS installation found."
+        super().__init__(self.message)

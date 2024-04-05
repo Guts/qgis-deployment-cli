@@ -7,6 +7,7 @@ maxdepth: 1
 glob:
 ---
 environment_variables.md
+qgis_installation_finder.md
 plugins_downloader.md
 plugins_synchronizer.md
 profiles_downloader.md
