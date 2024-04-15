@@ -15,6 +15,7 @@
 
 # Standard library
 import argparse
+import re
 import sys
 from os import W_OK, access, path
 from pathlib import Path
@@ -28,13 +29,18 @@ from qgis_deployment_toolbelt import __about__
 # ########### MAIN #################
 # ##################################
 
+# Define a regular expression pattern to match the version string
+pattern = re.compile(r"(\d+)\.(\d+)\.(\d+)")
+semver = pattern.match(__about__.__version__).groups()
+
+
 REPLACEMENT_VALUES = {
     "[AUTHOR]": __about__.__author__,
     "[COPYRIGHT]": __about__.__copyright__,
     "[DESCRIPTION]": __about__.__summary__,
     "[EXECUTABLE_NAME]": __about__.__executable_name__,
     "[TITLE]": __about__.__title__,
-    "[VERSION_INFO_TUPLE]": "({},{},{},0)".format(*__about__.__version_info__),
+    "[VERSION_INFO_TUPLE]": "({},{},{},0)".format(*semver),
     "[VERSION_SEMVER]": __about__.__version__,
 }
 
