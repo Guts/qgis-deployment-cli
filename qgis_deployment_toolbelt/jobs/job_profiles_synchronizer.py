@@ -18,17 +18,9 @@ from collections.abc import Iterable
 from pathlib import Path
 from shutil import copy2, copytree
 
-# 3rd party
-from python_rule_engine import RuleEngine
-
 # package
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
-from qgis_deployment_toolbelt.utils.computer_environment import (
-    date_dict,
-    environment_dict,
-    user_dict,
-)
 
 # #############################################################################
 # ########## Globals ###############
@@ -117,61 +109,6 @@ class JobProfilesSynchronizer(GenericJob):
         )
 
         logger.debug(f"Job {self.ID} ran successfully.")
-
-    def filter_profiles_on_rules(
-        self, li_downloaded_profiles: Iterable[QdtProfile]
-    ) -> tuple[list[QdtProfile], list[QdtProfile]]:
-        """Evaluate profile regarding to its deployment rules.
-
-        Args:
-            li_downloaded_profiles (Iterable[QdtProfile]): input list of QDT profiles
-
-        Returns:
-            tuple[list[QdtProfile], list[QdtProfile]]: tuple of profiles that matched
-            and those which did not match their deployment rules
-        """
-        li_profiles_matched = []
-        li_profiles_unmatched = []
-
-        context_object = {
-            "date": date_dict(),
-            "environment": environment_dict(),
-            "user": user_dict(),
-        }
-        for profile in li_downloaded_profiles:
-            if profile.rules is None:
-                logger.debug(f"No rules to apply to {profile.name}")
-                li_profiles_matched.append(profile)
-                continue
-
-            logger.debug(
-                f"Checking that profile '{profile.name}' matches deployment conditions."
-                f"{len(profile.rules)} rules found."
-            )
-            try:
-                engine = RuleEngine(rules=profile.rules)
-                results = engine.evaluate(obj=context_object)
-                if len(results) == len(profile.rules):
-                    logger.debug(
-                        f"Profile '{profile.name}' matches {len(profile.rules)} "
-                        "deployment rule(s)."
-                    )
-                    li_profiles_matched.append(profile)
-                else:
-                    logger.info(
-                        f"Profile '{profile.name}' does not match the deployment "
-                        f"conditions: {len(results)}/{len(profile.rules)} rule(s) "
-                        "matched."
-                    )
-                    li_profiles_unmatched.append(profile)
-
-            except Exception as err:
-                logger.error(
-                    f"Error occurred parsing rules of profile '{profile.name}'. "
-                    f"Trace: {err}"
-                )
-
-        return li_profiles_matched, li_profiles_unmatched
 
     def compare_downloaded_with_installed_profiles(
         self, li_downloaded_profiles: Iterable[QdtProfile]

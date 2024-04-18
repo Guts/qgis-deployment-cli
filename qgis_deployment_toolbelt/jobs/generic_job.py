@@ -13,8 +13,12 @@
 
 # Standard library
 import logging
+from collections.abc import Iterable
 from os import getenv
 from pathlib import Path
+
+# 3rd party
+from python_rule_engine import RuleEngine
 
 # package
 from qgis_deployment_toolbelt.constants import (
@@ -27,6 +31,7 @@ from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadValueType,
 )
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.computer_environment import environment_dict
 
 # #############################################################################
 # ########## Globals ###############
@@ -140,6 +145,57 @@ class GenericJob:
         if not len(qgis_profiles_folder):
             logger.error("No QGIS profile found in the downloaded folder.")
             return None
+
+    def filter_profiles_on_rules(
+        self, li_downloaded_profiles: Iterable[QdtProfile]
+    ) -> tuple[list[QdtProfile], list[QdtProfile]]:
+        """Evaluate profile regarding to its deployment rules.
+
+        Args:
+            li_downloaded_profiles (Iterable[QdtProfile]): input list of QDT profiles
+
+        Returns:
+            tuple[list[QdtProfile], list[QdtProfile]]: tuple of profiles that matched
+            and those which did not match their deployment rules
+        """
+        li_profiles_matched = []
+        li_profiles_unmatched = []
+
+        context_object = {"environment": environment_dict()}
+        for profile in li_downloaded_profiles:
+            if profile.rules is None:
+                logger.debug(f"No rules to apply to {profile.name}")
+                li_profiles_matched.append(profile)
+                continue
+
+            logger.debug(
+                f"Checking that profile '{profile.name}' matches deployment conditions."
+                f"{len(profile.rules)} rules found."
+            )
+            try:
+                engine = RuleEngine(rules=profile.rules)
+                results = engine.evaluate(obj=context_object)
+                if len(results) == len(profile.rules):
+                    logger.debug(
+                        f"Profile '{profile.name}' matches {len(profile.rules)} "
+                        "deployment rule(s)."
+                    )
+                    li_profiles_matched.append(profile)
+                else:
+                    logger.info(
+                        f"Profile '{profile.name}' does not match the deployment "
+                        f"conditions: {len(results)}/{len(profile.rules)} rule(s) "
+                        "matched."
+                    )
+                    li_profiles_unmatched.append(profile)
+
+            except Exception as err:
+                logger.error(
+                    f"Error occurred parsing rules of profile '{profile.name}'. "
+                    f"Trace: {err}"
+                )
+
+        return li_profiles_matched, li_profiles_unmatched
 
     def validate_options(self, options: dict[dict]) -> dict[dict]:
         """Validate options.
