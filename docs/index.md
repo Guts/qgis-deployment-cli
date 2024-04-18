@@ -108,6 +108,15 @@ guides/*
 
 ```{toctree}
 ---
+caption: Reference
+glob:
+maxdepth: 1
+---
+reference/*
+```
+
+```{toctree}
+---
 caption: Miscellaneous
 maxdepth: 1
 ---

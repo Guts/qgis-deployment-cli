@@ -36,3 +36,12 @@ As QDT developer, you might want to launch QGIS with this profile to edit or che
 ```sh
 qgis --profile "Viewer Mode" --profiles-path examples/
 ```
+
+----
+
+## Only Linux
+
+Just an empty profile to demonstrate that you can condition the profile deployment to rules. So:
+
+- if you are running on Linux, you should have a profile called `QDT Only Linux`
+- if you are running on Windows, you should not have it!

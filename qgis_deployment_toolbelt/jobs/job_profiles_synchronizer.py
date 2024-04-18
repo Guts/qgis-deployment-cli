@@ -18,9 +18,13 @@ from collections.abc import Iterable
 from pathlib import Path
 from shutil import copy2, copytree
 
+# 3rd party
+from python_rule_engine import RuleEngine
+
 # package
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.computer_environment import environment_dict
 
 # #############################################################################
 # ########## Globals ###############
@@ -88,12 +92,78 @@ class JobProfilesSynchronizer(GenericJob):
             f"{', '.join(self.PROFILES_NAMES_DOWNLOADED)}"
         )
 
+        # filter out profiles that do not match the rules
+        profiles_matched, profiles_unmatched = self.filter_profiles_on_rules(
+            li_downloaded_profiles=profiles_folders
+        )
+        if not len(profiles_matched):
+            logger.warning(
+                "None of the downloaded profiles meet the deployment requirements."
+            )
+            return
+
+        logger.info(
+            f"Of the {len(profiles_folders)} profiles downloaded, "
+            f"{len(profiles_unmatched)} do not meet the conditions for deployment."
+        )
+
         # copy profiles to the QGIS 3
         self.sync_installed_profiles_from_downloaded_profiles(
-            downloaded_profiles=profiles_folders
+            downloaded_profiles=profiles_matched
         )
 
         logger.debug(f"Job {self.ID} ran successfully.")
+
+    def filter_profiles_on_rules(
+        self, li_downloaded_profiles: Iterable[QdtProfile]
+    ) -> tuple[list[QdtProfile], list[QdtProfile]]:
+        """Evaluate profile regarding to its deployment rules.
+
+        Args:
+            li_downloaded_profiles (Iterable[QdtProfile]): input list of QDT profiles
+
+        Returns:
+            tuple[list[QdtProfile], list[QdtProfile]]: tuple of profiles that matched
+            and those which did not match their deployment rules
+        """
+        li_profiles_matched = []
+        li_profiles_unmatched = []
+
+        context_object = {"environment": environment_dict()}
+        for profile in li_downloaded_profiles:
+            if profile.rules is None:
+                logger.debug(f"No rules to apply to {profile.name}")
+                li_profiles_matched.append(profile)
+                continue
+
+            logger.debug(
+                f"Checking that profile '{profile.name}' matches deployment conditions."
+                f"{len(profile.rules)} rules found."
+            )
+            try:
+                engine = RuleEngine(rules=profile.rules)
+                results = engine.evaluate(obj=context_object)
+                if len(results) == len(profile.rules):
+                    logger.debug(
+                        f"Profile '{profile.name}' matches {len(profile.rules)} "
+                        "deployment rule(s)."
+                    )
+                    li_profiles_matched.append(profile)
+                else:
+                    logger.info(
+                        f"Profile '{profile.name}' does not match the deployment "
+                        f"conditions: {len(results)}/{len(profile.rules)} rule(s) "
+                        "matched."
+                    )
+                    li_profiles_unmatched.append(profile)
+
+            except Exception as err:
+                logger.error(
+                    f"Error occurred parsing rules of profile '{profile.name}'. "
+                    f"Trace: {err}"
+                )
+
+        return li_profiles_matched, li_profiles_unmatched
 
     def compare_downloaded_with_installed_profiles(
         self, li_downloaded_profiles: Iterable[QdtProfile]
@@ -158,7 +228,7 @@ class JobProfilesSynchronizer(GenericJob):
         return li_profiles_outdated, li_profiles_different, li_profiles_equal
 
     def sync_installed_profiles_from_downloaded_profiles(
-        self, downloaded_profiles: tuple[QdtProfile]
+        self, downloaded_profiles: Iterable[QdtProfile]
     ) -> None:
         """Copy downloaded profiles to QGIS profiles folder. If the QGIS profiles folder
             doesn't exist, it will be created and every downloaded profile will be

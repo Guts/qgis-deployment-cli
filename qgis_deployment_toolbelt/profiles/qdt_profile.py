@@ -69,6 +69,7 @@ class QdtProfile:
         plugins: list | None = None,
         qgis_maximum_version: str | None = None,
         qgis_minimum_version: str | None = None,
+        rules: list[dict] | None = None,
         splash: str | None = None,
         version: str | None = None,
         **kwargs,
@@ -99,6 +100,7 @@ class QdtProfile:
         self._plugins = None
         self._qgis_maximum_version = None
         self._qgis_minimum_version = None
+        self._rules = None
         self._version = None
 
         # if values have been passed, so use them as objects attributes.
@@ -125,6 +127,8 @@ class QdtProfile:
             self._qgis_maximum_version = qgis_maximum_version
         if qgis_minimum_version:
             self._qgis_minimum_version = qgis_minimum_version
+        if rules:
+            self._rules = rules
         if splash:
             self._splash = splash
         if version:
@@ -213,7 +217,7 @@ class QdtProfile:
         return self.loaded_from_json
 
     @property
-    def icon(self) -> str:
+    def icon(self) -> str | None:
         """Returns the icon as specified into the original profile.json.
 
         :return str: profile icon value
@@ -239,7 +243,7 @@ class QdtProfile:
         return self._json_ref_path.resolve()
 
     @property
-    def name(self) -> str:
+    def name(self) -> str | None:
         """Returns the profile's name. If not set, the folder name is used.
 
         Returns:
@@ -275,7 +279,16 @@ class QdtProfile:
             return []
 
     @property
-    def splash(self) -> str | Path:
+    def rules(self) -> list[dict] | None:
+        """Returns the rules associated with the profile.
+
+        Returns:
+            list[rules]: list of rules
+        """
+        return self._rules
+
+    @property
+    def splash(self) -> str | Path | None:
         """Returns the profile splash image as path if can be resolved or as string.
 
         Returns:
@@ -291,7 +304,7 @@ class QdtProfile:
             return self._splash
 
     @property
-    def version(self) -> str:
+    def version(self) -> str | None:
         """Returns the profile version as string.
 
         Returns:
@@ -299,7 +312,7 @@ class QdtProfile:
         """
         return self._version
 
-    def is_older_than(self, version_to_compare: str | QdtProfile) -> bool:
+    def is_older_than(self, version_to_compare: str | QdtProfile) -> bool | None:
         """Determine if the actual object version is older than the given version to
             compare.
 
