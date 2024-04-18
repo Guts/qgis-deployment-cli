@@ -11,9 +11,11 @@
 # ########## Libraries #############
 # ##################################
 
-# Standard library
 import logging
 import platform
+
+# Standard library
+from datetime import date
 from sys import platform as opersys
 
 # #############################################################################
@@ -27,6 +29,22 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Functions #############
 # ##################################
+
+
+def datetime_dict() -> dict:
+    """Returns a context dictionary with date informations that can be used in QDT
+    various places: rules...
+
+    Returns:
+        dict: dict with current date informations
+    """
+    today = date.today()
+    return {
+        "current_day": today.day,
+        "current_weekday": today.weekday(),  # monday = 0, sunday = 6
+        "current_month": today.month,
+        "current_year": today.year,
+    }
 
 
 def environment_dict() -> dict:
