@@ -132,7 +132,7 @@ class JobProfilesSynchronizer(GenericJob):
         li_profiles_matched = []
         li_profiles_unmatched = []
 
-        context_object = {"date": datetime_dict, "environment": environment_dict()}
+        context_object = {"date": datetime_dict(), "environment": environment_dict()}
         for profile in li_downloaded_profiles:
             if profile.rules is None:
                 logger.debug(f"No rules to apply to {profile.name}")
