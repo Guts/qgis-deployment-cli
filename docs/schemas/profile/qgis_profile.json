@@ -58,7 +58,7 @@
             "type": "string"
         },
         "rules": {
-            "description": "Plugins installed with the profile.",
+            "description": "Logical rules based on contextual elements that condition profile deployment.",
             "title": "QGIS Plugins",
             "type": "array",
             "items": {
