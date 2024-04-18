@@ -138,10 +138,16 @@ class JobSplashScreenManager(GenericJob):
 
                 # now, splash screen image should be at {profile_dir}/images/splash.png
                 if not installed_splash_screen_filepath.is_file():
-                    logger.debug(
-                        "No splash screen found or defined for profile: "
-                        f"{profile_installed.name} ({profile_installed.path_in_qgis})"
-                    )
+                    if isinstance(profile_installed, QdtProfile):
+                        logger.debug(
+                            "No splash screen found or defined for profile: "
+                            f"{profile_installed.name} ({profile_installed.path_in_qgis})"
+                        )
+                    else:
+                        logger.debug(
+                            "No splash screen found or defined for profile: "
+                            f"{profile_downloaded.folder} ({profile_downloaded.path_in_qgis})"
+                        )
                     continue
 
                 # check image size to fit QGIS restrictions
