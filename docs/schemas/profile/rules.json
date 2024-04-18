@@ -50,7 +50,7 @@
         "name": {
             "$id": "#/properties/name",
             "default": {},
-            "description": "A way of naming your rules, allowing them to be easily identifiable in Rule Results. This is usually of type String, but could also be Object, Array, or Number. Note that the name need not be unique, and that it has no impact on execution of the rule.",
+            "description": "A way of naming your rules, allowing them to be easily identifiable in Rule Results. This is usually of type String, but could also be Object, Array, or Number. Note that the name should be unique but it's not mandatory and that it has no impact on execution of the rule.",
             "examples": [
                 "My Rule Name"
             ],
@@ -79,11 +79,6 @@
             "type": "object",
             "title": "Condition",
             "description": "Rule conditions are a combination of facts, operators, and values that determine whether the rule is a success or a failure. The simplest form of a condition consists of a fact, an operator, and a value. When the engine runs, the operator is used to compare the fact against the value. Sometimes facts require additional input to perform calculations. For this, the params property is passed as an argument to the fact handler. params essentially functions as fact arguments, enabling fact handlers to be more generic and reusable.",
-            "default": {
-                "fact": "my-fact",
-                "operator": "lessThanInclusive",
-                "value": 1
-            },
             "examples": [
                 {
                     "fact": "gameDuration",
@@ -93,11 +88,11 @@
                 {
                     "value": 5.0,
                     "fact": "personalFoulCount",
-                    "operator": "greaterThanInclusive"
+                    "operator": "greater_than_inclusive"
                 },
                 {
                     "fact": "product-price",
-                    "operator": "greaterThan",
+                    "operator": "greater_than",
                     "path": "$.price",
                     "value": 100.0,
                     "params": {
@@ -112,6 +107,7 @@
             ],
             "properties": {
                 "operator": {
+                    "required": true,
                     "type": "string",
                     "anyOf": [
                         {
@@ -119,35 +115,31 @@
                             "title": "fact must equal value"
                         },
                         {
-                            "const": "notEqual",
+                            "const": "not_equal",
                             "title": "fact must not equal value"
                         },
                         {
-                            "const": "these",
-                            "title": "erators use strict equality (===) and inequality (!==)"
-                        },
-                        {
-                            "const": "lessThan",
-                            "title": "fact must be less than value"
-                        },
-                        {
-                            "const": "lessThanInclusiv",
-                            "title": "fact must be less than or equal to value"
-                        },
-                        {
-                            "const": "greaterThan",
+                            "const": "greater_than",
                             "title": "fact must be greater than value"
                         },
                         {
-                            "const": "greaterThanInclusiv",
+                            "const": "greater_than_inclusive",
                             "title": "fact must be greater than or equal to value"
+                        },
+                        {
+                            "const": "less_than",
+                            "title": "fact must be less than value"
+                        },
+                        {
+                            "const": "less_than_inclusive",
+                            "title": "fact must be less than or equal to value"
                         },
                         {
                             "const": "in",
                             "title": "fact must be included in value (an array)"
                         },
                         {
-                            "const": "notIn",
+                            "const": "not_in",
                             "title": "fact must not be included in value (an array)"
                         },
                         {
@@ -155,11 +147,8 @@
                             "title": "fact (an array) must include value"
                         },
                         {
-                            "const": "doesNotContain",
+                            "const": "not_contains",
                             "title": "fact (an array) must not include value"
-                        },
-                        {
-                            "type": "string"
                         }
                     ],
                     "title": "Operator",
@@ -197,11 +186,16 @@
                 "path": {
                     "type": "string",
                     "title": "Path",
-                    "description": "For more complex data structures, writing a separate fact handler for each object property quickly becomes verbose and unwieldy. To address this, a path property may be provided to traverse fact data using json-path syntax. Json-path support is provided by jsonpath-plus",
+                    "description": "For more complex data structures, writing a separate fact handler for each object property quickly becomes verbose and unwieldy. To address this, a path property may be provided to traverse fact data using json-path syntax. Json-path support is provided by jsonpath-ng.",
                     "default": "",
                     "examples": [
                         "$.price"
                     ]
+                },
+                "params": {
+                    "type": "array",
+                    "title": "Parameters",
+                    "description": "A dict that can provide the operator more information about how to process the object."
                 }
             }
         }
