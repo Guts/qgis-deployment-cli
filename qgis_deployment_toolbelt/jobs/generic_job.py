@@ -14,6 +14,7 @@
 # Standard library
 import logging
 from collections.abc import Iterable
+from functools import lru_cache
 from os import getenv
 from pathlib import Path
 
@@ -146,13 +147,14 @@ class GenericJob:
             logger.error("No QGIS profile found in the downloaded folder.")
             return None
 
+    @lru_cache(maxsize=1024)
     def filter_profiles_on_rules(
-        self, li_downloaded_profiles: Iterable[QdtProfile]
+        self, li_qdt_profiles: Iterable[QdtProfile]
     ) -> tuple[list[QdtProfile], list[QdtProfile]]:
         """Evaluate profile regarding to its deployment rules.
 
         Args:
-            li_downloaded_profiles (Iterable[QdtProfile]): input list of QDT profiles
+            li_qdt_profiles (Iterable[QdtProfile]): input list of QDT profiles
 
         Returns:
             tuple[list[QdtProfile], list[QdtProfile]]: tuple of profiles that matched
@@ -162,7 +164,7 @@ class GenericJob:
         li_profiles_unmatched = []
 
         context_object = {"environment": environment_dict()}
-        for profile in li_downloaded_profiles:
+        for profile in li_qdt_profiles:
             if profile.rules is None:
                 logger.debug(f"No rules to apply to {profile.name}")
                 li_profiles_matched.append(profile)

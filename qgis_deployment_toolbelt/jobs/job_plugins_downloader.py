@@ -17,6 +17,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from shutil import copy2
 
+from git import Optional
+
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
@@ -79,7 +81,7 @@ class JobPluginsDownloader(GenericJob):
         qdt_referenced_plugins = self.list_referenced_plugins(
             parent_folder=self.qdt_downloaded_repositories
         )
-        if not len(qdt_referenced_plugins):
+        if qdt_referenced_plugins is None or not len(qdt_referenced_plugins):
             logger.info(
                 f"No plugin found in profile.json files within {self.qdt_working_folder}"
             )
@@ -276,7 +278,9 @@ class JobPluginsDownloader(GenericJob):
 
         return downloaded_plugins, failed_plugins
 
-    def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin]:
+    def list_referenced_plugins(
+        self, parent_folder: Path
+    ) -> Optional[list[QgisPlugin]]:
         """Return a list of plugins referenced in profile.json files found within a \
             parent folder and sorted by unique id with version.
 
@@ -288,6 +292,27 @@ class JobPluginsDownloader(GenericJob):
         """
         unique_profiles_identifiers: list = []
         all_profiles: list[QgisPlugin] = []
+
+        # check of there are some profiles folders within the downloaded folder
+        profiles_folders = self.list_downloaded_profiles()
+        if profiles_folders is None:
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return
+
+        # filter out profiles that do not match the rules
+        profiles_matched, profiles_unmatched = self.filter_profiles_on_rules(
+            li_downloaded_profiles=self.list_downloaded_profiles()
+        )
+        if not len(profiles_matched):
+            logger.debug(
+                "None of the downloaded profiles meet the deployment requirements."
+            )
+            return
+
+        logger.info(
+            f"Of the {len(self.list_downloaded_profiles())} profiles downloaded, "
+            f"{len(profiles_unmatched)} do not meet the conditions for deployment."
+        )
 
         profile_json_counter: int = 0
         for profile_json in parent_folder.glob("**/*/profile.json"):

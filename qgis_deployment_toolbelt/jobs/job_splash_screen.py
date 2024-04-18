@@ -73,12 +73,21 @@ class JobSplashScreenManager(GenericJob):
         """Execute job logic."""
         # check of there are some profiles folders within the downloaded folder
         downloaded_profiles = self.list_downloaded_profiles()
-        if downloaded_profiles is None or not len(downloaded_profiles):
+
+        # filter out profiles that do not match the rules
+        profiles_matched, profiles_unmatched = self.filter_profiles_on_rules(
+            li_downloaded_profiles=downloaded_profiles
+        )
+        if not len(profiles_matched):
             logger.warning(
-                f"Job {self.ID} ran successfully but that's because no QGIS profile has "
-                "been  found in the QDT downloaded folder. Was the expected behavior?"
+                "None of the downloaded profiles meet the deployment requirements."
             )
             return
+
+        logger.info(
+            f"Of the {len(downloaded_profiles)} profiles downloaded, "
+            f"{len(profiles_unmatched)} do not meet the conditions for deployment."
+        )
 
         # iterate over downloaded profiles
         for profile_downloaded in downloaded_profiles:
