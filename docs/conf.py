@@ -18,7 +18,7 @@ from qgis_deployment_toolbelt.commands.upgrade import (
     replace_domain,
 )
 from qgis_deployment_toolbelt.utils.computer_environment import (
-    datetime_dict,
+    date_dict,
     environment_dict,
 )
 
@@ -220,7 +220,7 @@ sitemap_url_scheme = "{link}"
 def generate_rules_context(_):
     """Generate context object as JSON that it passed to rules engine to check profiles
     conditions."""
-    context_object = {"date": datetime_dict(), "environment": environment_dict()}
+    context_object = {"date": date_dict(), "environment": environment_dict()}
     with Path("./docs/reference/rules_context.json").open(
         mode="w", encoding="utf-8"
     ) as out_json:
