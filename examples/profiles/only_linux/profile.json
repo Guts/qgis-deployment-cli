@@ -18,6 +18,11 @@
             "path": "$.environment.operating_system_code",
             "value": "linux",
             "operator": "equal"
+          },
+          {
+            "path": "$.date.current_year",
+            "value": 2023,
+            "operator": "greater_than_inclusive"
           }
         ]
       }
