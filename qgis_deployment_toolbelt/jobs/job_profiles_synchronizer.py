@@ -25,7 +25,7 @@ from python_rule_engine import RuleEngine
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.utils.computer_environment import (
-    datetime_dict,
+    date_dict,
     environment_dict,
 )
 
@@ -132,7 +132,7 @@ class JobProfilesSynchronizer(GenericJob):
         li_profiles_matched = []
         li_profiles_unmatched = []
 
-        context_object = {"date": datetime_dict(), "environment": environment_dict()}
+        context_object = {"date": date_dict(), "environment": environment_dict()}
         for profile in li_downloaded_profiles:
             if profile.rules is None:
                 logger.debug(f"No rules to apply to {profile.name}")
