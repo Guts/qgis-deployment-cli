@@ -76,36 +76,21 @@ class JobProfilesSynchronizer(GenericJob):
     def run(self) -> None:
         """Execute job logic."""
         # check of there are some profiles folders within the downloaded folder
-        profiles_folders = self.list_downloaded_profiles()
-        if profiles_folders is None:
+        li_qdt_profiles_from_folder = self.list_downloaded_profiles()
+        if li_qdt_profiles_from_folder is None:
             logger.error("No QGIS profile found in the downloaded folder.")
             return
 
         # store downloaded profiles names
-        self.PROFILES_NAMES_DOWNLOADED = [d.name for d in profiles_folders]
+        self.PROFILES_NAMES_DOWNLOADED = [d.name for d in li_qdt_profiles_from_folder]
         logger.info(
             f"{len(self.PROFILES_NAMES_DOWNLOADED)} downloaded profiles: "
             f"{', '.join(self.PROFILES_NAMES_DOWNLOADED)}"
         )
 
-        # filter out profiles that do not match the rules
-        profiles_matched, profiles_unmatched = self.filter_profiles_on_rules(
-            li_downloaded_profiles=profiles_folders
-        )
-        if not len(profiles_matched):
-            logger.warning(
-                "None of the downloaded profiles meet the deployment requirements."
-            )
-            return
-
-        logger.info(
-            f"Of the {len(profiles_folders)} profiles downloaded, "
-            f"{len(profiles_unmatched)} do not meet the conditions for deployment."
-        )
-
         # copy profiles to the QGIS 3
         self.sync_installed_profiles_from_downloaded_profiles(
-            downloaded_profiles=profiles_matched
+            downloaded_profiles=li_qdt_profiles_from_folder
         )
 
         logger.debug(f"Job {self.ID} ran successfully.")

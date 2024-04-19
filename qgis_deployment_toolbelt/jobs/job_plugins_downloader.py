@@ -23,7 +23,6 @@ from git import Optional
 from qgis_deployment_toolbelt.__about__ import __title_clean__
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
-from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 
@@ -290,51 +289,25 @@ class JobPluginsDownloader(GenericJob):
         Returns:
             List[QgisPlugin]: list of plugins referenced within profile.json files
         """
-        unique_profiles_identifiers: list = []
+        unique_plugins_identifiers: list = []
         all_profiles: list[QgisPlugin] = []
 
         # check of there are some profiles folders within the downloaded folder
-        profiles_folders = self.list_downloaded_profiles()
-        if profiles_folders is None:
+        li_qdt_downloaded_profiles = self.list_downloaded_profiles()
+        if li_qdt_downloaded_profiles is None:
             logger.error("No QGIS profile found in the downloaded folder.")
             return
 
-        # filter out profiles that do not match the rules
-        profiles_matched, profiles_unmatched = self.filter_profiles_on_rules(
-            li_downloaded_profiles=self.list_downloaded_profiles()
-        )
-        if not len(profiles_matched):
-            logger.debug(
-                "None of the downloaded profiles meet the deployment requirements."
-            )
-            return
-
-        logger.info(
-            f"Of the {len(self.list_downloaded_profiles())} profiles downloaded, "
-            f"{len(profiles_unmatched)} do not meet the conditions for deployment."
-        )
-
-        profile_json_counter: int = 0
-        for profile_json in parent_folder.glob("**/*/profile.json"):
-            # increment counter
-            profile_json_counter += 1
-
-            # read profile.json
-            qdt_profile: QdtProfile = QdtProfile.from_json(
-                profile_json_path=profile_json,
-                profile_folder=profile_json.parent,
-            )
-
-            # parse profile plugins
+        for qdt_profile in li_qdt_downloaded_profiles:
             for plugin in qdt_profile.plugins:
-                if plugin.id_with_version not in unique_profiles_identifiers:
-                    unique_profiles_identifiers.append(plugin.id_with_version)
+                if plugin.id_with_version not in unique_plugins_identifiers:
+                    unique_plugins_identifiers.append(plugin.id_with_version)
                     all_profiles.append(plugin)
 
         logger.debug(
-            f"{len(unique_profiles_identifiers)} unique plugins referenced in "
-            f"{profile_json_counter} profiles.json in {parent_folder.resolve()}: "
-            f"{','.join(sorted(unique_profiles_identifiers))}"
+            f"{len(unique_plugins_identifiers)} unique plugins referenced in "
+            f"{len(li_qdt_downloaded_profiles)} profiles in {parent_folder.resolve()}: "
+            f"{','.join(sorted(unique_plugins_identifiers))}"
         )
         return sorted(all_profiles, key=lambda x: x.id_with_version)
 
