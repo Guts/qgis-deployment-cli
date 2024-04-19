@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Base of QDT jobs.
+    Rules context.
 
     Author: Julien Moura (https://github.com/guts)
 """
@@ -11,12 +11,18 @@
 # ########## Libraries #############
 # ##################################
 
+# Standard library
 import logging
 import platform
-
-# Standard library
 from datetime import date
+from getpass import getuser
 from sys import platform as opersys
+
+# package
+from qgis_deployment_toolbelt.utils.user_groups import (
+    get_user_domain_groups,
+    get_user_local_groups,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -73,4 +79,18 @@ def environment_dict() -> dict:
         "linux_distribution_version": linux_distribution_version,
         # custom Windows
         "windows_edition": platform.win32_edition(),
+    }
+
+
+def user_dict() -> dict:
+    """Returns a dictionary containing user informations that can be used in QDT Rules
+        context.
+
+    Returns:
+        dict: dict user information.
+    """
+    return {
+        "name": getuser(),
+        "groups_local": get_user_local_groups(),
+        "groups_domain": get_user_domain_groups(),
     }
