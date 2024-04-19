@@ -33,6 +33,19 @@ You can add rules to make the profile deployment conditional. In the following e
 }
 ```
 
+The rules engine is based on [Python Rule Engine](https://github.com/santalvarez/python-rule-engine/) project whom rules syntax belongs to [JSON Rules Engine](https://github.com/CacheControl/json-rules-engine).
+
+### Conditions
+
+Rules is a set of conditions that use logical operators to compare values with context (a set of facts) which is exposed as a JSON object. Here comes the context for a Linux environment:
+
+```{eval-rst}
+.. literalinclude:: ./rules_context.json
+  :language: json
+```
+
+----
+
 ## Model definition
 
 The project comes with a [JSON schema](https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json) describing the model of a profile:

@@ -5,6 +5,7 @@
 """
 
 # standard
+import json
 import os
 from datetime import datetime
 from pathlib import Path
@@ -15,6 +16,10 @@ from qgis_deployment_toolbelt.commands.upgrade import (
     get_download_url_for_os,
     get_latest_release,
     replace_domain,
+)
+from qgis_deployment_toolbelt.utils.computer_environment import (
+    date_dict,
+    environment_dict,
 )
 
 # -- Build environment -----------------------------------------------------
@@ -212,6 +217,16 @@ sitemap_url_scheme = "{link}"
 # -- Functions ------------------------------------------------------------------
 
 
+def generate_rules_context(_):
+    """Generate context object as JSON that it passed to rules engine to check profiles
+    conditions."""
+    context_object = {"date": date_dict(), "environment": environment_dict()}
+    with Path("./docs/reference/rules_context.json").open(
+        mode="w", encoding="utf-8"
+    ) as out_json:
+        json.dump(context_object, out_json, sort_keys=True, indent=4)
+
+
 def populate_download_page(_):
     """Generate download section included into installation page."""
     latest_release = get_latest_release(
@@ -264,5 +279,6 @@ def run_apidoc(_):
 
 # launch setup
 def setup(app):
+    app.connect("builder-inited", generate_rules_context)
     app.connect("builder-inited", run_apidoc)
     app.connect("builder-inited", populate_download_page)
