@@ -17,8 +17,6 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from shutil import copy2
 
-from git import Optional
-
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
@@ -277,9 +275,7 @@ class JobPluginsDownloader(GenericJob):
 
         return downloaded_plugins, failed_plugins
 
-    def list_referenced_plugins(
-        self, parent_folder: Path
-    ) -> Optional[list[QgisPlugin]]:
+    def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin] | None:
         """Return a list of plugins referenced in profile.json files found within a \
             parent folder and sorted by unique id with version.
 
