@@ -21,7 +21,7 @@ Complete it by installing tests requirements:
 python -m pip install -U -r requirements/testing.txt
 ```
 
-## Run
+## Run unit tests
 
 Simply run Pytest:
 
@@ -33,4 +33,27 @@ It's also possible to run an individual test:
 
 ```sh
 python -m unittest tests.test_qplugin_object.TestQgisPluginObject.test_profile_load_from_json_basic
+```
+
+## Try current QDT version
+
+Let's say you're working on a branch and you want to run QDT against your changes.
+Make the following changes to the `scenario.qdt.yml` to point to the current folder:
+
+```yaml
+[...]
+steps:
+  - name: Download profiles from remote git repository
+    uses: qprofiles-downloader
+    with:
+      source: file://.
+      protocol: git_local
+[...]
+```
+
+Every time you edit the profiles stored in the `examples` folder, don't forget to commit to your local history:
+
+```sh
+git commit examples/ -m "wip"
+QGIS_CUSTOM_CONFIG_PATH=tests/fixtures/tmp/ qdt -vv -s scenario.qdt.yml
 ```
