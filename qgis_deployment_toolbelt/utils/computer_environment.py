@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 # ##################################
 
 
-def datetime_dict() -> dict:
+def date_dict() -> dict:
     """Returns a context dictionary with date informations that can be used in QDT
     various places: rules...
 
