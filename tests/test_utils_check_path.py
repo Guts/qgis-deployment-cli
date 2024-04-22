@@ -104,18 +104,17 @@ class TestUtilsCheckPath(unittest.TestCase):
     def test_check_path_readable_ko_specific(self):
         """Test path is readable fail cases."""
         # temporary fixture
-        new_file = Path("tests/fixtures/tmp_file_no_readable.txt")
-        new_file.touch(mode=0o333, exist_ok=True)
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_check_path",
+            ignore_cleanup_errors=True,
+        ) as tmpdirname:
+            unreadable_file = Path(tmpdirname).joinpath("tmp_file_no_readable.txt")
+            unreadable_file.touch(mode=0o333, exist_ok=True)
 
-        # str not valid, an existing file but not readable
-        with self.assertRaises(IOError):
-            check_path_is_readable(input_path=new_file)
-
-        # no exception but False
-        self.assertFalse(check_path_is_readable(input_path=new_file, raise_error=False))
-
-        # temporary fixture
-        new_file.unlink(missing_ok=True)
+            # no exception but False
+            self.assertFalse(
+                check_path_is_readable(input_path=unreadable_file, raise_error=False)
+            )
 
     def test_check_path_writable_ok(self):
         """Test path is writable."""
@@ -131,25 +130,26 @@ class TestUtilsCheckPath(unittest.TestCase):
             check_path_exists(input_path=1000)
         self.assertFalse(check_path_is_writable(input_path=1000, raise_error=False))
 
-    @unittest.skipIf(
-        getenv("CI"), "Creating file on CI with specific rights is not working."
-    )
     def test_check_path_writable_ko_specific(self):
         """Test path is writable fail cases (specific)."""
-        # temporary fixture
-        not_writable_file = Path("tests/fixtures/tmp_file_no_writable.txt")
-        not_writable_file.touch(mode=0o400, exist_ok=True)
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_check_path",
+            ignore_cleanup_errors=True,
+        ) as tmpdirname:
+            unwritable_file = Path(tmpdirname).joinpath("tmp_file_no_writable.txt")
+            unwritable_file.touch(exist_ok=True)
+            unwritable_file.write_text("this content is the last to be written here")
 
-        # str not valid, an existing file but not writable
-        with self.assertRaises(IOError):
-            check_path_is_writable(input_path=not_writable_file)
+            chmod(unwritable_file, stat.S_IROTH)
 
-        # no exception but False
-        self.assertFalse(
-            check_path_is_writable(input_path=not_writable_file, raise_error=False)
-        )
+            # str not valid, an existing file but not writable
+            with self.assertRaises(IOError):
+                check_path_is_writable(input_path=unwritable_file)
 
-        not_writable_file.unlink()
+            # no exception but False
+            self.assertFalse(
+                check_path_is_writable(input_path=unwritable_file, raise_error=False)
+            )
 
     def test_check_path_meta_ok(self):
         """Test meta check path."""
