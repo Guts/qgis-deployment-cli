@@ -21,6 +21,7 @@ from pathlib import Path
 
 # 3rd party
 from dulwich.errors import NotGitRepository
+from git import Repo as GitPythonRepo
 from giturlparse import GitUrlParsed
 
 # package
@@ -38,14 +39,14 @@ class TestGitHandlerRemote(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Executed when module is loaded before any test."""
-        cls.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+        cls.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
 
     # -- TESTS ---------------------------------------------------------
     def test_initialization(self):
         """Test remote git repo identifier"""
         # OK
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
-        remote_git_handler = RemoteGitHandler(self.good_git_url)
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
+        remote_git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
         self.assertEqual(remote_git_handler.SOURCE_REPOSITORY_TYPE, "git_remote")
         self.assertTrue(remote_git_handler.is_valid_git_repository())
@@ -57,18 +58,27 @@ class TestGitHandlerRemote(unittest.TestCase):
 
     def test_is_local_git_repo(self):
         """Test local git repo identifier"""
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
-        git_handler = RemoteGitHandler(self.good_git_url)
+        good_git_url = "https://github.com/octocat/Hello-World"
+        git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
-        # OK
-        self.assertTrue(git_handler._is_local_path_git_repository(Path(".")))
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_check_path",
+            ignore_cleanup_errors=True,
+        ) as tmpdirname:
+            GitPythonRepo.clone_from(url=good_git_url, to_path=Path(tmpdirname))
+            # OK
+            self.assertTrue(
+                git_handler._is_local_path_git_repository(
+                    local_path=Path(tmpdirname), raise_error=False
+                )
+            )
         # KO
         self.assertFalse(git_handler._is_local_path_git_repository(Path("./tests")))
 
     def test_git_url_parsed(self):
         """Test git parsed URL"""
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
-        git_handler = RemoteGitHandler(self.good_git_url)
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
+        git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
         git_url_parsed = git_handler.url_parsed(self.good_git_url)
 
         # type
@@ -95,12 +105,12 @@ class TestGitHandlerRemote(unittest.TestCase):
         self.assertEqual("qgis", git_url_parsed.groups_path)
         self.assertEqual("Oslandia", git_url_parsed.owner)
         self.assertEqual("gitlab", git_url_parsed.platform)
-        self.assertEqual("profils_qgis_fr_2022", git_url_parsed.repo)
+        self.assertEqual("profils_qgis_fr", git_url_parsed.repo)
 
     def test_git_clone_remote_url(self):
         """Test git parsed URL."""
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
-        git_handler = RemoteGitHandler(self.good_git_url)
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
+        git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             local_dest = Path(tmpdirname) / "test_git_clone"
