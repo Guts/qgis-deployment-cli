@@ -45,7 +45,7 @@ class TestGitHandlerRemote(unittest.TestCase):
         """Test remote git repo identifier"""
         # OK
         self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
-        remote_git_handler = RemoteGitHandler(self.good_git_url)
+        remote_git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
         self.assertEqual(remote_git_handler.SOURCE_REPOSITORY_TYPE, "git_remote")
         self.assertTrue(remote_git_handler.is_valid_git_repository())
@@ -58,7 +58,7 @@ class TestGitHandlerRemote(unittest.TestCase):
     def test_is_local_git_repo(self):
         """Test local git repo identifier"""
         self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
-        git_handler = RemoteGitHandler(self.good_git_url)
+        git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
         # OK
         self.assertTrue(git_handler._is_local_path_git_repository(Path(".")))
@@ -68,7 +68,7 @@ class TestGitHandlerRemote(unittest.TestCase):
     def test_git_url_parsed(self):
         """Test git parsed URL"""
         self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
-        git_handler = RemoteGitHandler(self.good_git_url)
+        git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
         git_url_parsed = git_handler.url_parsed(self.good_git_url)
 
         # type
@@ -95,12 +95,12 @@ class TestGitHandlerRemote(unittest.TestCase):
         self.assertEqual("qgis", git_url_parsed.groups_path)
         self.assertEqual("Oslandia", git_url_parsed.owner)
         self.assertEqual("gitlab", git_url_parsed.platform)
-        self.assertEqual("profils_qgis_fr_2022", git_url_parsed.repo)
+        self.assertEqual("profils_qgis_fr", git_url_parsed.repo)
 
     def test_git_clone_remote_url(self):
         """Test git parsed URL."""
         self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
-        git_handler = RemoteGitHandler(self.good_git_url)
+        git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             local_dest = Path(tmpdirname) / "test_git_clone"
