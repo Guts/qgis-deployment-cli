@@ -21,6 +21,7 @@ from pathlib import Path
 
 # 3rd party
 from dulwich.errors import NotGitRepository
+from git import Repo as GitPythonRepo
 from giturlparse import GitUrlParsed
 
 # package
@@ -57,16 +58,20 @@ class TestGitHandlerRemote(unittest.TestCase):
 
     def test_is_local_git_repo(self):
         """Test local git repo identifier"""
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
+        good_git_url = "https://github.com/octocat/Hello-World"
         git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
-        # OK
-        print(Path(".").resolve())
-        self.assertTrue(
-            git_handler._is_local_path_git_repository(
-                local_path=Path("."), raise_error=False
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_check_path",
+            ignore_cleanup_errors=True,
+        ) as tmpdirname:
+            GitPythonRepo.clone_from(url=good_git_url, to_path=Path(tmpdirname))
+            # OK
+            self.assertTrue(
+                git_handler._is_local_path_git_repository(
+                    local_path=Path(tmpdirname), raise_error=False
+                )
             )
-        )
         # KO
         self.assertFalse(git_handler._is_local_path_git_repository(Path("./tests")))
 
