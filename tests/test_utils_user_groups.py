@@ -38,6 +38,7 @@ class TestUtilsUserGroups(unittest.TestCase):
         # for now, domain link is only supported on Windows
         if opersys != "win32":
             self.assertFalse(is_computer_attached_to_a_domain())
+            return
 
         # test different methods on Windows but for now, no domain mocked in tests
         # TODO: mock domain link
