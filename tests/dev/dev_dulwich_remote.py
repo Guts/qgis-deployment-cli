@@ -70,7 +70,7 @@ assert isinstance(remote_git_handler.SOURCE_REPOSITORY_PATH_OR_URL, str)
 
 remote_git_handler.download(destination_local_path=git_repository_local_dulwich)
 
-# good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+# good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
 # remote_git_handler = RemoteGitHandler(source_repository_url=good_git_url)
 
 # with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:

@@ -38,13 +38,13 @@ class TestGitHandlerRemote(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Executed when module is loaded before any test."""
-        cls.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+        cls.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
 
     # -- TESTS ---------------------------------------------------------
     def test_initialization(self):
         """Test remote git repo identifier"""
         # OK
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
         remote_git_handler = RemoteGitHandler(self.good_git_url)
 
         self.assertEqual(remote_git_handler.SOURCE_REPOSITORY_TYPE, "git_remote")
@@ -57,7 +57,7 @@ class TestGitHandlerRemote(unittest.TestCase):
 
     def test_is_local_git_repo(self):
         """Test local git repo identifier"""
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
         git_handler = RemoteGitHandler(self.good_git_url)
 
         # OK
@@ -67,7 +67,7 @@ class TestGitHandlerRemote(unittest.TestCase):
 
     def test_git_url_parsed(self):
         """Test git parsed URL"""
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
         git_handler = RemoteGitHandler(self.good_git_url)
         git_url_parsed = git_handler.url_parsed(self.good_git_url)
 
@@ -99,7 +99,7 @@ class TestGitHandlerRemote(unittest.TestCase):
 
     def test_git_clone_remote_url(self):
         """Test git parsed URL."""
-        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git"
+        self.good_git_url = "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git"
         git_handler = RemoteGitHandler(self.good_git_url)
 
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:

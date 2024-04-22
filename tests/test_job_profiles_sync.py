@@ -52,7 +52,7 @@ class TestJobProfilesSync(unittest.TestCase):
     #     # variables
     #     fake_config = {
     #         "action": "download",
-    #         "source": "https://gitlab.com/Oslandia/qgis/profils_qgis_fr_2022.git",
+    #         "source": "https://gitlab.com/Oslandia/qgis/profils_qgis_fr.git",
     #         "protocol": "git",
     #         "local_destination": "~/.cache/qgis-deployment-toolbelt/Oslandia/",
     #         "sync_mode": "overwrite",
