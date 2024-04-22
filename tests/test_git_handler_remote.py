@@ -61,7 +61,12 @@ class TestGitHandlerRemote(unittest.TestCase):
         git_handler = RemoteGitHandler(source_repository_url=self.good_git_url)
 
         # OK
-        self.assertTrue(git_handler._is_local_path_git_repository(Path(".")))
+        print(Path(".").resolve())
+        self.assertTrue(
+            git_handler._is_local_path_git_repository(
+                local_path=Path("."), raise_error=False
+            )
+        )
         # KO
         self.assertFalse(git_handler._is_local_path_git_repository(Path("./tests")))
 
