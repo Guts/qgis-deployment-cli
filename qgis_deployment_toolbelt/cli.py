@@ -25,7 +25,9 @@ from qgis_deployment_toolbelt.__about__ import (
     __uri_homepage__,
     __version__,
 )
-from qgis_deployment_toolbelt.commands import parser_main_deployment, parser_upgrade
+from qgis_deployment_toolbelt.commands.deployment import parser_main_deployment
+from qgis_deployment_toolbelt.commands.rules_context import parser_rules_context_export
+from qgis_deployment_toolbelt.commands.upgrade import parser_upgrade
 from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 
 # #############################################################################
@@ -165,6 +167,17 @@ def main(in_args: list[str] = None):
     )
     add_common_arguments(subcmd_deployment)
     parser_main_deployment(subcmd_deployment)
+
+    # Rules context
+    subcmd_rules_context = subparsers.add_parser(
+        "export-rules-context",
+        help="Export QDT rules context taking into account the local environment to "
+        "help rules writing.",
+        formatter_class=main_parser.formatter_class,
+        prog="rules-context-export",
+    )
+    add_common_arguments(subcmd_rules_context)
+    parser_rules_context_export(subcmd_rules_context)
 
     # Upgrader
     subcmd_upgrade = subparsers.add_parser(
