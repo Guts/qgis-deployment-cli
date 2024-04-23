@@ -171,10 +171,3 @@ def test_main_run_removing_splash(capsys):
 
         _, err = capsys.readouterr()
         assert err == ""
-
-
-# #############################################################################
-# ######## Standalone ##############
-# ##################################
-if __name__ == "__main__":
-    pass
