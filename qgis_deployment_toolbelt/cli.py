@@ -25,8 +25,10 @@ from qgis_deployment_toolbelt.__about__ import (
     __uri_homepage__,
     __version__,
 )
+from qgis_deployment_toolbelt.commands.cmd_rules_context import (
+    parser_rules_context_export,
+)
 from qgis_deployment_toolbelt.commands.deployment import parser_main_deployment
-from qgis_deployment_toolbelt.commands.rules_context import parser_rules_context_export
 from qgis_deployment_toolbelt.commands.upgrade import parser_upgrade
 from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 
