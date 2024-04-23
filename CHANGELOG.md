@@ -16,6 +16,34 @@ Unreleased
 
 -->
 
+## 0.34.0 - 2024-04-23
+
+Killer feature introduced: rules engine. Funded by [Métropole du Grand Lyon](https://www.grandlyon.com/).
+
+### Bugs fixes 🐛
+
+* fix(logs): unreachable profile-attributes in logs by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/486>
+
+### Features and enhancements 🎉
+
+* Feature: add rules engine by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/481>
+* Feature: add datetime to rules context by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/484>
+* Feature: retrieve win32 user groups by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/393>
+* feature(rules): add user name and groups to rules context by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/489>
+* tests(usergroups): add unit tests against user groups module and update tests by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/490>
+* Refacto: move profiles rules filter to generic class and use it systematically in jobs by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/487>
+* Refacto: move rules context into a structured object by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/491>
+* feature(cli): add command to export rules context in current environment by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/492>
+
+### Tooling 🔧
+
+* enhancement: improve reliability of version templater making sure that a SemVer compliant version number is passed by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/483>
+
+### Documentation 📖
+
+* Docs: add local test qdt by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/488>
+* Docs: add rules context dynamically by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/485>
+
 ## 0.33.0 - 2024-04-05
 
 ### Features and enhancements 🎉
@@ -300,7 +328,7 @@ Unreleased
 
 * @sigeal made their first contribution in <https://github.com/Guts/qgis-deployment-cli/pull/315>
 
-**Full Changelog**: <https://github.com/Guts/qgis-deployment-cli/compare/0.26.0...0.27.0>
+__Full Changelog__: <https://github.com/Guts/qgis-deployment-cli/compare/0.26.0...0.27.0>
 
 ## 0.26.0 - 2023-06-11
 
