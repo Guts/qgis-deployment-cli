@@ -21,7 +21,6 @@ from shutil import copy2
 from qgis_deployment_toolbelt.__about__ import __title_clean__
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
-from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 
@@ -79,7 +78,7 @@ class JobPluginsDownloader(GenericJob):
         qdt_referenced_plugins = self.list_referenced_plugins(
             parent_folder=self.qdt_downloaded_repositories
         )
-        if not len(qdt_referenced_plugins):
+        if qdt_referenced_plugins is None or not len(qdt_referenced_plugins):
             logger.info(
                 f"No plugin found in profile.json files within {self.qdt_working_folder}"
             )
@@ -276,7 +275,7 @@ class JobPluginsDownloader(GenericJob):
 
         return downloaded_plugins, failed_plugins
 
-    def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin]:
+    def list_referenced_plugins(self, parent_folder: Path) -> list[QgisPlugin] | None:
         """Return a list of plugins referenced in profile.json files found within a \
             parent folder and sorted by unique id with version.
 
@@ -286,30 +285,25 @@ class JobPluginsDownloader(GenericJob):
         Returns:
             List[QgisPlugin]: list of plugins referenced within profile.json files
         """
-        unique_profiles_identifiers: list = []
+        unique_plugins_identifiers: list = []
         all_profiles: list[QgisPlugin] = []
 
-        profile_json_counter: int = 0
-        for profile_json in parent_folder.glob("**/*/profile.json"):
-            # increment counter
-            profile_json_counter += 1
+        # check of there are some profiles folders within the downloaded folder
+        li_qdt_downloaded_profiles = self.list_downloaded_profiles()
+        if li_qdt_downloaded_profiles is None:
+            logger.error("No QGIS profile found in the downloaded folder.")
+            return
 
-            # read profile.json
-            qdt_profile: QdtProfile = QdtProfile.from_json(
-                profile_json_path=profile_json,
-                profile_folder=profile_json.parent,
-            )
-
-            # parse profile plugins
+        for qdt_profile in li_qdt_downloaded_profiles:
             for plugin in qdt_profile.plugins:
-                if plugin.id_with_version not in unique_profiles_identifiers:
-                    unique_profiles_identifiers.append(plugin.id_with_version)
+                if plugin.id_with_version not in unique_plugins_identifiers:
+                    unique_plugins_identifiers.append(plugin.id_with_version)
                     all_profiles.append(plugin)
 
         logger.debug(
-            f"{len(unique_profiles_identifiers)} unique plugins referenced in "
-            f"{profile_json_counter} profiles.json in {parent_folder.resolve()}: "
-            f"{','.join(sorted(unique_profiles_identifiers))}"
+            f"{len(unique_plugins_identifiers)} unique plugins referenced in "
+            f"{len(li_qdt_downloaded_profiles)} profiles in {parent_folder.resolve()}: "
+            f"{','.join(sorted(unique_plugins_identifiers))}"
         )
         return sorted(all_profiles, key=lambda x: x.id_with_version)
 

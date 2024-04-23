@@ -13,8 +13,12 @@
 
 # Standard library
 import logging
+from functools import lru_cache
 from os import getenv
 from pathlib import Path
+
+# 3rd party
+from python_rule_engine import RuleEngine
 
 # package
 from qgis_deployment_toolbelt.constants import (
@@ -27,6 +31,10 @@ from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadValueType,
 )
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
+from qgis_deployment_toolbelt.utils.computer_environment import (
+    date_dict,
+    environment_dict,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -104,7 +112,7 @@ class GenericJob:
 
     def filter_profiles_folder(
         self, start_parent_folder: Path
-    ) -> tuple[QdtProfile] | None:
+    ) -> tuple[QdtProfile, ...] | None:
         """Parse a folder structure to filter on QGIS profiles folders.
 
         Returns:
@@ -112,34 +120,89 @@ class GenericJob:
                 folder found
         """
         # first, try to get folders containing a profile.json
-        qgis_profiles_folder = [
+        li_qgis_qdt_profiles: list[QdtProfile] = [
             QdtProfile.from_json(profile_json_path=f, profile_folder=f.parent)
             for f in start_parent_folder.glob("**/profile.json")
         ]
-        if len(qgis_profiles_folder):
-            logger.debug(
-                f"{len(qgis_profiles_folder)} profiles found within {start_parent_folder}"
+
+        if not len(li_qgis_qdt_profiles):
+            logger.error(f"No QGIS profile found in {start_parent_folder}.")
+            return
+
+        logger.debug(
+            f"{len(li_qgis_qdt_profiles)} profiles found within {start_parent_folder}"
+        )
+
+        # filter out profiles that do not match the rules
+        profiles_matched, profiles_unmatched = self.filter_profiles_on_rules(
+            tup_qdt_profiles=tuple(li_qgis_qdt_profiles)
+        )
+        if not len(profiles_matched):
+            logger.warning(
+                f"None of the {len(li_qgis_qdt_profiles)} profiles meet the deployment "
+                "requirements."
             )
-            return tuple(qgis_profiles_folder)
+            return
 
-        # if empty, try to identify if a folder is a QGIS profile - but unsure
-        for d in start_parent_folder.glob("**"):
-            if (
-                d.is_dir()
-                and d.parent.name == "profiles"
-                and not d.name.startswith(".")
-            ):
-                qgis_profiles_folder.append(QdtProfile(folder=d, name=d.name))
+        if len(profiles_unmatched):
+            logger.info(
+                f"{len(profiles_unmatched)}/{len(li_qgis_qdt_profiles)} profiles "
+                f"do not meet the conditions for deployment."
+            )
 
-        if len(qgis_profiles_folder):
-            return tuple(qgis_profiles_folder)
+        return tuple(li_qgis_qdt_profiles)
 
-        # if still empty, raise a warning but returns every folder under a `profiles` folder
-        # TODO: try to identify if a folder is a QGIS profile with some approximate criteria
+    @lru_cache(maxsize=1024)
+    def filter_profiles_on_rules(
+        self, tup_qdt_profiles: tuple[QdtProfile]
+    ) -> tuple[list[QdtProfile], list[QdtProfile]]:
+        """Evaluate profile regarding to its deployment rules.
 
-        if not len(qgis_profiles_folder):
-            logger.error("No QGIS profile found in the downloaded folder.")
-            return None
+        Args:
+            tup_qdt_profiles (tuple[QdtProfile]): input tuple of QDT profiles
+
+        Returns:
+            tuple[list[QdtProfile], list[QdtProfile]]: tuple of profiles that matched
+            and those which did not match their deployment rules
+        """
+        li_profiles_matched = []
+        li_profiles_unmatched = []
+
+        context_object = {"date": date_dict(), "environment": environment_dict()}
+        for profile in tup_qdt_profiles:
+            if profile.rules is None:
+                logger.debug(f"No rules to apply to {profile.name}")
+                li_profiles_matched.append(profile)
+                continue
+
+            logger.debug(
+                f"Checking that profile '{profile.name}' matches deployment conditions."
+                f"{len(profile.rules)} rules found."
+            )
+            try:
+                engine = RuleEngine(rules=profile.rules)
+                results = engine.evaluate(obj=context_object)
+                if len(results) == len(profile.rules):
+                    logger.debug(
+                        f"Profile '{profile.name}' matches {len(profile.rules)} "
+                        "deployment rule(s)."
+                    )
+                    li_profiles_matched.append(profile)
+                else:
+                    logger.info(
+                        f"Profile '{profile.name}' does not match the deployment "
+                        f"conditions: {len(results)}/{len(profile.rules)} rule(s) "
+                        "matched."
+                    )
+                    li_profiles_unmatched.append(profile)
+
+            except Exception as err:
+                logger.error(
+                    f"Error occurred parsing rules of profile '{profile.name}'. "
+                    f"Trace: {err}"
+                )
+
+        return li_profiles_matched, li_profiles_unmatched
 
     def validate_options(self, options: dict[dict]) -> dict[dict]:
         """Validate options.

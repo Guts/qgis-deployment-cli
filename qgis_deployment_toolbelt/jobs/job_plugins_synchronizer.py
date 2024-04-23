@@ -93,20 +93,24 @@ class JobPluginsSynchronizer(GenericJob):
 
     def run(self) -> None:
         """Execute job logic."""
-
+        # local vars
         profile_plugins_to_create: list[tuple[QdtProfile, QgisPlugin, Path]] = []
         profile_plugins_to_restore = []
         profile_plugins_to_upgrade = []
 
-        # parse installed profiles
-        profiles_counter = 0
-        for profile_json in self.profiles_path.glob("**/*/profile.json"):
-            profiles_counter += 1
-            qdt_profile: QdtProfile = QdtProfile.from_json(
-                profile_json_path=profile_json,
-                profile_folder=profile_json.parent,
-            )
+        # get profiles, downloaded or installed
+        qdt_profiles = self.filter_profiles_folder(
+            start_parent_folder=self.profiles_path
+        )
 
+        if qdt_profiles is None:
+            logger.error(
+                f"No QGIS profile found in {self.options.get('profile_ref')} folder: "
+                f"{self.profiles_path}"
+            )
+            return
+
+        for qdt_profile in qdt_profiles:
             # determine folder
             if self.options.get("installed"):
                 profile_plugins_folder = qdt_profile.folder / "python/plugins"
@@ -184,7 +188,7 @@ class JobPluginsSynchronizer(GenericJob):
         ):
             logger.info(
                 "Every plugins are up to date in the "
-                f"{profiles_counter} profiles parsed."
+                f"{len(qdt_profiles)} profiles parsed."
             )
         else:
             self.install_plugin_into_profile(profile_plugins_to_create)
