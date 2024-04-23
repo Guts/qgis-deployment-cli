@@ -102,7 +102,7 @@ def test_main_run(capsys, option):
         with pytest.raises(SystemExit):
             cli.main(option)
 
-        out, err = capsys.readouterr()
+        _, err = capsys.readouterr()
         assert err == ""
 
         # checks
@@ -128,7 +128,7 @@ def test_main_run_as_admin(capsys):
             ]
         )
 
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
     assert err == ""
 
 
@@ -142,7 +142,7 @@ def test_main_run_unexising_jobs(capsys):
             ]
         )
 
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
     assert err == ""
 
 
@@ -151,7 +151,7 @@ def test_main_run_failed(capsys):
     with pytest.raises(FileExistsError):
         cli.main(["deploy", f"--scenario={str(sample_scenario_false.resolve())}"])
 
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
     assert err == ""
 
 
@@ -169,12 +169,5 @@ def test_main_run_removing_splash(capsys):
                 ]
             )
 
-        out, err = capsys.readouterr()
+        _, err = capsys.readouterr()
         assert err == ""
-
-
-# #############################################################################
-# ######## Standalone ##############
-# ##################################
-if __name__ == "__main__":
-    pass

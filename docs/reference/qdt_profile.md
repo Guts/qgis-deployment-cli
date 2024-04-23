@@ -2,6 +2,8 @@
 
 ## Rules
 
+> Added in version 0.34
+
 You can add rules to make the profile deployment conditional. In the following example, the profile will be deployed only on Linux:
 
 ```json
@@ -35,13 +37,19 @@ You can add rules to make the profile deployment conditional. In the following e
 
 The rules engine is based on [Python Rule Engine](https://github.com/santalvarez/python-rule-engine/) project whom rules syntax belongs to [JSON Rules Engine](https://github.com/CacheControl/json-rules-engine).
 
-### Conditions
+### Conditions and rules context
 
 Rules is a set of conditions that use logical operators to compare values with context (a set of facts) which is exposed as a JSON object. Here comes the context for a Linux environment:
 
 ```{eval-rst}
 .. literalinclude:: ./rules_context.json
   :language: json
+```
+
+To help you writing rules, QDT provides a [command to export rules context](../usage/cli.md#rules-context-export):
+
+```sh
+qdt export-rules-context -o qdt_rules_context.json
 ```
 
 ----

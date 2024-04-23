@@ -39,7 +39,6 @@ logger = logging.getLogger(__name__)
 
 
 class QdtRulesContext:
-    pass
 
     @property
     def _context_date(self) -> dict:
