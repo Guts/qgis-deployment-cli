@@ -189,12 +189,3 @@ class JobSplashScreenManager(GenericJob):
                 raise NotImplementedError
 
         logger.debug(f"Job {self.ID} ran successfully.")
-
-
-# #############################################################################
-# ##### Stand alone program ########
-# ##################################
-
-if __name__ == "__main__":
-    """Standalone execution."""
-    pass
