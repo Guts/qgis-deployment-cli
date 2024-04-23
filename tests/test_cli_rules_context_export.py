@@ -41,10 +41,3 @@ def test_cli_export_rules_context(capsys):
     _, err = capsys.readouterr()
 
     assert err == ""
-
-
-# #############################################################################
-# ######## Standalone ##############
-# ##################################
-if __name__ == "__main__":
-    pass
