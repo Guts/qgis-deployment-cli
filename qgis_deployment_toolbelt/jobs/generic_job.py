@@ -31,10 +31,7 @@ from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadValueType,
 )
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
-from qgis_deployment_toolbelt.utils.computer_environment import (
-    date_dict,
-    environment_dict,
-)
+from qgis_deployment_toolbelt.profiles.rules_context import QdtRulesContext
 
 # #############################################################################
 # ########## Globals ###############
@@ -58,6 +55,7 @@ class GenericJob:
         """Object instanciation."""
         # operating system configuration
         self.os_config = OSConfiguration.from_opersys()
+        self.qdt_rules_context = QdtRulesContext()
 
         # local QDT folders
         self.qdt_working_folder = get_qdt_working_directory()
@@ -168,7 +166,6 @@ class GenericJob:
         li_profiles_matched = []
         li_profiles_unmatched = []
 
-        context_object = {"date": date_dict(), "environment": environment_dict()}
         for profile in tup_qdt_profiles:
             if profile.rules is None:
                 logger.debug(f"No rules to apply to {profile.name}")
@@ -181,7 +178,7 @@ class GenericJob:
             )
             try:
                 engine = RuleEngine(rules=profile.rules)
-                results = engine.evaluate(obj=context_object)
+                results = engine.evaluate(obj=self.qdt_rules_context.to_dict())
                 if len(results) == len(profile.rules):
                     logger.debug(
                         f"Profile '{profile.name}' matches {len(profile.rules)} "

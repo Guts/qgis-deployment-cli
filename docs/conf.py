@@ -5,7 +5,6 @@
 """
 
 # standard
-import json
 import os
 from datetime import datetime
 from pathlib import Path
@@ -17,11 +16,7 @@ from qgis_deployment_toolbelt.commands.upgrade import (
     get_latest_release,
     replace_domain,
 )
-from qgis_deployment_toolbelt.utils.computer_environment import (
-    date_dict,
-    environment_dict,
-    user_dict,
-)
+from qgis_deployment_toolbelt.profiles.rules_context import QdtRulesContext
 
 # -- Build environment -----------------------------------------------------
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
@@ -221,15 +216,11 @@ sitemap_url_scheme = "{link}"
 def generate_rules_context(_):
     """Generate context object as JSON that it passed to rules engine to check profiles
     conditions."""
-    context_object = {
-        "date": date_dict(),
-        "environment": environment_dict(),
-        "user": user_dict(),
-    }
-    with Path("./docs/reference/rules_context.json").open(
-        mode="w", encoding="utf-8"
-    ) as out_json:
-        json.dump(context_object, out_json, sort_keys=True, indent=4)
+    rules_context = QdtRulesContext()
+
+    # write into the file passing extra parameters to json.dumps
+    with Path("./docs/reference/rules_context.json").open("w", encoding="UTF8") as wf:
+        wf.write(rules_context.to_json(indent=4, sort_keys=True))
 
 
 def populate_download_page(_):
