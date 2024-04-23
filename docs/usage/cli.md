@@ -1,7 +1,5 @@
 # Command-line interface usage
 
-## Main command
-
 Aliases : `qdt`, `qgis-deployment-toolbelt`, `qdeploy-toolbelt`
 
 ```{sphinx_argparse_cli}
