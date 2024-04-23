@@ -38,7 +38,7 @@ def test_cli_upgrade_check_only(capsys):
     with pytest.raises(SystemExit):
         cli.main(["upgrade", "-c"])
 
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
 
     assert err == ""
 
@@ -48,7 +48,7 @@ def test_cli_upgrade_download(capsys):
     with pytest.raises(SystemExit):
         cli.main(["upgrade", "-n", "-w", "tests/"])
 
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
 
     assert err == ""
 

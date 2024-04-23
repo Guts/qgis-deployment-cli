@@ -28,7 +28,7 @@ def test_cli_export_rules_context_help(capsys, option):
     with pytest.raises(SystemExit):
         cli.main(["export-rules-context", option])
 
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
 
     assert err == ""
 
@@ -38,7 +38,7 @@ def test_cli_export_rules_context(capsys):
     with pytest.raises(SystemExit):
         cli.main(["export-rules-context"])
 
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
 
     assert err == ""
 
