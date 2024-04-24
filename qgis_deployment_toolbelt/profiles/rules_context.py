@@ -24,6 +24,10 @@ from qgis_deployment_toolbelt.utils.user_groups import (
     get_user_domain_groups,
     get_user_local_groups,
 )
+from qgis_deployment_toolbelt.utils.win32utils import (
+    ExtendedNameFormat,
+    get_current_user_extended_data,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -100,6 +104,16 @@ class QdtRulesContext:
             "groups_local": get_user_local_groups(),
             "groups_domain": get_user_domain_groups(),
         }
+
+    @property
+    def _context_user_directory(self) -> dict:
+        """Returns a dictionary containing user informations that can be used in QDT Rules
+            context.
+
+        Returns:
+            dict: dict user information.
+        """
+        return {k.name: get_current_user_extended_data(k) for k in ExtendedNameFormat}
 
     # -- EXPORT
     def to_dict(self) -> dict:

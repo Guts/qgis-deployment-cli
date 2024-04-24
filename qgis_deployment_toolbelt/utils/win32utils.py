@@ -12,8 +12,11 @@
 # ########## Libraries #############
 # ##################################
 
+
 # Standard library
+import ctypes
 import logging
+from enum import Enum
 from os import sep  # required since pathlib strips trailing whitespace
 from pathlib import Path
 from sys import platform as opersys
@@ -41,6 +44,58 @@ if opersys == "win32":
         r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment",
     )
     user_hkey = (winreg.HKEY_CURRENT_USER, r"Environment")
+
+
+# #############################################################################
+# ########## Classes ###############
+# ##################################
+
+
+class ExtendedNameFormat(Enum):
+    """Possible values for user name in a Windows Active Directory context.
+    See references:
+
+    - https://learn.microsoft.com/windows/win32/api/secext/ne-secext-extended_name_format
+    - https://mhammond.github.io/pywin32/win32api__GetUserNameEx_meth.html
+    - https://github.com/mhammond/pywin32/blob/dde12b8ef274a157aede18f46cae5b44f112be17/win32/Lib/win32con.py#L4963-L4973
+
+    """
+
+    # An unknown name type.
+    NameUnknown = 0
+    # The fully qualified distinguished name (for example, CN=Jeff Smith,OU=Users,DC=Engineering,DC=Microsoft,DC=Com).
+    NameFullyQualifiedDN = 1
+    # A legacy account name (for example, Engineering\JSmith).
+    # The domain-only version includes trailing backslashes (\).
+    NameSamCompatible = 2
+    # A "friendly" display name (for example, Jeff Smith).
+    # The display name is not necessarily the defining relative distinguished name (RDN).
+    NameDisplay = 3
+    # A GUID string that the IIDFromString function returns (for example,
+    # {4fa050f0-f561-11cf-bdd9-00aa003a77b6}).
+    NameUniqueId = 6
+    # The complete canonical name (for example,
+    # engineering.microsoft.com/software/someone).
+    # The domain-only version includes a trailing forward slash (/).
+    NameCanonical = 7
+    # The user principal name (for example, someone@example.com).
+    NameUserPrincipal = 8
+    # The same as NameCanonical except that the rightmost forward slash (/) is replaced
+    # with a new line character (\n), even in a domain-only case (for example,
+    # engineering.microsoft.com/software\nJSmith).
+    NameCanonicalEx = 9
+    # The generalized service principal name (for example,
+    # www/www.microsoft.com@microsoft.com).
+    NameServicePrincipal = 10
+    # The DNS domain name followed by a backward-slash and the SAM user name.
+    NameDnsDomain = 12
+    # The first name or given name of the user. Note: This type is only available for
+    # GetUserNameEx calls for an Active Directory user.
+    NameGivenName = 13
+    # The last name or surname of the user. Note: This type is only available for
+    # GetUserNameEx calls for an Active Directory user.
+    NameSurname = 14
+
 
 # #############################################################################
 # ########## Functions #############
@@ -109,6 +164,49 @@ def get_environment_variable(envvar_name: str, scope: str = "user") -> str | Non
             f"Environment variable {envvar_name} not found in registry (scope: {scope}"
         )
         return None
+
+
+def get_current_user_extended_data(extended_name_format: ExtendedNameFormat) -> str:
+    """Get current user full data extended with Active Directory informations.
+
+    This method uses the ctypes module since the upper-level method implemented in
+    `pywin32.win32api` (`win32api.GetUserNameEx(extended_name_format.value)`) raises an
+    error when the specified format is not reachable.
+
+    Inspired from: https://stackoverflow.com/a/70182936/2556577
+
+    Returns:
+        str: use data in the specified format
+
+    Example:
+
+        .. code-block:: python
+
+            from qgis_deployment_toolbelt.utils.win32utils import (
+                ExtendedNameFormat,
+                get_current_user_extended_data,
+            )
+
+            user_data = {
+                k.name: get_current_user_extended_data(k)
+                for k in ExtendedNameFormat
+            }
+
+            print(user_data)
+
+    """
+    format_index = extended_name_format.value
+
+    # use system DLL to call API
+    GetUserNameEx = ctypes.windll.secur32.GetUserNameExW
+
+    size = ctypes.pointer(ctypes.c_ulong(0))
+    GetUserNameEx(format_index, None, size)
+
+    nameBuffer = ctypes.create_unicode_buffer(size.contents.value)
+    GetUserNameEx(format_index, nameBuffer, size)
+
+    return nameBuffer.value
 
 
 def normalize_path(input_path: Path, add_trailing_slash_if_dir: bool = True) -> str:
