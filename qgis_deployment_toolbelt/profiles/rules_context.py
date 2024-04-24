@@ -83,6 +83,7 @@ class QdtRulesContext:
         return {
             "computer_network_name": platform.node(),
             "operating_system_code": opersys,
+            "operating_system_release": platform.release(),
             "processor_architecture": platform.machine(),
             # custom Linux
             "linux_distribution_name": linux_distribution_name,
