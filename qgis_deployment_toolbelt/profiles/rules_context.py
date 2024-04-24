@@ -99,21 +99,19 @@ class QdtRulesContext:
         Returns:
             dict: dict user information.
         """
+        if opersys == "win32":
+            windows_extended = {
+                k.name: get_current_user_extended_data(k) for k in ExtendedNameFormat
+            }
+        else:
+            windows_extended = None
+
         return {
             "name": getuser(),
             "groups_local": get_user_local_groups(),
             "groups_domain": get_user_domain_groups(),
+            "windows_extended": windows_extended,
         }
-
-    @property
-    def _context_user_directory(self) -> dict:
-        """Returns a dictionary containing user informations that can be used in QDT Rules
-            context.
-
-        Returns:
-            dict: dict user information.
-        """
-        return {k.name: get_current_user_extended_data(k) for k in ExtendedNameFormat}
 
     # -- EXPORT
     def to_dict(self) -> dict:
