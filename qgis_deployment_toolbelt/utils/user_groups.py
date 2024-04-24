@@ -23,16 +23,10 @@ if opersys == "win32":
     """windows"""
 
     # 3rd party
+    import pyad
     import win32com
     import win32net
     from pywintypes import error as PyWinException
-
-    # try to import pyad
-    try:
-        import pyad
-    except ImportError:
-        logging.info("'pyad' package is not available.")
-        pyad = None
 
 else:
     import grp
