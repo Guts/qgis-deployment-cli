@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.34.1 - 2024-04-24
+
+### Features and enhancements 🎉
+
+* feature(rules): on Windows, retrieve user extended data using win32 API by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/494>
+
 ## 0.34.0 - 2024-04-23
 
 Killer feature introduced: rules engine. Funded by [Métropole du Grand Lyon](https://www.grandlyon.com/).
