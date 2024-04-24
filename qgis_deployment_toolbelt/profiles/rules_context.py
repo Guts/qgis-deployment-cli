@@ -24,6 +24,10 @@ from qgis_deployment_toolbelt.utils.user_groups import (
     get_user_domain_groups,
     get_user_local_groups,
 )
+from qgis_deployment_toolbelt.utils.win32utils import (
+    ExtendedNameFormat,
+    get_current_user_extended_data,
+)
 
 # #############################################################################
 # ########## Globals ###############
@@ -79,6 +83,7 @@ class QdtRulesContext:
         return {
             "computer_network_name": platform.node(),
             "operating_system_code": opersys,
+            "operating_system_release": platform.release(),
             "processor_architecture": platform.machine(),
             # custom Linux
             "linux_distribution_name": linux_distribution_name,
@@ -95,10 +100,18 @@ class QdtRulesContext:
         Returns:
             dict: dict user information.
         """
+        if opersys == "win32":
+            windows_extended = {
+                k.name: get_current_user_extended_data(k) for k in ExtendedNameFormat
+            }
+        else:
+            windows_extended = None
+
         return {
             "name": getuser(),
             "groups_local": get_user_local_groups(),
             "groups_domain": get_user_domain_groups(),
+            "windows_extended": windows_extended,
         }
 
     # -- EXPORT
