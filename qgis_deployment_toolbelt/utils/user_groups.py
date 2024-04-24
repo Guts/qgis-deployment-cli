@@ -25,6 +25,7 @@ if opersys == "win32":
     # 3rd party
     import win32com
     import win32net
+    from pywintypes import error as PyWinException
 
     # try to import pyad
     try:
@@ -72,7 +73,19 @@ def get_user_local_groups(user_name: str | None = None) -> list[str]:
         return sorted({g.gr_name for g in grp.getgrall() if user_name in g.gr_mem})
     elif opersys.lower() in ("win32", "windows"):
         server_host_name = uname()[1]
-        return sorted(set(win32net.NetUserGetLocalGroups(server_host_name, user_name)))
+        try:
+            local_groups = sorted(
+                set(win32net.NetUserGetLocalGroups(server_host_name, user_name))
+            )
+        except PyWinException as err:
+            logger.info(
+                f"Retrieving user ('{user_name}') local groups on {server_host_name} "
+                "failed. This usually means that it's not a local session, and that the "
+                "computer is linked to a domain and subscribed to a directory. "
+                f"Trace: {err}"
+            )
+            local_groups = []
+        return local_groups
     else:
         raise NotImplementedError(f"Unsupported operating system: {opersys}")
 
