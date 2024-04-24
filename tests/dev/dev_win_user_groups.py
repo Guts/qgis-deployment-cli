@@ -8,7 +8,6 @@ Related hyperlinks:
 - https://mhammond.github.io/pywin32/html/com/help/active_directory.html
 """
 
-
 # standard
 import getpass
 import os
@@ -18,9 +17,11 @@ from platform import uname
 # 3rd party
 import win32api
 import win32com
+import win32com.client
 import win32net
 import win32security
-import wmi
+
+# import wmi
 
 # user_info = win32net.NetUserGetInfo(
 #     win32net.NetGetAnyDCName(), win32api.GetUserName(), 2
@@ -36,8 +37,8 @@ domain = subprocess.run(
 print(domain)
 
 
-wmi_os = wmi.WMI().Win32_ComputerSystem()[0]
-print(wmi_os.Name, "PartOfDomain?", wmi_os.PartOfDomain)
+# wmi_os = wmi.WMI().Win32_ComputerSystem()[0]
+# print(wmi_os.Name, "PartOfDomain?", wmi_os.PartOfDomain)
 
 # variables
 srv_ldap_host = "svcldap"
@@ -50,14 +51,17 @@ def construct_moniker():
     return "".join(moniker)
 
 
-obj = win32com.client.GetObject("winmgmts:")
+# obj = win32com.client.GetObject("winmgmts:")
 # print("obj: ", obj.IsClass)
 
 # -- pywin32 (COM objects) : local groups
-local_groups: list[str] = sorted(
-    set(win32net.NetUserGetLocalGroups(uname()[1], getpass.getuser()))
-)
-print(f"User's local groups using pywin32: {'; '.join(local_groups)}")
+try:
+    local_groups: list[str] = sorted(
+        set(win32net.NetUserGetLocalGroups(uname()[1], getpass.getuser()))
+    )
+    print(f"User's local groups using pywin32: {'; '.join(local_groups)}")
+except:
+    print("no local groups retrieved")
 
 # uid = os.getuid()
 # user = pwd.getpwuid(uid)
@@ -93,12 +97,20 @@ print(f"User's local groups using pywin32: {'; '.join(local_groups)}")
 # -- PYAD
 
 
-from pyad import aduser
+import pyad
 
 try:
-    user = aduser.ADUser.from_cn(getpass.getuser())
-    print(user)
-    print(user.get_attribute("memberOf"))
+    user = pyad.aduser.ADUser.from_cn(getpass.getuser())
+    print(user.get_attribute("name")[0], user, type(user))
+    print(user.get_domain())
+    user_groups = user.get_memberOfs()
+    for grp in user_groups:
+        if not isinstance(grp, pyad.ADGroup):
+            print("ARRRR")
+        print(grp.get_group_scope())
+        print(grp.get_attribute("name"))
+    # print(user.get_attribute("memberOf"))
+    print(len(user.get_memberOfs()) == len(user.get_attribute("memberOf")))
 except Exception as err:
     print("Computer is not attached to any domain")
 
@@ -141,7 +153,7 @@ print(is_computer_in_domain())
 # # for group in group_membership:
 # #     print(group)
 
-# -- PURE WIN32COM
+# # -- PURE WIN32COM
 # import win32com.client
 
 # objRootDSE = win32com.client.GetObject("LDAP://RootDSE")
