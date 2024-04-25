@@ -114,8 +114,8 @@ class GenericJob:
         """Parse a folder structure to filter on QGIS profiles folders.
 
         Returns:
-            tuple[QdtProfile] | None: tuple of profiles objects or Non if no profile
-                folder found
+            tuple[QdtProfile] | None: tuple of profiles objects matching criteria or
+                None if no profile folder found
         """
         # first, try to get folders containing a profile.json
         li_qgis_qdt_profiles: list[QdtProfile] = [
@@ -135,6 +135,7 @@ class GenericJob:
         profiles_matched, profiles_unmatched = self.filter_profiles_on_rules(
             tup_qdt_profiles=tuple(li_qgis_qdt_profiles)
         )
+
         if not len(profiles_matched):
             logger.warning(
                 f"None of the {len(li_qgis_qdt_profiles)} profiles meet the deployment "
@@ -145,10 +146,11 @@ class GenericJob:
         if len(profiles_unmatched):
             logger.info(
                 f"{len(profiles_unmatched)}/{len(li_qgis_qdt_profiles)} profiles "
-                f"do not meet the conditions for deployment."
+                "do not meet the conditions for deployment: "
+                f"{', '.join([p.name for p in profiles_unmatched])}"
             )
 
-        return tuple(li_qgis_qdt_profiles)
+        return tuple(profiles_matched)
 
     @lru_cache(maxsize=1024)
     def filter_profiles_on_rules(

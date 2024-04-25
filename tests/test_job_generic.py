@@ -7,7 +7,7 @@
         # for whole test
         python -m unittest tests.test_job_generic
         # for specific
-        python -m unittest tests.test_job_generic.TestJobGeneric.test_validate_options
+        python -m unittest tests.test_job_generic.TestJobGeneric.test_listing_profiles_folder
 """
 
 # #############################################################################
@@ -15,15 +15,16 @@
 # ##################################
 
 # Standard library
+import tempfile
 import unittest
+from pathlib import Path
 
+# package
 from qgis_deployment_toolbelt.exceptions import (
     JobOptionBadName,
     JobOptionBadValue,
     JobOptionBadValueType,
 )
-
-# package
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 
 # #############################################################################
@@ -64,6 +65,33 @@ class TestJobGeneric(unittest.TestCase):
         }
 
     # -- TESTS ---------------------------------------------------------
+    def test_listing_profiles_folder(self):
+        """Test profiles listing."""
+        fixtures_profiles_folder = Path("tests/fixtures/profiles")
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_profiles_listing_",
+            ignore_cleanup_errors=True,
+        ) as tmpdirname:
+            tmp_folder_path = Path(tmpdirname).joinpath("profiles")
+            # simulate a QGIS profiles folder structure in the temp folder
+            for p in fixtures_profiles_folder.glob("good_profile_*.json"):
+                dest_file = tmp_folder_path.joinpath(f"test_{p.stem}/profile.json")
+                dest_file.parent.mkdir(parents=True, exist_ok=True)
+                dest_file.write_text(p.read_text(encoding="UTF-8"), encoding="UTF-8")
+
+            filtered_profiles = self.generic_job.filter_profiles_folder(
+                start_parent_folder=tmp_folder_path
+            )
+
+            self.assertIsInstance(filtered_profiles, tuple)
+            self.assertGreater(len(filtered_profiles), 0)
+
+            # length must be -1 because of a profile which is excluded by a rule
+            self.assertEqual(
+                len(filtered_profiles),
+                len(list(tmp_folder_path.glob("**/profile.json"))) - 1,
+            )
+
     def test_validate_options_bad_input_type(self):
         """Test validate_options method"""
 
