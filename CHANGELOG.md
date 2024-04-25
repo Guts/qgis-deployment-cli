@@ -16,6 +16,16 @@ Unreleased
 
 -->
 
+## 0.34.2 - 2024-04-25
+
+### Bugs fixes 🐛
+
+* fix(profiles): profiles listing was returning the unfiltered list by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/497>
+
+### Documentation 📖
+
+* Documentation: improve download section by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/496>
+
 ## 0.34.1 - 2024-04-24
 
 ### Features and enhancements 🎉
