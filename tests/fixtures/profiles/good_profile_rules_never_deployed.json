@@ -1,0 +1,43 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+    "name": "QDT excluded by rules",
+    "folder_name": "qdt_never_deployed",
+    "description": "QGIS profile made to demonstrate how rules engine can exclude a profile from deployment.",
+    "author": "Julien Moura",
+    "email": "qgis@oslandia.com",
+    "qgisMinimumVersion": "3.34",
+    "qgisMaximumVersion": "3.99",
+    "version": "1.3.0",
+    "plugins": [
+        {
+            "name": "QGIS Resource Sharing ",
+            "folder_name": "qgis_resource_sharing",
+            "location": "remote",
+            "official_repository": true,
+            "plugin_id": 2733,
+            "version": "1.0.0"
+        },
+        {
+            "name": "QTribu",
+            "folder_name": "qtribu",
+            "official_repository": true,
+            "plugin_id": 2733,
+            "version": "0.16.0"
+        }
+    ],
+    "rules": [
+        {
+            "name": "To be not deployed",
+            "description": "Rules defining that the profile is deployed only during the 1985 year.",
+            "conditions": {
+                "all": [
+                    {
+                        "path": "$.date.current_year",
+                        "value": 1985,
+                        "operator": "equal"
+                    }
+                ]
+            }
+        }
+    ]
+}
