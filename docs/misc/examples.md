@@ -4,10 +4,12 @@ Looking for inspiration? Want to see what others are doing with QDT?
 
 ::::{grid} 2
 :gutter: 1
+
 :::{grid-item}
 
 ```{button-link} https://github.com/topics/qgis-deployment-toolbelt
 :color: primary
+:expand:
 :shadow:
 :tooltip: Look for QDT projects on Github
 
@@ -15,10 +17,12 @@ Looking for inspiration? Want to see what others are doing with QDT?
 ```
 
 :::
+
 :::{grid-item}
 
 ```{button-link} https://gitlab.com/explore/projects/topics/qgis-deployment-toolbelt
 :color: primary
+:expand:
 :shadow:
 :tooltip: Look for QDT projects on GitLab (SaaS)
 
