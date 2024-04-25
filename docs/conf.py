@@ -4,7 +4,9 @@
     Configuration for project documentation using Sphinx.
 """
 
+
 # standard
+import logging
 import os
 from datetime import datetime
 from pathlib import Path
@@ -216,6 +218,7 @@ sitemap_url_scheme = "{link}"
 def generate_rules_context(_):
     """Generate context object as JSON that it passed to rules engine to check profiles
     conditions."""
+    logging.warning("=== START POPULATING RULES CONTEXT ===")
     rules_context = QdtRulesContext()
 
     # write into the file passing extra parameters to json.dumps
@@ -225,34 +228,47 @@ def generate_rules_context(_):
 
 def populate_download_page(_):
     """Generate download section included into installation page."""
-    latest_release = get_latest_release(
-        replace_domain(
-            url=__about__.__uri_repository__, new_domain="api.github.com/repos"
+    logging.warning("=== START POPULATING DOWNLOAD SECTION ===")
+    try:
+        latest_release = get_latest_release(
+            replace_domain(
+                url=__about__.__uri_repository__, new_domain="api.github.com/repos"
+            )
         )
-    )
 
-    dl_link_linux, dl_link_macos, dl_link_windows = (
-        get_download_url_for_os(latest_release.get("assets"), override_opersys=os)[0]
-        for os in ["linux", "darwin", "win32"]
-    )
+        dl_link_linux, dl_link_macos, dl_link_windows = (
+            get_download_url_for_os(latest_release.get("assets"), override_opersys=os)[
+                0
+            ]
+            for os in ["linux", "darwin", "win32"]
+        )
+    except Exception as err:
+        logging.error(
+            "Error occured during GitHub release calls. Fallback to current version. "
+            f"Trace: {err}"
+        )
+        dl_link_linux = f"{__about__.__uri_repository__}releases/download/{version}/Ubuntu_QGISDeploymentToolbelt_{version}"
+        dl_link_macos = f"{__about__.__uri_repository__}releases/download/{version}/MacOS_QGISDeploymentToolbelt_{version}"
+        dl_link_windows = f"{__about__.__uri_repository__}releases/download/{version}/Windows_QGISDeploymentToolbelt_{version}.exe"
 
     out_download_section = (
-        "::::{grid} 3\n:gutter: 2\n"
+        "::::{grid} 3\n:gutter: 2\n\n"
         ":::{grid-item}\n"
         f"\n```{{button-link}} {dl_link_linux}\n:color: primary\n"
         ":shadow:\n:tooltip: Generated with PyInstaller on Ubuntu LTS\n"
-        "\n{fab}`linux` Download for Linux\n```\n"
-        ":::\n"
+        "\n{fab}`linux` Download for Linux\n```\n\n"
+        ":::\n\n"
         ":::{grid-item}\n"
-        f"\n```{{button-link}} {dl_link_macos}\n:color: primary\n"
-        ":shadow:\n:tooltip: Generated with PyInstaller on MacOS 12.6\n"
-        "\n{fab}`apple` Download for MacOS\n```\n"
-        ":::{grid-item}\n"
-        ":::\n"
         f"\n```{{button-link}} {dl_link_windows}\n:color: primary\n"
         ":shadow:\n:tooltip: Generated with PyInstaller on Windows 10\n"
-        "\n{fab}`windows` Download for Windows\n```\n"
-        ":::\n"
+        "\n{fab}`windows` Download for Windows\n```\n\n"
+        ":::\n\n"
+        ":::{grid-item}\n"
+        f"\n```{{button-link}} {dl_link_macos}\n:color: warning\n"
+        ":shadow:\n:tooltip: Generated with PyInstaller on MacOS 12.6 - !! TO BE TESTED !! \n"
+        "\n{fab}`apple` Download for MacOS\n```\n\n"
+        ":::{grid-item}\n"
+        ":::\n\n"
         "\n::::"
     )
 
@@ -266,6 +282,8 @@ def run_apidoc(_):
     """Options for Sphinx API doc."""
     from sphinx.ext.apidoc import main
 
+    logging.warning("=== START SPHINX API AUTODOC ===")
+
     cur_dir = os.path.normpath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, "_apidoc")
     modules = os.path.normpath(os.path.join(cur_dir, "../qgis_deployment_toolbelt/"))
@@ -275,6 +293,6 @@ def run_apidoc(_):
 
 # launch setup
 def setup(app):
-    app.connect("builder-inited", generate_rules_context)
     app.connect("builder-inited", run_apidoc)
+    app.connect("builder-inited", generate_rules_context)
     app.connect("builder-inited", populate_download_page)
