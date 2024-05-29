@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 @lru_cache
-def get_user_active_directory_object() -> pyad.ADUser | None:
+def get_user_active_directory_object() -> "pyad.ADUser | None":
     """Get user as an Active Directory object.
 
     Returns:
