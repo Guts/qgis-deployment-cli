@@ -126,3 +126,14 @@ jobs:
 
       - name: QDT - Run sample scenario a third time
         run: qgis-deployment-toolbelt --verbose --no-logfile
+
+      - name: QDT - Export rules context
+        run: qdt export-rules-context -o rules_context/"${{ matrix.os }}_${{ matrix.python-version }}.json"
+
+      - name: Save Rules Context as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rules_context-${{ matrix.os }}-${{ matrix.python-version }}
+          path: rules_context/*.json
+          if-no-files-found: error
+          retention-days: 30
