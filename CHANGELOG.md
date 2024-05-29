@@ -16,6 +16,20 @@ Unreleased
 
 -->
 
+## 0.34.3 - 2024-05-29
+
+### Bugs fixes 🐛
+
+* Fix: rules context crash on certain Windows configuration by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/507>
+
+### Features and enhancements 🎉
+
+* improve(user_groups): enforces user domain groups retrieval using user guid by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/508>
+
+### Tooling 🔧
+
+* CI: test export rules context in different supported environments by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/512>
+
 ## 0.34.2 - 2024-04-25
 
 ### Bugs fixes 🐛
