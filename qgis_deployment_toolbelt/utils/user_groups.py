@@ -31,6 +31,12 @@ if opersys == "win32":
 else:
     import grp
 
+# package
+from qgis_deployment_toolbelt.utils.win32utils import (
+    ExtendedNameFormat,
+    get_current_user_extended_data,
+)
+
 # #############################################################################
 # ########## Globals ###############
 # ##################################
@@ -41,6 +47,51 @@ logger = logging.getLogger(__name__)
 # #############################################################################
 # ########## Functions #############
 # ##################################
+
+
+@lru_cache
+def get_user_active_directory_object() -> "pyad.ADUser | None":
+    """Get user as an Active Directory object.
+
+    Returns:
+        pyad.ADUser | None: user object or None if something went wrong
+    """
+    user_obj = None
+    user_guid_or_name = get_user_name_or_guid()
+    try:
+        if user_guid_or_name.startswith("{"):
+            user_obj = pyad.aduser.ADUser.from_guid(user_guid_or_name)
+        else:
+            user_obj = pyad.aduser.ADUser.from_cn(user_guid_or_name)
+    except Exception as err:
+        logger.error(f"Unable to get the user object. Trace: {err}")
+    return user_obj
+
+
+@lru_cache
+def get_user_name_or_guid() -> str:
+    """Get user GUID or name as fallback.
+
+    Returns:
+        str: user GUID or name (getpass.getuser())
+    """
+    if opersys.lower() in ("win32", "windows"):
+        try:
+            user_guid_or_name = get_current_user_extended_data(
+                ExtendedNameFormat.NameUniqueId
+            )
+            logger.debug(
+                f"Using user GUID to retrieve domain groups: {user_guid_or_name}"
+            )
+        except Exception as err:
+            logger.info(
+                f"Unable to retrieve user GUID. Fallback to user name. Trace: {err}"
+            )
+    else:
+        user_guid_or_name = getuser()
+        logger.debug(f"Using username to retrieve domain groups: {user_guid_or_name}")
+
+    return user_guid_or_name
 
 
 @lru_cache
@@ -85,7 +136,7 @@ def get_user_local_groups(user_name: str | None = None) -> list[str]:
 
 
 @lru_cache
-def get_user_domain_groups(user_name: str | None = None) -> list[str]:
+def get_user_domain_groups(user_guid_or_name: str | None = None) -> list[str]:
     """Lists the domain groups to which the user belong.
 
     On Linux and MacOS, it always return an empty list. TODO: implement it (probably
@@ -93,7 +144,7 @@ def get_user_domain_groups(user_name: str | None = None) -> list[str]:
     On Windows, it relies on win32net (COM).
 
     Args:
-        user_name (str | None, optional): name of user. If None, the current user name
+        user_guid_or_name (str | None, optional): name of user. If None, the current user name
             is used. Defaults to None.
 
     Raises:
@@ -102,8 +153,8 @@ def get_user_domain_groups(user_name: str | None = None) -> list[str]:
     Returns:
         list[str]: sorted list of unique groups names
     """
-    if user_name is None:
-        user_name = getuser()
+    if user_guid_or_name is None:
+        user_guid_or_name = get_user_name_or_guid()
 
     if not is_computer_attached_to_a_domain():
         logger.debug(
@@ -117,16 +168,16 @@ def get_user_domain_groups(user_name: str | None = None) -> list[str]:
         #  using pure ldap)
         return []
     elif opersys.lower() in ("win32", "windows"):
-        user_obj = pyad.aduser.ADUser.from_cn(user_name)
+        user_obj = get_user_active_directory_object()
         user_groups: list[pyad.ADGroup] | None = user_obj.get_memberOfs()
         if not user_groups or not len(user_groups):
             logger.warning(
-                f"It looks like '{user_name}' does not belong to any domain group."
+                f"It looks like '{user_guid_or_name}' does not belong to any domain group."
             )
             return []
         else:
             logger.info(
-                f"The current user '{user_name}' belongs to {len(user_groups)} Active "
+                f"The current user '{user_guid_or_name}' belongs to {len(user_groups)} Active "
                 "Directory groups."
             )
 
@@ -165,7 +216,7 @@ def _is_computer_in_domain_pyad() -> bool:
         bool: True if the computer is joined to a domain or workgroup, False otherwise.
     """
     try:
-        user_obj = pyad.aduser.ADUser.from_cn(getuser())
+        user_obj = get_user_active_directory_object()
         return bool(len(user_obj.get_attribute("memberOf")))
     except Exception as err:
         logger.info(
@@ -199,6 +250,7 @@ def _is_computer_in_domain_win32() -> bool:
         # Check if the domain attribute is not None
         for item in result:
             if item.Domain and item.Domain.lower() != "workgroup":
+                logger.debug(f"Computer is joined to a domain: {item.Domain.lower()}")
                 return True
 
     except Exception as err:
