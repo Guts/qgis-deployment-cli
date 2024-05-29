@@ -107,10 +107,16 @@ class QdtRulesContext:
         else:
             windows_extended = None
 
+        try:
+            user_domain_groups = get_user_domain_groups()
+        except Exception as err:
+            logger.error(f"Unable to retrieve user domain groups. Trace: {err}")
+            user_domain_groups = []
+
         return {
             "name": getuser(),
             "groups_local": get_user_local_groups(),
-            "groups_domain": get_user_domain_groups(),
+            "groups_domain": user_domain_groups,
             "windows_extended": windows_extended,
         }
 
