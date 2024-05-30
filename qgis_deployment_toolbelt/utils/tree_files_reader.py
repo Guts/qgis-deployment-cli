@@ -46,6 +46,9 @@ def tree_to_download_list(tree_array: list[Treeitem], rel_path: str = "") -> lis
     """
     li_files = []
 
+    if not isinstance(tree_array, (list, tuple)):
+        return li_files
+
     for item in tree_array:
         if item.get("type") == "directory":
             if item.get("name") != ".":
@@ -53,6 +56,7 @@ def tree_to_download_list(tree_array: list[Treeitem], rel_path: str = "") -> lis
             else:
                 new_rel_path = f"{item.get('name')}"
 
+        if "contents" in item:
             li_files.extend(
                 tree_to_download_list(
                     tree_array=item.get("contents"),
