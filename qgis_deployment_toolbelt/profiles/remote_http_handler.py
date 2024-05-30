@@ -17,7 +17,6 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from shutil import rmtree
-from typing import TypedDict
 
 # 3rd party
 import requests
@@ -30,6 +29,7 @@ from qgis_deployment_toolbelt.profiles.profiles_handler_base import (
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 from qgis_deployment_toolbelt.utils.formatters import url_ensure_trailing_slash
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
+from qgis_deployment_toolbelt.utils.tree_files_reader import tree_to_download_list
 
 # #############################################################################
 # ########## Globals ###############
@@ -38,16 +38,11 @@ from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 # logs
 logger = logging.getLogger(__name__)
 
-
-class Treeitem(TypedDict):
-    type: str
-    name: str
-    contents: list[dict] | None
-
-
 # #############################################################################
 # ########## Classes ###############
 # ##################################
+
+
 class HttpHandler(RemoteProfilesHandlerBase):
     """Handle remote HTTP repositories without git protocol.
 
@@ -117,7 +112,7 @@ class HttpHandler(RemoteProfilesHandlerBase):
             )
             destination_local_path.mkdir(parents=True)
 
-        li_files_to_download = self.tree_to_download_list(tree_array=qdt_tree)
+        li_files_to_download = tree_to_download_list(tree_array=qdt_tree)
         logger.info(f"{len(li_files_to_download)} files to download")
 
         success, fails = self.download_files_to_local(
@@ -131,45 +126,9 @@ class HttpHandler(RemoteProfilesHandlerBase):
                 f"{len(fails)} download failed. Check the above log messages."
             )
 
-    def tree_to_download_list(
-        self, tree_array: list[Treeitem], rel_path: str = ""
-    ) -> list:
-        """Parse tree structure and return a list of files to download with relative
-            paths to the base URL. It's meant to be used as recursive funciton to iter
-            through the tree structure.
-
-        Args:
-            tree_array (list[TreeItem]): input array from tree JSON structure.
-            rel_path (str, optional): relative path to resolve from. Defaults to "".
-
-        Returns:
-            list: list of files paths relative to the base URL.
-        """
-        li_files = []
-
-        for item in tree_array:
-            if item.get("type") == "directory":
-                if item.get("name") != ".":
-                    new_rel_path = f"{rel_path}/{item.get('name')}"
-                else:
-                    new_rel_path = f"{item.get('name')}"
-
-                li_files.extend(
-                    self.tree_to_download_list(
-                        tree_array=item.get("contents"),
-                        rel_path=new_rel_path,
-                    )
-                )
-            elif item.get("type") == "file":
-                li_files.append(f"{rel_path}/{item.get('name')}")
-            else:
-                logger.debug(f"Unsupported item type: {item.get('type')}")
-
-        return li_files
-
     def download_files_to_local(
         self, li_files_to_download: list[str], target_folder: Path
-    ) -> tuple[list[tuple[str, Path]], list[tuple[str, Path]]]:
+    ) -> tuple[list[tuple[str, Path]], list[tuple[str, str]]]:
         """Download list of files relative to remote base URL to local target folder.
 
         Args:
@@ -177,8 +136,7 @@ class HttpHandler(RemoteProfilesHandlerBase):
             target_folder (Path): local folder where to download
 
         Returns:
-            tuple[list[tuple[str, Path]], list[tuple[str, Path]]]: (list of success \
-                download, list of failed download)
+            (list of success download, list of failed download)
         """
         base_url = self.SOURCE_REPOSITORY_PATH_OR_URL
         downloaded_files: list[tuple[str, Path]] = []
@@ -207,12 +165,3 @@ class HttpHandler(RemoteProfilesHandlerBase):
                     failed_files.append((file_to_download, f"{err}"))
 
         return downloaded_files, failed_files
-
-
-# #############################################################################
-# ##### Stand alone program ########
-# ##################################
-
-if __name__ == "__main__":
-    """Standalone execution."""
-    pass
