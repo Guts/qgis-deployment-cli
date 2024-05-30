@@ -1,0 +1,1003 @@
+[
+  {
+    "type": "directory",
+    "name": ".",
+    "size": 4096,
+    "time": "2024-05-30T11:22:06CEST",
+    "contents": [
+      {
+        "type": "file",
+        "name": "bookmarks.xml",
+        "size": 13,
+        "time": "2024-05-29T19:09:19CEST"
+      },
+      {
+        "type": "directory",
+        "name": "cache",
+        "size": 4096,
+        "time": "2024-05-07T11:22:38CEST",
+        "contents": [
+          {
+            "type": "directory",
+            "name": "data8",
+            "size": 4096,
+            "time": "2023-10-19T13:55:43CEST",
+            "contents": [
+              {
+                "type": "directory",
+                "name": "0",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "1",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "2",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "3",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "4",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "5",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "6",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "7",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "8",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "9",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "a",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "b",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "c",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "d",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "e",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              },
+              {
+                "type": "directory",
+                "name": "f",
+                "size": 4096,
+                "time": "2023-10-19T13:55:43CEST"
+              }
+            ]
+          },
+          {
+            "type": "directory",
+            "name": "prepared",
+            "size": 4096,
+            "time": "2023-10-19T13:55:43CEST"
+          },
+          {
+            "type": "directory",
+            "name": "wfsprovider",
+            "size": 4096,
+            "time": "2024-05-07T11:22:38CEST",
+            "contents": [
+              {
+                "type": "directory",
+                "name": "pid_2530783",
+                "size": 4096,
+                "time": "2024-05-07T11:22:38CEST",
+                "contents": [
+                  {
+                    "type": "file",
+                    "name": "cache_4.sqlite",
+                    "size": 217088,
+                    "time": "2024-05-07T11:22:38CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "cache_4.sqlite-shm",
+                    "size": 32768,
+                    "time": "2024-05-07T11:22:38CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "cache_4.sqlite-wal",
+                    "size": 111272,
+                    "time": "2024-05-07T11:22:38CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "id_cache_4.sqlite",
+                    "size": 4096,
+                    "time": "2024-05-07T11:22:38CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "id_cache_4.sqlite-shm",
+                    "size": 32768,
+                    "time": "2024-05-07T11:22:38CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "id_cache_4.sqlite-wal",
+                    "size": 32992,
+                    "time": "2024-05-07T11:22:38CEST"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "file",
+        "name": "console_history.txt",
+        "size": 8452,
+        "time": "2024-05-13T09:14:20CEST"
+      },
+      {
+        "type": "file",
+        "name": "data_sources_cache.db",
+        "size": 12288,
+        "time": "2023-11-16T08:31:40CET"
+      },
+      {
+        "type": "directory",
+        "name": "fonts",
+        "size": 4096,
+        "time": "2023-10-24T08:48:50CEST",
+        "contents": [
+          {
+            "type": "file",
+            "name": "OpenSans-BoldItalic.ttf",
+            "size": 136412,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-Bold.ttf",
+            "size": 130864,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-BoldItalic.ttf",
+            "size": 136292,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-Bold.ttf",
+            "size": 130376,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-ExtraBoldItalic.ttf",
+            "size": 136704,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-ExtraBold.ttf",
+            "size": 130816,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-Italic.ttf",
+            "size": 136632,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-LightItalic.ttf",
+            "size": 136812,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-Light.ttf",
+            "size": 130476,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-MediumItalic.ttf",
+            "size": 136752,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-Medium.ttf",
+            "size": 130524,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-Regular.ttf",
+            "size": 130496,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-SemiBoldItalic.ttf",
+            "size": 136844,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_Condensed-SemiBold.ttf",
+            "size": 130528,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-ExtraBoldItalic.ttf",
+            "size": 136980,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-ExtraBold.ttf",
+            "size": 131248,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-Italic.ttf",
+            "size": 136656,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-Italic-VariableFont_wdth,wght.ttf",
+            "size": 580356,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-LightItalic.ttf",
+            "size": 136948,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-Light.ttf",
+            "size": 130808,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-MediumItalic.ttf",
+            "size": 136848,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-Medium.ttf",
+            "size": 130980,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-Regular.ttf",
+            "size": 130836,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-SemiBoldItalic.ttf",
+            "size": 136776,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-SemiBold.ttf",
+            "size": 130764,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-BoldItalic.ttf",
+            "size": 137156,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-Bold.ttf",
+            "size": 131172,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-ExtraBoldItalic.ttf",
+            "size": 137636,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-ExtraBold.ttf",
+            "size": 131748,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-Italic.ttf",
+            "size": 137052,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-LightItalic.ttf",
+            "size": 137272,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-Light.ttf",
+            "size": 131132,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-MediumItalic.ttf",
+            "size": 137120,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-Medium.ttf",
+            "size": 130980,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-Regular.ttf",
+            "size": 130852,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-SemiBoldItalic.ttf",
+            "size": 137184,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans_SemiCondensed-SemiBold.ttf",
+            "size": 130860,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "OpenSans-VariableFont_wdth,wght.ttf",
+            "size": 529700,
+            "time": "2023-10-09T16:48:28CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-BlackItalic.ttf",
+            "size": 174108,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-Black.ttf",
+            "size": 168060,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-BoldItalic.ttf",
+            "size": 171508,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-Bold.ttf",
+            "size": 167336,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-Italic.ttf",
+            "size": 170504,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-LightItalic.ttf",
+            "size": 173172,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-Light.ttf",
+            "size": 167000,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-MediumItalic.ttf",
+            "size": 173416,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-Medium.ttf",
+            "size": 168644,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-Regular.ttf",
+            "size": 168260,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-ThinItalic.ttf",
+            "size": 172860,
+            "time": "2023-10-24T08:48:50CEST"
+          },
+          {
+            "type": "file",
+            "name": "Roboto-Thin.ttf",
+            "size": 168488,
+            "time": "2023-10-24T08:48:50CEST"
+          }
+        ]
+      },
+      {
+        "type": "directory",
+        "name": "gdal_pam",
+        "size": 4096,
+        "time": "2023-10-09T16:48:25CEST"
+      },
+      {
+        "type": "directory",
+        "name": "oauth2-cache",
+        "size": 4096,
+        "time": "2023-10-09T16:48:26CEST"
+      },
+      {
+        "type": "directory",
+        "name": "palettes",
+        "size": 4096,
+        "time": "2024-03-20T17:34:49CET",
+        "contents": [
+          {
+            "type": "file",
+            "name": "palette.gpl",
+            "size": 143,
+            "time": "2024-03-20T17:36:53CET"
+          }
+        ]
+      },
+      {
+        "type": "directory",
+        "name": "previewImages",
+        "size": 4096,
+        "time": "2024-05-07T18:00:15CEST",
+        "contents": [
+          {
+            "type": "file",
+            "name": "0a34b33642e789fa970225836c3927e9.png",
+            "size": 69214,
+            "time": "2024-03-20T18:32:30CET"
+          },
+          {
+            "type": "file",
+            "name": "0ebcc2c36ddbafc6cadfc88a80dcafd5.png",
+            "size": 2210,
+            "time": "2023-10-19T10:18:04CEST"
+          },
+          {
+            "type": "file",
+            "name": "11beb50e5116be0abdaf60fb1104974e.png",
+            "size": 2917,
+            "time": "2023-12-06T11:10:32CET"
+          },
+          {
+            "type": "file",
+            "name": "1c4936db500b880786b8378f8399de68.png",
+            "size": 1135,
+            "time": "2023-10-19T12:59:16CEST"
+          },
+          {
+            "type": "file",
+            "name": "1cef529ae05c9bbb227baa14461abece.png",
+            "size": 6166,
+            "time": "2023-10-24T08:38:30CEST"
+          },
+          {
+            "type": "file",
+            "name": "424f4e177eb794e2a880b9c23d5c4f7a.png",
+            "size": 800,
+            "time": "2024-05-07T18:00:15CEST"
+          },
+          {
+            "type": "file",
+            "name": "49.png",
+            "size": 955,
+            "time": "2024-02-15T16:26:40CET"
+          },
+          {
+            "type": "file",
+            "name": "54e8f394233af634c3e226fef4614d6d.png",
+            "size": 572,
+            "time": "2024-02-15T16:28:47CET"
+          },
+          {
+            "type": "file",
+            "name": "62.png",
+            "size": 36066,
+            "time": "2023-10-17T19:00:26CEST"
+          },
+          {
+            "type": "file",
+            "name": "64.png",
+            "size": 97121,
+            "time": "2024-02-15T16:26:40CET"
+          },
+          {
+            "type": "file",
+            "name": "65853f9a078848456729ec35bb0de285.png",
+            "size": 572,
+            "time": "2023-10-24T17:30:24CEST"
+          },
+          {
+            "type": "file",
+            "name": "65.png",
+            "size": 33592,
+            "time": "2024-02-15T16:26:40CET"
+          },
+          {
+            "type": "file",
+            "name": "66.png",
+            "size": 35540,
+            "time": "2023-12-04T14:36:46CET"
+          },
+          {
+            "type": "file",
+            "name": "67.png",
+            "size": 59834,
+            "time": "2023-12-04T14:36:46CET"
+          },
+          {
+            "type": "file",
+            "name": "68.png",
+            "size": 59834,
+            "time": "2024-01-09T15:54:42CET"
+          },
+          {
+            "type": "file",
+            "name": "69.png",
+            "size": 59834,
+            "time": "2024-02-15T16:26:40CET"
+          },
+          {
+            "type": "file",
+            "name": "707bb892d2d60ed11920620f7fd8712c.png",
+            "size": 24144,
+            "time": "2024-03-07T15:49:10CET"
+          },
+          {
+            "type": "file",
+            "name": "70cf80401bacf811ea9b21e53cfae2c7.png",
+            "size": 69169,
+            "time": "2024-03-13T17:16:53CET"
+          },
+          {
+            "type": "file",
+            "name": "71a1348d62e9ce5655e6cb6524ba4b17.png",
+            "size": 5125,
+            "time": "2023-10-24T09:59:09CEST"
+          },
+          {
+            "type": "file",
+            "name": "72.png",
+            "size": 52545,
+            "time": "2024-03-21T10:12:22CET"
+          },
+          {
+            "type": "file",
+            "name": "74.png",
+            "size": 33668,
+            "time": "2024-03-21T10:12:22CET"
+          },
+          {
+            "type": "file",
+            "name": "80.png",
+            "size": 31719,
+            "time": "2024-04-10T08:36:30CEST"
+          },
+          {
+            "type": "file",
+            "name": "86d7e9e8c845b12872b82bf89cd33c8e.png",
+            "size": 22252,
+            "time": "2023-10-16T14:46:59CEST"
+          },
+          {
+            "type": "file",
+            "name": "a34d6421c6c642f609ab15a9c02f4013.png",
+            "size": 572,
+            "time": "2023-10-24T11:07:24CEST"
+          },
+          {
+            "type": "file",
+            "name": "b25dd42b689f9777a8d5a39dedbb59bd.png",
+            "size": 5211,
+            "time": "2024-05-07T14:43:27CEST"
+          },
+          {
+            "type": "file",
+            "name": "e379a0adc0bb2662208f85364fd8a319.png",
+            "size": 572,
+            "time": "2023-10-25T17:29:24CEST"
+          },
+          {
+            "type": "file",
+            "name": "e8ef68852f99fc9657239e5d3207017c.png",
+            "size": 24144,
+            "time": "2024-03-07T15:48:44CET"
+          },
+          {
+            "type": "file",
+            "name": "ee027e3319cd1b3e280f599dcf37ce31.png",
+            "size": 572,
+            "time": "2023-12-06T10:22:40CET"
+          }
+        ]
+      },
+      {
+        "type": "directory",
+        "name": "processing",
+        "size": 4096,
+        "time": "2023-10-09T16:48:27CEST",
+        "contents": [
+          {
+            "type": "directory",
+            "name": "grassaddons",
+            "size": 4096,
+            "time": "2023-10-09T16:48:27CEST",
+            "contents": [
+              {
+                "type": "directory",
+                "name": "description",
+                "size": 4096,
+                "time": "2023-10-09T16:48:27CEST"
+              }
+            ]
+          },
+          {
+            "type": "directory",
+            "name": "models",
+            "size": 4096,
+            "time": "2023-10-09T16:48:27CEST"
+          },
+          {
+            "type": "directory",
+            "name": "outputs",
+            "size": 4096,
+            "time": "2023-10-09T16:48:27CEST"
+          },
+          {
+            "type": "directory",
+            "name": "scripts",
+            "size": 4096,
+            "time": "2023-10-09T16:48:27CEST"
+          }
+        ]
+      },
+      {
+        "type": "directory",
+        "name": "project_templates",
+        "size": 4096,
+        "time": "2023-10-09T16:48:26CEST"
+      },
+      {
+        "type": "directory",
+        "name": "python",
+        "size": 4096,
+        "time": "2023-10-17T18:58:37CEST",
+        "contents": [
+          {
+            "type": "directory",
+            "name": "expressions",
+            "size": 4096,
+            "time": "2023-10-16T17:54:16CEST",
+            "contents": [
+              {
+                "type": "file",
+                "name": "default.py",
+                "size": 474,
+                "time": "2023-10-16T17:54:16CEST"
+              },
+              {
+                "type": "file",
+                "name": "__init__.py",
+                "size": 0,
+                "time": "2023-10-09T16:48:26CEST"
+              },
+              {
+                "type": "directory",
+                "name": "__pycache__",
+                "size": 4096,
+                "time": "2023-10-16T17:56:51CEST",
+                "contents": [
+                  {
+                    "type": "file",
+                    "name": "default.cpython-311.pyc",
+                    "size": 684,
+                    "time": "2023-10-16T17:56:51CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "__init__.cpython-311.pyc",
+                    "size": 193,
+                    "time": "2023-10-09T16:51:12CEST"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "directory",
+            "name": "plugins",
+            "size": 4096,
+            "time": "2023-10-19T09:06:13CEST",
+            "contents": [
+              {
+                "type": "directory",
+                "name": "plugin_reloader",
+                "size": 4096,
+                "time": "2023-10-17T18:58:38CEST",
+                "contents": [
+                  {
+                    "type": "file",
+                    "name": "CHANGELOG",
+                    "size": 2244,
+                    "time": "2023-10-17T18:58:37CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "configurereloaderbase.ui",
+                    "size": 7110,
+                    "time": "2023-10-17T18:58:37CEST"
+                  },
+                  {
+                    "type": "directory",
+                    "name": "i18n",
+                    "size": 4096,
+                    "time": "2023-10-17T18:58:37CEST",
+                    "contents": [
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_de.qm",
+                        "size": 4031,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_de.ts",
+                        "size": 6771,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_fr.qm",
+                        "size": 4025,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_fr.ts",
+                        "size": 5169,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_it.qm",
+                        "size": 3919,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_it.ts",
+                        "size": 5056,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_pl.qm",
+                        "size": 3689,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader_pl.ts",
+                        "size": 4974,
+                        "time": "2023-10-17T18:58:37CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "plugin_reloader.pro",
+                        "size": 152,
+                        "time": "2023-10-17T18:58:37CEST"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "file",
+                    "name": "__init__.py",
+                    "size": 1134,
+                    "time": "2023-10-17T18:58:37CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "Makefile",
+                    "size": 609,
+                    "time": "2023-10-17T18:58:37CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "metadata.txt",
+                    "size": 1140,
+                    "time": "2023-10-17T18:58:37CEST"
+                  },
+                  {
+                    "type": "directory",
+                    "name": "__pycache__",
+                    "size": 4096,
+                    "time": "2023-10-17T18:58:38CEST",
+                    "contents": [
+                      {
+                        "type": "file",
+                        "name": "__init__.cpython-311.pyc",
+                        "size": 435,
+                        "time": "2023-10-17T18:58:38CEST"
+                      },
+                      {
+                        "type": "file",
+                        "name": "reloader_plugin.cpython-311.pyc",
+                        "size": 19719,
+                        "time": "2023-10-17T18:58:38CEST"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "file",
+                    "name": "reload-conf.png",
+                    "size": 2405,
+                    "time": "2023-10-17T18:58:37CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "reloader_plugin.py",
+                    "size": 11693,
+                    "time": "2023-10-17T18:58:37CEST"
+                  },
+                  {
+                    "type": "file",
+                    "name": "reload.png",
+                    "size": 5322,
+                    "time": "2023-10-17T18:58:37CEST"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "file",
+        "name": "qdt-files.json",
+        "size": 0,
+        "time": "2024-05-30T11:22:06CEST"
+      },
+      {
+        "type": "directory",
+        "name": "QGIS",
+        "size": 4096,
+        "time": "2024-05-29T19:24:44CEST",
+        "contents": [
+          {
+            "type": "file",
+            "name": "QGIS3.ini",
+            "size": 107182,
+            "time": "2024-05-29T19:24:44CEST"
+          }
+        ]
+      },
+      {
+        "type": "file",
+        "name": "qgis-auth.db",
+        "size": 45056,
+        "time": "2023-10-26T10:30:09CEST"
+      },
+      {
+        "type": "file",
+        "name": "qgis.db",
+        "size": 23552,
+        "time": "2024-05-29T19:07:30CEST"
+      },
+      {
+        "type": "file",
+        "name": "symbology-style.db",
+        "size": 860160,
+        "time": "2024-03-20T17:29:55CET"
+      },
+      {
+        "type": "directory",
+        "name": "themes",
+        "size": 4096,
+        "time": "2023-10-09T16:48:25CEST"
+      },
+      {
+        "type": "file",
+        "name": "user-history.db",
+        "size": 24576,
+        "time": "2023-10-24T11:45:24CEST"
+      }
+    ]
+  },
+  {
+    "type": "report",
+    "directories": 43,
+    "files": 117
+  }
+]
