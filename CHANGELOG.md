@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.34.4 - 2024-05-30
+
+### Bugs fixes 🐛
+
+* Improve: qdt files reliability by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/514>
+
 ## 0.34.3 - 2024-05-29
 
 ### Bugs fixes 🐛
