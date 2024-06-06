@@ -151,7 +151,7 @@ class QgisPlugin:
         )
 
         # read it
-        with plugin_metadata_txt.open() as config_file:
+        with plugin_metadata_txt.open(encoding="UTF-8") as config_file:
             config = configparser.ConfigParser(strict=False)
             config.read_file(config_file)
         plugin_md_as_dict = {k: v for k, v in config.items(section="general")}
@@ -181,7 +181,7 @@ class QgisPlugin:
             zip_path = zipfile.Path(zf)
             metadata_file = zip_path / i.filename
             plugin_folder_name = metadata_file.parent.name
-            with metadata_file.open() as config_file:
+            with metadata_file.open(encoding="UTF-8") as config_file:
                 config = configparser.ConfigParser(strict=False)
                 config.read_file(config_file)
 

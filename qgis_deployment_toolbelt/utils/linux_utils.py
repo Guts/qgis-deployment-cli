@@ -209,7 +209,7 @@ def set_environment_variable(
                     f"{export_line}\n",
                     f"{qdt_block_comment_end}",
                 )
-                with open(profile_file, "a") as file:
+                with profile_file.open(mode="a", encoding="UTF-8") as file:
                     file.writelines(new_lines)
                 logger.info(
                     f"Nor QDT block and the line: '{export_line}' were present. "
