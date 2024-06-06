@@ -16,6 +16,16 @@ Unreleased
 
 -->
 
+## 0.34.5 - 2024-06-06
+
+### Bugs fixes 🐛
+
+* fix(io): explicitly declare UTF-8 encoding in IO operations by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/520>
+
+### Documentation 📖
+
+* improve(docs): restore linkify (MyST parser extension) by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/516>
+
 ## 0.34.4 - 2024-05-30
 
 ### Bugs fixes 🐛
