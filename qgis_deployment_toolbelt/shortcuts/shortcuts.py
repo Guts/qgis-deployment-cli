@@ -263,7 +263,7 @@ class ApplicationShortcut:
                 raise_error=False,
             )
             if is_config_file_usable:
-                with config_xdg_user_dirs.open("r") as bf_config:
+                with config_xdg_user_dirs.open(mode="r", encoding="UTF-8") as bf_config:
                     data = bf_config.read()
 
                 desktop_paths = re.findall('XDG_DESKTOP_DIR="([^"]*)', data)

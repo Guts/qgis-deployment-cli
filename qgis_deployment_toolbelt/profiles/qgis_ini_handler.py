@@ -627,10 +627,10 @@ class QgisIniHelper:
                 self._backup_section(config_dest, config_src, section, dst.ini_filepath)
                 self._copy_section(config_dest, config_src, section)
             # Write to destination, environnement variable will be interpolated if interpolation enabled
-            with dst.ini_filepath.open("w") as config_file:
+            with dst.ini_filepath.open(mode="w", encoding="UTF-8") as config_file:
                 config_dest.write(config_file)
         else:
-            with dst.ini_filepath.open("w") as config_file:
+            with dst.ini_filepath.open(mode="w", encoding="UTF-8") as config_file:
                 config_src.write(config_file)
 
 

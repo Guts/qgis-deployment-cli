@@ -46,7 +46,7 @@ class ScenarioReader:
         if isinstance(in_yaml, (str, Path)):
             self.input_yaml = self.check_yaml_file(in_yaml)
             # extract data from input file
-            with self.input_yaml.open(mode="r") as bytes_data:
+            with self.input_yaml.open(mode="r", encoding="UTF-8") as bytes_data:
                 self.scenario = yaml.safe_load(bytes_data)
         elif isinstance(in_yaml, BufferedIOBase):
             self.input_yaml = self.check_yaml_buffer(in_yaml)
@@ -74,7 +74,7 @@ class ScenarioReader:
         yaml_path = Path(yaml_path)
 
         # check integrity and structure
-        with yaml_path.open(mode="r") as in_yaml_file:
+        with yaml_path.open(mode="r", encoding="UTF-8") as in_yaml_file:
             try:
                 yaml.safe_load_all(in_yaml_file)
             except yaml.YAMLError as exc:
