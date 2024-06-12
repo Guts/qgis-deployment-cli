@@ -25,10 +25,12 @@ from qgis_deployment_toolbelt.__about__ import (
     __uri_homepage__,
     __version__,
 )
-from qgis_deployment_toolbelt.commands.cmd_rules_context import parser_rules_context_export
+from qgis_deployment_toolbelt.commands.cmd_rules_context import (
+    parser_rules_context_export,
+)
 from qgis_deployment_toolbelt.commands.deployment import parser_main_deployment
-from qgis_deployment_toolbelt.commands.upgrade import parser_upgrade
 from qgis_deployment_toolbelt.commands.extract import parser_extract_from_profile
+from qgis_deployment_toolbelt.commands.upgrade import parser_upgrade
 from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 
 # #############################################################################
@@ -179,7 +181,7 @@ def main(in_args: list[str] = None):
     )
     add_common_arguments(subcmd_rules_context)
     parser_rules_context_export(subcmd_rules_context)
-    
+
     # Extractor
     subcmd_extract = subparsers.add_parser(
         "extract",
