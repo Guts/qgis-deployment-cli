@@ -17,7 +17,6 @@ import os
 import subprocess
 from os import environ, getenv
 from os.path import expanduser, expandvars
-from pathlib import Path
 from shutil import which
 from sys import platform as opersys
 
@@ -29,6 +28,7 @@ from qgis_deployment_toolbelt.constants import (
 )
 from qgis_deployment_toolbelt.exceptions import QgisInstallNotFound
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
+from qgis_deployment_toolbelt.utils.check_path import check_path_exists
 
 # #############################################################################
 # ########## Globals ###############
@@ -80,6 +80,7 @@ class JobQgisInstallationFinder(GenericJob):
 
     def __init__(self, options: dict) -> None:
         """Instantiate the class.
+
         Args:
             options (dict): job options
         """
@@ -111,24 +112,29 @@ class JobQgisInstallationFinder(GenericJob):
 
     # -- INTERNAL LOGIC ------------------------------------------------------
     def run_needed(self) -> bool:
-        """Check if job run is needed
+        """Check if running the job is needed.
 
         Returns:
             bool: return True if job must be run, False otherwise
         """
-        if "QDT_QGIS_EXE_PATH" in os.environ:
-            qgis_bin = environ["QDT_QGIS_EXE_PATH"]
-            if Path(qgis_bin).exists():
-                version_str = self._get_qgis_bin_version(qgis_bin)
+        if qgis_bin_path := getenv("QDT_QGIS_EXE_PATH"):
+            if check_path_exists(input_path=qgis_bin_path, raise_error=False):
+                version_str = self._get_qgis_bin_version(qgis_bin_path)
                 if version_str:
                     logger.info(
-                        f"QDT_QGIS_EXE_PATH defined and path {qgis_bin} exists for QGIS {version_str}. {self.ID} job is skipped. "
+                        f"QDT_QGIS_EXE_PATH defined and path {qgis_bin_path} exists for "
+                        f"QGIS {version_str}. {self.ID} job is skipped. "
                     )
                     return False
                 else:
                     logger.warning(
-                        f"QDT_QGIS_EXE_PATH defined and path {qgis_bin} exists but the QGIS version can't be defined. Check variable."
+                        f"QDT_QGIS_EXE_PATH defined and path {qgis_bin_path} exists but "
+                        "the QGIS version can't be defined. Check environment variable."
                     )
+        logger.debug(
+            "'QDT_QGIS_EXE_PATH' is not defined. "
+            "Searching for QGIS executable is necessary."
+        )
         return True
 
     def get_installed_qgis_path(self) -> str | None:
