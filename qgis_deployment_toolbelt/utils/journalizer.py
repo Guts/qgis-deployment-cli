@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 # ################################
 
 
-def configure_logger(verbosity: int = 1, logfile: Path = None):
+def configure_logger(verbosity: int = 1, logfile: None | Path | str = None):
     """Configure logging according to verbosity from CLI.
 
     Args:
@@ -169,5 +169,5 @@ def get_logger_filepath() -> Path | None:
             if hasattr(handler, "baseFilename"):
                 return Path(handler.baseFilename)
 
-    logger.warning("No file found in ay log handlers.")
+    logger.warning("No file found in any log handlers.")
     return None
