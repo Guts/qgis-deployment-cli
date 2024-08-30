@@ -175,7 +175,7 @@ class GenericJob:
                 continue
 
             logger.debug(
-                f"Checking that profile '{profile.name}' matches deployment conditions."
+                f"Checking that profile '{profile.name}' matches deployment conditions. "
                 f"{len(profile.rules)} rules found."
             )
             try:
