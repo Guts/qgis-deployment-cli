@@ -72,13 +72,13 @@ Here come a few examples on how to reference plugins in a profile:
             "repository_url_xml": "https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml"
         },
         {
-            "folder_name": "internal-qgis-toolbelt",
+            "folder_name": "internal_qgis_tools",
             "location": "remote",
-            "name": "qtoolbelt-internal",
+            "name": "q-common-internal",
             "official_repository": false,
             "repository_url_xml": "https://sigweb.local/qgis/plugins/plugins.xml",
             "plugin_id": 9951,
-            "url": "https://sigweb.local/qgis/plugins/qtoolbelt.2.1.5.zip",
+            "url": "https://sigweb.local/qgis/plugins/qommon-tools.2.1.5.zip",
             "version": "2.1.5"
         }
 
