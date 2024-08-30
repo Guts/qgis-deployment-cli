@@ -15,7 +15,7 @@ import unittest
 from os import environ
 
 # project
-from qgis_deployment_toolbelt.utils import get_proxy_settings
+from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
 
 # ############################################################################
 # ########## Classes #############
