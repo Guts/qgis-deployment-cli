@@ -14,7 +14,6 @@
 # Standard library
 import logging
 import os
-import re
 import subprocess
 from os import environ, getenv
 from os.path import expanduser, expandvars
@@ -23,6 +22,11 @@ from shutil import which
 from sys import platform as opersys
 
 # package
+from qgis_deployment_toolbelt.constants import (
+    RE_QGIS_FINDER_DIR,
+    RE_QGIS_FINDER_EXE,
+    RE_QGIS_FINDER_VERSION,
+)
 from qgis_deployment_toolbelt.exceptions import QgisInstallNotFound
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 
@@ -219,13 +223,12 @@ class JobQgisInstallationFinder(GenericJob):
         Returns:
             str | None: QGIS bin path, None if not found
         """
-        binary_pattern = re.compile(r"qgis(-ltr)?-bin\.exe", re.IGNORECASE)
         # Check if the bin directory exists within this directory
         bin_dir = os.path.join(install_dir, "bin")
         if os.path.exists(bin_dir):
             # Check if any binary file matches the pattern in the bin directory
             for filename in os.listdir(bin_dir):
-                if binary_pattern.match(filename):
+                if RE_QGIS_FINDER_EXE.match(filename):
                     qgis_exe = os.path.join(bin_dir, filename)
                     return qgis_exe
         return None
@@ -255,10 +258,10 @@ class JobQgisInstallationFinder(GenericJob):
 
         # Program files
         prog_file_dir = expandvars("%PROGRAMFILES%")
-        directory_pattern = re.compile(r"QGIS (\d+)\.(\d+)\.(\d+)", re.IGNORECASE)
+
         for dir_name in os.listdir(prog_file_dir):
             # Check if the directory name matches the pattern
-            match = directory_pattern.match(dir_name)
+            match = RE_QGIS_FINDER_DIR.match(dir_name)
             if match:
                 search_paths.append(os.path.join(prog_file_dir, dir_name))
 
@@ -355,8 +358,7 @@ class JobQgisInstallationFinder(GenericJob):
         )
         stdout_, _ = process.communicate()
         version_str = stdout_.decode()
-        version_pattern = r"QGIS (\d+\.\d+\.\d+)-(\w+).*"
-        version_match = re.match(version_pattern, version_str)
+        version_match = RE_QGIS_FINDER_VERSION.match(version_str)
         if version_match:
             return version_match.group(1)
         return None
