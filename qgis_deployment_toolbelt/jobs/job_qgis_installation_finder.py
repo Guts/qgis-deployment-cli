@@ -16,7 +16,8 @@ import logging
 import os
 import re
 import subprocess
-from os.path import expandvars
+from os import environ, getenv
+from os.path import expanduser, expandvars
 from pathlib import Path
 from shutil import which
 from sys import platform as opersys
@@ -45,6 +46,13 @@ class JobQgisInstallationFinder(GenericJob):
 
     ID: str = "qgis-installation-finder"
     OPTIONS_SCHEMA: dict = {
+        "if_not_found": {
+            "type": str,
+            "required": False,
+            "default": "warning",
+            "possible_values": ("warning", "error"),
+            "condition": "in",
+        },
         "version_priority": {
             "type": (list, str),
             "required": False,
@@ -52,12 +60,17 @@ class JobQgisInstallationFinder(GenericJob):
             "possible_values": None,
             "condition": None,
         },
-        "if_not_found": {
-            "type": str,
+        "search_paths": {
+            "type": (list, str),
             "required": False,
-            "default": "warning",
-            "possible_values": ("warning", "error"),
-            "condition": "in",
+            "default": (
+                expandvars("%PROGRAMFILES%"),
+                expandvars(
+                    expanduser(getenv("QDT_OSGEO4W_INSTALL_DIR", "C:\\OSGeo4W"))
+                ),
+            ),
+            "possible_values": None,
+            "condition": None,
         },
     }
 
@@ -100,7 +113,7 @@ class JobQgisInstallationFinder(GenericJob):
             bool: return True if job must be run, False otherwise
         """
         if "QDT_QGIS_EXE_PATH" in os.environ:
-            qgis_bin = os.environ["QDT_QGIS_EXE_PATH"]
+            qgis_bin = environ["QDT_QGIS_EXE_PATH"]
             if Path(qgis_bin).exists():
                 version_str = self._get_qgis_bin_version(qgis_bin)
                 if version_str:
@@ -140,8 +153,8 @@ class JobQgisInstallationFinder(GenericJob):
             version_priority = self.options["version_priority"]
 
         # Add preferred qgis version on top of the list
-        if "QDT_PREFERRED_QGIS_VERSION" in os.environ:
-            version_priority.insert(0, os.environ["QDT_PREFERRED_QGIS_VERSION"])
+        if "QDT_PREFERRED_QGIS_VERSION" in environ:
+            version_priority.insert(0, environ["QDT_PREFERRED_QGIS_VERSION"])
 
         for version in version_priority:
             if latest_matching_version := self._get_latest_matching_version_path(
