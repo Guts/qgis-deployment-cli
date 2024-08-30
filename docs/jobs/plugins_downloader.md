@@ -1,6 +1,6 @@
 # Plugins downloader
 
-This job download plugins into QDT local folder.
+This job download QGIS plugins into QDT local folder.
 
 ----
 
@@ -9,10 +9,11 @@ This job download plugins into QDT local folder.
 Sample job configuration in your scenario file:
 
 ```yaml
-  - name: Synchronize plugins
+  - name: Download plugins to QDT working folder
     uses: qplugins-downloader
     with:
       force: false
+      threads: 5
 ```
 
 ----
@@ -26,7 +27,7 @@ Controls download mode.
 Possible_values:
 
 - `false` (_default_): download only plugins which are not present into the local QDT folder
-- `true`: download every plugin referenced in profile.json files into the local QDT folder, even if the archive is already here
+- `true`: download every plugin referenced in profile.json files into the local QDT folder, even if the archive is already here. Useful when a previous download failed and the local file is corrupted.
 
 ### threads
 
@@ -34,7 +35,7 @@ Number of threads to use for downloading.
 
 Possible_values:
 
-- `1`: do not use multi-thread but download plugins synchroneously
+- `1`: do not use multi-thread but download plugins synchroneously. useful if things go wrong during plugins download.
 - `2`, `3`, `4` or `5` (_default_): number of threads to parallelize plugins download
 
 ----
@@ -43,7 +44,7 @@ Possible_values:
 
 ### Specify the file to use in the `profile.json`
 
-Add the image file to the profile folder and specify the relative filepath under the `splash` attribute:
+Here come a few examples on how to reference plugins in a profile:
 
 ```json
 {
@@ -69,7 +70,18 @@ Add the image file to the profile folder and specify the relative filepath under
             "location": "remote",
             "official_repository": false,
             "repository_url_xml": "https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml"
+        },
+        {
+            "folder_name": "internal-qgis-toolbelt",
+            "location": "remote",
+            "name": "qtoolbelt-internal",
+            "official_repository": false,
+            "repository_url_xml": "https://sigweb.local/qgis/plugins/plugins.xml",
+            "plugin_id": 9951,
+            "url": "https://sigweb.local/qgis/plugins/qtoolbelt.2.1.5.zip",
+            "version": "2.1.5"
         }
+
     [...]
 }
 ```
