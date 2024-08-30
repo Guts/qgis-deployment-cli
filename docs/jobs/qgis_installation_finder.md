@@ -25,6 +25,8 @@ Sample job configuration in your scenario file:
   with:
     version_priority:
       - "3.36"
+    search_paths:
+      - D:\\Applications\\QGIS\\
     if_not_found: error
 ```
 
@@ -55,6 +57,32 @@ If any version of `version_priority` is available, then the most recent version 
 
 The environment variable `QDT_PREFERRED_QGIS_VERSION` is used as top priority if defined.
 
+### search_paths
+
+By default QDT search for QGIS on hard coded directories for Windows :
+
+- `%PROGRAMFILES%\\QGIS x.y.z\\bin\`
+- `%QDT_OSGEO4W_INSTALL_DIR%` (default value : `C:\\OSGeo4W`)
+
+This option can be used to define other search paths.
+
+The order of the paths is used to define which path will be used in case of multiple installation for same QGIS version.
+
+For example if you define:
+
+```yaml
+- name: Find installed QGIS
+  uses: qgis-installation-finder
+  with:
+    version_priority:
+      - "3.36"
+    search_paths:
+      - D:/Install/QGIS 3.36
+      - D:/OtherInstall/QGIS 3.36
+```
+
+QDT will find two installation for version 3.36 but the first available in `search_paths` will be used (`D:/Install/QGIS 3.36` in our case).
+
 ### if_not_found
 
 This option determines the action to be taken if QGIS is not found during the search process.
@@ -68,11 +96,14 @@ Possible_values:
 
 ## How does it work
 
-On Linux, QDT locates installed QGIS with `which` command.  
+On Linux, QDT locates installed QGIS with `which` command and will search for available installation with the `search_paths` option.
+
 On Windows QDT tries to locate installed versions in the following directories:
 
 - `%PROGRAMFILES%\\QGIS x.y.z\\bin\`
 - `%QDT_OSGEO4W_INSTALL_DIR%` (default value : `C:\\OSGeo4W`)
+
+QDT will also use the `search_paths` option to search in other paths.
 
 By default, the most recent version found is used.
 
