@@ -138,7 +138,7 @@ class JobQgisInstallationFinder(GenericJob):
         return True
 
     def get_installed_qgis_path(self) -> str | None:
-        """Get list of installed qgis
+        """Get list of installed QGIS executables.
 
         Returns:
             str | None : installed qgis path
@@ -152,7 +152,7 @@ class JobQgisInstallationFinder(GenericJob):
         if len(found_versions) == 0:
             return None
 
-        logger.debug(f"Found installed QGIS : {found_versions}")
+        logger.debug(f"Found installed QGIS: {found_versions}")
         latest_version = self._get_latest_version_from_list(
             versions=list(found_versions.keys())
         )
@@ -181,7 +181,7 @@ class JobQgisInstallationFinder(GenericJob):
 
     @staticmethod
     def _get_latest_version_from_list(versions: list[str]) -> str | None:
-        """Get latest version from a list, OSGEO4W are last
+        """Get latest version from a list, OSGEO4W are last.
 
         Args:
             versions (list[str]): list of found version
@@ -193,13 +193,14 @@ class JobQgisInstallationFinder(GenericJob):
             used_version = versions
             used_version.sort(reverse=True)
             return used_version[0]
+
         return None
 
     @staticmethod
     def _get_latest_matching_version_path(
         found_versions: dict[str, str], version: str
     ) -> str | None:
-        """Get latest version path matching a wanted version
+        """Get latest version path matching a wanted version.
 
         Args:
             found_versions (dict[str, str]): dict of found versions
@@ -221,7 +222,7 @@ class JobQgisInstallationFinder(GenericJob):
 
     @staticmethod
     def _get_qgis_bin_in_install_dir(install_dir: str) -> str | None:
-        """Get QGIS binary path from an install directory
+        """Get QGIS binary path from an install directory.
 
         Args:
             install_dir (str): install directory
