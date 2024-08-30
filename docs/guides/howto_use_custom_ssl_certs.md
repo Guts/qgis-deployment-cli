@@ -27,7 +27,7 @@ At the shell session scope:
 
 ## Using native system certificates store
 
-If the `QDT_SSL_USE_SYSTEM_STORES` environment variable is set to `True`, HTTPS requests rely on the native system certificates store.
+If the `QDT_SSL_USE_SYSTEM_STORES` environment variable is set to `true`, HTTPS requests rely on the native system certificates store.
 
 :::{note}
 If enabled, this environment variable take precedence over `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` which are ignored.
@@ -38,12 +38,12 @@ If enabled, this environment variable take precedence over `REQUESTS_CA_BUNDLE` 
 Only for the QDT command scope:
 
 ```powershell
-$env:QDT_SSL_USE_SYSTEM_STORES=true; qdt -vvv
+$env:QDT_SSL_USE_SYSTEM_STORES='true'; qdt -vvv
 ```
 
 At the shell session scope:
 
 ```powershell
-> $env:QDT_SSL_USE_SYSTEM_STORES=true
+> $env:QDT_SSL_USE_SYSTEM_STORES='true'
 > qdt -vvv
 ```
