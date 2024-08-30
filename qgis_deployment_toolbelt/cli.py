@@ -32,10 +32,6 @@ from qgis_deployment_toolbelt.commands.deployment import parser_main_deployment
 from qgis_deployment_toolbelt.commands.upgrade import parser_upgrade
 from qgis_deployment_toolbelt.utils.journalizer import configure_logger
 
-# #############################################################################
-# ########## Globals ###############
-# ##################################
-
 # ############################################################################
 # ########## FUNCTIONS ###########
 # ################################
@@ -84,7 +80,7 @@ def add_common_arguments(
 def set_default_subparser(
     parser_to_update: argparse.ArgumentParser,
     default_subparser_name: str,
-    args: list = None,
+    args: list | None = None,
 ):
     """Set a default subparser to a parent parser. Call after setup and just before
         parse_args().
