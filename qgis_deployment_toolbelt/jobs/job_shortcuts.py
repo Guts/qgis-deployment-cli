@@ -19,7 +19,7 @@ from pathlib import Path
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.profiles.qdt_profile import QdtProfile
-from qgis_deployment_toolbelt.shortcuts import ApplicationShortcut
+from qgis_deployment_toolbelt.shortcuts.shortcuts_handler import ApplicationShortcut
 
 # #############################################################################
 # ########## Globals ###############

@@ -56,19 +56,26 @@ class ApplicationShortcut:
         self,
         name: str,
         exec_path: str | Path,
-        exec_arguments: Iterable[str] = None,
-        description: str = None,
-        icon_path: str | Path = None,
-        work_dir: str | Path = None,
+        exec_arguments: Iterable[str] | None = None,
+        description: str | None = None,
+        icon_path: str | Path | None = None,
+        work_dir: str | Path | None = None,
     ):
         """Initialize a shortcut object.
 
-        :param str name: name of the shortcut that will be created
-        :param Union[str, Path] exec_path: path to the executable (which should exist)
-        :param Iterable[str] exec_arguments: list of arguments and options to pass to the executable, defaults to None
-        :param str description: shortcut description, defaults to None
-        :param Union[str, Path] icon_path: path to icon file, defaults to None
-        :param Union[str, Path] work_dir: current folder where to start the executable, defaults to None. In QDT, it's the profile folder.
+        Args:
+            name (str): name of the shortcut that will be created
+            exec_path (str | Path): path to the executable (which should exist)
+            exec_arguments (Iterable[str] | None, optional): list of arguments and \
+                options to pass to the executable. Defaults to None.
+            description (str | None, optional): shortcut description. Defaults to None.
+            icon_path (str | Path | None, optional): path to icon file. Defaults to None.
+            work_dir (str | Path | None, optional): current folder where to start the \
+                executable. Defaults to None. In QDT, it's the profile folder.
+
+        Raises:
+            ValueError: if shortcut name contains invalid characters (depending on \
+                operating system)
         """
         # retrieve operating system specific configuration
         self.os_config = OSConfiguration.from_opersys()

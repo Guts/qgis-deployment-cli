@@ -10,12 +10,13 @@
         python -m unittest tests.test_shortcuts.TestShortcut.test_shortcut_creation
 """
 
+# standard lib
 import unittest
 from pathlib import Path
 from sys import platform as opersys
 
 # project
-from qgis_deployment_toolbelt.shortcuts import ApplicationShortcut
+from qgis_deployment_toolbelt.shortcuts.shortcuts_handler import ApplicationShortcut
 
 # ############################################################################
 # ########## Classes #############
