@@ -12,7 +12,7 @@ from pathlib import Path
 
 # 3rd party
 import truststore
-from requests import Session
+from requests import Response, Session
 from requests.exceptions import ConnectionError, HTTPError
 from requests.utils import requote_uri
 
@@ -44,7 +44,8 @@ def download_remote_file_to_local(
     user_agent: str = f"{__title_clean__}/{__version__}",
     content_type: str | None = None,
     chunk_size: int = 8192,
-    timeout=(800, 800),
+    timeout: tuple[int, int] = (800, 800),
+    use_stream: bool = True,
 ) -> Path:
     """Check if the local index file exists. If not, download the search index from \
         remote URL. If it does exist, check if it has been modified.
@@ -57,7 +58,8 @@ def download_remote_file_to_local(
         content_type (str | None, optional): HTTP content-type. Defaults to None.
         chunk_size (int, optional): size of each chunk to read and write in bytes. \
             Defaults to 8192.
-        timeout (tuple, optional): custom timeout (request, response). Defaults to (800, 800).
+        timeout (tuple[int, int], optional): custom timeout (request, response). Defaults to (800, 800).
+        use_stream (bool, optional): Option to enable/disable streaming download. Defaults to True.
 
     Returns:
         Path: path to the local file (should be the same as local_file_path)
@@ -84,11 +86,15 @@ def download_remote_file_to_local(
                 url=requote_uri(remote_url_to_download), stream=True, timeout=timeout
             ) as req:
                 req.raise_for_status()
+                if use_stream:
+                    with local_file_path.open(mode="wb") as buffile:
+                        for chunk in req.iter_content(chunk_size=chunk_size):
+                            if chunk:
+                                buffile.write(chunk)
+                else:
+                    # Download download the entire content at once
+                    local_file_path.write_bytes(req.content)
 
-                with local_file_path.open(mode="wb") as buffile:
-                    for chunk in req.iter_content(chunk_size=chunk_size):
-                        if chunk:
-                            buffile.write(chunk)
             logger.info(
                 f"Downloading {remote_url_to_download} to {local_file_path} "
                 f"({convert_octets(local_file_path.stat().st_size)}) succeeded."
@@ -96,8 +102,18 @@ def download_remote_file_to_local(
     except HTTPError as error:
         logger.error(
             f"Downloading {remote_url_to_download} to {local_file_path} failed. "
-            f"Cause: HTTPError. Trace: {error}"
+            f"Cause: HTTPError. Trace: {error}."
         )
+        if isinstance(req, Response):
+            http_error_details = {
+                "status": req.status_code,
+                "headers": req.headers,
+                "body": req.content,
+            }
+            logger.error(
+                f"Addtional details grabbed from HTTP response: {http_error_details}"
+            )
+
         raise error
     except ConnectionError as error:
         logger.error(

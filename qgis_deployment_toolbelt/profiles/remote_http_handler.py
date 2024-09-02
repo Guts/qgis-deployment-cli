@@ -15,6 +15,7 @@
 # Standard library
 import logging
 from concurrent.futures import ThreadPoolExecutor
+from os import getenv
 from pathlib import Path
 from shutil import rmtree
 
@@ -29,6 +30,7 @@ from qgis_deployment_toolbelt.profiles.profiles_handler_base import (
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 from qgis_deployment_toolbelt.utils.formatters import url_ensure_trailing_slash
 from qgis_deployment_toolbelt.utils.proxies import get_proxy_settings
+from qgis_deployment_toolbelt.utils.str2bool import str2bool
 from qgis_deployment_toolbelt.utils.tree_files_reader import tree_to_download_list
 
 # #############################################################################
@@ -154,6 +156,7 @@ class HttpHandler(RemoteProfilesHandlerBase):
                         # func parameters
                         local_file_path=target_folder.joinpath(file_to_download),
                         remote_url_to_download=f"{base_url}{file_to_download}",
+                        use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
                     )
                     downloaded_files.append(
                         (

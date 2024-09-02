@@ -29,6 +29,7 @@ from qgis_deployment_toolbelt.utils.bouncer import exit_cli_error, exit_cli_succ
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
 from qgis_deployment_toolbelt.utils.slugger import sluggy
+from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # #############################################################################
 # ########## Globals ###############
@@ -73,6 +74,7 @@ def get_remote_scenario_from_url(remote_url: str) -> Path:
             get_qdt_working_directory().parent,
             local_filepath_for_remote_scenario,
         ),
+        use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
     )
 
 

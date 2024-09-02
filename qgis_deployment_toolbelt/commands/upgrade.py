@@ -273,6 +273,7 @@ def run(args: argparse.Namespace):
             remote_url_to_download=remote_url,
             local_file_path=dest_filepath,
             content_type=remote_content_type,
+            use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
         )
     except Exception as err:
         exit_cli_error(f"Download new version failed. Trace: {err}")

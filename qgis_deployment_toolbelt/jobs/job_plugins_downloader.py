@@ -14,6 +14,7 @@
 # Standard library
 import logging
 from concurrent.futures import ThreadPoolExecutor
+from os import getenv
 from pathlib import Path
 from shutil import copy2
 
@@ -23,6 +24,7 @@ from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
 from qgis_deployment_toolbelt.plugins.plugin import QgisPlugin
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_to_local
+from qgis_deployment_toolbelt.utils.str2bool import str2bool
 
 # #############################################################################
 # ########## Globals ###############
@@ -233,6 +235,7 @@ class JobPluginsDownloader(GenericJob):
                         local_file_path=plugin_download_path,
                         remote_url_to_download=plugin.download_url,
                         content_type="application/zip",
+                        use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
                     )
                     logger.info(
                         f"Plugin {plugin.name} from {plugin.download_url} "
@@ -267,6 +270,7 @@ class JobPluginsDownloader(GenericJob):
                             local_file_path=plugin_download_path,
                             remote_url_to_download=plugin.download_url,
                             content_type="application/zip",
+                            use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
                         )
                         downloaded_plugins.append(plugin)
                     except Exception as err:
