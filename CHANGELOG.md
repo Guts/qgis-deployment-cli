@@ -16,6 +16,23 @@ Unreleased
 
 -->
 
+## 0.35.0 - 2024-09-02
+
+### Features and enhancements 🎉
+
+* refacto(cleanup): fix some type hints and relative imports by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/540>
+* feature(downloader): add option to control over stream mode by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/541>
+* Enhancement: rename shortcut module and improve docstring/type hints consistency by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/543>
+* feature(downloader): add option to disable SSL verification by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/544>
+
+### Tooling 🔧
+
+* update(packaging): use Python 3.12 to build packages by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/542>
+
+### Documentation 📖
+
+* fix(docs): value must be quoted in PowerShell command to set env vars by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/536>
+
 ## 0.34.5 - 2024-06-06
 
 ### Bugs fixes 🐛
