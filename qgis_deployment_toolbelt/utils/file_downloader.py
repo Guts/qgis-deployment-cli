@@ -84,11 +84,15 @@ def download_remote_file_to_local(
                 url=requote_uri(remote_url_to_download), stream=True, timeout=timeout
             ) as req:
                 req.raise_for_status()
+                if str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)):
+                    with local_file_path.open(mode="wb") as buffile:
+                        for chunk in req.iter_content(chunk_size=chunk_size):
+                            if chunk:
+                                buffile.write(chunk)
+                else:
+                    # Download download the entire content at once
+                    local_file_path.write_bytes(req.content)
 
-                with local_file_path.open(mode="wb") as buffile:
-                    for chunk in req.iter_content(chunk_size=chunk_size):
-                        if chunk:
-                            buffile.write(chunk)
             logger.info(
                 f"Downloading {remote_url_to_download} to {local_file_path} "
                 f"({convert_octets(local_file_path.stat().st_size)}) succeeded."
