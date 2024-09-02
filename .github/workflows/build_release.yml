@@ -23,7 +23,7 @@ on:
 # Globals
 env:
   PROJECT_FOLDER: "qgis_deployment_toolbelt"
-  PYTHON_VERSION: "3.11"
+  PYTHON_VERSION: "3.12"
   PYINSTALLER_LOG_LEVEL: "DEBUG"
 
 # Jobs definition
@@ -180,7 +180,11 @@ jobs:
   release:
     name: "🚀 GitHub Release"
     runs-on: ubuntu-latest
-    needs: [build-macos, build-python-wheel, build-ubuntu, build-windows]
+    needs:
+      - build-macos
+      - build-python-wheel
+      - build-ubuntu
+      - build-windows
     permissions:
       contents: write
       discussions: write
@@ -223,7 +227,8 @@ jobs:
   release-pypi:
     name: "🐍 Release on PyPI"
     runs-on: ubuntu-latest
-    needs: [build-python-wheel]
+    needs:
+        - build-python-wheel
     environment:
       name: pypi
       url: https://pypi.org/p/qgis-deployment-toolbelt
@@ -258,7 +263,9 @@ jobs:
   release-ghcr:
     name: "🐳 Release as Docker container"
     runs-on: ubuntu-latest
-    needs: [release, release-pypi]
+    needs:
+      - release
+      - release-pypi
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
