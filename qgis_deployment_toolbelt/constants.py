@@ -37,6 +37,10 @@ logger = logging.getLogger(__name__)
 # defaults
 DEFAULT_QDT_WORKING_FOLDER = Path.home().joinpath(".cache/qgis-deployment-toolbelt")
 
+# QGIS executable filenames
+QGIS_BIN_WINDOWS_FILENAME: str = "qgis-bin.exe"
+QGIS_LTR_BIN_WINDOWS_FILENAME: str = "qgis-ltr-bin.exe"
+
 # Operating systems
 SUPPORTED_OPERATING_SYSTEMS_CODENAMES: tuple[str, ...] = ("darwin", "linux", "win32")
 

@@ -27,14 +27,15 @@ if opersys == "win32":
     import pythoncom
     import win32com.client
     from win32comext.shell import shell, shellcon
-elif opersys == "linux":
-    import distro
-else:
-    pass
+
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
-from qgis_deployment_toolbelt.constants import OSConfiguration
+from qgis_deployment_toolbelt.constants import (
+    QGIS_BIN_WINDOWS_FILENAME,
+    QGIS_LTR_BIN_WINDOWS_FILENAME,
+    OSConfiguration,
+)
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 
@@ -56,19 +57,26 @@ class ApplicationShortcut:
         self,
         name: str,
         exec_path: str | Path,
-        exec_arguments: Iterable[str] = None,
-        description: str = None,
-        icon_path: str | Path = None,
-        work_dir: str | Path = None,
+        exec_arguments: Iterable[str] | None = None,
+        description: str | None = None,
+        icon_path: str | Path | None = None,
+        work_dir: str | Path | None = None,
     ):
         """Initialize a shortcut object.
 
-        :param str name: name of the shortcut that will be created
-        :param Union[str, Path] exec_path: path to the executable (which should exist)
-        :param Iterable[str] exec_arguments: list of arguments and options to pass to the executable, defaults to None
-        :param str description: shortcut description, defaults to None
-        :param Union[str, Path] icon_path: path to icon file, defaults to None
-        :param Union[str, Path] work_dir: current folder where to start the executable, defaults to None. In QDT, it's the profile folder.
+        Args:
+            name (str): name of the shortcut that will be created
+            exec_path (str | Path): path to the executable (which should exist)
+            exec_arguments (Iterable[str] | None, optional): list of arguments and \
+                options to pass to the executable. Defaults to None.
+            description (str | None, optional): shortcut description. Defaults to None.
+            icon_path (str | Path | None, optional): path to icon file. Defaults to None.
+            work_dir (str | Path | None, optional): current folder where to start the \
+                executable. Defaults to None. In QDT, it's the profile folder.
+
+        Raises:
+            ValueError: if shortcut name contains invalid characters (depending on \
+                operating system)
         """
         # retrieve operating system specific configuration
         self.os_config = OSConfiguration.from_opersys()
@@ -87,25 +95,27 @@ class ApplicationShortcut:
             if not self.exec_path.exists():
                 # helper to handle common typo error on executable name on Windows
                 if (
-                    self.exec_path.name.endswith("qgis-bin.exe")
-                    and self.exec_path.with_name("qgis-ltr-bin.exe").exists()
+                    self.exec_path.name.endswith(QGIS_BIN_WINDOWS_FILENAME)
+                    and self.exec_path.with_name(QGIS_LTR_BIN_WINDOWS_FILENAME).exists()
                 ):
                     logger.warning(
                         f"Executable set does not exist: {self.exec_path} "
                         f"but {self.exec_path.with_name('qgis-ltr-bin.exe')} does, so "
                         "this one will be used instead. Check and fix your scenario."
                     )
-                    self.exec_path = self.exec_path.with_name("qgis-ltr-bin.exe")
+                    self.exec_path = self.exec_path.with_name(
+                        QGIS_LTR_BIN_WINDOWS_FILENAME
+                    )
                 elif (
-                    self.exec_path.name.endswith("qgis-ltr-bin.exe")
-                    and self.exec_path.with_name("qgis-bin.exe").exists()
+                    self.exec_path.name.endswith(QGIS_LTR_BIN_WINDOWS_FILENAME)
+                    and self.exec_path.with_name(QGIS_BIN_WINDOWS_FILENAME).exists()
                 ):
                     logger.warning(
                         f"Executable set does not exist: {self.exec_path} "
                         f"but {self.exec_path.with_name('qgis-bin.exe')} does, so "
                         "this one will be used instead. Check and fix your scenario."
                     )
-                    self.exec_path = self.exec_path.with_name("qgis-bin.exe")
+                    self.exec_path = self.exec_path.with_name(QGIS_BIN_WINDOWS_FILENAME)
                 else:
                     logger.warning(
                         f"Executable does not exist: {self.exec_path}. "
@@ -146,13 +156,20 @@ class ApplicationShortcut:
         self,
         desktop: bool = False,
         start_menu: bool = False,
-    ) -> tuple[str, str]:
-        """Creates Shortcut
+    ) -> tuple[Path | None, Path | None]:
+        """Creates shortcuts.
 
-        :param bool desktop: True to generate a Desktop shortcut, defaults to False
-        :param bool start_menu: True to generate a 'Start Menu' shortcut, defaults to False
+        Args:
+            desktop (bool, optional): True to generate a Desktop shortcut. \
+                Defaults to False.
+            start_menu (bool, optional): True to generate a 'Start Menu' shortcut. \
+                Defaults to False.
 
-        :return Tuple[str, str]: desktop and startmenu path
+        Raises:
+            TypeError: if options are not booleans
+
+        Returns:
+            tuple[Path, Path]: desktop and startmenu path
         """
         if isinstance(desktop, bool):
             self.desktop = desktop
@@ -177,28 +194,31 @@ class ApplicationShortcut:
         elif opersys == "linux":
             return self.freedesktop_create()
         else:
-            pass
+            return (None, None)
 
-    def check_exec_arguments(
-        self, exec_arguments: Iterable[str] | None
-    ) -> tuple[str] | None:
+    def check_exec_arguments(self, exec_arguments: Iterable[str] | None) -> str | None:
         """Check if exec_arguments are valid.
 
-        :param Union[Iterable[str], None] exec_arguments: input executable arguments to check
+        Args:
+            exec_arguments (Iterable[str] | None): input executable arguments to check
 
-        :return Union[Tuple[str], None]: tuple of arguments
+        Returns:
+            str | None: str of arguments
         """
         if not exec_arguments:
             return None
-        # store as path
+
+        # iterate and separate with spaces
         return " ".join(exec_arguments)
 
     def check_icon_path(self, icon_path: str | Path | None) -> Path | None:
         """Check icon path and return full path if it exists.
 
-        :param Union[str, Path] icon_path: input icon path to check
+        Args:
+            icon_path (str | Path | None): input icon path to check
 
-        :return Union[Path, None]: icon path as Path if str or Path, else None
+        Returns:
+            Path | None: icon path as Path if str or Path, else None
         """
         if icon_path is None:
             logger.debug(
@@ -223,9 +243,11 @@ class ApplicationShortcut:
     def check_work_dir(self, work_dir: str | Path | None) -> Path | None:
         """Check work dir and return full path if it exists.
 
-        :param Union[str, Path] work_dir: input work dir to check
+        Args:
+            work_dir (str | Path | None): input work dir to check
 
-        :return Union[Path, None]: work dir as Path if str or Path, else None
+        Returns:
+            Path | None: work dir as Path if str or Path, else None
         """
         if not work_dir:
             return None
@@ -281,7 +303,7 @@ class ApplicationShortcut:
             return default_value
 
     @property
-    def homedir_path(self) -> Path:
+    def homedir_path(self) -> Path | None:
         """Return home directory.
 
         For Windows, note that we return `CSIDL_PROFILE`, not `CSIDL_APPDATA`,
@@ -289,7 +311,8 @@ class ApplicationShortcut:
         See: https://www.nirsoft.net/articles/find_special_folder_location.html
         TODO: evaluate use of platformdirs
 
-        :return Path: path to the user home
+        Returns:
+            Path | None: path to the user home
         """
         if opersys == "win32":
             return Path(shell.SHGetFolderPath(0, shellcon.CSIDL_PROFILE, 0, 0))
@@ -312,30 +335,30 @@ class ApplicationShortcut:
             return None
 
     @property
-    def startmenu_path(self) -> Path:
+    def startmenu_path(self) -> Path | None:
         """Return user Start Menu Programs folder.
 
         For Windows, note that we return `CSIDL_PROGRAMS` not `CSIDL_COMMON_PROGRAMS`.
 
-        :return Path: path to the Start Menu Programs folder
+        Returns:
+            Path: path to the Start Menu Programs folder
         """
         if opersys == "win32":
             return Path(shell.SHGetFolderPath(0, shellcon.CSIDL_PROGRAMS, None, 0))
-        elif opersys == "linux":
-            return self.homedir_path / ".local/share/applications"
-        elif opersys == "darwin":
-            return self.homedir_path / ".local/share/applications"
+        elif opersys in ("darwin", "linux"):
+            if isinstance(self.homedir_path, Path):
+                return self.homedir_path / ".local/share/applications"
+            return None
         else:
             logger.error(f"Unrecognized operating system: {opersys}.")
             return None
 
     # -- PRIVATE --------------------------------------------------------------
-
     def freedesktop_create(self) -> tuple[Path | None, Path | None]:
         """Creates shortcut on distributions using FreeDesktop.
 
-        :return: desktop and startmenu path
-        :rtype: Tuple[Union[Path, None], Union[Path, None]]
+        Returns:
+            tuple[Path | None, Path | None]: desktop and startmenu path
         """
         # grab shortcut template depending if we are in frozen mode
         # (typically PyInstaller) or as "normal" Python
@@ -406,7 +429,7 @@ class ApplicationShortcut:
             shortcut_desktop_path = None
 
         # create required shortcut
-        if self.start_menu:
+        if self.start_menu and isinstance(self.startmenu_path, Path):
             self.startmenu_path.mkdir(parents=True, exist_ok=True)
             # create shortcut
             shortcut_start_menu_path = Path(
@@ -427,8 +450,8 @@ class ApplicationShortcut:
     def win32_create(self) -> tuple[Path | None, Path | None]:
         """Creates shortcut on Windows.
 
-        :return: desktop and startmenu path
-        :rtype: Tuple[Union[Path, None], Union[Path, None]]
+        Returns:
+            tuple[Path | None, Path | None]: desktop and startmenu path
         """
         # variable
         _WSHELL = win32com.client.Dispatch("Wscript.Shell", pythoncom.CoInitialize())
@@ -464,7 +487,7 @@ class ApplicationShortcut:
             shortcut_desktop_path = None
 
         # start menu shortcut
-        if self.start_menu:
+        if self.start_menu and isinstance(self.startmenu_path, Path):
             shortcut_start_menu_path = (
                 self.startmenu_path / f"{self.name}{self.os_config.shortcut_extension}"
             )
@@ -487,31 +510,3 @@ class ApplicationShortcut:
             shortcut_start_menu_path = None
 
         return (shortcut_desktop_path, shortcut_start_menu_path)
-
-
-# #############################################################################
-# ##### Stand alone program ########
-# ##################################
-
-if __name__ == "__main__":
-    """Standalone execution."""
-    if opersys == "linux" and distro.name() in ("Ubuntu", "Kubuntu"):
-        qgis_shortcut = ApplicationShortcut(
-            "QDT",
-            exec_path="/home/jmo/.local/bin/qdeploy-toolbelt",
-            exec_arguments=[
-                "-v",
-            ],
-            description="Launch QGIS Deployment Toolbelt with the scenario located "
-            "into the local repository.",
-            work_dir=Path(__file__).parent.parent,
-        )
-
-        print(
-            type(qgis_shortcut.homedir_path),
-            qgis_shortcut.homedir_path,
-        )
-        print(type(qgis_shortcut.desktop_path), qgis_shortcut.desktop_path)
-        print(type(qgis_shortcut.startmenu_path), qgis_shortcut.startmenu_path)
-
-        qgis_shortcut.create()
