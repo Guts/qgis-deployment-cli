@@ -196,20 +196,19 @@ class ApplicationShortcut:
         else:
             return (None, None)
 
-    def check_exec_arguments(
-        self, exec_arguments: Iterable[str] | None
-    ) -> tuple[str] | None:
+    def check_exec_arguments(self, exec_arguments: Iterable[str] | None) -> str | None:
         """Check if exec_arguments are valid.
 
         Args:
             exec_arguments (Iterable[str] | None): input executable arguments to check
 
         Returns:
-            tuple[str] | None: tuple of arguments
+            str | None: str of arguments
         """
         if not exec_arguments:
             return None
-        # store as path
+
+        # iterate and separate with spaces
         return " ".join(exec_arguments)
 
     def check_icon_path(self, icon_path: str | Path | None) -> Path | None:
