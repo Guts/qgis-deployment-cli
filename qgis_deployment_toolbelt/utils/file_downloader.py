@@ -44,7 +44,8 @@ def download_remote_file_to_local(
     user_agent: str = f"{__title_clean__}/{__version__}",
     content_type: str | None = None,
     chunk_size: int = 8192,
-    timeout=(800, 800),
+    timeout: tuple[int, int] = (800, 800),
+    use_stream: bool = True,
 ) -> Path:
     """Check if the local index file exists. If not, download the search index from \
         remote URL. If it does exist, check if it has been modified.
@@ -57,7 +58,8 @@ def download_remote_file_to_local(
         content_type (str | None, optional): HTTP content-type. Defaults to None.
         chunk_size (int, optional): size of each chunk to read and write in bytes. \
             Defaults to 8192.
-        timeout (tuple, optional): custom timeout (request, response). Defaults to (800, 800).
+        timeout (tuple[int, int], optional): custom timeout (request, response). Defaults to (800, 800).
+        use_stream (bool, optional): Option to enable/disable streaming download. Defaults to True.
 
     Returns:
         Path: path to the local file (should be the same as local_file_path)
@@ -84,7 +86,7 @@ def download_remote_file_to_local(
                 url=requote_uri(remote_url_to_download), stream=True, timeout=timeout
             ) as req:
                 req.raise_for_status()
-                if str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)):
+                if use_stream:
                     with local_file_path.open(mode="wb") as buffile:
                         for chunk in req.iter_content(chunk_size=chunk_size):
                             if chunk:

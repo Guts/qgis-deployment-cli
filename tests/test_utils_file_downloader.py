@@ -13,7 +13,6 @@
 # standard library
 import tempfile
 import unittest
-from os import environ
 from pathlib import Path
 
 # 3rd party
@@ -45,7 +44,6 @@ class TestUtilsFileDownloader(unittest.TestCase):
             self.assertTrue(downloaded_file.is_file())
 
         # disabling stream mode
-        environ["QDT_STREAMED_DOWNLOADS"] = "false"
         with tempfile.TemporaryDirectory(
             prefix="qdt_test_downloader_nostream_", ignore_cleanup_errors=True
         ) as tmpdirname:
@@ -53,11 +51,11 @@ class TestUtilsFileDownloader(unittest.TestCase):
             downloaded_file = download_remote_file_to_local(
                 remote_url_to_download="https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/README.md",
                 local_file_path=Path(tmpdirname).joinpath("README_from_remote.md"),
+                use_stream=False,
             )
             self.assertIsInstance(downloaded_file, Path)
             self.assertTrue(downloaded_file.exists())
             self.assertTrue(downloaded_file.is_file())
-        environ["QDT_STREAMED_DOWNLOADS"] = "true"
 
     def test_download_file_raise_http_error(self):
         """Test download handling an HTTP error."""
