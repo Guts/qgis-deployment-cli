@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.35.1 - 2024-09-02
+
+### Features and enhancements 🎉
+
+* feature(downloader): add option to disable SSL verification by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/544>
+
 ## 0.35.0 - 2024-09-02
 
 ### Features and enhancements 🎉
@@ -23,7 +29,6 @@ Unreleased
 * refacto(cleanup): fix some type hints and relative imports by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/540>
 * feature(downloader): add option to control over stream mode by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/541>
 * Enhancement: rename shortcut module and improve docstring/type hints consistency by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/543>
-* feature(downloader): add option to disable SSL verification by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/544>
 
 ### Tooling 🔧
 
