@@ -23,10 +23,11 @@ Some others parameters can be set using environment variables.
 | :------------------ | :----------------------: | :----------------: |
 | `QDT_LOCAL_WORK_DIR` | Local folder where QDT download remote resources (profiles, plugins, etc.) | `~/.cache/qgis-deployment-toolbelt/default/` |
 | `QDT_LOGS_DIR` | Folder where QDT writes the log files, which are automatically rotated. | `~/.cache/qgis-deployment-toolbelt/logs/` |
+| `QDT_OSGEO4W_INSTALL_DIR` | Path to the OSGEO4W install directory. Used to search for installed QGIS and shortcuts creation. | `C:\\OSGeo4W`. |
 | `QDT_QGIS_EXE_PATH` | Path to the QGIS executable to use. Used in shortcuts. | `/usr/bin/qgis` on Linux and MacOS, `%PROGRAMFILES%/QGIS 3.28/bin/qgis-ltr-bin.exe` on Windows. |
 | `QDT_STREAMED_DOWNLOADS` | If set to `false`, the content of remote files is fully downloaded before being written locally. | `true` |
-| `QDT_SSL_USE_SYSTEM_STORES` | By default, a bundle of SSL certificates is used, through [certifi](https://pypi.org/project/certifi/). If this environment variable is set to True, QDT tries to uses the system certificates store. Based on [truststore](https://truststore.readthedocs.io/). See also [How to use custom SSL certificates](../guides/howto_use_custom_ssl_certs.md).  | `False` |
-| `QDT_OSGEO4W_INSTALL_DIR` | Path to the OSGEO4W install directory. Used to search for installed QGIS and shortcuts creation. | `C:\\OSGeo4W`. |
+| `QDT_SSL_USE_SYSTEM_STORES` | By default, a bundle of SSL certificates is used, through [certifi](https://pypi.org/project/certifi/). If this environment variable is set to `true`, QDT tries to uses the system certificates store. Based on [truststore](https://truststore.readthedocs.io/). See also [How to use custom SSL certificates](../guides/howto_use_custom_ssl_certs.md).  | `False` |
+| `QDT_SSL_VERIFY` | Enables/disables SSL certificate verification. Useful for environments where the proxy is unreliable with HTTPS connections. Boolean: `true` or `false`. | `True` |
 
 ----
 

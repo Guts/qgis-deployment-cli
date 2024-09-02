@@ -7,6 +7,7 @@
 
 # standard library
 import logging
+import warnings
 from os import getenv
 from pathlib import Path
 
@@ -15,6 +16,7 @@ import truststore
 from requests import Response, Session
 from requests.exceptions import ConnectionError, HTTPError
 from requests.utils import requote_uri
+from urllib3.exceptions import InsecureRequestWarning
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title_clean__, __version__
@@ -32,6 +34,14 @@ logger = logging.getLogger(__name__)
 if str2bool(getenv("QDT_SSL_USE_SYSTEM_STORES", False)):
     truststore.inject_into_ssl()
     logger.debug("Option to use native system certificates stores is enabled.")
+if not str2bool(getenv("QDT_SSL_VERIFY", True)):
+    warnings.filterwarnings("ignore", category=InsecureRequestWarning)
+    logger.warning(
+        "SSL warnings (InsecureRequestWarning) are explicitly disabled through "
+        "environment variable 'QDT_SSL_VERIFY'. HTTPS request will be unverified. "
+        "Adding certificate verification is strongly advised. "
+        "See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings"
+    )
 
 # ############################################################################
 # ########## FUNCTIONS ###########
@@ -79,8 +89,9 @@ def download_remote_file_to_local(
 
     try:
         with Session() as dl_session:
-            dl_session.proxies.update(get_proxy_settings())
             dl_session.headers.update(headers)
+            dl_session.proxies.update(get_proxy_settings())
+            dl_session.verify = str2bool(getenv("QDT_SSL_VERIFY", True))
 
             with dl_session.get(
                 url=requote_uri(remote_url_to_download), stream=True, timeout=timeout
@@ -124,7 +135,8 @@ def download_remote_file_to_local(
     except Exception as error:
         logger.error(
             f"Downloading {remote_url_to_download} to {local_file_path} failed. "
-            f"Cause: Unknown error. Trace: {error}"
+            f"Cause: Unknown error. Trace: {error}",
+            stack_info=True,
         )
         raise error
 
