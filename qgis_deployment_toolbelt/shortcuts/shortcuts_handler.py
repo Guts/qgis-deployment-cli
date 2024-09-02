@@ -31,7 +31,11 @@ if opersys == "win32":
 
 # package
 from qgis_deployment_toolbelt.__about__ import __title__, __version__
-from qgis_deployment_toolbelt.constants import OSConfiguration
+from qgis_deployment_toolbelt.constants import (
+    QGIS_BIN_WINDOWS_FILENAME,
+    QGIS_LTR_BIN_WINDOWS_FILENAME,
+    OSConfiguration,
+)
 from qgis_deployment_toolbelt.utils.check_path import check_path
 from qgis_deployment_toolbelt.utils.slugger import sluggy
 
@@ -91,25 +95,27 @@ class ApplicationShortcut:
             if not self.exec_path.exists():
                 # helper to handle common typo error on executable name on Windows
                 if (
-                    self.exec_path.name.endswith("qgis-bin.exe")
-                    and self.exec_path.with_name("qgis-ltr-bin.exe").exists()
+                    self.exec_path.name.endswith(QGIS_BIN_WINDOWS_FILENAME)
+                    and self.exec_path.with_name(QGIS_LTR_BIN_WINDOWS_FILENAME).exists()
                 ):
                     logger.warning(
                         f"Executable set does not exist: {self.exec_path} "
                         f"but {self.exec_path.with_name('qgis-ltr-bin.exe')} does, so "
                         "this one will be used instead. Check and fix your scenario."
                     )
-                    self.exec_path = self.exec_path.with_name("qgis-ltr-bin.exe")
+                    self.exec_path = self.exec_path.with_name(
+                        QGIS_LTR_BIN_WINDOWS_FILENAME
+                    )
                 elif (
-                    self.exec_path.name.endswith("qgis-ltr-bin.exe")
-                    and self.exec_path.with_name("qgis-bin.exe").exists()
+                    self.exec_path.name.endswith(QGIS_LTR_BIN_WINDOWS_FILENAME)
+                    and self.exec_path.with_name(QGIS_BIN_WINDOWS_FILENAME).exists()
                 ):
                     logger.warning(
                         f"Executable set does not exist: {self.exec_path} "
                         f"but {self.exec_path.with_name('qgis-bin.exe')} does, so "
                         "this one will be used instead. Check and fix your scenario."
                     )
-                    self.exec_path = self.exec_path.with_name("qgis-bin.exe")
+                    self.exec_path = self.exec_path.with_name(QGIS_BIN_WINDOWS_FILENAME)
                 else:
                     logger.warning(
                         f"Executable does not exist: {self.exec_path}. "
