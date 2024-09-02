@@ -12,7 +12,7 @@ from pathlib import Path
 
 # 3rd party
 import truststore
-from requests import Session
+from requests import Response, Session
 from requests.exceptions import ConnectionError, HTTPError
 from requests.utils import requote_uri
 
@@ -100,8 +100,18 @@ def download_remote_file_to_local(
     except HTTPError as error:
         logger.error(
             f"Downloading {remote_url_to_download} to {local_file_path} failed. "
-            f"Cause: HTTPError. Trace: {error}"
+            f"Cause: HTTPError. Trace: {error}."
         )
+        if isinstance(req, Response):
+            http_error_details = {
+                "status": req.status_code,
+                "headers": req.headers,
+                "body": req.content,
+            }
+            logger.error(
+                f"Addtional details grabbed from HTTP response: {http_error_details}"
+            )
+
         raise error
     except ConnectionError as error:
         logger.error(
