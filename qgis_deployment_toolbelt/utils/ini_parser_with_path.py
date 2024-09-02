@@ -39,17 +39,3 @@ class CustomConfigParser(configparser.ConfigParser):
         if self.initial_file_path is not None:
             return Path(self.initial_file_path)
         return None
-
-
-# #############################################################################
-# ##### Stand alone program ########
-# ##################################
-
-if __name__ == "__main__":
-    """Standalone execution."""
-    # Exemple d'utilisation
-    # Exemple d'utilisation
-    config = CustomConfigParser()
-    config.read(["votre_fichier1.ini", "votre_fichier2.ini"])
-
-    print("Chemins des fichiers INI:", config.get_file_paths())

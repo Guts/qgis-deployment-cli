@@ -121,7 +121,7 @@ def set_default_subparser(
 # ############################################################################
 # ########## MAIN ################
 # ################################
-def main(in_args: list[str] = None):
+def main(in_args: list[str] | None = None):
     """Main CLI entrypoint.
 
     Args:

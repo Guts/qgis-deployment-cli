@@ -91,7 +91,7 @@ class JobOptionBadValueType(TypeError):
 class SplashScreenBadDimensions(Exception):
     """When splash screen image does not comply with recomended dimensions."""
 
-    def __init__(self, image_filepath: Path, profile_name: str = None):
+    def __init__(self, image_filepath: Path, profile_name: str | None = None):
         """Initialization method.
 
         Args:
