@@ -345,11 +345,7 @@ class ApplicationShortcut:
         """
         if opersys == "win32":
             return Path(shell.SHGetFolderPath(0, shellcon.CSIDL_PROGRAMS, None, 0))
-        elif opersys == "linux":
-            if isinstance(self.homedir_path, Path):
-                return self.homedir_path / ".local/share/applications"
-            return None
-        elif opersys == "darwin":
+        elif opersys in ("darwin", "linux"):
             if isinstance(self.homedir_path, Path):
                 return self.homedir_path / ".local/share/applications"
             return None
