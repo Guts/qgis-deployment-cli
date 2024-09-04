@@ -39,19 +39,25 @@ Development is leaded by the following principles and goals:
 - an installer for QGIS
 - a packager helper
 
+----
+
 ## Quickstart
 
 ### With Python
 
 1. Get QDT executable:
 
+    The best way to install it is using [pipx](https://pipx.pypa.io/stable/):
+
+    ```sh
+    pipx install -U qgis-deployment-toolbelt
+    ```
+
+    If you don't have installed pipx, it's obviously still installable with pip but you'll have to deal with checking that the Python scripts folder is declared in your `PATH` (list of folders where executables are authorized to run).
+
     ```sh
     pip install -U qgis-deployment-toolbelt
     ```
-
-    :::{important}
-    It's not directly related to QDT but check that the Python scripts folder is declared in your `PATH` (list of folders where executables are authorized to run).
-    :::
 
 1. Run a scenario. For example the one which is shipped as demonstration in QDT project:
 
@@ -59,17 +65,52 @@ Development is leaded by the following principles and goals:
     qdt -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
     ```
 
+You can also run it directly with pipx:
+
+```sh
+pipx run qgis-deployment-toolbelt --help
+pipx run qgis-deployment-toolbelt -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+```
+
 ### With the stand-alone executable
 
 > Typically on Windows
 
 1. Download latest version that matches your environment from [releases](https://github.com/Guts/qgis-deployment-cli/releases/latest)
-1. Rename it as `qdt.exe`
 1. Open a terminal in the same folder
+1. Rename 'Windows_QGISDeploymentToolbelt_{{ version | replace(".","-")  }}' as `qdt.exe`:
+
+    ```powershell
+    mv *_QGISDeploymentToolbelt_* qdt.exe
+    ```
+
+1. Run a scenario. For example the one which is shipped as demonstration in QDT project:
+
+    ```powershell
+    ./qdt.exe -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+    ```
+
+> Typically on Ubuntu
+
+1. Download latest version that matches your environment from [releases](https://github.com/Guts/qgis-deployment-cli/releases/latest)
+1. Open a terminal in the same folder
+1. Rename 'Ubuntu_QGISDeploymentToolbelt_{{ version | replace(".","-")  }}' it as `qdt.bin`:
+
+    ```sh
+    mv *_QGISDeploymentToolbelt_* qdt.bin
+    ```
+
+1. Make sure it's runnable:
+
+    ```sh
+    chmod u+x ./qdt.bin`
+    ```
+
 1. Run a scenario. For example the one which is shipped as demonstration in QDT project:
 
     ```sh
-    ./qdt.exe -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+
+    ./qdt.bin -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
     ```
 
 ----
