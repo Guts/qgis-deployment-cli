@@ -89,6 +89,7 @@ class JobPluginsDownloader(GenericJob):
         # filter plugins to download, filtering out those which are not already present locally
         if self.options.get("force") is True:
             qdt_plugins_to_download = qdt_referenced_plugins
+            qdt_plugins_to_copy = []
         else:
             qdt_plugins_to_download = self.filter_list_downloadable_plugins(
                 input_list=qdt_referenced_plugins
@@ -216,7 +217,8 @@ class JobPluginsDownloader(GenericJob):
                 performed synchronously. Defaults to 5.
 
         Returns:
-            Tuple[List[QgisPlugin],List[QgisPlugin]]: tuple of (downloaded plugins, failed downloads)
+            Tuple[List[QgisPlugin],List[QgisPlugin]]: tuple of \
+                (downloaded plugins, failed downloads)
         """
         downloaded_plugins: list[QgisPlugin] = []
         failed_plugins: list[QgisPlugin] = []
