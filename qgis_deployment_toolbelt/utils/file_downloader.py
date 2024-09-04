@@ -130,7 +130,9 @@ def download_remote_file_to_local(
                 dl_session.mount("https://", TruststoreAdapter())
 
             with dl_session.get(
-                url=requote_uri(remote_url_to_download), stream=True, timeout=timeout
+                url=requote_uri(remote_url_to_download),
+                stream=use_stream,
+                timeout=timeout,
             ) as req:
                 req.raise_for_status()
                 if use_stream:
