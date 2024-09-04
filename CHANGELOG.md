@@ -16,6 +16,19 @@ Unreleased
 
 -->
 
+## 0.35.2 - 2024-09-03
+
+### Bugs fixes 🐛
+
+* fix(downloader): stream option was not propagated to get args by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/550>
+* fix(downloader): `qdt_plugins_to_copy` was not created in force mode by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/551>
+
+### Features and enhancements 🎉
+
+* add(tooling): helper script to convert png to ico by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/548>
+* improve(downloader): use a custom HTTP transport adapter instead of rough injection by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/549>
+* improve(tests): add scenario to test against plugins downloader in monothread and forced by @Guts in <https://github.com/Guts/qgis-deployment-cli/pull/552>
+
 ## 0.35.1 - 2024-09-02
 
 ### Features and enhancements 🎉
