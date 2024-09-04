@@ -7,6 +7,7 @@
 
 # standard library
 import logging
+import ssl
 import warnings
 from os import getenv
 from pathlib import Path
@@ -14,6 +15,7 @@ from pathlib import Path
 # 3rd party
 import truststore
 from requests import Response, Session
+from requests.adapters import HTTPAdapter
 from requests.exceptions import ConnectionError, HTTPError
 from requests.utils import requote_uri
 from urllib3.exceptions import InsecureRequestWarning
@@ -31,9 +33,6 @@ from qgis_deployment_toolbelt.utils.str2bool import str2bool
 # logs
 logger = logging.getLogger(__name__)
 
-if str2bool(getenv("QDT_SSL_USE_SYSTEM_STORES", False)):
-    truststore.inject_into_ssl()
-    logger.debug("Option to use native system certificates stores is enabled.")
 if not str2bool(getenv("QDT_SSL_VERIFY", True)):
     warnings.filterwarnings("ignore", category=InsecureRequestWarning)
     logger.warning(
@@ -42,6 +41,34 @@ if not str2bool(getenv("QDT_SSL_VERIFY", True)):
         "Adding certificate verification is strongly advised. "
         "See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings"
     )
+
+
+# ############################################################################
+# ########## CLASSES #############
+# ################################
+
+
+class TruststoreAdapter(HTTPAdapter):
+    """Custom HTTP transport adapter made to use local trust store.
+
+    Source: <https://stackoverflow.com/a/78265028/2556577>
+    Documentation: <https://requests.readthedocs.io/en/latest/user/advanced/#transport-adapters>
+    """
+
+    def init_poolmanager(
+        self, connections: int, maxsize: int, block: bool = False
+    ) -> None:
+        """Initializes a urllib3 PoolManager.
+
+        Args:
+            connections (int): number of urllib3 connection pools to cache.
+            maxsize (int): maximum number of connections to save in the pool.
+            block (bool, optional): Block when no free connections are available.. Defaults to False.
+
+        """
+        ctx = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        return super().init_poolmanager(connections, maxsize, block, ssl_context=ctx)
+
 
 # ############################################################################
 # ########## FUNCTIONS ###########
@@ -68,8 +95,10 @@ def download_remote_file_to_local(
         content_type (str | None, optional): HTTP content-type. Defaults to None.
         chunk_size (int, optional): size of each chunk to read and write in bytes. \
             Defaults to 8192.
-        timeout (tuple[int, int], optional): custom timeout (request, response). Defaults to (800, 800).
-        use_stream (bool, optional): Option to enable/disable streaming download. Defaults to True.
+        timeout (tuple[int, int], optional): custom timeout (request, response). \
+            Defaults to (800, 800).
+        use_stream (bool, optional): Option to enable/disable streaming download. \
+            Defaults to True.
 
     Returns:
         Path: path to the local file (should be the same as local_file_path)
@@ -92,6 +121,13 @@ def download_remote_file_to_local(
             dl_session.headers.update(headers)
             dl_session.proxies.update(get_proxy_settings())
             dl_session.verify = str2bool(getenv("QDT_SSL_VERIFY", True))
+
+            # handle local system certificates store
+            if str2bool(getenv("QDT_SSL_USE_SYSTEM_STORES", False)):
+                logger.debug(
+                    "Option to use native system certificates stores is enabled."
+                )
+                dl_session.mount("https://", TruststoreAdapter())
 
             with dl_session.get(
                 url=requote_uri(remote_url_to_download), stream=True, timeout=timeout
