@@ -24,7 +24,6 @@ from sys import platform as opersys
 # package
 from qgis_deployment_toolbelt.constants import (
     RE_QGIS_FINDER_DIR,
-    RE_QGIS_FINDER_EXE,
     RE_QGIS_FINDER_VERSION,
 )
 from qgis_deployment_toolbelt.exceptions import QgisInstallNotFound
