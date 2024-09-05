@@ -22,7 +22,7 @@ steps:
     with:
       version_priority:
         - "3.40"
-        - "3.34"
+        - "3.34.9"
         - "3.28"
         - "3.38"
         - "3.36"
@@ -38,39 +38,39 @@ steps:
       protocol: git_remote
       branch: main
 
-  # - name: Synchronize downloaded profiles with installed ones
-  #   uses: qprofiles-synchronizer
-  #   with:
-  #     sync_mode: overwrite
+  - name: Synchronize downloaded profiles with installed ones
+    uses: qprofiles-synchronizer
+    with:
+      sync_mode: overwrite
 
-  # - name: Download plugins referenced in installed profiles
-  #   uses: qplugins-downloader
-  #   with:
-  #     force: false
-  #     threads: 5
+  - name: Download plugins referenced in installed profiles
+    uses: qplugins-downloader
+    with:
+      force: false
+      threads: 5
 
-  # - name: Synchronize downloaded plugins with those in installed profiles
-  #   uses: qplugins-synchronizer
-  #   with:
-  #     action: create_or_restore
-  #     profile_ref: installed
+  - name: Synchronize downloaded plugins with those in installed profiles
+    uses: qplugins-synchronizer
+    with:
+      action: create_or_restore
+      profile_ref: installed
 
-  # - name: Create shortcuts for profiles
-  #   uses: shortcuts-manager
-  #   with:
-  #     action: create_or_restore
-  #     include:
-  #       - profile: qdt_demo
-  #         label: "QDT - Demo profile"
-  #         desktop: true
-  #         start_menu: true
-  #       - profile: QDT Viewer Mode
-  #         label: "QDT - Viewer profile"
-  #         desktop: true
-  #         start_menu: true
+  - name: Create shortcuts for profiles
+    uses: shortcuts-manager
+    with:
+      action: create_or_restore
+      include:
+        - profile: qdt_demo
+          label: "QDT - Demo profile"
+          desktop: true
+          start_menu: true
+        - profile: QDT Viewer Mode
+          label: "QDT - Viewer profile"
+          desktop: true
+          start_menu: true
 
-  # - name: Set splash screen
-  #   uses: splash-screen-manager
-  #   with:
-  #     action: create_or_restore
-  #     strict: false
+  - name: Set splash screen
+    uses: splash-screen-manager
+    with:
+      action: create_or_restore
+      strict: false
