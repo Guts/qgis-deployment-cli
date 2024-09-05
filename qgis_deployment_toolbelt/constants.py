@@ -47,7 +47,6 @@ SUPPORTED_OPERATING_SYSTEMS_CODENAMES: tuple[str, ...] = ("darwin", "linux", "wi
 
 # regex
 RE_QGIS_FINDER_DIR = re.compile(r"QGIS (\d+)\.(\d+)\.(\d+)", re.IGNORECASE)
-RE_QGIS_FINDER_EXE = re.compile(r"qgis(-ltr)?-bin\.exe", re.IGNORECASE)
 RE_QGIS_FINDER_VERSION = re.compile(r"QGIS (\d+\.\d+\.\d+)-(\w+).*")
 
 # #############################################################################
