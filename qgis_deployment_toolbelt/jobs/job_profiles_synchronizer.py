@@ -285,6 +285,7 @@ class JobProfilesSynchronizer(GenericJob):
                     dirs_exist_ok=True,
                 )
 
+            # Environment variable will be converted during merge
             logger.info(f"Merging {d.folder} to {d.path_in_qgis}")
             installed_profile = QdtProfile(folder=d.path_in_qgis)
             d.merge_to(installed_profile)
