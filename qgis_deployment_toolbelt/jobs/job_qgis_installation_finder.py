@@ -257,7 +257,7 @@ class JobQgisInstallationFinder(GenericJob):
         search_paths = []
         if "search_paths" in self.options:
             for path in self.options["search_paths"]:
-                search_paths.append(expandvars(path))
+                search_paths.append(expandvars(expanduser(getenv(path, path))))
         return search_paths
 
     def _get_windows_installed_qgis_path(self) -> dict[str, str]:
