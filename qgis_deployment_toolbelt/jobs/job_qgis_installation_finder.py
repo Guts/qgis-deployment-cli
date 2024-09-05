@@ -242,9 +242,10 @@ class JobQgisInstallationFinder(GenericJob):
             matchs += [file for file in Path(search_dir).rglob(pattern)]
 
         for match in matchs:
-            JobQgisInstallationFinder._search_qgis_version_and_add_to_dict(
-                qgis_bin=str(match), found_version=found_version
-            )
+            if match.is_file():
+                JobQgisInstallationFinder._search_qgis_version_and_add_to_dict(
+                    qgis_bin=str(match), found_version=found_version
+                )
 
     def _get_search_paths_with_environment_variable(self) -> list[str]:
         """Get search_paths option with environment variable update
