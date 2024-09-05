@@ -271,24 +271,19 @@ class JobQgisInstallationFinder(GenericJob):
         """
 
         # Get list of search path
-        search_paths: list[str] = []
+        search_paths = self._get_search_paths_with_environment_variable()
+        if len(search_paths) == 0:
+            # Program files
+            prog_file_dir = expandvars("%PROGRAMFILES%")
 
-        # Program files
-        prog_file_dir = expandvars("%PROGRAMFILES%")
+            for dir_name in os.listdir(prog_file_dir):
+                # Check if the directory name matches the pattern
+                match = RE_QGIS_FINDER_DIR.match(dir_name)
+                if match:
+                    search_paths.append(os.path.join(prog_file_dir, dir_name))
 
-        for dir_name in os.listdir(prog_file_dir):
-            # Check if the directory name matches the pattern
-            match = RE_QGIS_FINDER_DIR.match(dir_name)
-            if match:
-                search_paths.append(os.path.join(prog_file_dir, dir_name))
-
-        # OSGEO4W
-        search_paths.append(environ.get("QDT_OSGEO4W_INSTALL_DIR", "C:\\OSGeo4W"))
-
-        # search_paths
-        option_search_path = self._get_search_paths_with_environment_variable()
-        if len(option_search_path) != 0:
-            search_paths = option_search_path + search_paths
+            # OSGEO4W
+            search_paths.append(environ.get("QDT_OSGEO4W_INSTALL_DIR", "C:\\OSGeo4W"))
 
         return JobQgisInstallationFinder._get_qgis_found_version_dict_from_search_paths(
             search_paths=search_paths,

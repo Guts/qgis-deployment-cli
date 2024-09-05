@@ -59,14 +59,7 @@ The environment variable `QDT_PREFERRED_QGIS_VERSION` is used as top priority if
 
 ### search_paths
 
-By default QDT search for QGIS on hard coded directories for Windows :
-
-- `%PROGRAMFILES%\\QGIS x.y.z\\bin\`
-- `%QDT_OSGEO4W_INSTALL_DIR%` (default value : `C:\\OSGeo4W`)
-
-This option can be used to define other search paths.
-
-The order of the paths is used to define which path will be used in case of multiple installation for same QGIS version.
+This option can be used to define search paths for QGIS installation. The order of the paths is used to define which path will be used in case of multiple installation for same QGIS version.
 
 For example if you define:
 
@@ -98,12 +91,10 @@ Possible_values:
 
 On Linux, QDT locates installed QGIS with `which` command and will search for available installation with the `search_paths` option.
 
-On Windows QDT tries to locate installed versions in the following directories:
+On Windows QDT tries to locate installed versions in the directories in `search_paths` option. If the option is not defined, QDT will search in these directories:
 
-- `%PROGRAMFILES%\\QGIS x.y.z\\bin\`
+- `%PROGRAMFILES%\\QGIS x.y.z\` (by using a regexp to get available QGIS versions)
 - `%QDT_OSGEO4W_INSTALL_DIR%` (default value : `C:\\OSGeo4W`)
-
-QDT will also use the `search_paths` option to search in other paths.
 
 By default, the most recent version found is used.
 
