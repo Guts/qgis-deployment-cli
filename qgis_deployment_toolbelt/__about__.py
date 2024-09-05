@@ -26,8 +26,10 @@ __package_name__ = "qgis-deployment-toolbelt"
 __keywords__ = ["cli", "deployment", "profiles", "qdt", "QGIS"]
 __license__ = "Apache-2.0"
 __summary__ = (
-    "QGIS deployment toolbelt is a CLI (Command Line Interface) to perform "
-    "redundant operations after a QGIS deployment."
+    "QGIS deployment toolbelt is a CLI (Command Line Interface) "
+    "to perform redundant operations after a QGIS deployment, "
+    "managing QGIS profiles, plugins, environment variables, "
+    "start menu / desktop shortcuts and many things to rationalize your QGIS installations."
 )
 __title__ = "QGIS Deployment Toolbelt"
 __title_clean__ = "".join(e for e in __title__ if e.isalnum())
@@ -36,7 +38,7 @@ __uri_repository__ = "https://github.com/Guts/qgis-deployment-cli/"
 __uri_tracker__ = f"{__uri_repository__}issues/"
 __uri__ = __uri_repository__
 
-__version__ = "0.35.2"
+__version__ = "0.36.0"
 __version_info__ = tuple(
     [
         int(num) if num.isdigit() else num
