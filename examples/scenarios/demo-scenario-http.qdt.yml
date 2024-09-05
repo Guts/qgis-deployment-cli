@@ -16,7 +16,16 @@ steps:
     uses: qgis-installation-finder
     with:
       version_priority:
+        - "3.40"
+        - "3.34"
+        - "3.28"
+        - "3.38"
         - "3.36"
+        - "3.32"
+      search_paths:
+        - "%PROGRAMFILES%/QGIS"
+      if_not_found: warn
+
   - name: Download profiles from remote git repository
     uses: qprofiles-downloader
     with:
