@@ -17,6 +17,7 @@ import os
 import subprocess
 from os import environ, getenv
 from os.path import expanduser, expandvars
+from pathlib import Path
 from shutil import which
 from sys import platform as opersys
 
@@ -100,6 +101,7 @@ class JobQgisInstallationFinder(GenericJob):
         installed_qgis_path: str | None = self.get_installed_qgis_path()
 
         if installed_qgis_path:
+            logger.debug(f"{self.ID} : QDT_QGIS_EXE_PATH is now {installed_qgis_path}")
             os.environ["QDT_QGIS_EXE_PATH"] = installed_qgis_path
         else:
             if self.options.get("if_not_found", "warning") == "error":
@@ -221,24 +223,29 @@ class JobQgisInstallationFinder(GenericJob):
         return None
 
     @staticmethod
-    def _get_qgis_bin_in_install_dir(install_dir: str) -> str | None:
+    def _get_qgis_versions_in_dir(
+        search_dir: str, search_patterns: list[str], found_version: dict[str, str]
+    ) -> None:
         """Get QGIS binary path from an install directory.
 
         Args:
             install_dir (str): install directory
-
-        Returns:
-            str | None: QGIS bin path, None if not found
+            search_patterns (list[str]): list of search pattern for qgis binary
+            found_version (dict[str, str]): updated dict of qgis binary path and version
         """
-        # Check if the bin directory exists within this directory
-        bin_dir = os.path.join(install_dir, "bin")
-        if os.path.exists(bin_dir):
-            # Check if any binary file matches the pattern in the bin directory
-            for filename in os.listdir(bin_dir):
-                if RE_QGIS_FINDER_EXE.match(filename):
-                    qgis_exe = os.path.join(bin_dir, filename)
-                    return qgis_exe
-        return None
+        matchs = []
+
+        logger.debug(
+            f"Searching for QGIS binary in {search_dir} with pattern {search_patterns}"
+        )
+
+        for pattern in search_patterns:
+            matchs += [file for file in Path(search_dir).rglob(pattern)]
+
+        for match in matchs:
+            JobQgisInstallationFinder._search_qgis_version_and_add_to_dict(
+                qgis_bin=str(match), found_version=found_version
+            )
 
     def _get_search_paths_with_environment_variable(self) -> list[str]:
         """Get search_paths option with environment variable update
@@ -281,18 +288,20 @@ class JobQgisInstallationFinder(GenericJob):
             search_paths = option_search_path + search_paths
 
         return JobQgisInstallationFinder._get_qgis_found_version_dict_from_search_paths(
-            search_paths=search_paths
+            search_paths=search_paths,
+            search_patterns=["qgis-bin.exe", "qgis-ltr-bin.exe"],
         )
 
     @staticmethod
     def _get_qgis_found_version_dict_from_search_paths(
-        search_paths: list[str],
+        search_paths: list[str], search_patterns: list[str]
     ) -> dict[str, str]:
         """Define qgis found version dict from a list of search path
         If identical version are found in multiple path, the first version found in search_path is used.
 
         Args:
             search_paths (list[str]): list of search paths
+            search_patterns (list[str]): list of search pattern for qgis binary
 
         Returns:
             dict[str, str]: dict of qgis binary path for qgis version
@@ -300,12 +309,9 @@ class JobQgisInstallationFinder(GenericJob):
         # We search reversed to have the version defined in priority with the first value
         found_version = {}
         for search_path in reversed(search_paths):
-            if qgis_bin := JobQgisInstallationFinder._get_qgis_bin_in_install_dir(
-                search_path
-            ):
-                JobQgisInstallationFinder._search_qgis_version_and_add_to_dict(
-                    qgis_bin=qgis_bin, found_version=found_version
-                )
+            JobQgisInstallationFinder._get_qgis_versions_in_dir(
+                search_path, search_patterns, found_version
+            )
 
         return found_version
 
@@ -321,9 +327,10 @@ class JobQgisInstallationFinder(GenericJob):
         """
         version_str = JobQgisInstallationFinder._get_qgis_bin_version(qgis_bin=qgis_bin)
         if version_str:
+            logger.debug(f"QGIS version {version_str} found : {qgis_bin}")
             found_version[version_str] = qgis_bin
         else:
-            logger.warning(f"Can't define QGIS version for '{qgis_bin}' binary.")
+            logger.warning(f"Can't define QGIS version for '{qgis_bin}' file.")
 
     def _get_linux_installed_qgis_path(self) -> dict[str, str]:
         """Get install qgis path for linux operating system with which
@@ -337,7 +344,7 @@ class JobQgisInstallationFinder(GenericJob):
 
         found_version = (
             JobQgisInstallationFinder._get_qgis_found_version_dict_from_search_paths(
-                search_paths=search_paths
+                search_paths=search_paths, search_patterns=["qgis"]
             )
         )
 
