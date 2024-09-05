@@ -253,7 +253,9 @@ class JobProfilesSynchronizer(GenericJob):
                 "Installed profiles are going to be overridden by downloaded ones."
             )
             # copy all downloaded profiles
-            self.sync_overwrite_local_profiles(profiles_to_copy=downloaded_profiles)
+            self.sync_overwrite_local_profiles(
+                profiles_to_copy=downloaded_profiles, overwrite=True
+            )
 
         else:
             logger.debug(
@@ -262,21 +264,18 @@ class JobProfilesSynchronizer(GenericJob):
             )
 
     def sync_overwrite_local_profiles(
-        self, profiles_to_copy: tuple[QdtProfile]
+        self, profiles_to_copy: tuple[QdtProfile], overwrite: bool = False
     ) -> None:
         """Overwrite local profiles with downloaded ones.
 
         Args:
             profiles_to_copy (tuple[QdtProfile]): tuple of profiles to copy
+            overwrite (bool): overwrite profile if it exists (default False)
         """
 
         # copy downloaded profiles into this
         for d in profiles_to_copy:
-            if d.path_in_qgis.exists():
-                logger.info(f"Merging {d.folder} to {d.path_in_qgis}")
-                installed_profile = QdtProfile(folder=d.path_in_qgis)
-                d.merge_to(installed_profile)
-            else:
+            if overwrite:
                 logger.info(f"Copying {d.folder} to {d.path_in_qgis}")
                 d.path_in_qgis.mkdir(parents=True, exist_ok=True)
                 copytree(
@@ -285,3 +284,7 @@ class JobProfilesSynchronizer(GenericJob):
                     copy_function=copy2,
                     dirs_exist_ok=True,
                 )
+
+            logger.info(f"Merging {d.folder} to {d.path_in_qgis}")
+            installed_profile = QdtProfile(folder=d.path_in_qgis)
+            d.merge_to(installed_profile)
