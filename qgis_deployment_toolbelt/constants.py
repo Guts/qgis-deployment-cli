@@ -17,6 +17,7 @@ from __future__ import annotations
 # Standard library
 import ast
 import logging
+import re
 from dataclasses import dataclass
 from os import PathLike, getenv
 from os.path import expanduser, expandvars
@@ -44,6 +45,9 @@ QGIS_LTR_BIN_WINDOWS_FILENAME: str = "qgis-ltr-bin.exe"
 # Operating systems
 SUPPORTED_OPERATING_SYSTEMS_CODENAMES: tuple[str, ...] = ("darwin", "linux", "win32")
 
+# regex
+RE_QGIS_FINDER_DIR = re.compile(r"QGIS (\d+)\.(\d+)\.(\d+)", re.IGNORECASE)
+RE_QGIS_FINDER_VERSION = re.compile(r"QGIS (\d+\.\d+\.\d+)-(\w+).*")
 
 # #############################################################################
 # ########## Functions #############

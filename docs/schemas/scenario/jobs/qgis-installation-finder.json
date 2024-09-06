@@ -23,6 +23,14 @@
           "error"
         ],
         "type": "string"
+      },
+      "search_paths": {
+        "default": "",
+        "description": "Define search paths for QGIS installation.",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       }
     }
   }
