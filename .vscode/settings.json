@@ -12,7 +12,8 @@
         "editor.quickSuggestions": {
             "strings": true
         },
-        "editor.suggest.insertMode": "replace"
+        "editor.suggest.insertMode": "replace",
+        "files.insertFinalNewline": true
     },
     // Markdown
     "markdown.updateLinksOnFileMove.enabled": "prompt",
