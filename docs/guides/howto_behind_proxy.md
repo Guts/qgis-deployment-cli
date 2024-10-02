@@ -28,6 +28,14 @@ qdt --proxy-http "http://user:password@proxyserver.intra:8765"
 - it avoids potential conflict with "classic" proxy settings
 - it allows to use a specific network proxy for QDT (can be useful for some well controlled systems)
 
+### Use PAC file
+
+[PAC file](https://developer.mozilla.org/en-US/docs/Web/HTTP/Proxy_servers_and_tunneling/Proxy_Auto-Configuration_PAC_file) can be used by SysAdmin to define proxy with a set of rules depending on the url.
+
+For QDT, PAC file can be used if no environment variable for proxy are already defined (`HTTP_PROXY`,`HTTPS_PROXY`, `QDT_PROXY_HTTP`).
+
+[PyPac](https://pypac.readthedocs.io/en/latest/) is used for PAC file management. By default we are using the PAC file defined by system but a custom PAC file can be defined with `QDT_PAC_FILE` environment variable (local file or url).
+
 #### Example on Windows PowerShell
 
 Only for the QDT command scope:
