@@ -39,7 +39,7 @@ def get_proxy_settings(url: str | None = None) -> dict:
     """Retrieves network proxy settings from operating system configuration or
     environment variables.
     Args:
-        url (str): url for request in case of PAC file use
+        url (str, optional): url for request in case of PAC file use
     Returns:
         dict: proxy settings with protocl as key and URL as value
     """
@@ -54,6 +54,23 @@ def get_proxy_settings(url: str | None = None) -> dict:
             "Proxies settings from custom QDT in environment vars (QDT_PROXY_HTTP): "
             f"{proxy_settings}"
         )
+    elif qdt_pac_file := environ.get("QDT_PAC_FILE"):
+        if pac := load_pac_file_from_environment_variable(qdt_pac_file=qdt_pac_file):
+            proxy_settings = get_proxy_settings_from_pac_file(url=url, pac=pac)
+            logger.info(
+                f"Proxies settings from environment vars PAC file: {environ.get('QDT_PAC_FILE')}"
+                f"{proxy_settings}"
+            )
+        else:
+            logger.warning(
+                f"Invalid PAC file from environment vars PAC file : {environ.get('QDT_PAC_FILE')}. No proxy use."
+            )
+    elif pac := get_pac():
+        proxy_settings = get_proxy_settings_from_pac_file(url=url, pac=pac)
+        logger.info("Proxies settings from system PAC file: " f"{proxy_settings}")
+    elif getproxies():
+        proxy_settings = getproxies()
+        logger.debug(f"Proxies settings found in the OS: {proxy_settings}")
     elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
         if environ.get("HTTP_PROXY") and environ.get("HTTPS_PROXY"):
             proxy_settings = {
@@ -80,23 +97,6 @@ def get_proxy_settings(url: str | None = None) -> dict:
                 "Proxies settings from generic environment vars (HTTPS_PROXY only): "
                 f"{proxy_settings}"
             )
-    elif qdt_pac_file := environ.get("QDT_PAC_FILE"):
-        if pac := load_pac_file_from_environment_variable(qdt_pac_file=qdt_pac_file):
-            proxy_settings = get_proxy_settings_from_pac_file(url=url, pac=pac)
-            logger.info(
-                f"Proxies settings from environment vars PAC file: {environ.get('QDT_PAC_FILE')}"
-                f"{proxy_settings}"
-            )
-        else:
-            logger.warning(
-                f"Invalid PAC file from environment vars PAC file : {environ.get('QDT_PAC_FILE')}. No proxy use."
-            )
-    elif getproxies():
-        proxy_settings = getproxies()
-        logger.debug(f"Proxies settings found in the OS: {proxy_settings}")
-    elif pac := get_pac():
-        proxy_settings = get_proxy_settings_from_pac_file(url=url, pac=pac)
-        logger.info("Proxies settings from system PAC file: " f"{proxy_settings}")
     else:
         logger.debug(
             "No proxy settings found in environment vars nor OS settings nor PAC File."
