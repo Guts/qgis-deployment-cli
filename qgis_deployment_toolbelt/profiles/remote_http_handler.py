@@ -92,7 +92,9 @@ class HttpHandler(RemoteProfilesHandlerBase):
             req = requests.get(
                 url=f"{self.SOURCE_REPOSITORY_PATH_OR_URL}qdt-files.json",
                 headers=self.HTTP_HEADERS,
-                proxies=get_proxy_settings(),
+                proxies=get_proxy_settings(
+                    url=f"{self.SOURCE_REPOSITORY_PATH_OR_URL}qdt-files.json"
+                ),
             )
             req.raise_for_status()
             qdt_tree = req.json()

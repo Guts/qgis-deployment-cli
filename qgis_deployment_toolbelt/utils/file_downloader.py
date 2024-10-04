@@ -119,7 +119,9 @@ def download_remote_file_to_local(
     try:
         with Session() as dl_session:
             dl_session.headers.update(headers)
-            dl_session.proxies.update(get_proxy_settings())
+            dl_session.proxies.update(
+                get_proxy_settings(url=requote_uri(remote_url_to_download))
+            )
             dl_session.verify = str2bool(getenv("QDT_SSL_VERIFY", True))
 
             # handle local system certificates store

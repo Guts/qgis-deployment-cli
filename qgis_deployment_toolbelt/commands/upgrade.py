@@ -110,7 +110,9 @@ def get_latest_release(api_repo_url: str) -> dict | None:
     try:
         release_info = None
         req = requests.get(
-            url=request_url, headers=headers, proxies=get_proxy_settings()
+            url=request_url,
+            headers=headers,
+            proxies=get_proxy_settings(url=request_url),
         )
         req.raise_for_status()
         release_info = req.json()
