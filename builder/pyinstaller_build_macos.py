@@ -20,6 +20,7 @@ import PyInstaller.__main__
 
 # package
 sys.path.insert(0, str(Path(".").resolve()))
+from builder import tldextract_update
 from qgis_deployment_toolbelt import __about__  # noqa: E402
 
 # #############################################################################
@@ -48,6 +49,8 @@ package_folder = Path("qgis_deployment_toolbelt")
 
 mac_os_version, _, _ = platform.mac_ver()
 mac_os_version = "-".join(mac_os_version.split(".")[:2])
+
+tldextract_update.run()
 
 PyInstaller.__main__.run(
     [

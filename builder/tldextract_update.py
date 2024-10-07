@@ -11,16 +11,12 @@
 
 # Standard library
 import argparse
-import sys
 import urllib.request
-from os import W_OK, access, path
+from os import W_OK, access
 from pathlib import Path
 
 # 3rd party
 from tldextract import TLDExtract
-
-sys.path.insert(0, path.abspath(r"."))
-
 
 # #############################################################################
 # ########### MAIN #################

@@ -20,6 +20,7 @@ import PyInstaller.__main__
 
 # package
 sys.path.insert(0, str(Path(".").resolve()))
+from builder import tldextract_update
 from qgis_deployment_toolbelt import __about__  # noqa: E402
 
 # #############################################################################
@@ -45,6 +46,8 @@ output_filename = (
     f"Windows_{__about__.__title_clean__}_{__about__.__version__.replace('.', '-')}"
 )
 package_folder = Path("qgis_deployment_toolbelt")
+
+tldextract_update.run()
 
 PyInstaller.__main__.run(
     [
