@@ -14,6 +14,9 @@ The output binary and all embedded dependencies is located into a subfolder name
 # Generates MS Version Info
 python .\builder\version_info_templater.py
 
+# Generates tldextract cache
+python .\builder\tldextract_update.py
+
 # Generates MS Executable
 python -O .\builder\pyinstaller_build_windows.py
 ```
@@ -29,6 +32,8 @@ To run it, double-click on the executable file (*.exe) loated into `dist` folder
 ```sh
 # Generates binary executable
 python -O ./builder/pyinstaller_build_ubuntu.py
+# Generates tldextract cache
+python ./builder/tldextract_update.py
 # make it runnable
 chmod +x dist/QGISDeploymentToolbelt_*
 ```

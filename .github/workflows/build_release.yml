@@ -92,6 +92,9 @@ jobs:
       - name: Install project as a package
         run: python -m pip install -e .
 
+      - name: Generates tldextract cache
+        run: python -O ./builder/tldextract_update.py
+
       - name: Generates Executable
         run: python -O ./builder/pyinstaller_build_macos.py
 
@@ -126,6 +129,8 @@ jobs:
 
       - name: Install project as a package
         run: python -m pip install -e .
+      - name: Generates tldextract cache
+        run: python -O ./builder/tldextract_update.py
 
       - name: Generates Executable
         run: python -O ./builder/pyinstaller_build_ubuntu.py
@@ -164,6 +169,9 @@ jobs:
 
       - name: Generates MS Version Info
         run: python .\builder\version_info_templater.py
+
+      - name: Generates tldextract cache
+        run: python -O .\builder\tldextract_update.py
 
       - name: Generates MS Executable
         run: python -O .\builder\pyinstaller_build_windows.py
