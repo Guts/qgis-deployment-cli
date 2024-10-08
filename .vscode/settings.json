@@ -44,6 +44,10 @@
         ],
         "editor.wordWrapColumn": 88,
     },
+    // TOML
+    "[toml]": {
+        "editor.formatOnSave": true,
+    },
     // YAML
     "[yaml]": {
         "editor.autoIndent": "keep",
