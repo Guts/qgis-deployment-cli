@@ -16,6 +16,18 @@ Unreleased
 
 -->
 
+## 0.36.0 - 2024-10-08
+
+### Bugs fixes 🐛
+
+* fix(scenario): qgis-installation-finder accept if_not_found value warning and not warn. by @florentfgrs in <https://github.com/Guts/qgis-deployment-cli/pull/566>
+* feat(pypac): add tldextract cache directory in pyinstaller by @jmkerloch in <https://github.com/Guts/qgis-deployment-cli/pull/564>
+
+### Features and enhancements 🎉
+
+* feat(pac): add file for tests by @jmkerloch in <https://github.com/Guts/qgis-deployment-cli/pull/562>
+* feat(proxies): use pypac to use PAC file by @jmkerloch in <https://github.com/Guts/qgis-deployment-cli/pull/560>
+
 ## 0.35.3 - 2024-09-06
 
 ### Bugs fixes 🐛
