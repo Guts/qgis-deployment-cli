@@ -14,7 +14,7 @@
 # Standard library
 import logging
 from pathlib import Path
-from shutil import unpack_archive
+from shutil import ReadError, unpack_archive
 
 # package
 from qgis_deployment_toolbelt.jobs.generic_job import GenericJob
@@ -215,7 +215,18 @@ class JobPluginsSynchronizer(GenericJob):
             # make sure destination folder exists
             profile_plugins_folder.mkdir(parents=True, exist_ok=True)
 
-            unpack_archive(filename=source_path, extract_dir=profile_plugins_folder)
+            # in some cases related to proxies issues, the plugin archive download
+            # returns a success but in fact it's just some HTML error from the proxy
+            # (but with wrong HTTP error code...) so the ZIP file is not really a zip...
+            try:
+                unpack_archive(filename=source_path, extract_dir=profile_plugins_folder)
+            except ReadError as err:
+                logger.error(
+                    f"Plugin {plugin.name} ({plugin.version}) could not be unzipped nor "
+                    f"installed in profile {profile.name}. Probably because of corrupted "
+                    f"zip file. Is the plugin download worked before? Trace: {err}"
+                )
+                continue
 
             logger.info(
                 f"Profile {profile.name} - "
