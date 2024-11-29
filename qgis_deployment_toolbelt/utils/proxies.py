@@ -162,7 +162,14 @@ def get_proxy_settings_from_pac_file(
 
 def os_env_proxy(func):
     def wrapper(*args, **kwargs):
-        """Decorator wrapper
+        """Decorator wrapper to define environment variable for proxy use.
+
+        If a proxy settings is available for https or http we:
+        - backup current environment value 
+        - define environment value with proxy settings
+        - run function
+        - restore environment value if available
+        
 
         Returns:
             _type_: function result
