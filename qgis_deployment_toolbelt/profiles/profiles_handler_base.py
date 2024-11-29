@@ -28,6 +28,7 @@ from giturlparse import parse as git_parse
 from giturlparse import validate as git_validate
 
 # project
+from qgis_deployment_toolbelt.utils import proxies
 from qgis_deployment_toolbelt.utils.check_path import check_folder_is_empty
 
 # #############################################################################
@@ -223,6 +224,7 @@ class RemoteProfilesHandlerBase:
             )
             return False
 
+    @proxies.os_env_proxy
     def get_active_branch_from_local_repository(
         self, local_git_repository_path: Path | None = None
     ) -> str:
@@ -302,6 +304,7 @@ class RemoteProfilesHandlerBase:
             )
         ]
 
+    @proxies.os_env_proxy
     def list_remote_branches(
         self, source_repository_path_or_url: Path | str | None = None
     ) -> tuple[str]:
@@ -351,6 +354,7 @@ class RemoteProfilesHandlerBase:
         else:
             return ("",)
 
+    @proxies.os_env_proxy
     def download(self, destination_local_path: Path) -> Repo:
         """Generic wrapper around the specific logic of this handler.
 
@@ -471,6 +475,7 @@ class RemoteProfilesHandlerBase:
             )
             return None
 
+    @proxies.os_env_proxy
     def _clone(self, local_path: Path) -> Repo:
         """Clone the remote repository to local path.
 
@@ -526,6 +531,7 @@ class RemoteProfilesHandlerBase:
         )
         return repo_obj
 
+    @proxies.os_env_proxy
     def _fetch(self, local_path: Path) -> Repo:
         """Fetch the remote repository from the existing local repository.
 
@@ -564,6 +570,7 @@ class RemoteProfilesHandlerBase:
 
         return destination_local_repository
 
+    @proxies.os_env_proxy
     def _pull(self, local_path: Path) -> Repo:
         """Pull the remote repository from the existing local repository.
 

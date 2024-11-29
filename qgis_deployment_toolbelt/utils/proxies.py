@@ -12,6 +12,7 @@
 
 # Standard library
 import logging
+import os
 from functools import lru_cache
 from os import environ
 from urllib.request import getproxies
@@ -157,6 +158,46 @@ def get_proxy_settings_from_pac_file(
         if environ.get("HTTPS_PROXY"):
             proxy_settings["https"] = environ.get("HTTPS_PROXY")
     return proxy_settings
+
+
+def os_env_proxy(func):
+    def wrapper(*args, **kwargs):
+        """Decorator wrapper to define environment variable for proxy use.
+
+        If a proxy settings is available for https or http we:
+        - backup current environment value
+        - define environment value with proxy settings
+        - run function
+        - restore environment value if available
+
+
+        Returns:
+            _type_: function result
+        """
+        # Get proxy settings
+        proxy_settings = get_proxy_settings()
+
+        # Update environment variable and keep current value
+        prev_http_proxy = None
+        if "http" in proxy_settings:
+            prev_http_proxy = environ.get("HTTP_PROXY")
+            os.environ["HTTP_PROXY"] = proxy_settings["http"]
+        prev_https_proxy = None
+        if "https" in proxy_settings:
+            prev_https_proxy = environ.get("HTTPS_PROXY")
+            os.environ["HTTPS_PROXY"] = proxy_settings["https"]
+
+        # Run function
+        result = func(*args, **kwargs)
+
+        # Restore environment variable if available
+        if prev_http_proxy:
+            os.environ["HTTP_PROXY"] = prev_http_proxy
+        if prev_https_proxy:
+            os.environ["HTTPS_PROXY"] = prev_https_proxy
+        return result
+
+    return wrapper
 
 
 # #############################################################################
