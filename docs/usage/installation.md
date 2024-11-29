@@ -53,7 +53,7 @@ It's then available as a CLI: see [the relevant section](./cli.md)
 The package is published as container on GitHub Container Registry (GHCR):
 
 ```sh
-docker pull ghcr.io/guts/qgis-deployment-cli
+docker pull ghcr.io/qgis-deployment/qgis-deployment-toolbelt-cli
 ```
 
 See [container page for additional options and instructions](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/pkgs/container/qgis-deployment-cli).
