@@ -236,7 +236,7 @@ class JobPluginsDownloader(GenericJob):
                     download_remote_file_to_local(
                         local_file_path=plugin_download_path,
                         remote_url_to_download=plugin.download_url,
-                        content_type="application/zip, application/x-zip-compressed",
+                        content_type="application/zip, application/x-zip-compressed, application/octet-stream, multipart/x-zip",
                         use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
                     )
                     logger.info(
