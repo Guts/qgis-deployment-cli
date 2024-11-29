@@ -16,6 +16,19 @@ Unreleased
 
 -->
 
+## 0.36.1 - 2024-11-29
+
+### Bugs fixes 🐛
+
+* fix(log): limit pyad to 0.6.2 for correct log level by @jmkerloch in <https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/pull/586>
+* fix(proxies): define environment variable for proxy use for git clone by @jmkerloch in <https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/pull/584>
+
+### Features and enhancements 🎉
+
+* improve(plugins_sync): handle cases where a downloaded plugin is not a valid ZIP by @Guts in <https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/pull/577>
+* feat(plugin download): add application/x-zip-compressed for header Accept by @jmkerloch in <https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/pull/587>
+* update(chore): move project under Github organization by @Guts in <https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/pull/589>
+
 ## 0.36.0 - 2024-10-08
 
 ### Bugs fixes 🐛
