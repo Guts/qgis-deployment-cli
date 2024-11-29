@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/Guts/qgis-deployment-cli/raw/main/docs/schemas/scenario/jobs/qplugins-downloader.json",
+    "$id": "https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/docs/schemas/scenario/jobs/qplugins-downloader.json",
     "description": "Download plugins into QDT local folder.",
     "title": "QPlugins Downloader.",
     "type": "object",

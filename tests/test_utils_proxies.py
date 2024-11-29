@@ -95,7 +95,7 @@ class TestUtilsNetworkProxies(unittest.TestCase):
 
         ## url
         environ["QDT_PAC_FILE"] = (
-            "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/refs/heads/main/tests/fixtures/pac/proxy.pac"
+            "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/refs/heads/main/tests/fixtures/pac/proxy.pac"
         )
 
         ### QGIS plugin : use proxy

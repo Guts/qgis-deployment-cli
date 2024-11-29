@@ -41,7 +41,7 @@ Editing a scenario file can be tricky and since it's a critical piece of the QDT
 
 ## Sample scenario
 
-For development and test purposes, project provides a [sample scenario](https://github.com/Guts/qgis-deployment-cli/blob/main/tests/fixtures/scenarios/good_scenario_sample.qdt.yml):
+For development and test purposes, project provides a [sample scenario](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/blob/main/tests/fixtures/scenarios/good_scenario_sample.qdt.yml):
 
 ```{eval-rst}
 .. literalinclude:: ../../tests/fixtures/scenarios/good_scenario_sample.qdt.yml

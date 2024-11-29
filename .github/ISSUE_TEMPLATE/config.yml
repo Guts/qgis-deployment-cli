@@ -1,7 +1,7 @@
 blank_issues_enabled: true
 contact_links:
   - name: Ask, answer, share
-    url: https://github.com/Guts/qgis-deployment-cli/discussions/
+    url: https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/discussions/
     about: Have a question or need help? Have an answer or idea to share? Connect with the community on our discussion board
   - name: Implementing QDT in your organization
     url: https://guts.github.io/qgis-deployment-cli/misc/funding.html

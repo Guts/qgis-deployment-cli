@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+    "$schema": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json",
     "name": "demo_qdt",
     "folder_name": "demo_qdt",
     "description": "QGIS profile made to demonstrate how QGIS Deployement Toolbelt works.",

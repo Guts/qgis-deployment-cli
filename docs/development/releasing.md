@@ -1,7 +1,7 @@
 # Release workflow
 
 1. Fill the `CHANGELOG.md` with the new version. You can write it manually or use the auto-generated release notes by Github:
-    1. Go to [project's releases](https://github.com/Guts/qgis-deployment-cli/releases) and click on `Draft a new release`
+    1. Go to [project's releases](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/releases) and click on `Draft a new release`
     1. In `Choose a tag`, enter the new tag (obviously complying with [SemVer](https://semver.org/))
     1. Click on `Generate release notes`
     1. Copy/paste the generated text from `## What's changed` until the line before `**Full changelog**:...` in the CHANGELOG.md replacing `What's changed` with the tag and the publication date

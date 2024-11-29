@@ -62,21 +62,21 @@ Development is leaded by the following principles and goals:
 1. Run a scenario. For example the one which is shipped as demonstration in QDT project:
 
     ```sh
-    qdt -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+    qdt -s https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
     ```
 
 You can also run it directly with pipx:
 
 ```sh
 pipx run qgis-deployment-toolbelt --help
-pipx run qgis-deployment-toolbelt -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+pipx run qgis-deployment-toolbelt -s https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
 ```
 
 ### With the stand-alone executable
 
 > Typically on Windows
 
-1. Download latest version that matches your environment from [releases](https://github.com/Guts/qgis-deployment-cli/releases/latest)
+1. Download latest version that matches your environment from [releases](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/releases/latest)
 1. Open a terminal in the same folder
 1. Rename 'Windows_QGISDeploymentToolbelt_{{ version | replace(".","-")  }}' as `qdt.exe`:
 
@@ -87,12 +87,12 @@ pipx run qgis-deployment-toolbelt -s https://github.com/Guts/qgis-deployment-cli
 1. Run a scenario. For example the one which is shipped as demonstration in QDT project:
 
     ```powershell
-    ./qdt.exe -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+    ./qdt.exe -s https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
     ```
 
 > Typically on Ubuntu
 
-1. Download latest version that matches your environment from [releases](https://github.com/Guts/qgis-deployment-cli/releases/latest)
+1. Download latest version that matches your environment from [releases](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/releases/latest)
 1. Open a terminal in the same folder
 1. Rename 'Ubuntu_QGISDeploymentToolbelt_{{ version | replace(".","-")  }}' it as `qdt.bin`:
 
@@ -110,7 +110,7 @@ pipx run qgis-deployment-toolbelt -s https://github.com/Guts/qgis-deployment-cli
 
     ```sh
 
-    ./qdt.bin -s https://github.com/Guts/qgis-deployment-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
+    ./qdt.bin -s https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/examples/scenarios/demo-scenario.qdt.yml
     ```
 
 ----

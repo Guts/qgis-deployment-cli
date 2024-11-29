@@ -17,7 +17,7 @@ steps:
     uses: qprofiles-downloader
     with:
       protocol: http
-      source: https://raw.githubusercontent.com/Guts/qgis-deployment-cli/examples/
+      source: https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/examples/
 
   - name: Synchronize downloaded profiles with installed ones
     uses: qprofiles-synchronizer

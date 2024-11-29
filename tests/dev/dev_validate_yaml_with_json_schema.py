@@ -57,7 +57,7 @@ with schema.open("r") as s:
 instance_data = reader.scenario
 schema_folder = Path("docs/schemas/")
 schema_filename = schema_folder / "schema.json"
-base_uri = "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/feature/scenario-pseudo-ci/docs/schemas/"
+base_uri = "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/feature/scenario-pseudo-ci/docs/schemas/"
 
 resolver = jsonschema.RefResolver(base_uri=base_uri, referrer=schema_data)
 add_local_schemas_to(resolver, schema_folder, base_uri)

@@ -40,12 +40,12 @@ body:
     attributes:
       label: Related links
       description: >-
-        Please list all links to open and closed [issues](https://github.com/Guts/qgis-deployment-cli/issues),
-        [discussions](https://github.com/Guts/qgis-deployment-cli/discussions),
+        Please list all links to open and closed [issues](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/issues),
+        [discussions](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/discussions),
         or to [documentation sections](https://guts.github.io/qgis-deployment-cli/)
         that are relevant to your idea.
         If you discussed your idea with the community on our
-        [discussion board](https://github.com/Guts/qgis-deployment-cli/discussions)
+        [discussion board](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/discussions)
         prior to creating this change request, please link the discussion here as well.
     validations:
       required: true

@@ -29,7 +29,7 @@ steps:
   - name: Download profiles from remote git repository
     uses: qprofiles-downloader
     with:
-      source: https://github.com/Guts/qgis-deployment-cli.git
+      source: https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli.git
       protocol: git_remote
       branch: main
 

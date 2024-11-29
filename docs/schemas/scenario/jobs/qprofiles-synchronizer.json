@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/jobs/qprofiles-synchronizer.json",
+    "$id": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/jobs/qprofiles-synchronizer.json",
     "description": "Synchronizes installed profiles (in QGIS profiles folder) from downloaded ones in QDT working folder.",
     "title": "QProfiles Synchronizer",
     "type": "object",

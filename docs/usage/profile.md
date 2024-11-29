@@ -107,4 +107,4 @@ profiles/*/previewImages/
 #### Resources
 
 - [gitignore explained on GitHub official documentation](https://docs.github.com/get-started/getting-started-with-git/ignoring-files)
-- the [.gitignore file](https://github.com/Guts/qgis-deployment-cli/blob/main/examples/.gitignore) used in official examples from QDT repository
+- the [.gitignore file](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/blob/main/examples/.gitignore) used in official examples from QDT repository

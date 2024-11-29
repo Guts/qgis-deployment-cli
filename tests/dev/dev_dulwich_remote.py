@@ -14,7 +14,9 @@ logging.basicConfig(
 )
 
 
-git_repository_remote_url = "https://github.com/Guts/qgis-deployment-cli.git"
+git_repository_remote_url = (
+    "https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli.git"
+)
 git_repository_local = Path(__file__).parent.parent.joinpath(
     "fixtures/tmp/dev_repository/"
 )
