@@ -165,11 +165,11 @@ def os_env_proxy(func):
         """Decorator wrapper to define environment variable for proxy use.
 
         If a proxy settings is available for https or http we:
-        - backup current environment value 
+        - backup current environment value
         - define environment value with proxy settings
         - run function
         - restore environment value if available
-        
+
 
         Returns:
             _type_: function result
