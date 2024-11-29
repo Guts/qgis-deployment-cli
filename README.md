@@ -35,7 +35,7 @@ QGISDeploymentToolbelt_0-27-0_Windows.exe -s https://github.com/qgis-deployment/
 
 Look for new icons in start menu or desktop!
 
-**Interested**? For further details, [read the documentation](https://guts.github.io/qgis-deployment-cli/) :books:.
+**Interested**? For further details, [read the documentation](https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/) :books:.
 
 ## Contribute
 

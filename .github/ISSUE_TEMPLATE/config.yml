@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/discussions/
     about: Have a question or need help? Have an answer or idea to share? Connect with the community on our discussion board
   - name: Implementing QDT in your organization
-    url: https://guts.github.io/qgis-deployment-cli/misc/funding.html
+    url: https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/misc/funding.html
     about: Want to contract to deploy QDT in your organization or to fund or sponsor a feature or a bug fix?
