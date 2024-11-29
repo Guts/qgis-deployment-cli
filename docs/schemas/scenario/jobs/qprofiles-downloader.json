@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/jobs/qprofiles-downloader.json",
+    "$id": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/jobs/qprofiles-downloader.json",
     "description": "Job to download remote profiles to local QDT working folder.",
     "title": "QProfiles Downloader",
     "type": "object",
@@ -23,7 +23,7 @@
             "type": "string"
         },
         "source": {
-            "description": "Location of profiles. Typically: 'https://github.com/Guts/qgis-deployment-cli.git' or 'https://raw.githubusercontent.com/Guts/qgis-deployment-cli/examples/'",
+            "description": "Location of profiles. Typically: 'https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli.git' or 'https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/examples/'",
             "type": "string"
         }
     },

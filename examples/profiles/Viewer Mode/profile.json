@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+  "$schema": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json",
   "name": "QDT Viewer Mode",
   "folder_name": "qdt_viewer_mode",
   "description": "Demo QGIS profile for QDT customized for end-users which are only viewers.",

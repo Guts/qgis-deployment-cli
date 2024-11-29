@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+  "$schema": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json",
   "name": "QDT Only Linux",
   "folder_name": "qdt_only_linux",
   "description": "Demonstrating a QDT profile that's deployed only on Linux.",

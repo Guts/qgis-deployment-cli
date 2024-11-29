@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+    "$schema": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json",
     "name": "QDT excluded by rules",
     "folder_name": "qdt_never_deployed",
     "description": "QGIS profile made to demonstrate how rules engine can exclude a profile from deployment.",

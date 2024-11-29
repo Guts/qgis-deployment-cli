@@ -3,7 +3,8 @@ name: "📦 Build & 🚀 Release"
 # Triggers
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
     paths:
       - ".github/workflows/build_release.yml"
@@ -14,7 +15,8 @@ on:
       - "*"
 
   pull_request:
-    branches: [main]
+    branches:
+      - main
     paths:
       - ".github/workflows/build_release.yml"
       - "builder/"

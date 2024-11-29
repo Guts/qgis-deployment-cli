@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/schema.json
 
 # This is a sample of a YAML file for the QGIS Deployment Toolbelt scenario.
 # For now, it's more a roadmap than a real description of what it's implemented.
@@ -32,7 +32,7 @@ steps:
   - name: Download profiles from remote git repository
     uses: qprofiles-downloader
     with:
-      source: https://github.com/Guts/qgis-deployment-cli.git
+      source: https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli.git
       protocol: git_remote
       branch: main
 

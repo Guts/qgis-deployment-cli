@@ -16,9 +16,9 @@ sudo apt install git python3-pip python3-virtualenv python3-venv virtualenv
 Clone the repository where you want:
 
 ```sh
-git clone https://github.com/Guts/qgis-deployment-cli.git
+git clone https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli.git
 # or using ssh
-git clone git@github.com:Guts/qgis-deployment-cli.git
+git clone git@github.com:qgis-deployment/qgis-deployment-toolbelt-cli.git
 ```
 
 Create and enter virtual environment (change the path at your convenience):

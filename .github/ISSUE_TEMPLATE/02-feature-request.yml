@@ -40,12 +40,12 @@ body:
     attributes:
       label: Related links
       description: >-
-        Please list all links to open and closed [issues](https://github.com/Guts/qgis-deployment-cli/issues),
-        [discussions](https://github.com/Guts/qgis-deployment-cli/discussions),
-        or to [documentation sections](https://guts.github.io/qgis-deployment-cli/)
+        Please list all links to open and closed [issues](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/issues),
+        [discussions](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/discussions),
+        or to [documentation sections](https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/)
         that are relevant to your idea.
         If you discussed your idea with the community on our
-        [discussion board](https://github.com/Guts/qgis-deployment-cli/discussions)
+        [discussion board](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/discussions)
         prior to creating this change request, please link the discussion here as well.
     validations:
       required: true
@@ -57,7 +57,7 @@ body:
       description: >-
         Please explain how your idea will work from an QGIS admin's and user's
         perspective. Elaborate on how the change would positively impact not only
-        you but the community and how it aligns with the goals and [philosophy](https://guts.github.io/qgis-deployment-cli/#what-it-is-and-the-underlying-philosophy)
+        you but the community and how it aligns with the goals and [philosophy](https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/#what-it-is-and-the-underlying-philosophy)
         of the project.
     validations:
       required: true

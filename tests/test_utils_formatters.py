@@ -43,16 +43,16 @@ class TestUtilsFormatters(unittest.TestCase):
         """Test URL trailing slash."""
         self.assertEqual(
             url_ensure_trailing_slash(
-                in_url="https://guts.github.io/qgis-deployment-cli"
+                in_url="https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli"
             ),
-            "https://guts.github.io/qgis-deployment-cli/",
+            "https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/",
         )
 
         self.assertEqual(
             url_ensure_trailing_slash(
-                in_url="https://guts.github.io/qgis-deployment-cli/"
+                in_url="https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/"
             ),
-            "https://guts.github.io/qgis-deployment-cli/",
+            "https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/",
         )
 
 

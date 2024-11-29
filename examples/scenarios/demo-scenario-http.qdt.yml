@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/schema.json
 
 metadata:
   title: "Demonstration scenario of QGIS Deployment Toolbelt with HTTP"
@@ -29,7 +29,7 @@ steps:
   - name: Download profiles from remote git repository
     uses: qprofiles-downloader
     with:
-      source: https://raw.githubusercontent.com/Guts/qgis-deployment-cli/examples/
+      source: https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/examples/
       protocol: http
 
   - name: Synchronize downloaded profiles with installed ones

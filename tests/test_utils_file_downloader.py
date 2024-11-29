@@ -36,7 +36,7 @@ class TestUtilsFileDownloader(unittest.TestCase):
         ) as tmpdirname:
             # file that already exist locally
             downloaded_file = download_remote_file_to_local(
-                remote_url_to_download="https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/README.md",
+                remote_url_to_download="https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/README.md",
                 local_file_path=Path(tmpdirname).joinpath("README_from_remote.md"),
             )
             self.assertIsInstance(downloaded_file, Path)
@@ -49,7 +49,7 @@ class TestUtilsFileDownloader(unittest.TestCase):
         ) as tmpdirname:
             # file that already exist locally
             downloaded_file = download_remote_file_to_local(
-                remote_url_to_download="https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/README.md",
+                remote_url_to_download="https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/README.md",
                 local_file_path=Path(tmpdirname).joinpath("README_from_remote.md"),
                 use_stream=False,
             )

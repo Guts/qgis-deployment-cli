@@ -21,7 +21,7 @@ Add the following line at the top of your JSON file:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json"
+  "$schema": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json"
   [...]
 }
 ```
@@ -34,7 +34,7 @@ Add the following line at the top of your JSON file:
 ```json
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
+    "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
   }
 }
 ```
@@ -74,7 +74,7 @@ repos:
         files: ^profiles/.*\.json$
         args:
           - --schemafile
-          - https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json
+          - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.28.0
@@ -86,8 +86,8 @@ repos:
           - --default-filetype
           - yaml
           - --base-uri
-          - https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/
+          - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/
           - --schemafile
-          - https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/scenario/schema.json
+          - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/schema.json
 
 ```

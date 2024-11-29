@@ -25,9 +25,9 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Clone the repository where you want using [GitHub Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/setting-up-github-desktop) as graphical interface or a PowerShell terminal:
 
 ```powershell
-git clone https://github.com/Guts/qgis-deployment-cli.git
+git clone https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli.git
 # or using ssh
-git clone git@github.com:Guts/qgis-deployment-cli.git
+git clone git@github.com:qgis-deployment/qgis-deployment-toolbelt-cli.git
 ```
 
 ### Set up the virtual environment

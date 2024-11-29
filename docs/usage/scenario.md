@@ -17,7 +17,7 @@ If it is not found, it will expect subcommands to run.
 
 ### Jobs
 
-A *job* is a logical module that is called by a *step* in a *scenario*, by passing it parameters. Concretely, each job is a Python module of QDT ([here in the code](https://guts.github.io/qgis-deployment-cli/_apidoc/qgis_deployment_toolbelt.jobs.html)).
+A *job* is a logical module that is called by a *step* in a *scenario*, by passing it parameters. Concretely, each job is a Python module of QDT ([here in the code](https://qgis-deployment.github.io/qgis-deployment-toolbelt-cli/_apidoc/qgis_deployment_toolbelt.jobs.html)).
 
 A step consists of 3 elements:
 
@@ -41,7 +41,7 @@ Editing a scenario file can be tricky and since it's a critical piece of the QDT
 
 ## Sample scenario
 
-For development and test purposes, project provides a [sample scenario](https://github.com/Guts/qgis-deployment-cli/blob/main/tests/fixtures/scenarios/good_scenario_sample.qdt.yml):
+For development and test purposes, project provides a [sample scenario](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/blob/main/tests/fixtures/scenarios/good_scenario_sample.qdt.yml):
 
 ```{eval-rst}
 .. literalinclude:: ../../tests/fixtures/scenarios/good_scenario_sample.qdt.yml

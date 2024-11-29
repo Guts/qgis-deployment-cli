@@ -13,7 +13,7 @@ Some of customizations to make it recognizable:
 - at least one plugin is installed: [Profile Manager](https://plugins.qgis.org/plugins/profile-manager/)
 - custom icon and splash screen
 
-![QGIS UI - QDT demo profile](https://github.com/Guts/qgis-deployment-cli/blob/main/docs/static/examples_profiles_qdt-demo_qgis_ui.png?raw=true)
+![QGIS UI - QDT demo profile](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/blob/main/docs/static/examples_profiles_qdt-demo_qgis_ui.png?raw=true)
 
 Splash screen:
 

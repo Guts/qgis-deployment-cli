@@ -8,7 +8,7 @@ You can add rules to make the profile deployment conditional. In the following e
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json",
+  "$schema": "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json",
   "name": "only_linux",
   "folder_name": "qdt_only_linux",
   "description": "A QGIS profile for QDT with a conditional deployment rule.",
@@ -56,7 +56,7 @@ qdt export-rules-context -o qdt_rules_context.json
 
 ## Model definition
 
-The project comes with a [JSON schema](https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/docs/schemas/profile/qgis_profile.json) describing the model of a profile:
+The project comes with a [JSON schema](https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json) describing the model of a profile:
 
 ```{eval-rst}
 .. literalinclude:: ../schemas/profile/qgis_profile.json

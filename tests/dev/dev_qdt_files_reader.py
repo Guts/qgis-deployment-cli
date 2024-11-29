@@ -8,7 +8,7 @@ from qgis_deployment_toolbelt.utils.file_downloader import download_remote_file_
 
 logging.basicConfig(level=logging.WARNING)
 
-base_url = "https://raw.githubusercontent.com/Guts/qgis-deployment-cli/main/examples/"
+base_url = "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/examples/"
 target_folder = Path(__file__).parent.joinpath(
     "../fixtures/tmp/test-http-batch-downloader"
 )
