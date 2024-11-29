@@ -236,7 +236,7 @@ class JobPluginsDownloader(GenericJob):
                     download_remote_file_to_local(
                         local_file_path=plugin_download_path,
                         remote_url_to_download=plugin.download_url,
-                        content_type="application/zip",
+                        content_type="application/zip, application/x-zip-compressed",
                         use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
                     )
                     logger.info(
@@ -271,7 +271,7 @@ class JobPluginsDownloader(GenericJob):
                             # func parameters
                             local_file_path=plugin_download_path,
                             remote_url_to_download=plugin.download_url,
-                            content_type="application/zip",
+                            content_type="application/zip, application/x-zip-compressed",
                             use_stream=str2bool(getenv("QDT_STREAMED_DOWNLOADS", True)),
                         )
                         downloaded_plugins.append(plugin)
