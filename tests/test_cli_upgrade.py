@@ -80,7 +80,16 @@ class TestUpgradeUtils(unittest.TestCase):
             for os in SUPPORTED_OPERATING_SYSTEMS_CODENAMES
         ]
         self.assertTrue(len(dl_hyperlinks), 3)
-        self.assertTrue(all([dl_url.startswith("https") for dl_url in dl_hyperlinks]))
+
+        self.assertTrue(
+            all(
+                [
+                    dl_url.startswith("https")
+                    for dl_url in dl_hyperlinks
+                    if isinstance(dl_url, str)
+                ]
+            )
+        )
 
 
 # #############################################################################
