@@ -101,7 +101,6 @@ profiles/*/python/plugins/
 profiles/*/previewImages/
 *.db
 *.*~
-*.*~
 ```
 
 #### Resources
