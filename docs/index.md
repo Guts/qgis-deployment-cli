@@ -138,6 +138,7 @@ caption: Guides
 glob:
 maxdepth: 1
 ---
+guides/howto_download_latest_qdt_exe.md
 guides/howto_validate_profiles_scenarios
 guides/howto_behind_proxy
 guides/howto_use_custom_ssl_certs
