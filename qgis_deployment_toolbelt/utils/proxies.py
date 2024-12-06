@@ -190,11 +190,15 @@ def os_env_proxy(func):
         # Run function
         result = func(*args, **kwargs)
 
-        # Restore environment variable if available
+        # Restore environment variable if available or remove it
         if prev_http_proxy:
             os.environ["HTTP_PROXY"] = prev_http_proxy
+        elif "HTTP_PROXY" in os.environ:
+            del os.environ["HTTP_PROXY"]
         if prev_https_proxy:
             os.environ["HTTPS_PROXY"] = prev_https_proxy
+        elif "HTTPS_PROXY" in os.environ:
+            del os.environ["HTTPS_PROXY"]
         return result
 
     return wrapper
