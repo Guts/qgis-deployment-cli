@@ -125,7 +125,7 @@
             "$ref": "qgis-installation-finder.json"
           }
         }
-      },
+      }
     ],
     "required": [
       "name",
