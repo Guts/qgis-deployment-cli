@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/docs/schemas/profile/qgis_profile.json",
-    "$comment": "A QGIS profile described in a JSON file.",
+    "$comment": "A QGIS profile described in a JSON file in the QDT formalism.",
     "type": "object",
     "properties": {
         "alias": {
@@ -44,14 +44,14 @@
             }
         },
         "qgisMaximumVersion": {
-            "description": "Maximum QGIS version where the profile can be deployed.",
+            "description": "Maximum QGIS version where the profile can be deployed. It should complies with SemVer.",
             "maxLength": 14,
             "minLength": 5,
             "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
             "type": "string"
         },
         "qgisMinimumVersion": {
-            "description": "Minimum QGIS version where the profile can be deployed.",
+            "description": "Minimum QGIS version where the profile can be deployed. It should complies with SemVer.",
             "maxLength": 14,
             "minLength": 5,
             "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",

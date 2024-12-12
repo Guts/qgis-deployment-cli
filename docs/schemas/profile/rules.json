@@ -58,7 +58,7 @@
             "type": "string"
         }
     },
-    "definitions": {
+    "defs": {
         "conditionArray": {
             "type": "array",
             "title": "Condition Array",
