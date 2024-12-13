@@ -51,7 +51,7 @@ Alternatively you can add this line at the top of the file:
 
 Since it's strongly recomended to use Git to store and publish QDT profiles and scenarios, it's possible to use git hooks to automatically validate QDT files.
 
-Here comes a typical configuration for the [pre-commit micro-framework](https://pre-commit.com/) (see [upstream instructions](https://pre-commit.com/#install) to install it):
+Considering that your git project stores QDT profiles in a `profiles` subfolder and QDT scenarios in `scenarios` one, here comes a typical configuration for the [pre-commit micro-framework](https://pre-commit.com/) (see [upstream instructions](https://pre-commit.com/#install) to install it):
 
 ```{code-block} yaml
 :caption: Example file .pre-commit-config.yaml (adapt to your subfolders)
@@ -73,7 +73,7 @@ repos:
       - id: check-json5
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.0
+    rev: 0.30.0
     hooks:
       - id: check-jsonschema
         name: Check QDT profiles
@@ -83,17 +83,16 @@ repos:
           - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/profile/qgis_profile.json
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.0
+    rev: 0.30.0
     hooks:
       - id: check-jsonschema
         name: Check QDT scenarios
-        files: ^qdt_scenarii/.*\.yml$
+        files: ^scenario/.*\.yml$
         args:
           - --default-filetype
           - yaml
           - --base-uri
-          - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/
+          - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/refs/heads/main/docs/schemas/scenario/
           - --schemafile
-          - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/schema.json
-
+          - https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/refs/heads/main/docs/schemas/scenario/qdt_scenario.json
 ```
