@@ -23,11 +23,11 @@ Sample job configuration in your scenario file:
 - name: Find installed QGIS
   uses: qgis-installation-finder
   with:
-    version_priority:
+    - version_priority:
       - "3.36"
-    search_paths:
+    - search_paths:
       - D:\\Applications\\QGIS\\
-    if_not_found: error
+    - if_not_found: error
 ```
 
 ----
