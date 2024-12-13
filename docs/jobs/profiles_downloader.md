@@ -1,4 +1,4 @@
-# Profiles Downloader
+# Profiles downloader
 
 This job downloads remote profiles through different protocols to the local QDT working folder.
 

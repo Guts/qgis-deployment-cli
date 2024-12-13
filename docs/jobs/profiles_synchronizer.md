@@ -1,4 +1,4 @@
-# Profiles Synchronizer
+# Profiles synchronizer
 
 This job synchronizes installed profiles (those stored in QGIS profiles folder) from the downloaded ones (those stored in QDT local folder).
 
