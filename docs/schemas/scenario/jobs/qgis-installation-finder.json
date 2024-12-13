@@ -1,35 +1,34 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/docs/schemas/scenario/jobs/qgis-installation-finder.json",
-  "description": "Job in charge of findind installed QGIS version on computer.",
+  "description": "Job in charge of finding installed QGIS version on computer.",
   "title": "QGIS installation finder",
   "type": "object",
-  "items": {
-    "properties": {
-      "version_priority": {
-        "default": "",
-        "description": "Define QGIS version priority for search.",
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      },
-      "if_not_found": {
-        "default": "warning",
-        "description": "Behavior if no QGIS installation found.",
-        "enum": [
-          "warning",
-          "error"
-        ],
+  "properties": {
+    "version_priority": {
+      "default": "",
+      "description": "Define QGIS version priority for search.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
         "type": "string"
-      },
-      "search_paths": {
-        "default": "",
-        "description": "Define search paths for QGIS installation.",
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
+      }
+    },
+    "if_not_found": {
+      "default": "warning",
+      "description": "Behavior if no QGIS installation found.",
+      "enum": [
+        "warning",
+        "error"
+      ],
+      "type": "string"
+    },
+    "search_paths": {
+      "default": "",
+      "description": "Define search paths for QGIS installation.",
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     }
   }
