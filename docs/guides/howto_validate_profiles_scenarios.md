@@ -34,9 +34,15 @@ Add the following line at the top of your JSON file:
 ```json
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/main/docs/schemas/scenario/schema.json": "*.qdt.yml"
+    "https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/refs/heads/main/docs/schemas/scenario/qdt_scenario.json": "*.qdt.yml"
   }
 }
+```
+
+Alternatively you can add this line at the top of the file:
+
+```yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/qgis-deployment/qgis-deployment-toolbelt-cli/refs/heads/main/docs/schemas/scenario/qdt_scenario.json
 ```
 
 ----
