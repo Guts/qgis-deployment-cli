@@ -40,10 +40,10 @@
             ],
             "properties": {
                 "any": {
-                    "$ref": "#/definitions/conditionArray"
+                    "$ref": "#/defs/conditionArray"
                 },
                 "all": {
-                    "$ref": "#/definitions/conditionArray"
+                    "$ref": "#/defs/conditionArray"
                 }
             }
         },
@@ -67,10 +67,10 @@
             "items": {
                 "anyOf": [
                     {
-                        "$ref": "#/definitions/conditions"
+                        "$ref": "#/defs/condition"
                     },
                     {
-                        "$ref": "#/definitions/condition"
+                        "$ref": "#/defs/condition"
                     }
                 ]
             }
@@ -107,7 +107,6 @@
             ],
             "properties": {
                 "operator": {
-                    "required": true,
                     "type": "string",
                     "anyOf": [
                         {
