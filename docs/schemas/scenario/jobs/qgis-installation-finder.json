@@ -3,9 +3,8 @@
   "$id": "https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/raw/main/docs/schemas/scenario/jobs/qgis-installation-finder.json",
   "description": "Job in charge of findind installed QGIS version on computer.",
   "title": "QGIS installation finder",
-  "type": "array",
+  "type": "object",
   "items": {
-    "type": "object",
     "properties": {
       "version_priority": {
         "default": "",
