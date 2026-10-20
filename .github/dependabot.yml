@@ -8,6 +8,11 @@ updates:
       timezone: Europe/Paris
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 10
+      semver-patch-days: 7
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -15,3 +20,5 @@ updates:
       interval: "monthly"
     labels:
       - ci-cd
+    cooldown:
+      default-days: 14
