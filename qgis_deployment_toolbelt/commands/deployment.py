@@ -194,7 +194,7 @@ def run(args: argparse.Namespace):
         logger.debug("No settings defined in the scenario.")
 
     qdt_local_working_folder = get_qdt_working_directory(
-        specific_value=scenario.settings.get("LOCAL_QDT_WORKDIR"),
+        specific_value=(scenario.settings or {}).get("LOCAL_QDT_WORKDIR"),
     )
     logger.info(f"QDT working folder: {qdt_local_working_folder}")
     environ["QDT_LOCAL_QDT_WORKDIR"] = f"{qdt_local_working_folder.resolve()}"
