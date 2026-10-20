@@ -333,6 +333,58 @@ class TestJobPluginsSynchronizer(unittest.TestCase):
             self.assertIn("plugin_one", manifest)
             self.assertIn("plugin_two", manifest)
 
+    def test_downloaded_profiles_scoped_to_running_scenario(self):
+        """Profiles downloaded by another scenario must be ignored, otherwise their
+        plugins are installed (and their folder created) in the QGIS profiles folder."""
+        with tempfile.TemporaryDirectory(
+            prefix="QDT_test_plugins_sync_scenario_scope_"
+        ) as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            qdt_working_folder = tmp_path / "qdt"
+            qgis_profiles_folder = tmp_path / "qgis_profiles"
+
+            # profile downloaded by a previous run of another scenario
+            other_profile_folder = qdt_working_folder / "repositories/other/profile_a"
+            other_profile_folder.mkdir(parents=True)
+            (other_profile_folder / "profile.json").write_text(
+                json.dumps(
+                    {
+                        "name": "profile_a",
+                        "folder_name": "profile_a",
+                        "version": "1.0.0",
+                        "plugins": [
+                            {
+                                "name": "Test Plugin",
+                                "folder_name": "test_plugin",
+                                "version": "2.0.0",
+                            }
+                        ],
+                    }
+                ),
+                encoding="UTF-8",
+            )
+            # its plugin archive is still in the shared plugins cache
+            (qdt_working_folder / "plugins").mkdir(parents=True)
+            self._create_fake_plugin_zip(
+                qdt_working_folder / "plugins/test-plugin_2-0-0.zip", "test_plugin"
+            )
+
+            with patch.dict(
+                "os.environ",
+                {
+                    "QDT_LOCAL_WORK_DIR": str(qdt_working_folder),
+                    "QDT_TMP_RUNNING_SCENARIO_ID": "running",
+                    "QGIS_CUSTOM_CONFIG_PATH": str(qgis_profiles_folder),
+                },
+            ):
+                job = JobPluginsSynchronizer(options={"profile_ref": "downloaded"})
+                self.addCleanup(job.clear_profiles_cache)
+
+                self.assertEqual(job.profiles_path, job.qdt_downloaded_repositories)
+                job.run()
+
+            self.assertFalse((qgis_profiles_folder / "profile_a").exists())
+
 
 # #############################################################################
 # ####### Stand-alone run ########

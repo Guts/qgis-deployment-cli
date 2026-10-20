@@ -107,10 +107,11 @@ class JobPluginsSynchronizer(GenericJob):
                 f"{self.profiles_path.resolve()}"
             )
         else:
-            self.profiles_path = self.qdt_working_folder
+            self.profiles_path = self.qdt_downloaded_repositories
             logger.debug(
                 "Using plugins listed into profile.json files found into profiles "
-                f"downloaded under the QDT local folder: {self.profiles_path.resolve()}"
+                "downloaded by the running scenario under the QDT local folder: "
+                f"{self.profiles_path.resolve()}"
             )
 
     def run(self) -> None:
