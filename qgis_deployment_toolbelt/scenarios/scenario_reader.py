@@ -155,8 +155,7 @@ class ScenarioReader:
 
         # check if scenario is a dict
         if not isinstance(self.scenario, dict):
-            report.append(f"Scenario is not a dict but {type(self.scenario)}")
-            valid = False
+            return False, [f"Scenario is not a dict but {type(self.scenario)}"]
 
         # check scenario basic structure
         if any([i not in self.scenario for i in required_root_keys]):
@@ -166,6 +165,33 @@ class ScenarioReader:
                 )
             )
             valid = False
+
+        # an empty settings section = no settings
+        if self.settings is not None and not isinstance(self.settings, dict):
+            report.append(
+                f"Settings must be a mapping, not {type(self.settings).__name__}."
+            )
+            valid = False
+
+        if "steps" in self.scenario:
+            if not isinstance(self.steps, list):
+                report.append(
+                    f"Steps must be a list of jobs, not {type(self.steps).__name__}."
+                )
+                valid = False
+            elif not self.steps:
+                report.append("Steps must contain at least one job.")
+                valid = False
+            elif not all(
+                isinstance(step, dict)
+                and isinstance(step.get("uses"), str)
+                and step["uses"].strip()
+                for step in self.steps
+            ):
+                report.append(
+                    "Each step must be a mapping with a non-empty 'uses' value."
+                )
+                valid = False
 
         # check if metadata is a dict
         if not isinstance(self.metadata, dict):

@@ -16,6 +16,7 @@
 
 # Standard library
 import unittest
+from io import BytesIO
 from pathlib import Path
 
 # module target
@@ -198,3 +199,35 @@ class TestScenarioReader(unittest.TestCase):
                 self.assertFalse(valid, f"{key}={value!r}")
                 self.assertEqual(len(report), 1)
                 self.assertIn(key, report[0])
+
+    def test_validate_empty_scenario(self):
+        """An empty file is reported as invalid instead of raising a TypeError."""
+        reader = ScenarioReader(in_yaml=BytesIO(b""))
+        self.assertIsNone(reader.scenario)
+
+        valid, report = reader.validate_scenario()
+        self.assertFalse(valid)
+        self.assertEqual(len(report), 1)
+
+    def test_validate_sections_types(self):
+        """Settings and steps sections are type-checked, a null settings section
+        being handled as no settings and at least one step being required."""
+        base = b"metadata:\n  id: test\n  title: Test\n"
+        one_step = b"steps:\n  - uses: qprofiles-synchronizer\n"
+        cases: tuple[tuple[bytes, bool], ...] = (
+            (b"settings:\n" + one_step, True),
+            (b"settings: [a, b]\n" + one_step, False),
+            (b"settings:\nsteps: []\n", False),
+            (b"settings:\nsteps:\n", False),
+            (b"settings:\nsteps:\n  - qprofiles-synchronizer\n", False),
+            (b"settings:\nsteps:\n  - name: no job\n", False),
+            (b"settings:\nsteps:\n  - uses:\n", False),
+            (b"settings:\nsteps:\n  - uses: ''\n", False),
+            (b"settings:\nsteps:\n  - uses: ' '\n", False),
+            (b"settings:\nsteps:\n  - uses: 42\n", False),
+        )
+        for sections, expected_validity in cases:
+            reader = ScenarioReader(in_yaml=BytesIO(base + sections))
+            valid, report = reader.validate_scenario()
+            self.assertIs(valid, expected_validity, sections)
+            self.assertEqual(len(report), 0 if expected_validity else 1, report)
