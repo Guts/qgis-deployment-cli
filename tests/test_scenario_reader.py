@@ -211,11 +211,13 @@ class TestScenarioReader(unittest.TestCase):
 
     def test_validate_sections_types(self):
         """Settings and steps sections are type-checked, a null settings section
-        being handled as no settings."""
+        being handled as no settings and at least one step being required."""
         base = b"metadata:\n  id: test\n  title: Test\n"
+        one_step = b"steps:\n  - uses: qprofiles-synchronizer\n"
         cases: tuple[tuple[bytes, bool], ...] = (
-            (b"settings:\nsteps: []\n", True),
-            (b"settings: [a, b]\nsteps: []\n", False),
+            (b"settings:\n" + one_step, True),
+            (b"settings: [a, b]\n" + one_step, False),
+            (b"settings:\nsteps: []\n", False),
             (b"settings:\nsteps:\n", False),
             (b"settings:\nsteps:\n  - qprofiles-synchronizer\n", False),
         )

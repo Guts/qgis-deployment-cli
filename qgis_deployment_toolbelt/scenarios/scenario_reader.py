@@ -179,6 +179,9 @@ class ScenarioReader:
                     f"Steps must be a list of jobs, not {type(self.steps).__name__}."
                 )
                 valid = False
+            elif not self.steps:
+                report.append("Steps must contain at least one job.")
+                valid = False
             elif not all(isinstance(step, dict) for step in self.steps):
                 report.append("Each step must be a mapping with at least a 'uses' key.")
                 valid = False
