@@ -182,8 +182,15 @@ class ScenarioReader:
             elif not self.steps:
                 report.append("Steps must contain at least one job.")
                 valid = False
-            elif not all(isinstance(step, dict) for step in self.steps):
-                report.append("Each step must be a mapping with at least a 'uses' key.")
+            elif not all(
+                isinstance(step, dict)
+                and isinstance(step.get("uses"), str)
+                and step["uses"].strip()
+                for step in self.steps
+            ):
+                report.append(
+                    "Each step must be a mapping with a non-empty 'uses' value."
+                )
                 valid = False
 
         # check if metadata is a dict

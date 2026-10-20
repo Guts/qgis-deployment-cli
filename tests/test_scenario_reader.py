@@ -220,6 +220,11 @@ class TestScenarioReader(unittest.TestCase):
             (b"settings:\nsteps: []\n", False),
             (b"settings:\nsteps:\n", False),
             (b"settings:\nsteps:\n  - qprofiles-synchronizer\n", False),
+            (b"settings:\nsteps:\n  - name: no job\n", False),
+            (b"settings:\nsteps:\n  - uses:\n", False),
+            (b"settings:\nsteps:\n  - uses: ''\n", False),
+            (b"settings:\nsteps:\n  - uses: ' '\n", False),
+            (b"settings:\nsteps:\n  - uses: 42\n", False),
         )
         for sections, expected_validity in cases:
             reader = ScenarioReader(in_yaml=BytesIO(base + sections))
