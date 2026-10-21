@@ -12,6 +12,7 @@ Author: Julien Moura (https://github.com/guts)
 # ##################################
 
 # Standard library
+import json
 import logging
 from abc import ABC, abstractmethod
 from functools import cached_property
@@ -84,9 +85,7 @@ class GenericJob(ABC):
 
     # -- CACHE --
     PROFILES_FOLDER_CACHE: dict[Path, tuple[QdtProfile, ...] | None] = {}
-    RULES_FILTER_CACHE: dict[
-        tuple[Path, ...], tuple[list[QdtProfile], list[QdtProfile]]
-    ] = {}
+    RULES_FILTER_CACHE: dict[str, bool | None] = {}
 
     def __init__(self) -> None:
         """Object instanciation."""
@@ -360,8 +359,11 @@ class GenericJob(ABC):
     def filter_profiles_on_rules(
         self, tup_qdt_profiles: tuple[QdtProfile, ...], cached: bool = True
     ) -> tuple[list[QdtProfile], list[QdtProfile]]:
-        """Evaluate profile regarding to its deployment rules. Results are stored in
-        the class ``RULES_FILTER_CACHE`` attribute.
+        """Evaluate profiles regarding to their deployment rules.
+
+        Results stored in the class ``RULES_FILTER_CACHE`` attribute, keyed by the
+        serialized rules to be shared between jobs. A profile whose rules changed on
+        disk is evaluated again.
 
         Args:
             tup_qdt_profiles (tuple[QdtProfile, ...]): input tuple of QDT profiles
@@ -369,72 +371,73 @@ class GenericJob(ABC):
                 Defaults to True.
 
         Returns:
-            tuple[QdtProfile], list[QdtProfile]]: tuple of profiles that matched
-            and those which did not match their deployment rules
+            tuple[list[QdtProfile], list[QdtProfile]]: profiles that matched and
+                those which did not match their deployment rules. Profiles whose
+                rules could not be evaluated are in none of them.
         """
-        # check previous cached result
-        cache_key: tuple[Path, ...] = tuple(
-            p.folder for p in tup_qdt_profiles if isinstance(p.folder, Path)
-        )
-        if cached:
-            if cache_key in self.RULES_FILTER_CACHE:
-                logger.debug(
-                    f"Profiles '{cache_key}' have "
-                    "already been evaluated, returning previous result. "
-                    "Use 'cached=False' to force re-checking."
-                )
-                return self.RULES_FILTER_CACHE[cache_key]
-            logger.debug(
-                f"Profiles '{cache_key}' have not been evaluated yet, checking rules..."
-            )
-        else:
-            logger.debug("Profiles rules evaluation forced, checking rules...")
-
-        # local vars
         li_profiles_matched: list[QdtProfile] = []
         li_profiles_unmatched: list[QdtProfile] = []
-        rules_context = self.qdt_rules_context.to_dict()
 
-        # checking each profile against rules
         for profile in tup_qdt_profiles:
             if profile.rules is None:
                 logger.debug(f"No rules to apply to {profile.name}")
                 li_profiles_matched.append(profile)
                 continue
 
-            logger.debug(
-                f"Checking that profile '{profile.name}' matches deployment conditions. "
-                f"{len(profile.rules)} rules found."
-            )
-            try:
-                engine = RuleEngine(rules=profile.rules)
-                results = engine.evaluate(obj=rules_context)
-                if len(results) == len(profile.rules):
-                    logger.debug(
-                        f"Profile '{profile.name}' matches {len(profile.rules)} "
-                        "deployment rule(s)."
-                    )
-                    li_profiles_matched.append(profile)
-                else:
-                    logger.info(
-                        f"Profile '{profile.name}' does not match the deployment "
-                        f"conditions: {len(results)}/{len(profile.rules)} rule(s) "
-                        "matched."
-                    )
-                    li_profiles_unmatched.append(profile)
-
-            except Exception as err:
-                logger.error(
-                    f"Error occurred parsing rules of profile '{profile.name}'. "
-                    f"Trace: {err}"
+            cache_key = json.dumps(profile.rules, sort_keys=True, default=str)
+            if cached and cache_key in self.RULES_FILTER_CACHE:
+                logger.debug(
+                    f"Rules of profile '{profile.name}' have already been evaluated, "
+                    "reusing previous result. Use 'cached=False' to force re-checking."
                 )
+                filter_result = self.RULES_FILTER_CACHE[cache_key]
+            else:
+                filter_result = self._evaluate_profile_rules(profile=profile)
+                self.RULES_FILTER_CACHE[cache_key] = filter_result
 
-        # store result for other jobs that would need it later
-        self.RULES_FILTER_CACHE[cache_key] = (
-            li_profiles_matched,
-            li_profiles_unmatched,
-        )
+            if filter_result is True:
+                li_profiles_matched.append(profile)
+            elif filter_result is False:
+                li_profiles_unmatched.append(profile)
+
         return li_profiles_matched, li_profiles_unmatched
+
+    def _evaluate_profile_rules(self, profile: QdtProfile) -> bool | None:
+        """Evaluate the deployment rules of a profile against the rules context.
+
+        Args:
+            profile (QdtProfile): profile with rules to evaluate
+
+        Returns:
+            bool | None: True if every rule matches, False otherwise. None if the
+                rules could not be evaluated.
+        """
+        logger.debug(
+            f"Checking that profile '{profile.name}' matches deployment conditions. "
+            f"{len(profile.rules)} rules found."
+        )
+        try:
+            engine = RuleEngine(rules=profile.rules)
+            results = engine.evaluate(obj=self.qdt_rules_context.to_dict())
+        except Exception as err:
+            logger.error(
+                f"Error occurred parsing rules of profile '{profile.name}'. "
+                f"Trace: {err}"
+            )
+            return None
+
+        if len(results) == len(profile.rules):
+            logger.debug(
+                f"Profile '{profile.name}' matches {len(profile.rules)} "
+                "deployment rule(s)."
+            )
+            return True
+
+        logger.info(
+            f"Profile '{profile.name}' does not match the deployment "
+            f"conditions: {len(results)}/{len(profile.rules)} rule(s) matched."
+        )
+        return False
 
     def validate_options(self, options: dict[str, Any]) -> dict[str, Any]:
         """Validate job options against ``OPTIONS_SCHEMA``.
