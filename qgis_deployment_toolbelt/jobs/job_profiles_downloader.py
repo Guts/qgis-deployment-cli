@@ -138,6 +138,10 @@ class JobProfilesDownloader(GenericJob):
         # run download operation
         downloader.download(destination_local_path=self.qdt_downloaded_repositories)
 
+        # downloaded profiles may have been listed by a previous job: make sure this
+        # job and the next ones use the freshly downloaded ones
+        self.clear_profiles_cache(folder_path=self.qdt_downloaded_repositories)
+
         # check of there are some profiles folders within the downloaded folder
         profiles_folders = self.list_downloaded_profiles()
         if profiles_folders is None:
