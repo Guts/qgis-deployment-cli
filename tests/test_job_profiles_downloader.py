@@ -85,9 +85,14 @@ class TestJobProfilesDownloader(unittest.TestCase):
                 patch.dict(environ, {"QDT_LOCAL_WORK_DIR": f"{tmp_dir}/qdt_work"}),
                 patch.dict(GenericJob.PROFILES_FOLDER_CACHE, clear=True),
                 patch.dict(GenericJob.RULES_FILTER_CACHE, clear=True),
+                # closed before the temporary folder removal: GitPython keeps
+                # 'git cat-file' processes running in the repository folder, which
+                # prevents its deletion on Windows (WinError 32)
+                GitPythonRepo.init(
+                    Path(tmp_dir, "remote"), initial_branch="main"
+                ) as repo,
             ):
-                source = Path(tmp_dir, "remote")
-                repo = GitPythonRepo.init(source, initial_branch="main")
+                source = Path(repo.working_dir)
                 self._commit_profile(repo, "demo", "1.0.0", "add demo")
                 self._commit_profile(repo, "legacy", "1.0.0", "add legacy")
 
