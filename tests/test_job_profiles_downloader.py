@@ -63,7 +63,7 @@ class TestJobProfilesDownloader(unittest.TestCase):
             options={
                 "branch": "main",
                 "protocol": "git_local",
-                "source": source.resolve().as_uri(),
+                "source": f"file://{source.resolve()}",
             }
         )
         job.run()
