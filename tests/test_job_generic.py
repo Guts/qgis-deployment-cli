@@ -251,6 +251,33 @@ class TestJobGeneric(unittest.TestCase):
 
             self.assertIsNone(self.generic_job.filter_profiles_folder(profiles_folder))
 
+    def test_rules_evaluation_error_is_logged_and_profile_ignored(self):
+        """A profile whose rules can't be evaluated is in none of the lists, the
+        error details are logged once and the profile is reported as ignored each
+        time, including when the result comes from the cache."""
+        broken = QdtProfile(name="broken", rules=[{"name": "no conditions"}])
+        with patch.dict(GenericJob.RULES_FILTER_CACHE, clear=True):
+            for attempt in ("evaluated", "cached"):
+                with (
+                    self.subTest(attempt=attempt),
+                    self.assertLogs("qgis_deployment_toolbelt", "WARNING") as logs,
+                ):
+                    matched, unmatched = self.generic_job.filter_profiles_on_rules(
+                        (broken,)
+                    )
+
+                self.assertEqual((matched, unmatched), ([], []))
+                errors = [r for r in logs.records if r.levelname == "ERROR"]
+                warnings = [r for r in logs.records if r.levelname == "WARNING"]
+                self.assertEqual(len(warnings), 1)
+                self.assertIn("'broken' is ignored", warnings[0].getMessage())
+                if attempt == "evaluated":
+                    self.assertEqual(len(errors), 1)
+                    # detail from the rule engine validation error
+                    self.assertIn("conditions", errors[0].getMessage())
+                else:
+                    self.assertEqual(errors, [])
+
     def test_rules_verdict_is_reused(self):
         """Identical rules are evaluated only once, whatever the profiles."""
         profiles = tuple(

@@ -395,9 +395,14 @@ class GenericJob(ABC):
                 filter_result = self._evaluate_profile_rules(profile=profile)
                 self.RULES_FILTER_CACHE[cache_key] = filter_result
 
-            if filter_result is True:
+            if filter_result is None:
+                logger.warning(
+                    f"Profile '{profile.name}' is ignored: its deployment rules could "
+                    "not be evaluated."
+                )
+            elif filter_result:
                 li_profiles_matched.append(profile)
-            elif filter_result is False:
+            else:
                 li_profiles_unmatched.append(profile)
 
         return li_profiles_matched, li_profiles_unmatched
@@ -421,8 +426,8 @@ class GenericJob(ABC):
             results = engine.evaluate(obj=self.qdt_rules_context.to_dict())
         except Exception as err:
             logger.error(
-                f"Error occurred parsing rules of profile '{profile.name}'. "
-                f"Trace: {err}"
+                f"Deployment rules of profile '{profile.name}' could not be "
+                f"evaluated. {type(err).__name__}: {err.__cause__ or err}"
             )
             return None
 
