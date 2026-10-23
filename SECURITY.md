@@ -17,10 +17,15 @@ Because QDT is meant to be carried out on large-scale IT infrastructures, securi
 
 ## Supported Versions
 
-We release patches for security vulnerabilities. Which versions are eligible for
-receiving such patches depends on the CVSS v3.0 Rating.
+Only the latest released version of QDT receives fixes, including security ones. Previous versions are not patched: upgrading to the latest release is the way to get a fix.
 
-For now, no vulnerability has been found.
+This also applies to vulnerabilities in third-party dependencies, such as the CA certificates bundle ([certifi](https://pypi.org/project/certifi/)). The official executables embed their dependencies as they were at build time, so a new QDT release is published to ship the updated dependency.
+
+----
+
+## Security Advisories
+
+Security advisories are published on the [repository's security page](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/security/advisories) and mentioned in the release notes of the version fixing them.
 
 ----
 
