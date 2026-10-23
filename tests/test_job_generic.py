@@ -15,9 +15,11 @@
 # ##################################
 
 # Standard library
+import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 # package
 from qgis_deployment_toolbelt.exceptions import (
@@ -166,6 +168,140 @@ class TestJobGeneric(unittest.TestCase):
                 "qdt_test_profile_qdt_min_version_too_high", filtered_names
             )
             self.assertIn("qdt_test_profile_qdt_min_version_invalid", filtered_names)
+
+    # -- rules verdicts cache ------------------------------------------------
+    ALWAYS_MATCHING_RULES: list[dict] = [
+        {
+            "name": "Always",
+            "conditions": {
+                "all": [
+                    {
+                        "path": "$.date.current_year",
+                        "value": 1985,
+                        "operator": "not_equal",
+                    }
+                ]
+            },
+        }
+    ]
+    NEVER_MATCHING_RULES: list[dict] = [
+        {
+            "name": "Never",
+            "conditions": {
+                "all": [
+                    {"path": "$.date.current_year", "value": 1985, "operator": "equal"}
+                ]
+            },
+        }
+    ]
+
+    @staticmethod
+    def _write_profile(folder: Path, version: str, rules: list | None) -> None:
+        """Write a minimal profile.json into the given folder."""
+        folder.mkdir(parents=True, exist_ok=True)
+        content = {"name": folder.name, "version": version}
+        if rules is not None:
+            content["rules"] = rules
+        folder.joinpath("profile.json").write_text(
+            json.dumps(content), encoding="UTF-8"
+        )
+
+    def test_rescan_returns_updated_profiles_with_same_rules(self):
+        """After a profile update on disk and a cache clearing, a re-scan must
+        return the updated profile objects, even if their rules did not change."""
+        with (
+            patch.dict(GenericJob.RULES_FILTER_CACHE, clear=True),
+            patch.dict(GenericJob.PROFILES_FOLDER_CACHE, clear=True),
+            tempfile.TemporaryDirectory(prefix="QDT_test_rules_cache_") as tmp_dir,
+        ):
+            profiles_folder = Path(tmp_dir, "profiles")
+            rules = self.ALWAYS_MATCHING_RULES
+            self._write_profile(profiles_folder / "demo", "1.0.0", rules)
+            first = self.generic_job.filter_profiles_folder(profiles_folder)
+            self.assertEqual(first[0].version, "1.0.0")
+
+            # simulate an update by another job, e.g. qprofiles-synchronizer
+            self._write_profile(profiles_folder / "demo", "2.0.0", rules)
+            GenericJob.clear_profiles_cache(folder_path=profiles_folder)
+
+            second = self.generic_job.filter_profiles_folder(profiles_folder)
+            self.assertEqual(second[0].version, "2.0.0")
+
+    def test_rescan_evaluates_updated_rules(self):
+        """Rules updated on disk must be evaluated again, not served from cache."""
+        with (
+            patch.dict(GenericJob.RULES_FILTER_CACHE, clear=True),
+            patch.dict(GenericJob.PROFILES_FOLDER_CACHE, clear=True),
+            tempfile.TemporaryDirectory(prefix="QDT_test_rules_cache_") as tmp_dir,
+        ):
+            profiles_folder = Path(tmp_dir, "profiles")
+            self._write_profile(
+                profiles_folder / "demo",
+                "1.0.0",
+                self.ALWAYS_MATCHING_RULES,
+            )
+            self.assertEqual(
+                len(self.generic_job.filter_profiles_folder(profiles_folder)), 1
+            )
+
+            self._write_profile(
+                profiles_folder / "demo", "2.0.0", self.NEVER_MATCHING_RULES
+            )
+            GenericJob.clear_profiles_cache(folder_path=profiles_folder)
+
+            self.assertIsNone(self.generic_job.filter_profiles_folder(profiles_folder))
+
+    def test_rules_evaluation_error_is_logged_and_profile_ignored(self):
+        """A profile whose rules can't be evaluated is in none of the lists, the
+        error details are logged once and the profile is reported as ignored each
+        time, including when the result comes from the cache."""
+        broken = QdtProfile(name="broken", rules=[{"name": "no conditions"}])
+        with patch.dict(GenericJob.RULES_FILTER_CACHE, clear=True):
+            for attempt in ("evaluated", "cached"):
+                with (
+                    self.subTest(attempt=attempt),
+                    self.assertLogs("qgis_deployment_toolbelt", "WARNING") as logs,
+                ):
+                    matched, unmatched = self.generic_job.filter_profiles_on_rules(
+                        (broken,)
+                    )
+
+                self.assertEqual((matched, unmatched), ([], []))
+                errors = [r for r in logs.records if r.levelname == "ERROR"]
+                warnings = [r for r in logs.records if r.levelname == "WARNING"]
+                self.assertEqual(len(warnings), 1)
+                self.assertIn("'broken' is ignored", warnings[0].getMessage())
+                if attempt == "evaluated":
+                    self.assertEqual(len(errors), 1)
+                    # detail from the rule engine validation error
+                    self.assertIn("conditions", errors[0].getMessage())
+                else:
+                    self.assertEqual(errors, [])
+
+    def test_rules_verdict_is_reused(self):
+        """Identical rules are evaluated only once, whatever the profiles."""
+        profiles = tuple(
+            QdtProfile(name=name, rules=self.NEVER_MATCHING_RULES)
+            for name in ("one", "two")
+        )
+        with (
+            patch.dict(GenericJob.RULES_FILTER_CACHE, clear=True),
+            patch.object(
+                GenericJob,
+                "_evaluate_profile_rules",
+                autospec=True,
+                return_value=False,
+            ) as mock_evaluate,
+        ):
+            matched, unmatched = self.generic_job.filter_profiles_on_rules(profiles)
+            self.generic_job.filter_profiles_on_rules(profiles)
+
+            mock_evaluate.assert_called_once()
+            self.assertEqual(matched, [])
+            self.assertEqual([p.name for p in unmatched], ["one", "two"])
+
+            self.generic_job.filter_profiles_on_rules(profiles, cached=False)
+            self.assertEqual(mock_evaluate.call_count, 3)
 
     def test_get_matching_profile_from_name(self):
         """Test get_matching_profile_from_name method."""
