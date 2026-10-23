@@ -41,7 +41,6 @@ from qgis_deployment_toolbelt.commands.deployment import parser_main_deployment
 from qgis_deployment_toolbelt.commands.upgrade import parser_upgrade
 from qgis_deployment_toolbelt.constants import get_qdt_logs_folder
 from qgis_deployment_toolbelt.utils.journalizer import configure_logger
-from qgis_deployment_toolbelt.utils.win32utils import hold_com_apartment
 
 
 # ############################################################################
@@ -260,11 +259,6 @@ def main(in_args: list[str] | None = None):
     Args:
         in_args (List[str], optional): list of command-line arguments. Defaults to None.
     """
-    # keep COM initialized on the main thread for the whole run: send2trash would
-    # otherwise tear down the apartment that pywin32 created at import
-    if sys.platform == "win32":
-        hold_com_apartment()
-
     main_parser = build_parser()
 
     # autocompletion

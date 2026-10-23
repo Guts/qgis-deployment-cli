@@ -208,41 +208,6 @@ def get_current_user_extended_data(extended_name_format: ExtendedNameFormat) -> 
     return name_buffer.value
 
 
-def hold_com_apartment() -> bool:
-    """Initialize COM on the calling thread with a reference counted by Windows, which
-    is never released: the COM apartment lives as long as the process.
-
-    Call it once at startup, on the main thread. pywin32 initializes COM there when
-    pythoncom is imported, but does not count its own initialization: on that thread,
-    any further `pythoncom.CoInitialize()` is ignored while `pythoncom.CoUninitialize()`
-    is not. A balanced-looking pair, such as the one send2trash makes around
-    IFileOperation, then tears COM down: COM objects created before (e.g. pyad's
-    ADSI provider) are left orphaned, WMI calls fail with MK_E_SYNTAX and the next
-    call on such an object crashes the process (access violation in pythoncom).
-
-    Returns:
-        bool: True if COM is initialized on the calling thread
-    """
-    COINIT_APARTMENTTHREADED: int = 0x2  # noqa: N806
-    RPC_E_CHANGED_MODE: int = 0x80010106  # noqa: N806
-
-    hresult = ctypes.windll.ole32.CoInitializeEx(None, COINIT_APARTMENTTHREADED)
-    hresult &= 0xFFFFFFFF
-
-    # S_OK or S_FALSE (already initialized): a reference has been added
-    if hresult in (0, 1):
-        logger.debug(f"COM apartment held on the current thread (0x{hresult:08X}).")
-        return True
-
-    # the thread already lives in the multi-threaded apartment: nothing to hold
-    if hresult == RPC_E_CHANGED_MODE:
-        logger.debug("COM is already initialized as multi-threaded on this thread.")
-        return True
-
-    logger.warning(f"Unable to initialize COM on the current thread (0x{hresult:08X}).")
-    return False
-
-
 def normalize_path(input_path: Path, add_trailing_slash_if_dir: bool = True) -> str:
     r"""Returns a path as normalized and fully escaped for Windows old-school file style.
 
