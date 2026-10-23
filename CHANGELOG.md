@@ -19,15 +19,18 @@ Unreleased
 ## 0.48.0 - 2026-10-23
 
 > [!IMPORTANT]
-> **Security fix: all previous versions are affected.** This release updates the CA certificates bundle ([certifi](https://pypi.org/project/certifi/) >= 2026.10.19) to drop the emSign root certificates compromised in the [eMudhra incident](https://discuss.python.org/t/information-for-python-users-regarding-emudhra-emsign-ca-certificate-security-incident/109576). Earlier versions are exposed to man-in-the-middle attacks on HTTPS downloads (scenarios, profiles, plugins, upgrade). See the advisory [GHSA-g43m-g8h7-cjcp](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/security/advisories/GHSA-g43m-g8h7-cjcp) for details and workarounds.
+> **Security fix: all previous versions are affected.**
+> This release updates the CA certificates bundle ([certifi](https://pypi.org/project/certifi/) >= 2026.10.19) to drop the emSign root certificates compromised in the [eMudhra incident](https://discuss.python.org/t/information-for-python-users-regarding-emudhra-emsign-ca-certificate-security-incident/109576). Earlier versions are exposed to man-in-the-middle attacks on HTTPS downloads (scenarios, profiles, plugins, upgrade). See the advisory [GHSA-g43m-g8h7-cjcp](https://github.com/qgis-deployment/qgis-deployment-toolbelt-cli/security/advisories/GHSA-g43m-g8h7-cjcp) for details and workarounds.
 >
 > Download this version from the release page rather than with `qdt upgrade` from a previous version.
->
-> As only the latest version receives fixes, this release also ships the changes made since 0.47.0. Before rolling it out, check that your scenarios:
->
-> - declare at least one job,
-> - use mappings with a non-empty `uses` key for every step,
-> - do not rely on the `action` option of `qplugins-synchronizer`, now deprecated.
+
+### Breaking changes
+
+Before rolling it out, check that your scenarios:
+
+- declare at least one job,
+- use mappings with a non-empty `uses` key for every step,
+- do not rely on the `action` option of `qplugins-synchronizer`, now deprecated.
 
 ### Security 🔒
 
