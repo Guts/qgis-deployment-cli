@@ -14,6 +14,7 @@ Author: Julien Moura (Oslandia)
 import tempfile
 from os import environ, getenv
 from pathlib import Path
+from sys import platform as opersys
 
 # 3rd party
 import pytest
@@ -80,6 +81,20 @@ def test_cli_version(capsys, option):
     assert f"{__about__.__version__}\n" == out
 
     assert err == ""
+
+
+@pytest.mark.skipif(opersys != "win32", reason="Test specific to Windows.")
+def test_cli_holds_com_apartment(monkeypatch):
+    """Test that the CLI holds the COM apartment of the main thread before anything
+    else, so that a later unbalanced CoUninitialize (send2trash) cannot tear it down.
+    """
+    calls = []
+    monkeypatch.setattr(cli, "hold_com_apartment", lambda: calls.append(True))
+
+    with pytest.raises(SystemExit):
+        cli.main(["--version"])
+
+    assert calls == [True]
 
 
 @pytest.mark.parametrize("option", good_scenarios)
